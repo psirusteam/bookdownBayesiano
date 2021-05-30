@@ -2,6 +2,24 @@ book_filename: "ModelosBayesianos"
 delete_merged_file: true
 output_dir: "docs"
 language:
+  label:
+    fig: 'Figura '
+    tab: 'Tabla '
+    eq: 'Equación '
+    thm: 'Teorema '
+    lem: 'Lema '
+    cor: 'Corolario '
+    prp: 'Proposición '
+    cnj: 'Conjectura '
+    def: 'Definition '
+    exm: 'Ejemplo '
+    exr: 'Ejercicio '
+    hyp: 'Hipótesis '
+    proof: 'Prueba. '
+    remark: 'Comentario. '
+    solution: 'Solución. '
   ui:
-    chapter_name: "Capítulo "
+    edit: Edit
+    chapter_name: 'Capítulo '
+    appendix_name: 'Apéndice '
     

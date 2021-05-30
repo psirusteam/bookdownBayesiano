@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="es" xml:lang="es">
+<html lang="es-CO" xml:lang="es-CO">
 <head>
 
   <meta charset="utf-8" />
@@ -136,7 +136,7 @@ R=E(L)=\int L(A, \theta)p(\theta|\mathbf{X})d\theta
 <p>En cualquier de los dos casos anteriores, buscaremos la estimación que minimice el riesgo <span class="math inline">\(R\)</span>. Ilustramos los anteriores conceptos en los siguientes ejemplos tanto en la estadística clásica como en la estadística bayesiana.</p>
 
 <div class="example">
-<p><span id="exm:unnamed-chunk-1" class="example"><strong>Example 2.1  </strong></span>Sea <span class="math inline">\(X_i\)</span> con <span class="math inline">\(i=1,\cdots, n\)</span> una muestra aleatoria con media <span class="math inline">\(\theta\)</span> y varianza <span class="math inline">\(\sigma^2\)</span>, ambas fijas, y suponga que se desea encontrar el mejor estimador de <span class="math inline">\(\theta\)</span> bajo la función de pérdida cuadrática dada por
+<p><span id="exm:unnamed-chunk-1" class="example"><strong>Ejemplo 2.1  </strong></span>Sea <span class="math inline">\(X_i\)</span> con <span class="math inline">\(i=1,\cdots, n\)</span> una muestra aleatoria con media <span class="math inline">\(\theta\)</span> y varianza <span class="math inline">\(\sigma^2\)</span>, ambas fijas, y suponga que se desea encontrar el mejor estimador de <span class="math inline">\(\theta\)</span> bajo la función de pérdida cuadrática dada por
 <span class="math display">\[\begin{equation*}
 L(A,\theta)=(A-\theta)^2
 \end{equation*}\]</span></p>
@@ -150,7 +150,7 @@ Para encontrar una solución, es necesario restringir aún más el rango de esti
 </div>
 
 <div class="example">
-<p><span id="exm:unnamed-chunk-2" class="example"><strong>Example 2.2  </strong></span>Suponga que se desea estimar un parámetro de interés <span class="math inline">\(\theta\)</span> en el contexto de la estadística bayesiana y denotamos la función de densidad posterior de <span class="math inline">\(\theta\)</span> como <span class="math inline">\(p(\theta|\mathbf{X})\)</span>, entonces si utilizamos la función de pérdida cuadrática, entonces el riesgo asociado será
+<p><span id="exm:unnamed-chunk-2" class="example"><strong>Ejemplo 2.2  </strong></span>Suponga que se desea estimar un parámetro de interés <span class="math inline">\(\theta\)</span> en el contexto de la estadística bayesiana y denotamos la función de densidad posterior de <span class="math inline">\(\theta\)</span> como <span class="math inline">\(p(\theta|\mathbf{X})\)</span>, entonces si utilizamos la función de pérdida cuadrática, entonces el riesgo asociado será
 <span class="math display">\[\begin{align*}
 R&amp;=E(L(A,\theta))=E (A-\theta)^2=Var(\theta)+(E(\theta)-A)^2
 \end{align*}\]</span></p>
@@ -158,7 +158,7 @@ que es minimizado si <span class="math inline">\(A=E(\theta)\)</span>. Es decir 
 </div>
 
 <div class="example">
-<p><span id="exm:unnamed-chunk-3" class="example"><strong>Example 2.3  </strong></span>En el mismo contexto del ejemplo anterior, si cambiamos la función de pérdida a la siguiente
+<p><span id="exm:unnamed-chunk-3" class="example"><strong>Ejemplo 2.3  </strong></span>En el mismo contexto del ejemplo anterior, si cambiamos la función de pérdida a la siguiente
 <span class="math display">\[\begin{equation*}
 L(A,\theta)=|A-\theta|=(A-\theta)I_{(A\geq\theta)}+(\theta-A)I_{(\theta&gt;A)}
 \end{equation*}\]</span></p>

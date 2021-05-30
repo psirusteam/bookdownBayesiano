@@ -27,7 +27,7 @@ header-includes:
 - \def\bphi{\boldsymbol \phi}
 - \def\bpi{\boldsymbol \pi}
 - \def\bxi{\boldsymbol \xi}
-lang: es
+lang: "es-CO"
 linkcolor: blue
 classoption: letter
 # bookdown::render_book("index.Rmd", "bookdown::pdf_book")
