@@ -39,6 +39,4 @@ output: bookdown::html_book
 
 # Prefacio
 
- $\boldsymbol \theta$ 
- 
- $\bPi$
+<!--# TO DO: Escribir prefacio -->
