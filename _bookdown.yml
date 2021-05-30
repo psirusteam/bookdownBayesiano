@@ -1,6 +1,14 @@
 book_filename: "ModelosBayesianos"
 delete_merged_file: true
 output_dir: "docs"
+new_session: yes
+
+rmd_files: [
+  "index.Rmd",
+
+  "1.Rmd"
+]
+
 language:
   label:
     fig: 'Figura '
