@@ -673,8 +673,10 @@ estadística de prueba $T$ calculado sobre los datos replicados $y^{rep}$
 sean más extremos al observado, y la probabilidad se toma sobre la
 distribución posterior del parámetro $\theta$ y la distribución
 predictiva posterior de $y^{rep}$. Específicamente, queda determinado
-por \begin{equation*}
-p_B=\int\int_{{T(y^{rep})\geq T(y)}}p(y^{rep}|\theta)p(\theta|y)dy^{rep}d\theta
+por 
+
+\begin{equation*}
+p_B=\int\int_{{T(y^{rep}) \geq T(y)}}p(y^{rep}|\theta)p(\theta|y)dy^{rep}d\theta
 \end{equation*}
 
 A diferencia del valor $p$ clásico donde solo valores pequeños muestran
