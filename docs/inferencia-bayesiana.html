@@ -6,7 +6,7 @@
   <meta http-equiv="X-UA-Compatible" content="IE=edge" />
   <title>Capítulo 2 Inferencia bayesiana | Modelos Bayesianos con R y STAN</title>
   <meta name="description" content="Este es el repositorio del libro Modelos Bayesianos con R y STAN." />
-  <meta name="generator" content="bookdown 0.22 and GitBook 2.6.7" />
+  <meta name="generator" content="bookdown 0.21 and GitBook 2.6.7" />
 
   <meta property="og:title" content="Capítulo 2 Inferencia bayesiana | Modelos Bayesianos con R y STAN" />
   <meta property="og:type" content="book" />
@@ -51,33 +51,8 @@
 
 
 
-<link href="libs/anchor-sections-1.0.1/anchor-sections.css" rel="stylesheet" />
-<script src="libs/anchor-sections-1.0.1/anchor-sections.js"></script>
 
 
-
-<style type="text/css">
-/* Used with Pandoc 2.11+ new --citeproc when CSL is used */
-div.csl-bib-body { }
-div.csl-entry {
-  clear: both;
-}
-.hanging div.csl-entry {
-  margin-left:2em;
-  text-indent:-2em;
-}
-div.csl-left-margin {
-  min-width:2em;
-  float:left;
-}
-div.csl-right-inline {
-  margin-left:2em;
-  padding-left:1em;
-}
-div.csl-indent {
-  margin-left: 2em;
-}
-</style>
 
 <link rel="stylesheet" href="style.css" type="text/css" />
 </head>
@@ -178,7 +153,7 @@ modelo a los datos observados.</p></li>
 Pr(\boldsymbol \theta\in G)=\int_G p(\boldsymbol \theta\mid \boldsymbol \eta)\ d\boldsymbol \theta
 \end{equation}\]</span></p>
 <p>En esta primera etapa también es posible calcular, con fines
-confirmatorios <span class="citation">(<a href="#ref-Carlin96" role="doc-biblioref">Carlin y Louis 1996</a>)</span>, la estimación puntual para el vector
+confirmatorios <span class="citation">(<a href="inferencia-bayesiana.html#ref-Carlin96" role="doc-biblioref">Carlin y Louis 1996</a>)</span>, la estimación puntual para el vector
 <span class="math inline">\(\boldsymbol \theta\)</span> dada por alguna medida de tendencia central para la
 distribución <span class="math inline">\(p(\boldsymbol \theta\mid \boldsymbol \eta)\)</span>. En particular, si se escoge la
 media, entonces <span class="math display">\[\begin{equation}\label{est.prio}
@@ -289,7 +264,7 @@ conjungadas y algunos tópicos relacionados.</p>
 <span id="def:unnamed-chunk-1" class="definition"><strong>Definición 2.1  </strong></span>Sea <span class="math inline">\(\mathcal{F}=\{p(\mathbf{Y} \mid \boldsymbol \theta)\}\)</span> una familia de distribuciones de probabilidad. Una familia de distribuciones <span class="math inline">\(\mathcal{P}\)</span> se dice conjugada con respecto a <span class="math inline">\(\mathcal{F}\)</span> si para toda distribución <em>previa</em> <span class="math inline">\(p(\boldsymbol \theta) \in \mathcal{P}\)</span> y para toda distribución de muestreo o verosimilitud de las observaciones <span class="math inline">\(p(\mathbf{Y} \mid \boldsymbol \theta)\)</span>, <span class="math inline">\(p(\boldsymbol \theta\mid \mathbf{Y})\)</span> también pertenece a la familia <span class="math inline">\(\mathcal{P}\)</span>.
 </div>
 <p>Esta definición es en la mayoría de los casos prácticos muy útil. Sin
-embargo, <span class="citation"><a href="#ref-Migon" role="doc-biblioref">Migon y Gamerman</a> (<a href="#ref-Migon" role="doc-biblioref">1999</a>)</span> describe los siguientes dos casos en donde
+embargo, <span class="citation"><a href="inferencia-bayesiana.html#ref-Migon" role="doc-biblioref">Migon y Gamerman</a> (<a href="inferencia-bayesiana.html#ref-Migon" role="doc-biblioref">1999</a>)</span> describe los siguientes dos casos en donde
 esta definición es completamente inútil:</p>
 <p>(Caso amplio) Sea
 <span class="math inline">\(\mathcal{P}=\{\emph{Todas las distribuciones de probabilidad}\}\)</span> y
@@ -353,7 +328,7 @@ siguiente resultado:</p>
 </div>
 
 <div class="proof">
-<p> <span class="proof"><em>Prueba. </em></span> Observando la expresión (1.5.1), se debe encontrar una distribución <em>previa</em> en la familia exponencial uniparamétrica, tal que la distribución <em>posterior</em>, resultante del producto de la distribución <em>previa</em> con la verosimilitud, sea también miembro de la familia exponencial uniparamétrica. Con base en lo anterior, la distribución <em>previa</em>, parametrizada por el hiperparámetro <span class="math inline">\(\alpha\)</span>, debe ser una función exponencial de los términos <span class="math inline">\(d(\theta)\)</span> y <span class="math inline">\(c(\theta)\)</span> como lo afirma <span class="citation"><a href="#ref-Jordan" role="doc-biblioref">Jordan</a> (<a href="#ref-Jordan" role="doc-biblioref">2004</a>)</span>. Esto es,
+<p> <span class="proof"><em>Prueba. </em></span> Observando la expresión (1.5.1), se debe encontrar una distribución <em>previa</em> en la familia exponencial uniparamétrica, tal que la distribución <em>posterior</em>, resultante del producto de la distribución <em>previa</em> con la verosimilitud, sea también miembro de la familia exponencial uniparamétrica. Con base en lo anterior, la distribución <em>previa</em>, parametrizada por el hiperparámetro <span class="math inline">\(\alpha\)</span>, debe ser una función exponencial de los términos <span class="math inline">\(d(\theta)\)</span> y <span class="math inline">\(c(\theta)\)</span> como lo afirma <span class="citation"><a href="inferencia-bayesiana.html#ref-Jordan" role="doc-biblioref">Jordan</a> (<a href="inferencia-bayesiana.html#ref-Jordan" role="doc-biblioref">2004</a>)</span>. Esto es,
 <span class="math display">\[\begin{equation}
 p(\theta \mid \alpha)\propto\exp\{w(\alpha) d(\theta)-\delta c(\theta)\},
 \end{equation}\]</span></p>
@@ -638,7 +613,7 @@ p(\phi)&amp;=p(\theta) \mid \frac{\partial\theta}{\partial\phi} \mid
 \propto I(\phi)^{1/2} \mid \frac{\partial\phi}{\partial\theta} \mid  \mid \frac{d\theta}{\partial\phi} \mid =I(\phi)^{1/2}
 \end{align*}\]</span>
 </div>
-<p>En <span class="citation"><a href="#ref-BoxTiao" role="doc-biblioref">Box y Tiao</a> (<a href="#ref-BoxTiao" role="doc-biblioref">1992, 59</a>)</span> citan una Tabla de resumen en donde se
+<p>En <span class="citation"><a href="inferencia-bayesiana.html#ref-BoxTiao" role="doc-biblioref">Box y Tiao</a> (<a href="inferencia-bayesiana.html#ref-BoxTiao" role="doc-biblioref">1992, 59</a>)</span> citan una Tabla de resumen en donde se
 encuentran distribuciones a previa no informativas para las
 distribuciones probabilísticas más comunes. A continuación se exponen
 algunos ejemplos que utilizan este enfoque.</p>
@@ -763,7 +738,7 @@ expresión () se claro que valores grandes del factor muestra
 evidencias a favor del modelo <span class="math inline">\(M1\)</span>, valores menores de 1 a favor del
 modelo <span class="math inline">\(M2\)</span>, mientras que valores cercanos a 1 no muestra evidencias
 claras hacia ninguno de los dos modelos.</p>
-<p>En <span class="citation"><a href="#ref-Gelman95" role="doc-biblioref">Gelman et al.</a> (<a href="#ref-Gelman95" role="doc-biblioref">1995</a>)</span> se presenta el siguiente ejemplo sencillo sobre la
+<p>En <span class="citation"><a href="inferencia-bayesiana.html#ref-Gelman95" role="doc-biblioref">Gelman et al.</a> (<a href="inferencia-bayesiana.html#ref-Gelman95" role="doc-biblioref">1995</a>)</span> se presenta el siguiente ejemplo sencillo sobre la
 presencia o ausencia de la enfermedad hemofilia, una enfermedad genética
 especialmente grave las mujeres. Para una mujer quien tiene un hermano
 portador del gen, el parámetro <span class="math inline">\(\theta\)</span> describe la presencia o ausencia
@@ -790,7 +765,7 @@ distribución posterior del parámetro <span class="math inline">\(\theta\)</spa
 predictiva posterior de <span class="math inline">\(y^{rep}\)</span>. Específicamente, queda determinado
 por</p>
 <p><span class="math display">\[\begin{equation*}
-p_B=\int\int_{{T(y^{rep}) \geq T(y)}}p(y^{rep}|\theta)p(\theta|y)dy^{rep}d\theta
+p_B=\int\int_{T(y^{rep}) \geq T(y)}p(y^{rep}|\theta)p(\theta|y)dy^{rep}d\theta
 \end{equation*}\]</span></p>
 <p>A diferencia del valor <span class="math inline">\(p\)</span> clásico donde solo valores pequeños muestran
 evidencia en contra de la hipótesis nula, un valor <span class="math inline">\(p\)</span> Bayesiano extremo
@@ -811,7 +786,7 @@ define como <span class="math display">\[\begin{equation}
 D(y, \boldsymbol \theta)=-2*\log(p(y|\boldsymbol \theta))
 \end{equation}\]</span></p>
 <p>cuya media posterior es una medida usual del ajuste del modelo.
-<span class="citation"><a href="#ref-Dempster74" role="doc-biblioref">Dempster</a> (<a href="#ref-Dempster74" role="doc-biblioref">1974</a>)</span> sugirió graficar la distribución posteriori de
+<span class="citation"><a href="inferencia-bayesiana.html#ref-Dempster74" role="doc-biblioref">Dempster</a> (<a href="inferencia-bayesiana.html#ref-Dempster74" role="doc-biblioref">1974</a>)</span> sugirió graficar la distribución posteriori de
 la devianza para observar el ajuste del modelo a los datos. Una
 estimación de esta media posterior se basa en simulación de <span class="math inline">\(M\)</span> valores
 <span class="math inline">\(\boldsymbol \theta^1,\cdots,\boldsymbol \theta^M\)</span> de la distribución posterior de <span class="math inline">\(\boldsymbol \theta\)</span>,
@@ -832,7 +807,7 @@ p_D=\hat{E}_D - \hat{D}
 denotando la media posterior de <span class="math inline">\(\boldsymbol \theta\)</span>; es decir, <span class="math inline">\(\hat{D}\)</span> es la
 estimación de la devianza usando <span class="math inline">\(\hat{\boldsymbol \theta}\)</span>, y <span class="math inline">\(p_D\)</span> se puede ver
 como la media posterior de la devianza menos la devianza de las medias
-posterior <span class="citation">(<a href="#ref-Spiegel" role="doc-biblioref">Spiegelhalter et al. 2002</a>)</span>. De esta forma, el DIC también se puede
+posterior <span class="citation">(<a href="inferencia-bayesiana.html#ref-Spiegel" role="doc-biblioref">Spiegelhalter et al. 2002</a>)</span>. De esta forma, el DIC también se puede
 escribir como <span class="math display">\[\begin{equation*}
 DIC=\hat{D}+2p_D
 \end{equation*}\]</span></p>
@@ -849,13 +824,13 @@ la normalidad en la distribución posterior.</p>
 <div id="criterio-aic-y-bic" class="section level3" number="2.2.4">
 <h3><span class="header-section-number">2.2.4</span> Criterio AIC y BIC</h3>
 <p>El criterio de información de Akaike (AIC) fue formalmente presentado en
-<span class="citation"><a href="#ref-Akaike" role="doc-biblioref">Akaike</a> (<a href="#ref-Akaike" role="doc-biblioref">1974</a>)</span>. Este criterio mide la pérdida de información al
+<span class="citation"><a href="inferencia-bayesiana.html#ref-Akaike" role="doc-biblioref">Akaike</a> (<a href="inferencia-bayesiana.html#ref-Akaike" role="doc-biblioref">1974</a>)</span>. Este criterio mide la pérdida de información al
 ajustar un modelo a un conjunto de datos; por esto, se buscan modelos
 que arrojen valores pequeños de AIC. Posteriormente @[AICc]
 introdujo el factor de corrección para evitar que el AIC escoja modelos
 con demasiados parámetros en situaciones de tamaño de muestra pequeño.
 Por otro lado, el criterio de información bayesiano BIC, también
-conocido como el criterio de Schwarz <span class="citation">(<a href="#ref-Schwarz" role="doc-biblioref">Schwarz 1978</a>)</span>, también está
+conocido como el criterio de Schwarz <span class="citation">(<a href="inferencia-bayesiana.html#ref-Schwarz" role="doc-biblioref">Schwarz 1978</a>)</span>, también está
 formulado en términos de la función de verosimilitudel modelo y del
 número de parámetros. La expresión de estos criterios es como sigue:
 <span class="math display">\[\begin{align*}
@@ -889,7 +864,7 @@ estudio del enfoque Bayesiano. En este texto se seguirá esta distinción.
 Un ejemplo claro en donde <span class="math inline">\(p\)</span> representa cuatro funciones distintas en
 una sola ecuación es el siguiente:</p>
 <p><span class="math display">\[p(\theta \mid y)=p(y \mid \theta)\frac{p(\theta)}{p(y)}\]</span></p>
-<p><span class="citation"><a href="#ref-Gelman95" role="doc-biblioref">Gelman et al.</a> (<a href="#ref-Gelman95" role="doc-biblioref">1995</a>)</span> explica por qué la notación simple, con el uso (a
+<p><span class="citation"><a href="inferencia-bayesiana.html#ref-Gelman95" role="doc-biblioref">Gelman et al.</a> (<a href="inferencia-bayesiana.html#ref-Gelman95" role="doc-biblioref">1995</a>)</span> explica por qué la notación simple, con el uso (a
 veces abuso) de la letra <span class="math inline">\(p\)</span> es más rigurosa de lo que, a simple vista,
 pueda parecer y comenta que,</p>
 <blockquote>
@@ -931,57 +906,6 @@ y sólo por mí, sería mejor que no asumieran esa idea. De esta manera, el
 estudio de estos textos sería un poco menos denso.</p>
 
 <div id="refs" class="references csl-bib-body hanging-indent">
-<div class="csl-entry">
-Akaike, H. 1974. <span>«<span>A new look at the statistical model identification</span>»</span>. <em>IEEE Transactions on Automatic Control</em> 19 (6): 716-23. <a href="https://doi.org/10.1109/TAC.1974.1100705">https://doi.org/10.1109/TAC.1974.1100705</a>.
-</div>
-<div class="csl-entry">
-Box, G. E. P., y G. C. Tiao. 1992. <em>Bayesian Inference in Statistical Analysis</em>. 1.ª ed. Wiley.
-</div>
-<div class="csl-entry">
-Carlin, B. P., y T. A. Louis. 1996. <em>Bayes and Empirical Bayes for Data Analysis</em>. 1.ª ed. Chapman; Hall/CRC.
-</div>
-<div class="csl-entry">
-Dempster, A. P. 1974. <span>«The Direct Use of Likelihood for Significance Testing»</span>. En <em>Proceedings of Conference on Foundational Questions in Statistical Inference</em>, 335-52. Department of Theoretical Statistics: University of Aarhus.
-</div>
-<div class="csl-entry">
-Gelman, A., J. B. Carlin, H. S. Stern, y D. B. Rubin. 1995. <em>Bayesian Data Analysis</em>. 1.ª ed. Chapman; Hall/CRC.
-</div>
-<div class="csl-entry">
-———. 2003. <em>Bayesian Data Analysis</em>. 2.ª ed. Chapman; Hall/CRC.
-</div>
-<div class="csl-entry">
-Jordan, M. I. 2004. <span>«The Exponential Family and Generalized Linear Models»</span>.
-</div>
-<div class="csl-entry">
-Migon, H. S., y D. Gamerman. 1999. <em>Statistical Inference: An Integrated Approach</em>. Arnold.
-</div>
-<div class="csl-entry">
-Schwarz, G. 1978. <span>«Estimating the Dimension of a Model»</span>. <em>Annals of Statistics</em> 6: 461-64.
-</div>
-<div class="csl-entry">
-Spiegelhalter, D. J., N. G. Best, B. P. Carlin, y A. VanderLinde. 2002. <span>«Bayesian measures of model complexity and fit»</span>. <em>Journal of the Royal Statistical Society</em> B 64: 583-639.
-</div>
-</div>
-</div>
-</div>
-</div>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-<h3>References</h3>
-<div id="refs" class="references csl-bib-body hanging-indent">
 <div id="ref-Akaike" class="csl-entry">
 Akaike, H. 1974. <span>«<span>A new look at the statistical model identification</span>»</span>. <em>IEEE Transactions on Automatic Control</em> 19 (6): 716-23. <a href="https://doi.org/10.1109/TAC.1974.1100705">https://doi.org/10.1109/TAC.1974.1100705</a>.
 </div>
@@ -997,6 +921,9 @@ Dempster, A. P. 1974. <span>«The Direct Use of Likelihood for Significance Test
 <div id="ref-Gelman95" class="csl-entry">
 Gelman, A., J. B. Carlin, H. S. Stern, y D. B. Rubin. 1995. <em>Bayesian Data Analysis</em>. 1.ª ed. Chapman; Hall/CRC.
 </div>
+<div id="ref-Gelman03" class="csl-entry">
+———. 2003. <em>Bayesian Data Analysis</em>. 2.ª ed. Chapman; Hall/CRC.
+</div>
 <div id="ref-Jordan" class="csl-entry">
 Jordan, M. I. 2004. <span>«The Exponential Family and Generalized Linear Models»</span>.
 </div>
@@ -1010,6 +937,24 @@ Schwarz, G. 1978. <span>«Estimating the Dimension of a Model»</span>. <em>Anna
 Spiegelhalter, D. J., N. G. Best, B. P. Carlin, y A. VanderLinde. 2002. <span>«Bayesian measures of model complexity and fit»</span>. <em>Journal of the Royal Statistical Society</em> B 64: 583-639.
 </div>
 </div>
+</div>
+</div>
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 <div class="footnotes">
 <hr />
 <ol start="3">
@@ -1052,7 +997,6 @@ gitbook.start({
 "weibo": false,
 "instapaper": false,
 "vk": false,
-"whatsapp": false,
 "all": ["facebook", "twitter", "linkedin", "weibo", "instapaper"]
 },
 "fontsettings": {

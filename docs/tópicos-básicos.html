@@ -6,7 +6,7 @@
   <meta http-equiv="X-UA-Compatible" content="IE=edge" />
   <title>Capítulo 1 Tópicos básicos | Modelos Bayesianos con R y STAN</title>
   <meta name="description" content="Este es el repositorio del libro Modelos Bayesianos con R y STAN." />
-  <meta name="generator" content="bookdown 0.22 and GitBook 2.6.7" />
+  <meta name="generator" content="bookdown 0.21 and GitBook 2.6.7" />
 
   <meta property="og:title" content="Capítulo 1 Tópicos básicos | Modelos Bayesianos con R y STAN" />
   <meta property="og:type" content="book" />
@@ -51,33 +51,8 @@
 
 
 
-<link href="libs/anchor-sections-1.0.1/anchor-sections.css" rel="stylesheet" />
-<script src="libs/anchor-sections-1.0.1/anchor-sections.js"></script>
 
 
-
-<style type="text/css">
-/* Used with Pandoc 2.11+ new --citeproc when CSL is used */
-div.csl-bib-body { }
-div.csl-entry {
-  clear: both;
-}
-.hanging div.csl-entry {
-  margin-left:2em;
-  text-indent:-2em;
-}
-div.csl-left-margin {
-  min-width:2em;
-  float:left;
-}
-div.csl-right-inline {
-  margin-left:2em;
-  padding-left:1em;
-}
-div.csl-indent {
-  margin-left: 2em;
-}
-</style>
 
 <link rel="stylesheet" href="style.css" type="text/css" />
 </head>
@@ -352,7 +327,7 @@ dada por</p>
 \tag{1.2}
 p(\boldsymbol \theta\mid \mathbf{Y})\propto p(\mathbf{Y} \mid \boldsymbol \theta)p(\boldsymbol \theta)
 \end{align}\]</span></p>
-<p><span class="citation"><a href="#ref-Gelman03" role="doc-biblioref">Gelman et al.</a> (<a href="#ref-Gelman03" role="doc-biblioref">2003</a>)</span> menciona que esta expresión se conoce como la
+<p><span class="citation"><a href="inferencia-bayesiana.html#ref-Gelman03" role="doc-biblioref">Gelman et al.</a> (<a href="inferencia-bayesiana.html#ref-Gelman03" role="doc-biblioref">2003</a>)</span> menciona que esta expresión se conoce como la
 distribución <em>posterior no-normalizada</em> y encierra el núcleo
 técnico de la inferencia bayesiana. La constante <span class="math inline">\(p(\mathbf{Y})\)</span>
 faltante en la expresión <a href="tópicos-básicos.html#eq:Bayes1">(1.2)</a> se da a continuación.</p>
@@ -527,12 +502,6 @@ Los anteriores resultados muestran cómo cambia la probabilidad de tener cáncer
 
 </div>
 </div>
-<h3>References</h3>
-<div id="refs" class="references csl-bib-body hanging-indent">
-<div id="ref-Gelman03" class="csl-entry">
-———. 2003. <em>Bayesian Data Analysis</em>. 2.ª ed. Chapman; Hall/CRC.
-</div>
-</div>
 <div class="footnotes">
 <hr />
 <ol start="1">
@@ -569,7 +538,6 @@ gitbook.start({
 "weibo": false,
 "instapaper": false,
 "vk": false,
-"whatsapp": false,
 "all": ["facebook", "twitter", "linkedin", "weibo", "instapaper"]
 },
 "fontsettings": {
