@@ -70,7 +70,10 @@
 <li><a href="./">Modelos Bayesianos con R y STAN</a></li>
 
 <li class="divider"></li>
-<li class="chapter" data-level="" data-path="index.html"><a href="index.html"><i class="fa fa-check"></i>Prefacio</a></li>
+<li class="chapter" data-level="" data-path="index.html"><a href="index.html"><i class="fa fa-check"></i>Prefacio</a>
+<ul>
+<li class="chapter" data-level="" data-path="index.html"><a href="index.html#acerca-de-la-notación"><i class="fa fa-check"></i>Acerca de la notación</a></li>
+</ul></li>
 <li class="chapter" data-level="1" data-path="tópicos-básicos.html"><a href="tópicos-básicos.html"><i class="fa fa-check"></i><b>1</b> Tópicos básicos</a>
 <ul>
 <li class="chapter" data-level="1.1" data-path="tópicos-básicos.html"><a href="tópicos-básicos.html#teoría-de-la-decisión"><i class="fa fa-check"></i><b>1.1</b> Teoría de la decisión</a></li>
@@ -79,7 +82,7 @@
 </ul></li>
 <li class="chapter" data-level="2" data-path="inferencia-bayesiana.html"><a href="inferencia-bayesiana.html"><i class="fa fa-check"></i><b>2</b> Inferencia bayesiana</a>
 <ul>
-<li class="chapter" data-level="2.1" data-path="inferencia-bayesiana.html"><a href="inferencia-bayesiana.html#información-previa"><i class="fa fa-check"></i><b>2.1</b> Información previa</a>
+<li class="chapter" data-level="2.1" data-path="inferencia-bayesiana.html"><a href="inferencia-bayesiana.html#la-distribución-previa"><i class="fa fa-check"></i><b>2.1</b> La distribución previa</a>
 <ul>
 <li class="chapter" data-level="2.1.1" data-path="inferencia-bayesiana.html"><a href="inferencia-bayesiana.html#distribuciones-conjugadas"><i class="fa fa-check"></i><b>2.1.1</b> Distribuciones conjugadas</a></li>
 <li class="chapter" data-level="2.1.2" data-path="inferencia-bayesiana.html"><a href="inferencia-bayesiana.html#familia-exponencial"><i class="fa fa-check"></i><b>2.1.2</b> Familia exponencial</a></li>
@@ -88,12 +91,15 @@
 <li class="chapter" data-level="2.2" data-path="inferencia-bayesiana.html"><a href="inferencia-bayesiana.html#pruebas-de-hipótesis"><i class="fa fa-check"></i><b>2.2</b> Pruebas de hipótesis</a>
 <ul>
 <li class="chapter" data-level="2.2.1" data-path="inferencia-bayesiana.html"><a href="inferencia-bayesiana.html#factor-de-bayes"><i class="fa fa-check"></i><b>2.2.1</b> Factor de Bayes</a></li>
-<li class="chapter" data-level="2.2.2" data-path="inferencia-bayesiana.html"><a href="inferencia-bayesiana.html#valor-p-bayesiano"><i class="fa fa-check"></i><b>2.2.2</b> Valor <span class="math inline">\(p\)</span> Bayesiano</a></li>
-<li class="chapter" data-level="2.2.3" data-path="inferencia-bayesiana.html"><a href="inferencia-bayesiana.html#criterio-dic"><i class="fa fa-check"></i><b>2.2.3</b> Criterio DIC</a></li>
-<li class="chapter" data-level="2.2.4" data-path="inferencia-bayesiana.html"><a href="inferencia-bayesiana.html#criterio-aic-y-bic"><i class="fa fa-check"></i><b>2.2.4</b> Criterio AIC y BIC</a></li>
-<li class="chapter" data-level="2.2.5" data-path="inferencia-bayesiana.html"><a href="inferencia-bayesiana.html#acerca-de-la-notación"><i class="fa fa-check"></i><b>2.2.5</b> Acerca de la notación</a></li>
+<li class="chapter" data-level="2.2.2" data-path="inferencia-bayesiana.html"><a href="inferencia-bayesiana.html#valor-p-bayesiano"><i class="fa fa-check"></i><b>2.2.2</b> Valor-<span class="math inline">\(p\)</span> Bayesiano</a></li>
+</ul></li>
+<li class="chapter" data-level="2.3" data-path="inferencia-bayesiana.html"><a href="inferencia-bayesiana.html#criterios-de-información"><i class="fa fa-check"></i><b>2.3</b> Criterios de información</a>
+<ul>
+<li class="chapter" data-level="2.3.1" data-path="inferencia-bayesiana.html"><a href="inferencia-bayesiana.html#criterio-dic"><i class="fa fa-check"></i><b>2.3.1</b> Criterio DIC</a></li>
+<li class="chapter" data-level="2.3.2" data-path="inferencia-bayesiana.html"><a href="inferencia-bayesiana.html#criterios-aic-y-bic"><i class="fa fa-check"></i><b>2.3.2</b> Criterios AIC y BIC</a></li>
 </ul></li>
 </ul></li>
+<li class="chapter" data-level="" data-path="referencias.html"><a href="referencias.html"><i class="fa fa-check"></i>Referencias</a></li>
 <li class="divider"></li>
 <li><a Modelos Bayesianos con R y STAN</a></li>
 
@@ -141,16 +147,18 @@ R=E(A-\theta)^2&amp;=Var(A)+(E(A)-\theta)^2\\
 &amp;=\sum_{i=1}^nc_i^2\sigma^2+\theta^2(\sum_{i=1}^nc_i-1)^2
 \end{align*}\]</span></p>
 <p>Y al buscar los coeficientes <span class="math inline">\(c_i\)</span> que minimizan la anterior expresión, encontramos que <span class="math inline">\(c_i=\theta^2/(\sigma^2+n\theta^2)\)</span> para todo <span class="math inline">\(i\)</span>. Como estos coeficientes conducen a un estimador que depende del parámetro desconocido, concluimos que no hay ningún estimador que minimiza el riesgo.</p>
-Para encontrar una solución, es necesario restringir aún más el rango de estimadores; para eso, se impone la restricción de que <span class="math inline">\(\sum_{i=1}^nc_i=1\)</span>. De esta forma, el riesgo está dado por <span class="math inline">\(R=\sum c_i^2\sigma^2\)</span>. Dado que <span class="math inline">\(\sigma^2\)</span> es fijo, al minimizar <span class="math inline">\(\sum c_i^2\)</span> sujeto a la restricción, se tiene que la solución es <span class="math inline">\(c_i=1/n\)</span> para todo <span class="math inline">\(i\)</span>, y así encontramos que el mejor estimador (en el sentido de minimizar el riesgo de la función de pérdida cuadrática) dentro de todas las formas lineales con <span class="math inline">\(\sum c_i=1\)</span> es la media muestral <span class="math inline">\(\bar{X}\)</span>.
+Para encontrar una solución, es necesario restringir aún más el rango de estimadores; para eso, se impone la restricción de que <span class="math inline">\(\sum_{i=1}^n c_i=1\)</span>. De esta forma, el riesgo está dado por <span class="math inline">\(R=\sum c_i^2\sigma^2\)</span>. Dado que <span class="math inline">\(\sigma^2\)</span> es fijo, al minimizar <span class="math inline">\(\sum c_i^2\)</span> sujeto a la restricción, se tiene que la solución es <span class="math inline">\(c_i=1/n\)</span> para todo <span class="math inline">\(i\)</span>, y así encontramos que el mejor estimador (en el sentido de minimizar el riesgo de la función de pérdida cuadrática) dentro de todas las formas lineales con <span class="math inline">\(\sum c_i=1\)</span> es la media muestral <span class="math inline">\(\bar{X}\)</span>.
 </div>
+<p><br></p>
 
 <div class="example">
 <p><span id="exm:unnamed-chunk-2" class="example"><strong>Ejemplo 1.2  </strong></span>Suponga que se desea estimar un parámetro de interés <span class="math inline">\(\theta\)</span> en el contexto de la estadística bayesiana y denotamos la función de densidad posterior de <span class="math inline">\(\theta\)</span> como <span class="math inline">\(p(\theta|\mathbf{X})\)</span>, entonces si utilizamos la función de pérdida cuadrática, el riesgo asociado será</p>
 <p><span class="math display">\[\begin{align*}
 R&amp;=E(L(A,\theta))=E (A-\theta)^2=Var(\theta)+(E(\theta)-A)^2
 \end{align*}\]</span></p>
-que es minimizado si <span class="math inline">\(A=E(\theta)\)</span>. Es decir, la mejor acción para estimar <span class="math inline">\(\theta\)</span> es utilizar la esperanza de <span class="math inline">\(\theta\)</span> tomada con respecto a la distribución posterior <span class="math inline">\(p(\theta|\mathbf{X})\)</span>.
+que es minimizado si <span class="math inline">\(A=E(\theta)\)</span>. Es decir, la mejor acción para estimar <span class="math inline">\(\theta\)</span> es utilizar su tomada con respecto a la distribución posterior <span class="math inline">\(p(\theta|\mathbf{X})\)</span>.
 </div>
+<p><br></p>
 
 <div class="example">
 <p><span id="exm:unnamed-chunk-3" class="example"><strong>Ejemplo 1.3  </strong></span>En el mismo contexto del ejemplo anterior, si cambiamos la función de pérdida a la siguiente
@@ -197,9 +205,10 @@ p(\mathbf{X} \mid \mathbf{Y})
 =\frac{p(\mathbf{X},\mathbf{Y})}{p(\mathbf{Y})}
 \end{equation}\]</span>
 </div>
+<p><br></p>
 
 <div class="proposition">
-<span id="prp:unnamed-chunk-5" class="proposition"><strong>Resultado 1.1  </strong></span>Suponga los vectores <span class="math inline">\(\mathbf{X}\)</span>, <span class="math inline">\(\mathbf{Y}\)</span> y un tercer vector <span class="math inline">\(\mathbf{Z}=(Z_1,\ldots,Z_r)&#39;\)</span> definido sobre el espacio de muestreo <span class="math inline">\(\mathcal{Z}\)</span>. Entonces se tiene que
+<span id="prp:Res121" class="proposition"><strong>Resultado 1.1  </strong></span>Suponga los vectores <span class="math inline">\(\mathbf{X}\)</span>, <span class="math inline">\(\mathbf{Y}\)</span> y un tercer vector <span class="math inline">\(\mathbf{Z}=(Z_1,\ldots,Z_r)&#39;\)</span> definido sobre el espacio de muestreo <span class="math inline">\(\mathcal{Z}\)</span>. Entonces se tiene que
 <span class="math display">\[\begin{equation}
 p(\mathbf{X} \mid \mathbf{Z})=\int p(\mathbf{X},\mathbf{Y} \mid \mathbf{Z})\ d\mathbf{Y}
 \end{equation}\]</span>
@@ -208,6 +217,7 @@ y
 p(\mathbf{X} \mid \mathbf{Y},\mathbf{Z})=\frac{p(\mathbf{X},\mathbf{Y} \mid \mathbf{Z})}{p(\mathbf{Y} \mid \mathbf{Z})}
 \end{equation}\]</span>
 </div>
+<p><br></p>
 
 <div class="proof">
 <p> <span class="proof"><em>Prueba. </em></span> En primer lugar, nótese que
@@ -225,20 +235,23 @@ p(\mathbf{X} \mid \mathbf{Y},\mathbf{Z})=\frac{p(\mathbf{X},\mathbf{Y} \mid \mat
 =\frac{p(\mathbf{X},\mathbf{Y},\mathbf{Z})}{p(\mathbf{Y},\mathbf{Z})}=p(\mathbf{X} \mid \mathbf{Y},\mathbf{Z})
 \end{align*}\]</span>
 </div>
+<p><br></p>
 
 <div class="definition">
-<span id="def:unnamed-chunk-7" class="definition"><strong>Definición 1.2  </strong></span>Sean <span class="math inline">\(\mathbf{X}\)</span>, <span class="math inline">\(\mathbf{Y}\)</span>, <span class="math inline">\(\mathbf{Z}\)</span> vectores aleatorios, se dice que <span class="math inline">\(\mathbf{X}\)</span> es condicionalmente independiente de <span class="math inline">\(\mathbf{Y}\)</span> con respecto a <span class="math inline">\(\mathbf{Z}\)</span> si satisfacen la siguiente expresión
+<span id="def:unnamed-chunk-6" class="definition"><strong>Definición 1.2  </strong></span>Sean <span class="math inline">\(\mathbf{X}\)</span>, <span class="math inline">\(\mathbf{Y}\)</span>, <span class="math inline">\(\mathbf{Z}\)</span> vectores aleatorios, se dice que <span class="math inline">\(\mathbf{X}\)</span> es condicionalmente independiente de <span class="math inline">\(\mathbf{Y}\)</span> con respecto a <span class="math inline">\(\mathbf{Z}\)</span> si satisfacen la siguiente expresión
 <span class="math display">\[\begin{equation}
 p(\mathbf{X},\mathbf{Y} \mid \mathbf{Z})=p(\mathbf{X} \mid \mathbf{Z})p(\mathbf{Y} \mid \mathbf{Z})
 \end{equation}\]</span>
 </div>
+<p><br></p>
 
 <div class="proposition">
-<span id="prp:unnamed-chunk-8" class="proposition"><strong>Resultado 1.2  </strong></span>Si <span class="math inline">\(\mathbf{X}\)</span> es condicionalmente independiente de <span class="math inline">\(\mathbf{Y}\)</span> con respecto a <span class="math inline">\(\mathbf{Z}\)</span>, entonces se tiene que
+<span id="prp:Res122" class="proposition"><strong>Resultado 1.2  </strong></span>Si <span class="math inline">\(\mathbf{X}\)</span> es condicionalmente independiente de <span class="math inline">\(\mathbf{Y}\)</span> con respecto a <span class="math inline">\(\mathbf{Z}\)</span>, entonces se tiene que
 <span class="math display">\[\begin{equation}
 p(\mathbf{X} \mid \mathbf{Y},\mathbf{Z})=p(\mathbf{X} \mid \mathbf{Z})
 \end{equation}\]</span>
 </div>
+<p><br></p>
 
 <div class="proof">
 <p> <span class="proof"><em>Prueba. </em></span> Como <span class="math inline">\(p(\mathbf{X},\mathbf{Y} \mid \mathbf{Z})=\dfrac{p(\mathbf{X},\mathbf{Y},\mathbf{Z})}{p(\mathbf{Z})}\)</span>, entonces</p>
@@ -248,10 +261,12 @@ p(\mathbf{X} \mid \mathbf{Y},\mathbf{Z})=\frac{p(\mathbf{X},\mathbf{Y},\mathbf{Z
 =\frac{p(\mathbf{X} \mid \mathbf{Z})p(\mathbf{Y} \mid \mathbf{Z})}{p(\mathbf{Y} \mid \mathbf{Z})}=p(\mathbf{X} \mid \mathbf{Z})
 \end{align*}\]</span>
 </div>
+<p><br></p>
 
 <div class="proposition">
-<span id="prp:unnamed-chunk-10" class="proposition"><strong>Resultado 1.3  </strong></span>Si <span class="math inline">\(\mathbf{X}\)</span> es independiente de <span class="math inline">\(\mathbf{Y}\)</span>, entonces <span class="math inline">\(\mathbf{X}\)</span> es condicionalmente independiente de <span class="math inline">\(\mathbf{Y}\)</span> dado cualquier otro vector <span class="math inline">\(\mathbf{Z}\)</span>.
+<span id="prp:unnamed-chunk-8" class="proposition"><strong>Resultado 1.3  </strong></span>Si <span class="math inline">\(\mathbf{X}\)</span> es independiente de <span class="math inline">\(\mathbf{Y}\)</span>, entonces <span class="math inline">\(\mathbf{X}\)</span> es condicionalmente independiente de <span class="math inline">\(\mathbf{Y}\)</span> dado cualquier otro vector <span class="math inline">\(\mathbf{Z}\)</span>.
 </div>
+<p><br></p>
 
 <div class="proof">
 <p> <span class="proof"><em>Prueba. </em></span> Nótese que
@@ -263,6 +278,7 @@ puesto que, utilizando la hipótesis de independencia, se tiene que
 p(\mathbf{X} \mid \mathbf{Y})=p(\mathbf{X})
 \end{equation*}\]</span>
 </div>
+<p><br></p>
 </div>
 <div id="teorema-de-bayes" class="section level2" number="1.3">
 <h2><span class="header-section-number">1.3</span> Teorema de Bayes</h2>
@@ -327,17 +343,18 @@ dada por</p>
 \tag{1.2}
 p(\boldsymbol \theta\mid \mathbf{Y})\propto p(\mathbf{Y} \mid \boldsymbol \theta)p(\boldsymbol \theta)
 \end{align}\]</span></p>
-<p><span class="citation"><a href="inferencia-bayesiana.html#ref-Gelman03" role="doc-biblioref">Gelman et al.</a> (<a href="inferencia-bayesiana.html#ref-Gelman03" role="doc-biblioref">2003</a>)</span> menciona que esta expresión se conoce como la
+<p><span class="citation"><a href="referencias.html#ref-Gelman03" role="doc-biblioref">Gelman et al.</a> (<a href="referencias.html#ref-Gelman03" role="doc-biblioref">2003</a>)</span> menciona que esta expresión se conoce como la
 distribución <em>posterior no-normalizada</em> y encierra el núcleo
 técnico de la inferencia bayesiana. La constante <span class="math inline">\(p(\mathbf{Y})\)</span>
 faltante en la expresión <a href="tópicos-básicos.html#eq:Bayes1">(1.2)</a> se da a continuación.</p>
 
 <div class="proposition">
-<span id="prp:unnamed-chunk-12" class="proposition"><strong>Resultado 1.4  </strong></span>La expresión <span class="math inline">\(p(\mathbf{Y})\)</span> corresponde a una constante <span class="math inline">\(k\)</span> tal que
+<span id="prp:Res131" class="proposition"><strong>Resultado 1.4  </strong></span>La expresión <span class="math inline">\(p(\mathbf{Y})\)</span> corresponde a una constante <span class="math inline">\(k\)</span> tal que
 <span class="math display">\[\begin{equation*}
 k=p(\mathbf{Y})=E_{\boldsymbol \theta}[p(Y \mid \boldsymbol \theta)]
 \end{equation*}\]</span>
 </div>
+<p><br></p>
 
 <div class="proof">
  <span class="proof"><em>Prueba. </em></span> Nótese que
@@ -350,6 +367,7 @@ k&amp;=\int p(\mathbf{Y} \mid \boldsymbol \theta)p(\boldsymbol \theta)\ d\boldsy
 &amp;=E_{\boldsymbol \theta}[p(Y \mid \boldsymbol \theta)]
 \end{align*}\]</span>
 </div>
+<p><br></p>
 <p>Curiosamente, el reverendo Thomas Bayes nunca publicó este resultado,
 sino que después de su fallecimiento, su amigo el filósofo Richard
 Price, encontró los escritos dentro de sus pertenencias, y éstos fueron
@@ -361,8 +379,7 @@ seguro que él mismo no sospechaba del gran impacto de su resultado. De hecho, a
 poderoso teorema.</p>
 
 <div class="example">
-<p><span id="exm:unnamed-chunk-14" class="example"><strong>Ejemplo 1.4  </strong></span>Suponga que una fábrica del sector industrial produce bolígrafos y que la producción está a cargo de tres máquinas. La primera máquina produce el 50% del total de bolígrafos en el año, la segunda máquina produce el 30% y la última maquina produce el restante 20%. Por supuesto, esta producción esta sujeta al error y por tanto, basados en la experiencia, es posible reconocer que, de los artículos producidos por la primera máquina, el 5% resultan defectuosos; de los artículos producidos por la segunda máquina, el 2% resultan defectuosos y, de los artículos producidos por la última máquina, el 6% resultan defectuosos.</p>
-<p>FIGURA - Fabrica1.pdf</p>
+<p><span id="exm:unnamed-chunk-11" class="example"><strong>Ejemplo 1.4  </strong></span>Suponga que una fábrica del sector industrial produce bolígrafos y que la producción está a cargo de tres máquinas. La primera máquina produce el 50% del total de bolígrafos en el año, la segunda máquina produce el 30% y la última maquina produce el restante 20%. Por supuesto, esta producción esta sujeta al error y por tanto, basados en la experiencia, es posible reconocer que, de los artículos producidos por la primera máquina, el 5% resultan defectuosos; de los artículos producidos por la segunda máquina, el 2% resultan defectuosos y, de los artículos producidos por la última máquina, el 6% resultan defectuosos.</p>
 <p>Una pregunta natural que surge es acerca de la probabilidad de selección de un artículo defectuoso y para responder a esta pregunta con rigurosidad de probabilística es necesario enfocar la atención en los tópicos básicos que dejamos atrás. En primer lugar, el experimento en cuestión es la selección de un bolígrafo. Para este experimento, una terna <span class="math inline">\((\Omega, \mathfrak{F}, P)\)</span>,<a href="#fn1" class="footnote-ref" id="fnref1"><sup>1</sup></a> llamada comúnmente espacio de medida o espacio de probabilidad, está dada por</p>
 <ol style="list-style-type: decimal">
 <li>El espacio muestral: <span class="math inline">\(\Omega=\{\text{defectuoso}, \text{No defectouso}\}\)</span></li>
@@ -400,12 +417,12 @@ en donde, acudiendo a la probabilidad condicional, se define
 <p>La anterior función de probabilidad se conoce con el nombre de regla de probabilidad de Bayes y, aparte de ser el baluarte de la mayoría de investigaciones estadísticas que se plantean hoy en día, ha sido la piedra de tropiezo de muchos investigadores radicales que trataron de estigmatizar este enfoque tildando a sus seguidores de mediocres matemáticos y pobres probabilistas afirmando que la regla de probabilidad de Bayes es sólo un artilugio diseñado para divertirse en el tablero.</p>
 Pues bien, la interpretación de la regla de bayes se puede realizar en el sentido de actualización de la estructura probabilística que gobierna el experimento. Y esta actualización tiene mucho sentido práctico cuando se cae en la cuenta de que la vida real está llena de calibradores y que las situaciones generadas son consecuencia de algún cambio estructural. De esta forma, el conocimiento de la probabilidad de que el artículo sea producido por la primera máquina se actualiza al conocer que este artículo particular es defectuoso y de esta manera calibra la estructura aleatoria que existe detrás del contexto de la fábrica de bolígrafos. Aparte de servir para resolver problemas como el anteriormente mencionado, la regla de bayes ha marcado el comienzo de un nuevo enfoque de análisis de datos, no solamente porque hace explícitas las relaciones causales entre los procesos aleatorios, sino también porque facilita la inferencia estadística y la interpretación de los resultados.
 </div>
-<p><br>
-En el campo de la medicina, también se ha visto un gran número de la
+<p><br></p>
+<p>En el campo de la medicina, también se ha visto un gran número de la
 aplicación del teorema de Bayes. A continuación se enuncia uno de ellos:</p>
 
 <div class="example">
-<p><span id="exm:unnamed-chunk-15" class="example"><strong>Ejemplo 1.5  </strong></span>El Grupo de Trabajo de Servicios Preventivos de los Estados Unidos (USPSTF) hizo unas nuevas y controversiales recomendaciones <a href="https://www.uspreventiveservicestaskforce.org/uspstf/recommendation/breast-cancer-screening">recomendaciones</a> sobre la detección del cáncer de mama dentro de los cuales no recomienda el examen de la mamografía en mujeres entre 40 y 49 años de edad, afirmando que la práctica bienal de este examen debe ser una decisión individual según el contexto particular de la paciente. Por otro lado, la USPSTF sí recomienda tal práctica de forma bienal en grupos de mujeres de entre 50 y 74 años de edad, puesto que no encontró suficiente evidencia de beneficio o daño adicional en realizar este examen en mujeres mayores a los 74 años. Además, también recomendó <em>no</em> realizar auto exámanes de senos, contrario a las recomendaciones y consejos que da la mayoría de los profesionales y organizaciones de la salud, incluyendo la <em>Amerian Cancer Society</em>. Como información adicional, se sabe que:</p>
+<p><span id="exm:unnamed-chunk-12" class="example"><strong>Ejemplo 1.5  </strong></span>El Grupo de Trabajo de Servicios Preventivos de los Estados Unidos (USPSTF) hizo unas nuevas y controversiales recomendaciones <a href="https://www.uspreventiveservicestaskforce.org/uspstf/recommendation/breast-cancer-screening">recomendaciones</a> sobre la detección del cáncer de mama dentro de los cuales no recomienda el examen de la mamografía en mujeres entre 40 y 49 años de edad, afirmando que la práctica bienal de este examen debe ser una decisión individual según el contexto particular de la paciente. Por otro lado, la USPSTF sí recomienda tal práctica de forma bienal en grupos de mujeres de entre 50 y 74 años de edad, puesto que no encontró suficiente evidencia de beneficio o daño adicional en realizar este examen en mujeres mayores a los 74 años. Además, también recomendó <em>no</em> realizar auto exámanes de senos, contrario a las recomendaciones y consejos que da la mayoría de los profesionales y organizaciones de la salud, incluyendo la <em>Amerian Cancer Society</em>. Como información adicional, se sabe que:</p>
 <ul>
 <li>Los expertos estiman que un 12.3% de las mujeres desarrollan formas invasivas del cáncer de mama durante la vida.</li>
 <li>La probabilidad de que una mujer desarrolle el cáncer de mama entre los 40 y los 49 años de edad es 1 en 69, y esta probabilidad aumenta a medida que envejezca, de tal forma que llega a ser de 1 en 38 en mujeres de entre 50 y 59 años.</li>
@@ -499,6 +516,7 @@ P(\text{Cáncer}|\text{Negativo})&amp;=\frac{P(\text{Negativo}|\text{Cáncer})P(
 </table>
 Los anteriores resultados muestran cómo cambia la probabilidad de tener cáncer al condicionar en los resultados de la pruebe. Entre estos valores se puede ver que, con un resultado positivo en el examen, la probabilidad de tener efectivamente el cáncer es aproximadamente diez puntos porcentuales más bajo en mujeres de edad de 40 y 49 años, de donde se puede sustentar la recomendación de no efectuar este examen en mujeres de este rango de edad.
 </div>
+<p><br></p>
 
 </div>
 </div>

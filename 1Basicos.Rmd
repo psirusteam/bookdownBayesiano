@@ -34,8 +34,9 @@ R=E(A-\theta)^2&=Var(A)+(E(A)-\theta)^2\\
 
 Y al buscar los coeficientes $c_i$ que minimizan la anterior expresión, encontramos que $c_i=\theta^2/(\sigma^2+n\theta^2)$ para todo $i$. Como estos coeficientes conducen a un estimador que depende del parámetro desconocido, concluimos que no hay ningún estimador que minimiza el riesgo.
 
-Para encontrar una solución, es necesario restringir aún más el rango de estimadores; para eso, se impone la restricción de que $\sum_{i=1}^nc_i=1$. De esta forma, el riesgo está dado por $R=\sum c_i^2\sigma^2$. Dado que $\sigma^2$ es fijo, al minimizar $\sum c_i^2$ sujeto a la restricción, se tiene que la solución es $c_i=1/n$ para todo $i$, y así encontramos que el mejor estimador (en el sentido de minimizar el riesgo de la función de pérdida cuadrática) dentro de todas las formas lineales con $\sum c_i=1$ es la media muestral $\bar{X}$.
+Para encontrar una solución, es necesario restringir aún más el rango de estimadores; para eso, se impone la restricción de que $\sum_{i=1}^n c_i=1$. De esta forma, el riesgo está dado por $R=\sum c_i^2\sigma^2$. Dado que $\sigma^2$ es fijo, al minimizar $\sum c_i^2$ sujeto a la restricción, se tiene que la solución es $c_i=1/n$ para todo $i$, y así encontramos que el mejor estimador (en el sentido de minimizar el riesgo de la función de pérdida cuadrática) dentro de todas las formas lineales con $\sum c_i=1$ es la media muestral $\bar{X}$.
 ```
+<br>
 
 ```{example}
 Suponga que se desea estimar un parámetro de interés $\theta$ en el contexto de la estadística bayesiana y denotamos la función de densidad posterior de $\theta$ como $p(\theta|\mathbf{X})$, entonces si utilizamos la función de pérdida cuadrática, el riesgo asociado será
@@ -44,8 +45,9 @@ Suponga que se desea estimar un parámetro de interés $\theta$ en el contexto d
 R&=E(L(A,\theta))=E (A-\theta)^2=Var(\theta)+(E(\theta)-A)^2
 \end{align*}
 
-que es minimizado si $A=E(\theta)$. Es decir, la mejor acción para estimar $\theta$ es utilizar la esperanza de $\theta$ tomada con respecto a la distribución posterior $p(\theta|\mathbf{X})$.
+que es minimizado si $A=E(\theta)$. Es decir, la mejor acción para estimar $\theta$ es utilizar su tomada con respecto a la distribución posterior $p(\theta|\mathbf{X})$.
 ```
+<br>
 
 ```{example}
 En el mismo contexto del ejemplo anterior, si cambiamos la función de pérdida a la siguiente
@@ -72,7 +74,6 @@ Igualando a cero, tenemos que
 
 Y concluimos que la acción $A$ que induce menor riesgo corresponde al percentil 50% o la mediana de la distribución posterior de $\theta$.
 ```
-
 <br>
 
 De los anteriores ejemplos se observa que, bajo un mismo contexto, cuando se utilizan diferentes funciones de pérdida, también se obtienen distintas estimaciones, y distintas acciones que optimizan el riesgo.
@@ -98,8 +99,9 @@ p(\mathbf{X} \mid \mathbf{Y})
 =\frac{p(\mathbf{X},\mathbf{Y})}{p(\mathbf{Y})}
 \end{equation}
 ```
+<br>
 
-```{proposition}
+```{proposition, Res121}
 Suponga los vectores $\mathbf{X}$, $\mathbf{Y}$ y un tercer vector $\mathbf{Z}=(Z_1,\ldots,Z_r)'$ definido sobre el espacio de muestreo  $\mathcal{Z}$. Entonces se tiene que
 \begin{equation}
 p(\mathbf{X} \mid \mathbf{Z})=\int p(\mathbf{X},\mathbf{Y} \mid \mathbf{Z})\ d\mathbf{Y}
@@ -109,6 +111,7 @@ y
 p(\mathbf{X} \mid \mathbf{Y},\mathbf{Z})=\frac{p(\mathbf{X},\mathbf{Y} \mid \mathbf{Z})}{p(\mathbf{Y} \mid \mathbf{Z})}
 \end{equation}
 ```
+<br>
 
 ```{proof}
 En primer lugar, nótese que
@@ -128,6 +131,7 @@ Por otro lado,
 =\frac{p(\mathbf{X},\mathbf{Y},\mathbf{Z})}{p(\mathbf{Y},\mathbf{Z})}=p(\mathbf{X} \mid \mathbf{Y},\mathbf{Z})
 \end{align*}
 ```
+<br>
 
 ```{definition}
 Sean $\mathbf{X}$, $\mathbf{Y}$, $\mathbf{Z}$ vectores aleatorios, se dice que $\mathbf{X}$ es condicionalmente independiente de $\mathbf{Y}$ con respecto a $\mathbf{Z}$ si satisfacen la siguiente expresión
@@ -135,13 +139,15 @@ Sean $\mathbf{X}$, $\mathbf{Y}$, $\mathbf{Z}$ vectores aleatorios, se dice que $
 p(\mathbf{X},\mathbf{Y} \mid \mathbf{Z})=p(\mathbf{X} \mid \mathbf{Z})p(\mathbf{Y} \mid \mathbf{Z})
 \end{equation}
 ```
+<br>
 
-```{proposition}
+```{proposition, Res122}
 Si $\mathbf{X}$ es condicionalmente independiente de $\mathbf{Y}$ con respecto a $\mathbf{Z}$, entonces se tiene que
 \begin{equation}
 p(\mathbf{X} \mid \mathbf{Y},\mathbf{Z})=p(\mathbf{X} \mid \mathbf{Z})
 \end{equation}
 ```
+<br>
 
 ```{proof}
 Como $p(\mathbf{X},\mathbf{Y} \mid \mathbf{Z})=\dfrac{p(\mathbf{X},\mathbf{Y},\mathbf{Z})}{p(\mathbf{Z})}$, entonces
@@ -152,10 +158,12 @@ p(\mathbf{X} \mid \mathbf{Y},\mathbf{Z})=\frac{p(\mathbf{X},\mathbf{Y},\mathbf{Z
 =\frac{p(\mathbf{X} \mid \mathbf{Z})p(\mathbf{Y} \mid \mathbf{Z})}{p(\mathbf{Y} \mid \mathbf{Z})}=p(\mathbf{X} \mid \mathbf{Z})
 \end{align*}
 ```
+<br>
 
 ```{proposition}
 Si $\mathbf{X}$ es independiente de $\mathbf{Y}$, entonces $\mathbf{X}$ es condicionalmente independiente de $\mathbf{Y}$ dado cualquier otro vector $\mathbf{Z}$.
 ```
+<br>
 
 ```{proof}
 Nótese que
@@ -168,6 +176,7 @@ puesto que, utilizando la hipótesis de independencia, se tiene que
 p(\mathbf{X} \mid \mathbf{Y})=p(\mathbf{X})
 \end{equation*}
 ```
+<br>
 
 ## Teorema de Bayes
 
@@ -244,12 +253,13 @@ distribución *posterior no-normalizada* y encierra el núcleo
 técnico de la inferencia bayesiana. La constante $p(\mathbf{Y})$
 faltante en la expresión \@ref(eq:Bayes1) se da a continuación.
 
-```{proposition}
+```{proposition, Res131}
 La expresión $p(\mathbf{Y})$ corresponde a una constante $k$ tal que
 \begin{equation*}
 k=p(\mathbf{Y})=E_{\btheta}[p(Y \mid \btheta)]
 \end{equation*}
 ```
+<br>
 
 ```{proof}
 Nótese que
@@ -262,6 +272,7 @@ k&=\int p(\mathbf{Y} \mid \btheta)p(\btheta)\ d\btheta\\
 &=E_{\btheta}[p(Y \mid \btheta)]
 \end{align*}
 ```
+<br>
 
 Curiosamente, el reverendo Thomas Bayes nunca publicó este resultado,
 sino que después de su fallecimiento, su amigo el filósofo Richard
@@ -276,8 +287,6 @@ poderoso teorema.
 
 ```{example}
 Suponga que una fábrica del sector industrial produce bolígrafos y que la producción está a cargo de tres máquinas. La primera máquina produce el 50% del total de bolígrafos en el año, la segunda máquina produce el 30% y la última maquina produce el restante 20%. Por supuesto, esta producción esta sujeta al error y por tanto, basados en la experiencia, es posible reconocer que, de los artículos producidos por la primera máquina, el 5% resultan defectuosos; de los artículos producidos por la segunda máquina, el 2% resultan defectuosos y, de los artículos producidos por la última máquina, el 6% resultan defectuosos.
-
-FIGURA - Fabrica1.pdf
 
 Una pregunta natural que surge es acerca de la probabilidad de selección de un artículo defectuoso y para responder a esta pregunta con rigurosidad de probabilística es necesario enfocar la atención en los tópicos básicos que dejamos atrás. En primer lugar, el experimento en cuestión es la selección de un bolígrafo. Para este experimento, una terna $(\Omega, \mathfrak{F}, P)$ ^[$\Omega$ denota el conjunto de todos lo posibles resultados del experimento, $\mathfrak{F}$ denota una $\sigma$-álgebra y $P$ hace referencia ana medida de probabilidad propiamente definida.], llamada comúnmente espacio de medida o espacio de probabilidad, está dada por
 
@@ -296,7 +305,6 @@ Una pregunta natural que surge es acerca de la probabilidad de selección de un 
   p(D)=p(D \mid M1)P(M1)+p(D \mid M2)P(M2)+p(D \mid M3)P(M3)
   \end{equation*}
 
-
 Sin embargo, también es posible plantearse otro tipo de preguntas que sirven para calibrar el proceso de producción de artículos defectuosos. Por ejemplo, cabe preguntarse acerca de la probabilidad de que, habiendo seleccionado un artículo defectuoso, éste provenga de la primera máquina^[Por supuesto que la pregunta también es válida al indagar por la probabilidad de que habiendo seleccionado un artículo defectuoso, éste provenga de la segunda o tercera máquina.]. En esta ocasión, el experimento ha cambiado y ahora se trata de seleccionar un artículo defectuoso y para responder a tal cuestionamiento, se debe establecer rigurosamente el espacio de probabilidad que puede estar dado por
 
 1. El espacio muestral: $\Omega=\{M1, M2, M3 \}$
@@ -314,13 +322,12 @@ Sin embargo, también es posible plantearse otro tipo de preguntas que sirven pa
   p(M1 \mid D)=\frac{p(D \mid M1)P(M1)}{p(D \mid M1)P(M1)+p(D \mid M2)P(M2)+p(D \mid M3)P(M3)}
   \end{equation*}
 
-
 La anterior función de probabilidad se conoce con el nombre de regla de probabilidad de Bayes y, aparte de ser el baluarte de la mayoría de investigaciones estadísticas que se plantean hoy en día, ha sido la piedra de tropiezo de muchos investigadores radicales que trataron de estigmatizar este enfoque tildando a sus seguidores de mediocres matemáticos y pobres probabilistas afirmando que la regla de probabilidad de Bayes es sólo un artilugio diseñado para divertirse en el tablero.
 
 Pues bien, la interpretación de la regla de bayes se puede realizar en el sentido de actualización de la estructura probabilística que gobierna el experimento. Y esta actualización tiene mucho sentido práctico cuando se cae en la cuenta de que la vida real está llena de calibradores y que las situaciones generadas son consecuencia de algún cambio estructural. De esta forma, el conocimiento de la probabilidad de que el artículo sea producido por la primera máquina se actualiza al conocer que este artículo particular es defectuoso y de esta manera calibra la estructura aleatoria que existe detrás del contexto de la fábrica de bolígrafos. Aparte de servir para resolver problemas como el anteriormente mencionado, la regla de bayes ha marcado el comienzo de un nuevo enfoque de análisis de datos, no solamente porque hace explícitas las relaciones causales entre los procesos aleatorios, sino también porque facilita la inferencia estadística y la interpretación de los resultados.
 ```
-
 <br>
+
 En el campo de la medicina, también se ha visto un gran número de la
 aplicación del teorema de Bayes. A continuación se enuncia uno de ellos:
 
@@ -367,3 +374,4 @@ Similarmente, se puede calcular estas dos probabilidades para las mujeres de 50 
 
 Los anteriores resultados muestran cómo cambia la probabilidad de tener cáncer al condicionar en los resultados de la pruebe. Entre estos valores se puede ver que, con un resultado positivo en el examen, la probabilidad de tener efectivamente el cáncer es aproximadamente diez puntos porcentuales más bajo en mujeres de edad de 40 y 49 años, de donde se puede sustentar la recomendación de no efectuar este examen en mujeres de este rango de edad.
 ```
+<br>

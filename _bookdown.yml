@@ -5,8 +5,11 @@ new_session: yes
 
 rmd_files: [
   "index.Rmd",
+  
   "1Basicos.Rmd",
-  "2Inferencia.Rmd"
+  "2Inferencia.Rmd",
+  
+  "99Referencias.Rmd",
   ]
 
 language:

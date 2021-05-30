@@ -30,7 +30,6 @@ header-includes:
 # - \usepackage[spanish]{babel}
 lang: es
 linkcolor: blue
-classoption: letter
 # bookdown::render_book("index.Rmd", "bookdown::pdf_book")
 # bookdown::render_book("index.Rmd", "bookdown::tufte_html_book")
 # bookdown::render_book("index.Rmd", "bookdown::gitbook")
@@ -40,3 +39,47 @@ output: bookdown::html_book
 # Prefacio {-}
 
 <!--# TO DO: Escribir prefacio -->
+
+### Acerca de la notación {-}
+
+Antes de empezar las próximas secciones, es necesario revisar la
+notación que se seguirá de ahora en adelante. Del teorema de Bayes
+resultan tres grandes definiciones que constituyen la base de la
+estadística Bayesiana y que a lo largo de este texto se mencionarán
+diferenciándolas por medio de la notación. El símbolo más importante de
+la estadística matemática es $p$, el cual indica que existe una
+distribución de probabilidad para los datos, para el vector de
+parámetros, condicional o no. De hecho todos las definiciones y
+resultados anteriores han estado supeditadas al uso de esta monótona
+notación. En el ámbito de la notación de investigación internacional es
+común diferenciar las distribuciones con el fin de hacer más ameno el
+estudio del enfoque Bayesiano. En este texto se seguirá esta distinción.
+Un ejemplo claro en donde $p$ representa cuatro funciones distintas en
+una sola ecuación es el siguiente:
+
+$$p(\theta \mid y)=p(y \mid \theta)\frac{p(\theta)}{p(y)}$$
+
+@Gelman95 explica por qué la notación simple, con el uso (a
+veces abuso) de la letra $p$ es más rigurosa de lo que, a simple vista,
+pueda parecer y comenta que,
+
+> En realidad no me gusta la notación que la mayoría de los estadísticos usen $f$ para las distribuciones de muestreo; $\pi$, para las distribuciones previas y $L$, para las verosimilitudes. Este estilo de notación se desvía de lo que realmente es importante. La notación no debería depender del orden en que las distribuciones son especificadas. Todas ellas son distribuciones de probabilidad, eso es lo realmente importante.
+
+Esto tiene sentido, aún más cuando se estudian las propiedades
+estadísticas de los estimadores desde el punto de vista de la teoría de
+la medida. Siendo así, el símbolo $p$ se refiere a una notación para una
+medida de probabilidad, quizás inducida por un elemento aleatorio. De
+hecho, en la ecuación que determina la regla de Bayes, cada una de las
+$p$ son medidas de probabilidad que no comparten el mismo espacio de
+medida (ni la misma $\sigma$-álgebra, ni el mismo espacio muestral).
+
+De hecho, todo queda claro al realizar un diagrama que permita ver el
+espacio de salida y el espacio de llegada de los elementos aleatorios
+que inducen (si es el caso), cada una de las distribuciones de
+probabilidad. Por otra parte, Bob Carpenter concluye que:
+
+> Una vez resuelto el problema de identificación de los espacios, la notación estadística depende en gran manera del contexto y aunque la regla de Bayes no necesite de mucha explicación, es necesario conocerlo todo acerca del contexto para poder interpretar las funciones que la conforman... El problema se hace mucho más agudo para los estadísticos novatos, pero eso se resuelve con la práctica. Una vez que uno sabe lo que está haciendo, se vuelve obvia la referencia de la distribución $p$.
+
+Por lo anterior, es natural que algunos de los textos clásicos de
+estadística matemática, los autores asumen que el lector sigue la idea
+de la referencia de la distribución $p$ en cuestión.
