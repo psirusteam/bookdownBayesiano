@@ -1,8 +1,4 @@
----
-output:
-  pdf_document: default
-  html_document: default
----
+
 # Tópicos básicos
 
 ## Teoría de la decisión
