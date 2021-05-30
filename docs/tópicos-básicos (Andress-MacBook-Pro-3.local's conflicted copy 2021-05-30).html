@@ -4,11 +4,11 @@
 
   <meta charset="utf-8" />
   <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-  <title>Modelos Bayesianos con R y STAN</title>
+  <title>Capítulo 1 Tópicos básicos | Modelos Bayesianos con R y STAN</title>
   <meta name="description" content="Este es el repositorio del libro Modelos Bayesianos con R y STAN." />
   <meta name="generator" content="bookdown 0.22 and GitBook 2.6.7" />
 
-  <meta property="og:title" content="Modelos Bayesianos con R y STAN" />
+  <meta property="og:title" content="Capítulo 1 Tópicos básicos | Modelos Bayesianos con R y STAN" />
   <meta property="og:type" content="book" />
   
   
@@ -16,7 +16,7 @@
   <meta name="github-repo" content="psirusteam/bookdownBayesiano" />
 
   <meta name="twitter:card" content="summary" />
-  <meta name="twitter:title" content="Modelos Bayesianos con R y STAN" />
+  <meta name="twitter:title" content="Capítulo 1 Tópicos básicos | Modelos Bayesianos con R y STAN" />
   
   <meta name="twitter:description" content="Este es el repositorio del libro Modelos Bayesianos con R y STAN." />
   
@@ -31,8 +31,8 @@
   <meta name="apple-mobile-web-app-status-bar-style" content="black" />
   
   
-
-<link rel="next" href="tópicos-básicos.html"/>
+<link rel="prev" href="index.html"/>
+<link rel="next" href="teoría-de-la-decisión.html"/>
 <script src="libs/header-attrs-2.8/header-attrs.js"></script>
 <script src="libs/jquery-2.2.3/jquery.min.js"></script>
 <link href="libs/gitbook-2.6.7/css/style.css" rel="stylesheet" />
@@ -145,70 +145,16 @@ div.csl-indent {
           <div class="page-inner">
 
             <section class="normal" id="section-">
-<div id="header">
-<h1 class="title">Modelos Bayesianos con R y STAN</h1>
-<p class="author"><em>Andrés Gutiérrez - Hanwen Zhang</em></p>
-<p class="date" style="margin-top: 1.5em;"><em>2021-05-30</em></p>
-</div>
-<div id="prefacio" class="section level1 unnumbered">
-<h1>Prefacio</h1>
-<!--# TO DO: Escribir prefacio -->
-<div id="acerca-de-la-notación" class="section level3 unnumbered">
-<h3>Acerca de la notación</h3>
-<p>Antes de empezar las próximas secciones, es necesario revisar la
-notación que se seguirá de ahora en adelante. Del teorema de Bayes
-resultan tres grandes definiciones que constituyen la base de la
-estadística Bayesiana y que a lo largo de este texto se mencionarán
-diferenciándolas por medio de la notación. El símbolo más importante de
-la estadística matemática es <span class="math inline">\(p\)</span>, el cual indica que existe una
-distribución de probabilidad para los datos, para el vector de
-parámetros, condicional o no. De hecho todos las definiciones y
-resultados anteriores han estado supeditadas al uso de esta monótona
-notación. En el ámbito de la notación de investigación internacional es
-común diferenciar las distribuciones con el fin de hacer más ameno el
-estudio del enfoque Bayesiano. En este texto se seguirá esta distinción.
-Un ejemplo claro en donde <span class="math inline">\(p\)</span> representa cuatro funciones distintas en
-una sola ecuación es el siguiente:</p>
-<p><span class="math display">\[p(\theta \mid y)=p(y \mid \theta)\frac{p(\theta)}{p(y)}\]</span></p>
-<p><span class="citation"><a href="#ref-Gelman95" role="doc-biblioref">Gelman et al.</a> (<a href="#ref-Gelman95" role="doc-biblioref">1995</a>)</span> explica por qué la notación simple, con el uso (a
-veces abuso) de la letra <span class="math inline">\(p\)</span> es más rigurosa de lo que, a simple vista,
-pueda parecer y comenta que,</p>
-<blockquote>
-<p>En realidad no me gusta la notación que la mayoría de los estadísticos usen <span class="math inline">\(f\)</span> para las distribuciones de muestreo; <span class="math inline">\(\pi\)</span>, para las distribuciones previas y <span class="math inline">\(L\)</span>, para las verosimilitudes. Este estilo de notación se desvía de lo que realmente es importante. La notación no debería depender del orden en que las distribuciones son especificadas. Todas ellas son distribuciones de probabilidad, eso es lo realmente importante.</p>
-</blockquote>
-<p>Esto tiene sentido, aún más cuando se estudian las propiedades
-estadísticas de los estimadores desde el punto de vista de la teoría de
-la medida. Siendo así, el símbolo <span class="math inline">\(p\)</span> se refiere a una notación para una
-medida de probabilidad, quizás inducida por un elemento aleatorio. De
-hecho, en la ecuación que determina la regla de Bayes, cada una de las
-<span class="math inline">\(p\)</span> son medidas de probabilidad que no comparten el mismo espacio de
-medida (ni la misma <span class="math inline">\(\sigma\)</span>-álgebra, ni el mismo espacio muestral).</p>
-<p>De hecho, todo queda claro al realizar un diagrama que permita ver el
-espacio de salida y el espacio de llegada de los elementos aleatorios
-que inducen (si es el caso), cada una de las distribuciones de
-probabilidad. Por otra parte, Bob Carpenter concluye que:</p>
-<blockquote>
-<p>Una vez resuelto el problema de identificación de los espacios, la notación estadística depende en gran manera del contexto y aunque la regla de Bayes no necesite de mucha explicación, es necesario conocerlo todo acerca del contexto para poder interpretar las funciones que la conforman… El problema se hace mucho más agudo para los estadísticos novatos, pero eso se resuelve con la práctica. Una vez que uno sabe lo que está haciendo, se vuelve obvia la referencia de la distribución <span class="math inline">\(p\)</span>.</p>
-</blockquote>
-<p>Por lo anterior, es natural que algunos de los textos clásicos de
-estadística matemática, los autores asumen que el lector sigue la idea
-de la referencia de la distribución <span class="math inline">\(p\)</span> en cuestión.</p>
-
-</div>
-</div>
-<h3>Referencias</h3>
-<div id="refs" class="references csl-bib-body hanging-indent">
-<div id="ref-Gelman95" class="csl-entry">
-Gelman, A., J. B. Carlin, H. S. Stern, y D. B. Rubin. 1995. <em>Bayesian Data Analysis</em>. 1.ª ed. Chapman; Hall/CRC.
-</div>
+<div id="tópicos-básicos" class="section level1" number="1">
+<h1><span class="header-section-number">Capítulo 1</span> Tópicos básicos</h1>
 </div>
             </section>
 
           </div>
         </div>
       </div>
-
-<a href="tópicos-básicos.html" class="navigation navigation-next navigation-unique" aria-label="Next page"><i class="fa fa-angle-right"></i></a>
+<a href="index.html" class="navigation navigation-prev " aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
+<a href="teoría-de-la-decisión.html" class="navigation navigation-next " aria-label="Next page"><i class="fa fa-angle-right"></i></a>
     </div>
   </div>
 <script src="libs/gitbook-2.6.7/js/app.min.js"></script>
