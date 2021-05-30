@@ -5,9 +5,9 @@ new_session: yes
 
 rmd_files: [
   "index.Rmd",
-
-  "1.Rmd"
-]
+  "1Basicos.Rmd",
+  "2Inferencia.Rmd"
+  ]
 
 language:
   label:
@@ -17,9 +17,9 @@ language:
     thm: 'Teorema '
     lem: 'Lema '
     cor: 'Corolario '
-    prp: 'Proposición '
+    prp: 'Resultado '
     cnj: 'Conjectura '
-    def: 'Definition '
+    def: 'Definición '
     exm: 'Ejemplo '
     exr: 'Ejercicio '
     hyp: 'Hipótesis '
@@ -30,4 +30,3 @@ language:
     edit: Edit
     chapter_name: 'Capítulo '
     appendix_name: 'Apéndice '
-    

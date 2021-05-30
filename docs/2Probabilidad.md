@@ -1,83 +1,9 @@
-# Tópicos básicos
-
-## Teoría de la decisión
-
-El problema estadístico de estimar un parámetro se puede ver dentro del contexto de la teoría de decisión: la estimación que proveemos, sea en el ámbito de la estadística clásica o la estadística bayesiana, depende de los datos muestrales, $\mathbf{X}$, de tal forma que si éstos cambian, nuestra estimación también cambia. De esta manera, el proceso de estimación puede ser representado como una función que toma un conjunto de datos muestrales y los convierte en una estimación de nuestro parámetro de interés, $A(\mathbf{X})$ o simplemente $A$. En la teoría de decisión, la anterior función se conoce como una regla de decisión.
-
-Así como en la vida cotidiana, por la incertidumbre del futuro(en el ámbito estadístico, por la incertidumbre acerca del parámetro), toda acción que uno toma (toda estimación que uno provea) puede traer consigo un grado de falla o riesgo. Y es necesario tomar la acción óptima que de alguna forma minimice ese riesgo. Formalizando esta idea intuitiva, tenemos la función de pérdida $L$ que asocia cada dupla de la acción tomada y el parámetro de interés $\theta$, $(A, \ \theta)$ con un número no negativo que cuantifica la pérdida que ocasiona la acción (o la estimación) $A$ con respecto al parámetro $\theta$.
-
-Es claro que se desea escoger aquella acción que minimice de alguna forma la pérdida que ésta ocasiona, pero la función $L$ no se puede minimizar directamente, puesto que:
-
-
-* En el ámbito de la estadística clásica, el parámetro $\theta$ se considera fijo, y los datos muestrales $\mathbf{X}$ aleatorios, así como la función de pérdida $L$ depende de $\mathbf{X}$, entonces ésta también será una variable aleatoria, y no se puede minimizar directamente. Por lo tanto se define el riesgo o la pérdida promedio como la esperanza matemática de $L$; denotando el riesgo como $R$, éste está definido como $R=E(L)$ (la esperanza se toma con respecto a la distribución probabilística de $\mathbf{X}$).
-* En el ámbito de la estadística bayesiana, $\theta$ es una cantidad aleatoria, y la herramienta fundamental para conocer características de $\theta$ es su función de densidad posterior $p(\theta|\mathbf{X})$. En este caso, el riesgo $R$ se define como
-
-\begin{equation*}
-R=E(L)=\int L(A, \theta)p(\theta|\mathbf{X})d\theta
-\end{equation*}
-
-En cualquier de los dos casos anteriores, buscaremos la estimación que minimice el riesgo $R$. Ilustramos los anteriores conceptos en los siguientes ejemplos tanto en la estadística clásica como en la estadística bayesiana.
-
-```{example}
-Sea $X_i$ con $i=1,\cdots, n$ una muestra aleatoria con media $\theta$ y varianza $\sigma^2$, ambas fijas, y suponga que se desea encontrar el mejor estimador de $\theta$ bajo la función de pérdida cuadrática dada por
-\begin{equation*}
-L(A,\theta)=(A-\theta)^2
-\end{equation*}
-
-cuyo riesgo asociado está dado por $R=E(A-\theta)^2$. En primer lugar buscaremos dicho estimador dentro de todas las formas lineales de $X_i$, es decir, los estimadores de la forma $A=\sum_{i=1}^nc_iX_i$, de esta forma, el riesgo se puede expresar como
-\begin{align*}
-R=E(A-\theta)^2&=Var(A)+(E(A)-\theta)^2\\
-&=\sum_{i=1}^nc_i^2\sigma^2+\theta^2(\sum_{i=1}^nc_i-1)^2
-\end{align*}
-
-Y al buscar los coeficientes $c_i$ que minimizan la anterior expresión, encontramos que $c_i=\theta^2/(\sigma^2+n\theta^2)$ para todo $i$. Como estos coeficientes conducen a un estimador que depende del parámetro desconocido, concluimos que no hay ningún estimador que minimiza el riesgo.
-
-Para encontrar una solución, es necesario restringir aún más el rango de estimadores, para eso, se restringe que $\sum_{i=1}^nc_i=1$, de esta forma el riesgo está dado por $R=\sum c_i^2\sigma^2$, y al minimizar $\sum c_i^2$ sujeto a la restricción de $\sum c_i=1$. La solución está dada por $c_i=1/n$ para todo $i$, y así encontramos que el mejor estimador (en el sentido de minimizar el riesgo de la función de pérdida cuadrática) dentro de todas formas lineales con $\sum c_i=1$ es la media muestral $\bar{X}$.
-```
-
-```{example}
-Suponga que se desea estimar un parámetro de interés $\theta$ en el contexto de la estadística bayesiana y denotamos la función de densidad posterior de $\theta$ como $p(\theta|\mathbf{X})$, entonces si utilizamos la función de pérdida cuadrática, entonces el riesgo asociado será
-\begin{align*}
-R&=E(L(A,\theta))=E (A-\theta)^2=Var(\theta)+(E(\theta)-A)^2
-\end{align*}
-
-que es minimizado si $A=E(\theta)$. Es decir la mejor acción para estimar $\theta$ es utilizar la esperanza de $\theta$ tomada con respecto a la distribución posterior $p(\theta|\mathbf{X})$.
-```
-
-```{example}
-En el mismo contexto del ejemplo anterior, si cambiamos la función de pérdida a la siguiente
-\begin{equation*}
-L(A,\theta)=|A-\theta|=(A-\theta)I_{(A\geq\theta)}+(\theta-A)I_{(\theta>A)}
-\end{equation*}
-
-Y el riesgo está dado por
-\begin{align*}
-R&=E(L(A,\theta))\\
-&=\int L(A,\theta)p(\theta|\mathbf{X})d\theta\\
-&=\int_{(A\geq\theta)}(A-\theta)p(\theta|\mathbf{X})d\theta+\int_{(\theta>A)}(\theta-A)p(\theta|\mathbf{X})d\theta
-\end{align*}
-
-Derivando el riesgo con respecto a la acción $A$, se tiene que
-\begin{equation*}
-\frac{\partial R}{\partial A}=\int_{(A\geq\theta)}p(\theta|\mathbf{X})d\theta-\int_{(\theta>A)}p(\theta|\mathbf{X})d\theta
-\end{equation*}
-
-Igualando a cero, tenemos que
-\begin{equation*}
-\int_{(A\geq\theta)}p(\theta|\mathbf{X})d\theta=\int_{(\theta>A)}p(\theta|\mathbf{X})d\theta=0.5
-\end{equation*}
-
-Y concluimos que la acción $A$ que induce menor riesgo corresponde al percentil 50% o la mediana de la distribución posterior de $\theta$.
-```
-
-De los anteriores ejemplos vemos que bajo un mismo contexto, cuando se utilizan diferentes funciones de pérdidas, también obtenemos distintas estimaciones.
 
 # Algunos resultados de probabilidad
 
 A continuación se presentan definiciones y resultados de probabilidad en términos de notación se utilizará indistintamente la expresión de integral, $\int$, que implicará la integral, en el caso de las variables aleatorias continuas, o la sumatoria, en el caso de las variables aleatorias discretas.
 
-```{definition}
-Sean $\mathbf{X}=(X_1,\ldots,X_p)'$, $\mathbf{Y}=(Y_1,\ldots,Y_q)'$ dos vectores aleatorios definidos sobre los espacios de  muestreo $\mathcal{X}$, $\mathcal{Y}$, respectivamente. Suponga que la distribución conjunta de estos vectores aleatorios está dada por $p(\mathbf{X},\mathbf{Y})$. La distribución marginal de $\mathbf{X}$ está dada por
+\BeginKnitrBlock{definition}<div class="definition"><span class="definition" id="def:unnamed-chunk-1"><strong>(\#def:unnamed-chunk-1) </strong></span>Sean $\mathbf{X}=(X_1,\ldots,X_p)'$, $\mathbf{Y}=(Y_1,\ldots,Y_q)'$ dos vectores aleatorios definidos sobre los espacios de  muestreo $\mathcal{X}$, $\mathcal{Y}$, respectivamente. Suponga que la distribución conjunta de estos vectores aleatorios está dada por $p(\mathbf{X},\mathbf{Y})$. La distribución marginal de $\mathbf{X}$ está dada por
 \begin{equation}
 p(\mathbf{X})=\int p(\mathbf{X},\mathbf{Y})\ d\mathbf{Y}
 \end{equation}
@@ -85,22 +11,18 @@ y la distribución condicional de $\mathbf{X}$ dado $\mathbf{Y}$ como
 \begin{equation}
 p(\mathbf{X} \mid \mathbf{Y})
 =\frac{p(\mathbf{X},\mathbf{Y})}{p(\mathbf{Y})}
-\end{equation}
-```
+\end{equation}</div>\EndKnitrBlock{definition}
 
-```{proposition}
-Suponga los vectores $\mathbf{X}$, $\mathbf{Y}$ y un tercer vector $\mathbf{Z}=(Z_1,\ldots,Z_r)'$ definido sobre el espacio de muestreo  $\mathcal{Z}$. Entonces se tiene que
+\BeginKnitrBlock{proposition}<div class="proposition"><span class="proposition" id="prp:unnamed-chunk-2"><strong>(\#prp:unnamed-chunk-2) </strong></span>Suponga los vectores $\mathbf{X}$, $\mathbf{Y}$ y un tercer vector $\mathbf{Z}=(Z_1,\ldots,Z_r)'$ definido sobre el espacio de muestreo  $\mathcal{Z}$. Entonces se tiene que
 \begin{equation}
 p(\mathbf{X} \mid \mathbf{Z})=\int p(\mathbf{X},\mathbf{Y} \mid \mathbf{Z})\ d\mathbf{Y}
 \end{equation}
 y
 \begin{equation}
 p(\mathbf{X} \mid \mathbf{Y},\mathbf{Z})=\frac{p(\mathbf{X},\mathbf{Y} \mid \mathbf{Z})}{p(\mathbf{Y} \mid \mathbf{Z})}
-\end{equation}
-```
+\end{equation}</div>\EndKnitrBlock{proposition}
 
-```{proof}
-En primer lugar, nótese que
+\BeginKnitrBlock{proof}<div class="proof">\iffalse{} <span class="proof"><em>Prueba. </em></span>  \fi{}En primer lugar, nótese que
 \begin{align*}
 \int p(\mathbf{X},\mathbf{Y} \mid \mathbf{Z})\ d\mathbf{Y}&=
 \int \frac{p(\mathbf{X},\mathbf{Y},\mathbf{Z})}{p(\mathbf{Z})}\ d\mathbf{Y}\\
@@ -115,39 +37,29 @@ Por otro lado,
 \frac{p(\mathbf{X},\mathbf{Y},\mathbf{Z})}{p(\mathbf{Z})} \diagup
 \frac{p(\mathbf{Y},\mathbf{Z})}{p(\mathbf{Z})}
 =\frac{p(\mathbf{X},\mathbf{Y},\mathbf{Z})}{p(\mathbf{Y},\mathbf{Z})}=p(\mathbf{X} \mid \mathbf{Y},\mathbf{Z})
-\end{align*}
-```
+\end{align*}</div>\EndKnitrBlock{proof}
 
-```{definition}
-Sean $\mathbf{X}$, $\mathbf{Y}$, $\mathbf{Z}$ vectores aleatorios, se dice que $\mathbf{X}$ es condicionalmente independiente de $\mathbf{Y}$ con respecto a $\mathbf{Z}$ si satisfacen la siguiente expresión
+\BeginKnitrBlock{definition}<div class="definition"><span class="definition" id="def:unnamed-chunk-4"><strong>(\#def:unnamed-chunk-4) </strong></span>Sean $\mathbf{X}$, $\mathbf{Y}$, $\mathbf{Z}$ vectores aleatorios, se dice que $\mathbf{X}$ es condicionalmente independiente de $\mathbf{Y}$ con respecto a $\mathbf{Z}$ si satisfacen la siguiente expresión
 \begin{equation}
 p(\mathbf{X},\mathbf{Y} \mid \mathbf{Z})=p(\mathbf{X} \mid \mathbf{Z})p(\mathbf{Y} \mid \mathbf{Z})
-\end{equation}
-```
+\end{equation}</div>\EndKnitrBlock{definition}
 
-```{proposition}
-Si $\mathbf{X}$ es condicionalmente independiente de $\mathbf{Y}$ con respecto a $\mathbf{Z}$, entonces se tiene que
+\BeginKnitrBlock{proposition}<div class="proposition"><span class="proposition" id="prp:unnamed-chunk-5"><strong>(\#prp:unnamed-chunk-5) </strong></span>Si $\mathbf{X}$ es condicionalmente independiente de $\mathbf{Y}$ con respecto a $\mathbf{Z}$, entonces se tiene que
 \begin{equation}
 p(\mathbf{X} \mid \mathbf{Y},\mathbf{Z})=p(\mathbf{X} \mid \mathbf{Z})
-\end{equation}
-```
+\end{equation}</div>\EndKnitrBlock{proposition}
 
-```{proof}
-Como $p(\mathbf{X},\mathbf{Y} \mid \mathbf{Z})=\dfrac{p(\mathbf{X},\mathbf{Y},\mathbf{Z})}{p(\mathbf{Z})}$, entonces
+\BeginKnitrBlock{proof}<div class="proof">\iffalse{} <span class="proof"><em>Prueba. </em></span>  \fi{}Como $p(\mathbf{X},\mathbf{Y} \mid \mathbf{Z})=\dfrac{p(\mathbf{X},\mathbf{Y},\mathbf{Z})}{p(\mathbf{Z})}$, entonces
 
 \begin{align*}
 p(\mathbf{X} \mid \mathbf{Y},\mathbf{Z})=\frac{p(\mathbf{X},\mathbf{Y},\mathbf{Z})}{p(\mathbf{Y},\mathbf{Z})}
 =\frac{p(\mathbf{X},\mathbf{Y} \mid \mathbf{Z})p(\mathbf{Z})}{p(\mathbf{Y},\mathbf{Z})}
 =\frac{p(\mathbf{X} \mid \mathbf{Z})p(\mathbf{Y} \mid \mathbf{Z})}{p(\mathbf{Y} \mid \mathbf{Z})}=p(\mathbf{X} \mid \mathbf{Z})
-\end{align*}
-```
+\end{align*}</div>\EndKnitrBlock{proof}
 
-```{proposition}
-Si $\mathbf{X}$ es independiente de $\mathbf{Y}$, entonces $\mathbf{X}$ es condicionalmente independiente de $\mathbf{Y}$ dada cualquier otro vector, digamos $\mathbf{Z}$.
-```
+\BeginKnitrBlock{proposition}<div class="proposition"><span class="proposition" id="prp:unnamed-chunk-7"><strong>(\#prp:unnamed-chunk-7) </strong></span>Si $\mathbf{X}$ es independiente de $\mathbf{Y}$, entonces $\mathbf{X}$ es condicionalmente independiente de $\mathbf{Y}$ dada cualquier otro vector, digamos $\mathbf{Z}$.</div>\EndKnitrBlock{proposition}
 
-```{proof}
-Nótese que
+\BeginKnitrBlock{proof}<div class="proof">\iffalse{} <span class="proof"><em>Prueba. </em></span>  \fi{}Nótese que
 \begin{equation*}
 p(\mathbf{X},\mathbf{Y}\mid \mathbf{Z})=p(\mathbf{X} \mid \mathbf{Y},\mathbf{Z})p(\mathbf{Y} \mid \mathbf{Z})=p(\mathbf{X} \mid \mathbf{Z})p(\mathbf{Y} \mid \mathbf{Z})
 \end{equation*}
@@ -155,8 +67,7 @@ p(\mathbf{X},\mathbf{Y}\mid \mathbf{Z})=p(\mathbf{X} \mid \mathbf{Y},\mathbf{Z})
 puesto que, utilizando la hipótesis de independencia, se tiene que
 \begin{equation*}
 p(\mathbf{X} \mid \mathbf{Y})=p(\mathbf{X})
-\end{equation*}
-```
+\end{equation*}</div>\EndKnitrBlock{proof}
 
 ## Teorema de Bayes
 
@@ -181,15 +92,12 @@ p(\btheta \mid \mathbf{Y})\propto p(\mathbf{Y} \mid \btheta)p(\btheta)
 
 \citeasnoun{Gelman03} menciona que esta expresión se conoce como la distribución \emph{a posterior no-normalizada} y encierra el núcleo técnico de la inferencia bayesiana. La constante $p(\mathbf{Y})$ faltante en la expresión {\ref{Bayes1}} se da a continuación:
 
-```{proposition}
-La expresión $p(\mathbf{Y})$ corresponde a una constante $k$ tal que
+\BeginKnitrBlock{proposition}<div class="proposition"><span class="proposition" id="prp:unnamed-chunk-9"><strong>(\#prp:unnamed-chunk-9) </strong></span>La expresión $p(\mathbf{Y})$ corresponde a una constante $k$ tal que
 \begin{equation*}
 k=p(\mathbf{Y})=E_{\btheta}[p(Y \mid \btheta)]
-\end{equation*}
-```
+\end{equation*}</div>\EndKnitrBlock{proposition}
 
-```{proof}
-Nótese que
+\BeginKnitrBlock{proof}<div class="proof">\iffalse{} <span class="proof"><em>Prueba. </em></span>  \fi{}Nótese que
 \begin{equation*}
 k=p(\mathbf{Y})=\int p(\mathbf{Y},\btheta)\ d\btheta=\int p(\btheta)p(\mathbf{Y} \mid \btheta)\ d\btheta.
 \end{equation*}
@@ -197,13 +105,11 @@ entonces
 \begin{align*}
 k&=\int p(\mathbf{Y} \mid \btheta)p(\btheta)\ d\btheta\\
 &=E_{\btheta}[p(Y \mid \btheta)]
-\end{align*}
-```
+\end{align*}</div>\EndKnitrBlock{proof}
 
 Curiosamente, el reverendo Thomas Bayes nunca publicó este resultado, sino que después de su fallecimiento, su amigo, el filósofo Richard Price, encontró los escritos dentro de sus pertenencias, y éstos fueron publicados en el 1764 en \emph{Philosophical Transactions of the Royal Society of London}. Aunque el teorema de Bayes fue nombredo a honor de Thomas Bayes, estamos casi seguros que de que él mismo no sospechaba del gran impacto de este hermoso resultado. De hecho, aproximadamente una década más tarde el gran Pierre-Simon Laplace también descrubrió el mismo principio, y dedicó gran parte de su vida extendiéndolo y formalizándolo. Más aún, él analizó grandes volumenes de datos relacionados a los nacimientos en diferentes paises para confirmar esta teoría, y sentó las bases de ésta. A continuación se presenta un ejemplo simple de este sencillo pero poderoso teorema.
 
-```{example}
-Uno de los primeros acercamientos de cualquier profesional a la estadística bayesiana se da en un curso básico de probabilidades en donde el docente presenta con cierta rigurosidad los conceptos básicos e introductorios de la teoría de probabilidad. En un sobrevuelo de tales conceptos es posible recordar términos como experimento, espacio muestral, función de probabilidad y sigma álgebra. Justo después del repaso de rigor acerca de los axiomas de probabilidades y sus teoremas más significativos, el curso da una curva cerrada y el alumno es introducido en conceptos más profundos como la probabilidad condicional.
+\BeginKnitrBlock{example}<div class="example"><span class="example" id="exm:unnamed-chunk-11"><strong>(\#exm:unnamed-chunk-11) </strong></span>Uno de los primeros acercamientos de cualquier profesional a la estadística bayesiana se da en un curso básico de probabilidades en donde el docente presenta con cierta rigurosidad los conceptos básicos e introductorios de la teoría de probabilidad. En un sobrevuelo de tales conceptos es posible recordar términos como experimento, espacio muestral, función de probabilidad y sigma álgebra. Justo después del repaso de rigor acerca de los axiomas de probabilidades y sus teoremas más significativos, el curso da una curva cerrada y el alumno es introducido en conceptos más profundos como la probabilidad condicional.
 
 En estos tópicos, tanto el maestro como el alumno asumen que los temas básicos ya están entendidos y que no existe necesidad de volver atrás. A manera de introducción, los autores desean hacer notar a los lectores que requieren de herramientas de modelamiento más sofisticadas, que es necesario volver atrás - al menos en esta primera página - para sentar las bases de la autopista de alta velocidad como lo es el análisis bayesiano. No tiene sentido que el investigador utilice las poderosas herramientas bayesianas si no entiende que sus bases probabilísticas están bien sustentadas.
 
@@ -249,13 +155,11 @@ Sin embargo, también es posible plantearse otro tipo de preguntas que sirven pa
 
 La anterior función de probabilidad se conoce con el nombre de regla de probabilidad de Bayes y, aparte de ser el baluarte de la mayoría de investigaciones estadísticas que se plantean hoy en día, ha sido la piedra de tropiezo de muchos investigadores radicales que trataron de estigmatizar este enfoque tildando a sus seguidores de mediocres matemáticos y pobres probabilistas afirmando que la regla de probabilidad de Bayes es sólo un artilugio diseñado para divertirse en el tablero.
 
-Pues bien, la interpretación de la regla de bayes se puede realizar en el sentido de actualización de la estructura probabilística que gobierna el experimento. Y esta actualización tiene mucho sentido práctico cuando se cae en la cuenta de que la vida real está llena de calibradores y que las situaciones generadas son consecuencia de algún cambio estructural. De esta forma, el conocimiento de la probabilidad de que el artículo sea producido por la primera máquina se actualiza al conocer que este artículo particular es defectuoso y de esta manera calibra la estructura aleatoria que existe detrás del contexto de la fábrica de bolígrafos. Aparte de servir para resolver problemas como el anteriormente mencionado, la regla de bayes ha marcado el comienzo de un nuevo enfoque de análisis de datos, no solamente porque hace explícitas las relaciones causales entre los procesos aleatorios, sino también porque facilita la inferencia estadística y la interpretación de los resultados.
-```
+Pues bien, la interpretación de la regla de bayes se puede realizar en el sentido de actualización de la estructura probabilística que gobierna el experimento. Y esta actualización tiene mucho sentido práctico cuando se cae en la cuenta de que la vida real está llena de calibradores y que las situaciones generadas son consecuencia de algún cambio estructural. De esta forma, el conocimiento de la probabilidad de que el artículo sea producido por la primera máquina se actualiza al conocer que este artículo particular es defectuoso y de esta manera calibra la estructura aleatoria que existe detrás del contexto de la fábrica de bolígrafos. Aparte de servir para resolver problemas como el anteriormente mencionado, la regla de bayes ha marcado el comienzo de un nuevo enfoque de análisis de datos, no solamente porque hace explícitas las relaciones causales entre los procesos aleatorios, sino también porque facilita la inferencia estadística y la interpretación de los resultados.</div>\EndKnitrBlock{example}
 
 En el campo de la medicina, también se ha visto un gran número de la aplicación del teorema de Bayes. A continuación se enuncia uno de ellos:
 
-```{example}
-El Grupo de Trabajo de Servicios Preventivos de los Estados Unidos (USPSTF por sus siglas en inglés) hizo unas nuevas y controversiales recomendaciones sobre la detección del cáncer de mama (ver página $http://www.uspreventiveservicestaskforce.org/uspstf/uspsbrca.htm$), dentro de los cuales, no recomienda el examen de la mamografía en mujeres entre 40 y 49 años de edad, afirmando que la práctica bienal de este examen debe ser una decisión individual según el contexto particular de la paciente, mientras que por muchos años, se han dicho a las mujeres que se debe realizar la mamografía una vez cumplidos los 40 años. Por otro lado, USPSTF sí recomienda tal práctica de forma bienal en grupos de mujeres de entre 50 y 74 años de edad, puesto que USPSTF no encontró suficiente evidencia de beneficio o daño adicional en realizar este examen en mujeres mayores que los 74 años. Otra recomendación que hizo USPSTF es no realizar auto exámanes de senos, contrario a las recomendaciones y consejos que da la mayoría de los profesionales y organizaciones de la salud, incluyendo la \emph{Amerian Cancer Society} (ver $http://www.cancer.org/acs/groups/cid/documents/webcontent/003164-pdf.pdf$).
+\BeginKnitrBlock{example}<div class="example"><span class="example" id="exm:unnamed-chunk-12"><strong>(\#exm:unnamed-chunk-12) </strong></span>El Grupo de Trabajo de Servicios Preventivos de los Estados Unidos (USPSTF por sus siglas en inglés) hizo unas nuevas y controversiales recomendaciones sobre la detección del cáncer de mama (ver página $http://www.uspreventiveservicestaskforce.org/uspstf/uspsbrca.htm$), dentro de los cuales, no recomienda el examen de la mamografía en mujeres entre 40 y 49 años de edad, afirmando que la práctica bienal de este examen debe ser una decisión individual según el contexto particular de la paciente, mientras que por muchos años, se han dicho a las mujeres que se debe realizar la mamografía una vez cumplidos los 40 años. Por otro lado, USPSTF sí recomienda tal práctica de forma bienal en grupos de mujeres de entre 50 y 74 años de edad, puesto que USPSTF no encontró suficiente evidencia de beneficio o daño adicional en realizar este examen en mujeres mayores que los 74 años. Otra recomendación que hizo USPSTF es no realizar auto exámanes de senos, contrario a las recomendaciones y consejos que da la mayoría de los profesionales y organizaciones de la salud, incluyendo la \emph{Amerian Cancer Society} (ver $http://www.cancer.org/acs/groups/cid/documents/webcontent/003164-pdf.pdf$).
 
 El autor del blog, después de algunas averiguaciones, encontró que 
 
@@ -305,8 +209,7 @@ Similarmente, se puede calcular estas dos probabilidades para las mujeres de 50 
   $P(\text{No cáncer}|\text{Negativo})$&0.9999837&0.9999674\\\hline
   \end{tabular}
 \end{table}
-Los resultados de la anterior tabla muestran cómo se cambia la probabilidad de tener cancer condicionado en los resultados de la pruebe. Entre estos valores se puede ver que, con un resultado positivo en el examen, la probabilidad de tener efectivamente el cáncer es aproximadamente diez puntos porcentuales más bajo en mujeres de edad de 40 y 49 años, de donde se puede sustentar la recomendación de no efectuar este examen en mujeres de este rango de edad.
-```
+Los resultados de la anterior tabla muestran cómo se cambia la probabilidad de tener cancer condicionado en los resultados de la pruebe. Entre estos valores se puede ver que, con un resultado positivo en el examen, la probabilidad de tener efectivamente el cáncer es aproximadamente diez puntos porcentuales más bajo en mujeres de edad de 40 y 49 años, de donde se puede sustentar la recomendación de no efectuar este examen en mujeres de este rango de edad.</div>\EndKnitrBlock{example}
 
 ## Inferencia bayesiana
 
@@ -386,9 +289,7 @@ Las distribuciones conjugadas son deseadas en el análisis bayesiano pues en pri
 
 A continuación exponemos la definición rigurosa de las distribuciones conjungadas y algunos tópicos relacionados.
 
-```{definition}
-Sea $\mathcal{F}=\{p(\mathbf{Y} \mid \btheta)\}$ una familia de distribuciones de probabilidad. Una familia de distribuciones $\mathcal{P}$ se dice conjugada con respecto a $\mathcal{F}$ si para toda distribución \emph{previa} $p(\btheta) \in \mathcal{P}$ y para toda distribución de muestreo o verosimilitud de las observaciones $p(\mathbf{Y} \mid \btheta)$, $p(\btheta \mid \mathbf{Y})$ también pertenece a la familia $\mathcal{P}$.
-```
+\BeginKnitrBlock{definition}<div class="definition"><span class="definition" id="def:unnamed-chunk-13"><strong>(\#def:unnamed-chunk-13) </strong></span>Sea $\mathcal{F}=\{p(\mathbf{Y} \mid \btheta)\}$ una familia de distribuciones de probabilidad. Una familia de distribuciones $\mathcal{P}$ se dice conjugada con respecto a $\mathcal{F}$ si para toda distribución \emph{previa} $p(\btheta) \in \mathcal{P}$ y para toda distribución de muestreo o verosimilitud de las observaciones $p(\mathbf{Y} \mid \btheta)$, $p(\btheta \mid \mathbf{Y})$ también pertenece a la familia $\mathcal{P}$.</div>\EndKnitrBlock{definition}
 
 Esta definición es en la mayoría de los casos prácticos muy útil. Sin embargo, \citeasnoun{Migon} describe los siguientes dos casos en donde esta definición es completamente inútil:
 
@@ -430,12 +331,9 @@ donde $\mathbf{T}(y)$ y $\mathbf{d}(\btheta)$ son funciones vectoriales, $h(y)$ 
 
 La ventaja de la familia exponencial radica en que es una familia relativamente restringuida de distribuciones y a la vez conserva la propiedad de ser distribuciones conjugadas, tal como muestra el siguiente resultado:
 
-```{proposition}
-Sea $Y$ una variable aleatoria con función de densidad perteneciente a la familia exponencial uniparamétrica, entonces la familia exponencial uniparamétrica es conjugada con respecto a sí misma.
-```
+\BeginKnitrBlock{proposition}<div class="proposition"><span class="proposition" id="prp:unnamed-chunk-14"><strong>(\#prp:unnamed-chunk-14) </strong></span>Sea $Y$ una variable aleatoria con función de densidad perteneciente a la familia exponencial uniparamétrica, entonces la familia exponencial uniparamétrica es conjugada con respecto a sí misma.</div>\EndKnitrBlock{proposition}
 
-```{proof}
-Observando la expresión (1.5.1), se debe encontrar una distribución \emph{previa} en la familia exponencial uniparamétrica, tal que la distribución \emph{posterior}, resultante del producto de la distribución \emph{previa} con la verosimilitud, sea también miembro de la familia exponencial uniparamétrica. Con base en lo anterior, la distribución \emph{previa}, parametrizada por el hiperparámetro $\alpha$, debe ser una función exponencial de los términos $d(\theta)$ y $c(\theta)$ como lo afirma \citeasnoun{Jordan}. Esto es,
+\BeginKnitrBlock{proof}<div class="proof">\iffalse{} <span class="proof"><em>Prueba. </em></span>  \fi{}Observando la expresión (1.5.1), se debe encontrar una distribución \emph{previa} en la familia exponencial uniparamétrica, tal que la distribución \emph{posterior}, resultante del producto de la distribución \emph{previa} con la verosimilitud, sea también miembro de la familia exponencial uniparamétrica. Con base en lo anterior, la distribución \emph{previa}, parametrizada por el hiperparámetro $\alpha$, debe ser una función exponencial de los términos $d(\theta)$ y $c(\theta)$ como lo afirma \citeasnoun{Jordan}. Esto es,
 \begin{equation}
 p(\theta \mid \alpha)\propto\exp\{w(\alpha) d(\theta)-\delta c(\theta)\},
 \end{equation}
@@ -463,30 +361,22 @@ p(\theta \mid Y) &\propto p(Y \mid \theta)p(\theta \mid \alpha)\\
 &\propto \exp\{[w(\alpha)+T(y)] d(\theta)\}\exp\{-(\delta+1) c(\theta)\}.
 \end{align*}
 
-Por lo tanto, la distribución \emph{posterior} resultante también pertenece a la familia exponencial uniparamétrica.
-```
+Por lo tanto, la distribución \emph{posterior} resultante también pertenece a la familia exponencial uniparamétrica.</div>\EndKnitrBlock{proof}
 
 La extensión del anterior resultado para el caso cuando tenemos una muestra aleatoria de observaciones es sencilla, tal como se expone a continuación:
-```{proposition}
-Sean $\mathbf{Y}=\{Y_1, \ldots, Y_n\}$ una muestra aleatoria de variables distribuidas con función de densidad común perteneciente a la familia exponencial uniparamétrica, cuya función de densidad conjunta $p(\mathbf{Y} \mid \theta)$ también pertenece a la familia exponencial uniparamétrica. Bajo las anteriores condiciones la familia exponencial uniparamétrica es conjugada con respecto a sí misma.
-```
+\BeginKnitrBlock{proposition}<div class="proposition"><span class="proposition" id="prp:unnamed-chunk-16"><strong>(\#prp:unnamed-chunk-16) </strong></span>Sean $\mathbf{Y}=\{Y_1, \ldots, Y_n\}$ una muestra aleatoria de variables distribuidas con función de densidad común perteneciente a la familia exponencial uniparamétrica, cuya función de densidad conjunta $p(\mathbf{Y} \mid \theta)$ también pertenece a la familia exponencial uniparamétrica. Bajo las anteriores condiciones la familia exponencial uniparamétrica es conjugada con respecto a sí misma.</div>\EndKnitrBlock{proposition}
 
-```{proof}
-La demostración es inmediata utilizando el resultado anterior y notando que la forma funcional de la densidad conjunta para $\mathbf{Y}$ es
+\BeginKnitrBlock{proof}<div class="proof">\iffalse{} <span class="proof"><em>Prueba. </em></span>  \fi{}La demostración es inmediata utilizando el resultado anterior y notando que la forma funcional de la densidad conjunta para $\mathbf{Y}$ es
 \begin{equation}
 p(\mathbf{Y} \mid \theta)=\exp\left\{d(\theta)\sum_{i=1}^nT(y_i)-nc(\theta)\right\}\prod_{i=1}^nh(y_i)
 \end{equation}
-la cual hace parte de la familia exponencial.
-```
+la cual hace parte de la familia exponencial.</div>\EndKnitrBlock{proof}
 
 Otra extensión del resultado \ref{FE1} corresponde al caso cuando la distribución de la observación está reparametrizado por un vector de parámetros $\btheta$. A continuación se expone el resultado y la prueba correspondiente.
 
-```{proposition}
-Sean $Y$ una variable aleatoria con función de densidad perteneciente a la familia exponencial multiparamétrica. Sea $\btheta$ el parámetro de interés con distribución \emph{previa} parametrizada por un vector de hiperparámetros $\bEta$ y perteneciente a la familia exponencial multiparamétrica. Entonces la familia exponencial multiparamétrica es conjugada con respecto a sí misma.
-```
+\BeginKnitrBlock{proposition}<div class="proposition"><span class="proposition" id="prp:unnamed-chunk-18"><strong>(\#prp:unnamed-chunk-18) </strong></span>Sean $Y$ una variable aleatoria con función de densidad perteneciente a la familia exponencial multiparamétrica. Sea $\btheta$ el parámetro de interés con distribución \emph{previa} parametrizada por un vector de hiperparámetros $\bEta$ y perteneciente a la familia exponencial multiparamétrica. Entonces la familia exponencial multiparamétrica es conjugada con respecto a sí misma.</div>\EndKnitrBlock{proposition}
 
-```{proof}
-En primer lugar, la distribución de probabilidad de $Y$ perteneciente a la familia exponencial  multiparamétrica está dada por (1.5.2). Siguiendo el mismo razonamiento de la demostración del Resultado 1.5.1, la distribución \emph{previa} del parámetro de interés debe estar definida de la siguiente manera
+\BeginKnitrBlock{proof}<div class="proof">\iffalse{} <span class="proof"><em>Prueba. </em></span>  \fi{}En primer lugar, la distribución de probabilidad de $Y$ perteneciente a la familia exponencial  multiparamétrica está dada por (1.5.2). Siguiendo el mismo razonamiento de la demostración del Resultado 1.5.1, la distribución \emph{previa} del parámetro de interés debe estar definida de la siguiente manera
 \begin{equation}
 p(\btheta \mid \bEta)=\exp\left\{\underbrace{w(\bEta)'}_{\mathbf{d}(\bEta)}
 \underbrace{\mathbf{d}(\btheta)}_{\mathbf{T}(\btheta)} - \underbrace{\ln k(\bEta,\delta)}_{c(\bEta)}\right\}\underbrace{\exp\{-\delta c(\btheta)\}}_{h(\btheta)},
@@ -506,17 +396,13 @@ p(\btheta \mid Y) &\propto p(Y \mid \btheta)p(\btheta \mid \bEta)\\
 \underbrace{\mathbf{d}(\btheta)}_{\mathbf{T}(\theta)} - \underbrace{\left[\ln k(\bEta,\delta)-\ln h(y)\right]}_{c(y)}\right\}\underbrace{\exp\{-(\delta+1)c(\btheta)\}}_{h(\btheta)}
 \end{align*}
 
-La anterior expresión también hace parte de la familia exponencial biparamétrica y con esto se concluye la demostración
-```
+La anterior expresión también hace parte de la familia exponencial biparamétrica y con esto se concluye la demostración</div>\EndKnitrBlock{proof}
 
 Nótese que el anterior resultado también cobija situaciones donde la verosimilitud sea perteneciente a la familia exponencial uniparamétrica. Más aún, a cualquier familia exponencial multiparamétrica de orden menor o igual al orden de la distribución \emph{previa}.
 
-```{proposition}
-Sean $\mathbf{Y}=\{Y_1, \ldots, Y_n\}$ una muestra aleatoria con función de densidad conjunta o verosimilitud dada (1.4.4). Bajo este escenario la familia exponencial multi-paramétrica es conjugada con respecto a sí misma.
-```
+\BeginKnitrBlock{proposition}<div class="proposition"><span class="proposition" id="prp:unnamed-chunk-20"><strong>(\#prp:unnamed-chunk-20) </strong></span>Sean $\mathbf{Y}=\{Y_1, \ldots, Y_n\}$ una muestra aleatoria con función de densidad conjunta o verosimilitud dada (1.4.4). Bajo este escenario la familia exponencial multi-paramétrica es conjugada con respecto a sí misma.</div>\EndKnitrBlock{proposition}
 
-```{proof}
-La demostración sigue los mismos lineamentos que la demostración del resultado anterior concluyendo que la distribución \emph{posterior} de $\btheta$ está dada por
+\BeginKnitrBlock{proof}<div class="proof">\iffalse{} <span class="proof"><em>Prueba. </em></span>  \fi{}La demostración sigue los mismos lineamentos que la demostración del resultado anterior concluyendo que la distribución \emph{posterior} de $\btheta$ está dada por
 \begin{align*}
 &p(\btheta \mid \mathbf{Y}) \propto p(\mathbf{Y} \mid \btheta)p(\btheta \mid \bEta)\\
 &= \exp\left\{\sum_{i=1}^n\mathbf{T}(y_i)'\mathbf{d}(\btheta) - nc(\btheta) + \bEta' \mathbf{d}(\btheta) - \delta c(\btheta) - \ln k(\bEta,\delta) +\sum_{i=1}^n\ln h(y_i)\right\}\\
@@ -524,12 +410,10 @@ La demostración sigue los mismos lineamentos que la demostración del resultado
 \underbrace{\mathbf{d}(\btheta)}_{\mathbf{T}(\theta)} - \underbrace{\left[\ln k(\bEta,\delta)-\sum_{i=1}^n\ln h(y_i)\right]}_{c(\mathbf{y})}\right\} \\
 &  \times \underbrace{\exp\left\{-(\delta+n)c(\btheta)\right\}}_{h(\btheta)}
 \end{align*}
-La anterior expresión también hace parte de la familia exponencial.
-```
+La anterior expresión también hace parte de la familia exponencial.</div>\EndKnitrBlock{proof}
 
 Ahora, estudiamos las expresiones relacionadas con la distribución predictiva de nuevas observaciones dentro del contexto de la familia exponencial:
-```{proposition}
-Sea $Y$ una variable aleatoria con función de densidad perteneciente a la familia exponencial, dada por (\ref{uniexpo}). Sea $\theta$ el parámetro de interés con distribución \emph{previa} en la familia exponencial biparamétrica. La distribución predictiva \emph{previa} de $Y$ está dada por
+\BeginKnitrBlock{proposition}<div class="proposition"><span class="proposition" id="prp:unnamed-chunk-22"><strong>(\#prp:unnamed-chunk-22) </strong></span>Sea $Y$ una variable aleatoria con función de densidad perteneciente a la familia exponencial, dada por (\ref{uniexpo}). Sea $\theta$ el parámetro de interés con distribución \emph{previa} en la familia exponencial biparamétrica. La distribución predictiva \emph{previa} de $Y$ está dada por
 \begin{equation}
 p(Y)=\frac{k(\alpha+T(y),\delta+1)}{k(\alpha,\delta)}h(y)
 \end{equation}
@@ -537,11 +421,9 @@ p(Y)=\frac{k(\alpha+T(y),\delta+1)}{k(\alpha,\delta)}h(y)
 donde 
 \begin{equation*}
 k(a,b)=\int \exp\{w(a) d(\theta)-b c(\theta)\}\ d\theta
-\end{equation*}
-```
+\end{equation*}</div>\EndKnitrBlock{proposition}
 
-```{proof}
-\begin{align*}
+\BeginKnitrBlock{proof}<div class="proof">\iffalse{} <span class="proof"><em>Prueba. </em></span>  \fi{}\begin{align*}
 p(Y)&=\int p(\theta)p(Y \mid \theta)\ d\theta\\
 &=\int \exp\{w(\alpha) d(\theta)-\ln k(\alpha,\delta)-\delta c(\theta)\}\exp\{d(\theta)T(y)-c(\theta)\}h(y)d\theta\\
 &=\frac{h(y)}{k(\alpha,\delta)}\int \exp\{[w(\alpha)+T(y)]d(\theta)-(\delta+1)c(\theta)\}d\theta\\
@@ -556,26 +438,20 @@ k(\alpha,\delta)=\int \exp\{w(\alpha) d(\theta)-\delta c(\theta)\}\ d\theta
 y
 \begin{equation*}
 k(\alpha+T(y),\delta+1)=\int \exp\{[w(\alpha)+T(y)]d(\theta)-(\delta+1)c(\theta)\} \ d\theta.
-\end{equation*}
-```
+\end{equation*}</div>\EndKnitrBlock{proof}
 
 La extensión al caso de contar con una muestra aleatoria de observaciones se encuentra a continuación:
 
-```{proposition}
-Sea $\mathbf{Y}=\{Y_1\ldots,Y_n\}$ una muestra aleatoria con función de densidad conjunta perteneciente a la familia exponencial, dada por (1.4.4). Sea $\theta$ el parámetro de interés con distribución \emph{previa} dada por (1.4.5). La distribución predictiva \emph{previa} de $\mathbf{Y}$ está dada por
+\BeginKnitrBlock{proposition}<div class="proposition"><span class="proposition" id="prp:unnamed-chunk-24"><strong>(\#prp:unnamed-chunk-24) </strong></span>Sea $\mathbf{Y}=\{Y_1\ldots,Y_n\}$ una muestra aleatoria con función de densidad conjunta perteneciente a la familia exponencial, dada por (1.4.4). Sea $\theta$ el parámetro de interés con distribución \emph{previa} dada por (1.4.5). La distribución predictiva \emph{previa} de $\mathbf{Y}$ está dada por
 
 \begin{equation}
 p(\mathbf{Y})=\frac{k(\alpha+T(\mathbf{y}),\delta+n)}{k(\alpha,\beta)}h(\mathbf{y})
 \end{equation}
-donde $k$ se define tal como en el resultado anterior.
-```
+donde $k$ se define tal como en el resultado anterior.</div>\EndKnitrBlock{proposition}
 
-```{proof}
-La prueba se tiene de inmediato siguiendo los lineamentos de la demostración del anterior resultado.
-```
+\BeginKnitrBlock{proof}<div class="proof">\iffalse{} <span class="proof"><em>Prueba. </em></span>  \fi{}La prueba se tiene de inmediato siguiendo los lineamentos de la demostración del anterior resultado.</div>\EndKnitrBlock{proof}
 
-```{proposition}
-En términos de la distribución predictiva \emph{posterior}, se tiene que para una sola observación $\tilde{y}$, ésta está dada por
+\BeginKnitrBlock{proposition}<div class="proposition"><span class="proposition" id="prp:unnamed-chunk-26"><strong>(\#prp:unnamed-chunk-26) </strong></span>En términos de la distribución predictiva \emph{posterior}, se tiene que para una sola observación $\tilde{y}$, ésta está dada por
 \begin{equation}
 p(\tilde{y} \mid Y)=\frac{k(\alpha+T(y)+T(\tilde{y}),\delta+2)}{k(\alpha+T(y),\delta+1)}h(\tilde{y})
 \end{equation}
@@ -584,11 +460,9 @@ y en el caso en donde se tiene una muestra aleatoria, entonces la distribución 
 p(\tilde{\mathbf{y}} \mid \mathbf{Y})=
 \frac{k(\alpha+T(\mathbf{y})+T(\tilde{\mathbf{y}}),\delta+n+n^*)}
 {k(\alpha+T(\mathbf{y}),\delta+n)}h(\tilde{\mathbf{y}})
-\end{equation}
-```
+\end{equation}</div>\EndKnitrBlock{proposition}
 
-```{proof}
-De la definición de distribución predictiva \emph{posterior} dada por la expresión (\ref{predictpos}) se tiene que
+\BeginKnitrBlock{proof}<div class="proof">\iffalse{} <span class="proof"><em>Prueba. </em></span>  \fi{}De la definición de distribución predictiva \emph{posterior} dada por la expresión (\ref{predictpos}) se tiene que
 \begin{align*}
 p(\tilde{y} \mid Y)&=\int p(\tilde{y} \mid \theta)p(\theta \mid y)\ d\theta\\
 &=\int \exp\{d(\theta)T(\tilde{y})-c(\theta)\}h(\tilde{y})\dfrac{\exp\{[w(\alpha)+T(y)]d(\theta)-(\delta+1)c(\theta)\}}{k(\alpha+T(y),\delta+1)}\ d\theta\\
@@ -601,8 +475,7 @@ con
 k(\alpha+T(y)+T(\tilde{y}),\delta+2)=\int \exp\{[w(\alpha)+T(y)+T(\tilde{y})]d(\theta)-(\delta+2)c(\theta)\}\ d\theta.
 \end{equation*}
 
-La demostración para la nueva muestra se lleva a cabo de manera análoga.
-```
+La demostración para la nueva muestra se lleva a cabo de manera análoga.</div>\EndKnitrBlock{proof}
 
 ### Distribuciones \emph{previa} no informativas
 
@@ -620,8 +493,7 @@ p(\phi)=p(\theta) \mid \frac{d\theta}{d\phi} \mid =p(\theta) \mid h'(\theta) \mi
 
 y claramente si la función $h$ no es una función lineal, entonces los resultados encontrados por medio de este enfoque indicarían que la distribución \emph{previa} $p(\phi)$ sería informativa contradiciendo los supuestos de $p(\theta)$. El siguiente ejemplo ilustra este planteamiento:
 
-```{example}
-Suponga que el parámetro de interés es $\theta$ y que está restringido a un espacio de muestreo dado por el intervalo $[0,1]$. Si se supone completa ignorancia acerca del comportamiento del parámetro, entonces una buena opción, con respecto a la distribución \emph{previa}, sería la distribución uniforme en el intervalo $[0,1]$. Es decir, la distribución \emph{previa} no informativa estaría dada por
+\BeginKnitrBlock{example}<div class="example"><span class="example" id="exm:unnamed-chunk-28"><strong>(\#exm:unnamed-chunk-28) </strong></span>Suponga que el parámetro de interés es $\theta$ y que está restringido a un espacio de muestreo dado por el intervalo $[0,1]$. Si se supone completa ignorancia acerca del comportamiento del parámetro, entonces una buena opción, con respecto a la distribución \emph{previa}, sería la distribución uniforme en el intervalo $[0,1]$. Es decir, la distribución \emph{previa} no informativa estaría dada por
 \begin{equation*}
 p(\theta) = I_{[0,1]}(\theta)
 \end{equation*}
@@ -631,13 +503,11 @@ Suponga ahora que existe una transformación del parámetro de interés dada por
 p(\phi)=I_{(-\infty,0)}(\phi)e^{\phi}
 \end{equation*}
 
-la cual es informativa con respecto al parámetro $\phi$. Sin embargo, es el mismo problema y existe una contradicción en términos de que para $\theta$ se desconoce todo, pero para una función $\phi$ existe evidencia de que el parámetro se comporta de cierta manera.
-```
+la cual es informativa con respecto al parámetro $\phi$. Sin embargo, es el mismo problema y existe una contradicción en términos de que para $\theta$ se desconoce todo, pero para una función $\phi$ existe evidencia de que el parámetro se comporta de cierta manera.</div>\EndKnitrBlock{example}
 
 Para palear las anteriores diferencias, es necesario encontrar una distribución \emph{previa} no informativa que sea invariante a transformaciones matemáticas. La distribución \emph{previa} no informativa de Jeffreys, definida a continuación, cuenta con esta agradable propiedad.
 
-```{definition}
-Si la verosimilitud de los datos está determinada por un único parámetro $\theta$, la distribución \emph{previa} no informativa de Jeffreys tiene distribución de probabilidad dada por
+\BeginKnitrBlock{definition}<div class="definition"><span class="definition" id="def:unnamed-chunk-29"><strong>(\#def:unnamed-chunk-29) </strong></span>Si la verosimilitud de los datos está determinada por un único parámetro $\theta$, la distribución \emph{previa} no informativa de Jeffreys tiene distribución de probabilidad dada por
 \begin{equation}
 p(\theta)\propto (I(\theta))^{1/2}
 \end{equation}
@@ -658,18 +528,14 @@ donde $\mathbf{I}$ es la matriz de información de Fisher, cuyo elemento en la f
 \mathbf{I}_{[ij]}(\btheta)&=E\left\{\left[\frac{\partial}{\partial\theta_i}\log{p(\mathbf{Y}\mid\theta)}\right]\left[\frac{\partial}{\partial\theta_j}\log{p(\mathbf{Y}\mid\btheta)}\right]\right\}\\
 &=-E\left\{\dfrac{\partial^2}{\partial\theta_i\partial\theta_j}\log{p(\mathbf{Y}\mid\btheta)}\right\}
 \end{align*}
-donde $\theta_i$ y $\theta_j$ son los elementos $i$ y $j$ del vector $\btheta$.
-```
+donde $\theta_i$ y $\theta_j$ son los elementos $i$ y $j$ del vector $\btheta$.</div>\EndKnitrBlock{definition}
 
 Nótese que si la verosimilitud de las observaciones pertenecen a la familia de distribuciones exponencial, entonces la distribución previa de Jeffreys no es difícil de calcular. Por otro lado nótese que la distribución previa no informativa de Jeffreys depende, de cierta manera, del mecanismo probabilístico que rige a los datos. Lo anterior hace que ciertos críticos de la estadística bayesiana critiquen este enfoque puesto que se supone que la formulación de la distribución a previa es independiente de los datos observados.
 
 A continuación se evidencia la propiedad de esta distribución previa de seguir siendo no informativa con diferentes parametrizaciones. 
-```{proposition}
-La distribución \emph{previa} no informativa de Jeffreys es invariante a transformaciones uno a uno. Es decir, si $\phi=h(\theta)$, entonces $p(\phi)\propto(I(\phi))^{1/2}$.
-```
+\BeginKnitrBlock{proposition}<div class="proposition"><span class="proposition" id="prp:unnamed-chunk-30"><strong>(\#prp:unnamed-chunk-30) </strong></span>La distribución \emph{previa} no informativa de Jeffreys es invariante a transformaciones uno a uno. Es decir, si $\phi=h(\theta)$, entonces $p(\phi)\propto(I(\phi))^{1/2}$.</div>\EndKnitrBlock{proposition}
 
-```{proof}
-En primer lugar nótese que
+\BeginKnitrBlock{proof}<div class="proof">\iffalse{} <span class="proof"><em>Prueba. </em></span>  \fi{}En primer lugar nótese que
 \begin{align*}
 I(\theta)=\mathbf{J}(\phi) \mid \frac{\partial\phi}{\partial\theta} \mid ^{2}
 \end{align*}
@@ -689,13 +555,11 @@ Ahora, de la definición de función de distribución para una función y utiliz
 p(\phi)&=p(\theta) \mid \frac{\partial\theta}{\partial\phi} \mid
 \propto (I(\theta))^{1/2} \mid \frac{\partial\theta}{\partial\phi} \mid
 \propto I(\phi)^{1/2} \mid \frac{\partial\phi}{\partial\theta} \mid  \mid \frac{d\theta}{\partial\phi} \mid =I(\phi)^{1/2}
-\end{align*}
-```
+\end{align*}</div>\EndKnitrBlock{proof}
 
 En \citeasnoun[p. 59]{BoxTiao} citan una Tabla de resumen en donde se encuentran distribuciones a previa no informativas para las distribuciones probabilísticas más comunes. A continuación se exponen algunos ejemplos que utilizan este enfoque.
 
-```{example}
-Si $Y$ es una variable aleatoria con distribución Binomial, entonces el espacio de muestreo del parámetro de interés será el intervalo $[0,1]$; sería conveniente utilizar la función de distribución uniforme sobre este intervalo como distribución \emph{previa} no informativa. Con el enfoque de Jeffreys se llega a este mismo resultado puesto que: la información de Fisher para la distribución binomial es $J(\theta)=n/\theta(1- \theta)$ dado que
+\BeginKnitrBlock{example}<div class="example"><span class="example" id="exm:unnamed-chunk-32"><strong>(\#exm:unnamed-chunk-32) </strong></span>Si $Y$ es una variable aleatoria con distribución Binomial, entonces el espacio de muestreo del parámetro de interés será el intervalo $[0,1]$; sería conveniente utilizar la función de distribución uniforme sobre este intervalo como distribución \emph{previa} no informativa. Con el enfoque de Jeffreys se llega a este mismo resultado puesto que: la información de Fisher para la distribución binomial es $J(\theta)=n/\theta(1- \theta)$ dado que
 \begin{equation*}
 \log p(Y \mid \theta)=\log \binom{n}{y} + y\log(\theta)+(n-y)\log(1-\theta)
 \end{equation*}
@@ -714,11 +578,9 @@ p(\theta \mid Y) &\propto p(Y \mid \theta) p(\theta)\\
 &\propto \theta^{y}(1-\theta)^{n-y}\theta^{-1/2}(1-\theta)^{-1/2}\\
 &=\theta^{y+1/2-1}(1-\theta)^{n-y+1/2-1}
 \end{align*}
-Por tanto, la distribución de $\theta \mid Y$ es $Beta(y+1/2,n-y+1/2)$. Por construcción, esta distribución no está alterada ni influenciada por la distribución \emph{previa} pues la misma es no informativa.
-```
+Por tanto, la distribución de $\theta \mid Y$ es $Beta(y+1/2,n-y+1/2)$. Por construcción, esta distribución no está alterada ni influenciada por la distribución \emph{previa} pues la misma es no informativa.</div>\EndKnitrBlock{example}
 
-```{example}
-\label{EjemPoisson}
+\BeginKnitrBlock{example}<div class="example"><span class="example" id="exm:unnamed-chunk-33"><strong>(\#exm:unnamed-chunk-33) </strong></span>\label{EjemPoisson}
 Si $\mathbf{Y}=\{Y_1,\ldots,Y_n\}$ es una muestra aleatoria de variables con distribución de Poisson, entonces el espacio de muestreo del parámetro de interés será el intervalo $(0,\infty)$; por tanto utilizar la distribución uniforme como distribución \emph{previa} no informativa no es conveniente. Ahora, la información de Fisher para la distribución conjunta es $I(\theta)=n/\theta$ puesto que
 \begin{equation*}
 \log p(\mathbf{Y} \mid \theta)=-n\theta+\log(\theta)\sum_{i=1}^ny_i-\sum_{i=1}^n\log(y_i!)
@@ -737,11 +599,9 @@ Es decir, la distribución \emph{previa} no informativa para el parámetro de in
 p(\theta \mid Y) \propto p(Y \mid \theta) p(\theta) \propto e^{-n\theta} \theta^{\sum_{i=1}^ny_i}\theta^{-1/2}
 =e^{-n\theta} \theta^{\sum_{i=1}^ny_i-1/2}
 \end{align*}
-Por tanto, la distribución de $\theta \mid \mathbf{Y}$ es $Gamma(\sum_{i=1}^ny_i+1/2,n)$. Por construcción, esta distribución no está alterada ni influenciada por la distribución \emph{previa} pues la misma es no informativa.
-```
+Por tanto, la distribución de $\theta \mid \mathbf{Y}$ es $Gamma(\sum_{i=1}^ny_i+1/2,n)$. Por construcción, esta distribución no está alterada ni influenciada por la distribución \emph{previa} pues la misma es no informativa.</div>\EndKnitrBlock{example}
 
-```{example}
-Suponga que $\mathbf{Y}=\{Y_1\ldots, Y_n\}$ es una muestra aleatoria con distribución normal de parámetros $(\theta, \sigma^2)'$. Se puede verificar que la matriz de información de Fisher para el vector de parámetros está dada por
+\BeginKnitrBlock{example}<div class="example"><span class="example" id="exm:unnamed-chunk-34"><strong>(\#exm:unnamed-chunk-34) </strong></span>Suponga que $\mathbf{Y}=\{Y_1\ldots, Y_n\}$ es una muestra aleatoria con distribución normal de parámetros $(\theta, \sigma^2)'$. Se puede verificar que la matriz de información de Fisher para el vector de parámetros está dada por
 \begin{equation}
 \begin{pmatrix}
   \frac{n}{\sigma^2} & 0 \\
@@ -752,8 +612,7 @@ Suponga que $\mathbf{Y}=\{Y_1\ldots, Y_n\}$ es una muestra aleatoria con distrib
 cuyo determinante está dado por $\frac{n^2}{2\sigma^6}$. Por lo tanto, la distribución a previa no informativa de Jeffreys está dada por
 \begin{equation}
 p(\theta,\sigma^2)\propto 1/\sigma^3
-\end{equation}
-```
+\end{equation}</div>\EndKnitrBlock{example}
 
 ## Pruebas de hipótesis
 

@@ -1,7 +1,7 @@
 --- 
 title: "Modelos Bayesianos con R y STAN"
 author: "Andrés Gutiérrez - Hanwen Zhang"
-date: "2021-05-29"
+date: "2021-05-30"
 documentclass: book
 bibliography: [book.bib]
 biblio-style: apalike
@@ -27,7 +27,8 @@ header-includes:
 - \def\bphi{\boldsymbol \phi}
 - \def\bpi{\boldsymbol \pi}
 - \def\bxi{\boldsymbol \xi}
-lang: "es-CO"
+- \usepackage[spanish]{babel}
+lang: es
 linkcolor: blue
 classoption: letter
 # bookdown::render_book("index.Rmd", "bookdown::pdf_book")
@@ -36,7 +37,6 @@ classoption: letter
 output: bookdown::html_book
 ---
 
-
-# Prefacio
+# Prefacio {-}
 
 <!--# TO DO: Escribir prefacio -->
