@@ -1,7 +1,7 @@
-book_filename: "u"
+book_filename: "ModelosBayesianos"
 delete_merged_file: true
 output_dir: "docs"
 language:
   ui:
-    chapter_name: "Chapter "
+    chapter_name: "Capítulo "
     

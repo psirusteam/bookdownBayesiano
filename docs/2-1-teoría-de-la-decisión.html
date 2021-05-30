@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="es" xml:lang="es">
+<head>
+
+<meta charset="utf-8" />
+<meta name="generator" content="pandoc" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta property="og:title" content="2.1 Teoría de la decisión | Modelos Bayesianos con R y STAN" />
+<meta property="og:type" content="book" />
+
+
+<meta property="og:description" content="Este es el repositorio del libro Modelos Bayesianos con R y STAN." />
+<meta name="github-repo" content="psirusteam/bookdownBayesiano" />
+
+<meta name="author" content="Andrés Gutiérrez - Hanwen Zhang" />
+
+<meta name="date" content="2021-05-29" />
+
+<script type="text/x-mathjax-config">
+MathJax.Hub.Config({
+  TeX: { equationNumbers: { autoNumber: "AMS" } }
+});
+</script>
+  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
+
+<meta name="description" content="Este es el repositorio del libro Modelos Bayesianos con R y STAN.">
+
+<title>2.1 Teoría de la decisión | Modelos Bayesianos con R y STAN</title>
+
+<script src="libs/header-attrs-2.8/header-attrs.js"></script>
+<link href="libs/tufte-css-2015.12.29/tufte-fonts.css" rel="stylesheet" />
+<link href="libs/tufte-css-2015.12.29/tufte-background.css" rel="stylesheet" />
+<link href="libs/tufte-css-2015.12.29/tufte-italics.css" rel="stylesheet" />
+<link href="libs/tufte-css-2015.12.29/tufte.css" rel="stylesheet" />
+
+
+
+
+
+</head>
+
+<body>
+
+
+
+<div class="row">
+<div class="col-sm-12">
+<div id="TOC">
+<ul>
+<li><a href="index.html#prefacio"><span class="toc-section-number">1</span> Prefacio</a></li>
+<li><a href="2-tópicos-básicos.html#tópicos-básicos"><span class="toc-section-number">2</span> Tópicos básicos</a>
+<ul>
+<li><a href="2-1-teoría-de-la-decisión.html#teoría-de-la-decisión"><span class="toc-section-number">2.1</span> Teoría de la decisión</a></li>
+</ul></li>
+</ul>
+</div>
+</div>
+</div>
+<div class="row">
+<div class="col-sm-12">
+<div id="teoría-de-la-decisión" class="section level2" number="2.1">
+<h2><span class="header-section-number">2.1</span> Teoría de la decisión</h2>
+<p>El problema estadístico de estimar un parámetro se puede ver dentro del contexto de la teoría de decisión: la estimación que proveemos, sea en el ámbito de la estadística clásica o la estadística bayesiana, depende de los datos muestrales, <span class="math inline">\(\mathbf{X}\)</span>, de tal forma que si éstos cambian, nuestra estimación también cambia. De esta manera, el proceso de estimación puede ser representado como una función que toma un conjunto de datos muestrales y los convierte en una estimación de nuestro parámetro de interés, <span class="math inline">\(A(\mathbf{X})\)</span> o simplemente <span class="math inline">\(A\)</span>. En la teoría de decisión, la anterior función se conoce como una regla de decisión.</p>
+<p>Así como en la vida cotidiana, por la incertidumbre del futuro(en el ámbito estadístico, por la incertidumbre acerca del parámetro), toda acción que uno toma (toda estimación que uno provea) puede traer consigo un grado de falla o riesgo. Y es necesario tomar la acción óptima que de alguna forma minimice ese riesgo. Formalizando esta idea intuitiva, tenemos la función de pérdida <span class="math inline">\(L\)</span> que asocia cada dupla de la acción tomada y el parámetro de interés <span class="math inline">\(\theta\)</span>, <span class="math inline">\((A, \ \theta)\)</span> con un número no negativo que cuantifica la pérdida que ocasiona la acción (o la estimación) <span class="math inline">\(A\)</span> con respecto al parámetro <span class="math inline">\(\theta\)</span>.</p>
+<p>Es claro que se desea escoger aquella acción que minimice de alguna forma la pérdida que ésta ocasiona, pero la función <span class="math inline">\(L\)</span> no se puede minimizar directamente, puesto que:</p>
+<ul>
+<li>En el ámbito de la estadística clásica, el parámetro <span class="math inline">\(\theta\)</span> se considera fijo, y los datos muestrales <span class="math inline">\(\mathbf{X}\)</span> aleatorios, así como la función de pérdida <span class="math inline">\(L\)</span> depende de <span class="math inline">\(\mathbf{X}\)</span>, entonces ésta también será una variable aleatoria, y no se puede minimizar directamente. Por lo tanto se define el riesgo o la pérdida promedio como la esperanza matemática de <span class="math inline">\(L\)</span>; denotando el riesgo como <span class="math inline">\(R\)</span>, éste está definido como <span class="math inline">\(R=E(L)\)</span> (la esperanza se toma con respecto a la distribución probabilística de <span class="math inline">\(\mathbf{X}\)</span>).</li>
+<li>En el ámbito de la estadística bayesiana, <span class="math inline">\(\theta\)</span> es una cantidad aleatoria, y la herramienta fundamental para conocer características de <span class="math inline">\(\theta\)</span> es su función de densidad posterior <span class="math inline">\(p(\theta|\mathbf{X})\)</span>. En este caso, el riesgo <span class="math inline">\(R\)</span> se define como</li>
+</ul>
+<p><span class="math display">\[\begin{equation*}
+R=E(L)=\int L(A, \theta)p(\theta|\mathbf{X})d\theta
+\end{equation*}\]</span></p>
+<p>En cualquier de los dos casos anteriores, buscaremos la estimación que minimice el riesgo <span class="math inline">\(R\)</span>. Ilustramos los anteriores conceptos en los siguientes ejemplos tanto en la estadística clásica como en la estadística bayesiana.</p>
+
+</div>
+<!-- </div> -->
+<p style="text-align: center;">
+<a href="2-tópicos-básicos.html"><button class="btn btn-default">Previous</button></a>
+</p>
+</div>
+</div>
+
+
+
+</body>
+</html>
