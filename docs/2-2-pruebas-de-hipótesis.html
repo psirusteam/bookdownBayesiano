@@ -1,0 +1,318 @@
+<!DOCTYPE html>
+<html lang="es" xml:lang="es">
+<head>
+
+<meta charset="utf-8" />
+<meta name="generator" content="pandoc" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta property="og:title" content="2.2 Pruebas de hipótesis | Modelos Bayesianos con R y STAN" />
+<meta property="og:type" content="book" />
+
+
+<meta property="og:description" content="Este es el repositorio del libro Modelos Bayesianos con R y STAN." />
+<meta name="github-repo" content="psirusteam/bookdownBayesiano" />
+
+<meta name="author" content="Andrés Gutiérrez - Hanwen Zhang" />
+
+<meta name="date" content="2021-05-30" />
+
+<script type="text/x-mathjax-config">
+MathJax.Hub.Config({
+  TeX: { equationNumbers: { autoNumber: "AMS" } }
+});
+</script>
+  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
+
+<meta name="description" content="Este es el repositorio del libro Modelos Bayesianos con R y STAN.">
+
+<title>2.2 Pruebas de hipótesis | Modelos Bayesianos con R y STAN</title>
+
+<script src="libs/header-attrs-2.8/header-attrs.js"></script>
+<link href="libs/tufte-css-2015.12.29/tufte-fonts.css" rel="stylesheet" />
+<link href="libs/tufte-css-2015.12.29/tufte-background.css" rel="stylesheet" />
+<link href="libs/tufte-css-2015.12.29/tufte-italics.css" rel="stylesheet" />
+<link href="libs/tufte-css-2015.12.29/tufte.css" rel="stylesheet" />
+
+
+
+
+
+</head>
+
+<body>
+
+
+
+<div class="row">
+<div class="col-sm-12">
+<div id="TOC">
+<ul>
+<li><a href="index.html#prefacio">Prefacio</a></li>
+<li><a href="1-tópicos-básicos.html#tópicos-básicos"><span class="toc-section-number">1</span> Tópicos básicos</a>
+<ul>
+<li><a href="1-1-teoría-de-la-decisión.html#teoría-de-la-decisión"><span class="toc-section-number">1.1</span> Teoría de la decisión</a></li>
+<li><a href="1-2-algunos-resultados-de-probabilidad.html#algunos-resultados-de-probabilidad"><span class="toc-section-number">1.2</span> Algunos resultados de probabilidad</a></li>
+<li><a href="1-3-teorema-de-bayes.html#teorema-de-bayes"><span class="toc-section-number">1.3</span> Teorema de Bayes</a></li>
+</ul></li>
+<li><a href="2-inferencia-bayesiana.html#inferencia-bayesiana"><span class="toc-section-number">2</span> Inferencia bayesiana</a>
+<ul>
+<li><a href="2-1-información-previa.html#información-previa"><span class="toc-section-number">2.1</span> Información previa</a>
+<ul>
+<li><a href="2-1-información-previa.html#distribuciones-conjugadas"><span class="toc-section-number">2.1.1</span> Distribuciones conjugadas</a></li>
+<li><a href="2-1-información-previa.html#familia-exponencial"><span class="toc-section-number">2.1.2</span> Familia exponencial</a></li>
+<li><a href="2-1-información-previa.html#distribuciones-previas-no-informativas"><span class="toc-section-number">2.1.3</span> Distribuciones previas no informativas</a></li>
+</ul></li>
+<li><a href="2-2-pruebas-de-hipótesis.html#pruebas-de-hipótesis"><span class="toc-section-number">2.2</span> Pruebas de hipótesis</a>
+<ul>
+<li><a href="2-2-pruebas-de-hipótesis.html#factor-de-bayes"><span class="toc-section-number">2.2.1</span> Factor de Bayes</a></li>
+<li><a href="2-2-pruebas-de-hipótesis.html#valor-p-bayesiano"><span class="toc-section-number">2.2.2</span> Valor <span class="math inline">\(p\)</span> Bayesiano</a></li>
+<li><a href="2-2-pruebas-de-hipótesis.html#criterio-dic"><span class="toc-section-number">2.2.3</span> Criterio DIC</a></li>
+<li><a href="2-2-pruebas-de-hipótesis.html#criterio-aic-y-bic"><span class="toc-section-number">2.2.4</span> Criterio AIC y BIC</a></li>
+<li><a href="2-2-pruebas-de-hipótesis.html#acerca-de-la-notación"><span class="toc-section-number">2.2.5</span> Acerca de la notación</a></li>
+</ul></li>
+</ul></li>
+</ul>
+</div>
+</div>
+</div>
+<div class="row">
+<div class="col-sm-12">
+<div id="pruebas-de-hipótesis" class="section level2" number="2.2">
+<h2><span class="header-section-number">2.2</span> Pruebas de hipótesis</h2>
+<p>A excepción del juzgamiento de hipótesis, las inferencias que hacen los
+estadísticos bayesianos, acerca de poblaciones normales, son muy
+similares a las que los estadísticos de la tradición frecuentista, de
+Neyman y Pearson, hacen. Consideremos la siguiente situación. Un
+instrumento mide la posición de un objeto con un determinado error. Éste
+error está distribuido de manera uniforme en el intervalo (-1cm, 1cm).
+Supongamos que el instrumento midió la posición de un objeto en
++0.9999cm del origen. Planteamos la siguiente hipótesis nula, H: La
+posición real del objeto es exactamente el origen. Imagine que
+planteamos este problema de inferencia estadística a los profesores
+López (frecuentista clásico) y Cepeda (acérrimo bayesiano). Razonamiento
+del frecuentista: Si la hipótesis nula es verdadera, ha ocurrido un
+evento con una probabilidad (a dos colas) de ocurrencia de 0.0001 o
+menos. Mediante un criterio razonable (nivel de significación), este es
+un evento muy raro y por lo tanto rechaza H. Razonamiento del bayesiano:
+El bayesiano ve las cosas desde un punto de vista diferente. Dada una
+observación, la verosimilitud asociada con la posición del objeto en el
+intervalo -0.0001 y +1.9999 es la misma, 0.5. Fuera de esos límites la
+verosimilitud es nula. Ahora, el origen está dentro de la región en
+donde la verosimilitud es máxima; por lo tanto sea cual sea la
+distribución a previa asociada al parámetro de posición, la distribución
+a posterior tomara el valor cero en cualquier lugar fuera del intervalo
+-0.0001 y +1.9999. Así, con la observación disponible, no hay evidencia
+para el rechazo de H. Bajo esta paradoja, Brewer (2002) sugiere que
+ambos estadísticos tienen razón, pero a la vez están equivocados. El
+frecuentista tiene razón en afirmar que, con la evidencia disponible, ha
+ocurrido un evento extraordinariamente extraño o que la hipótesis nula
+es falsa. El bayesiano tiene razón en argumentar que, en términos de la
+situación, no hay evidencia en contra de la hipótesis nula. Esta
+paradoja se presenta porque los bayesianos tienden a trabajar dentro de
+la situación que ellos creen que existe (o al menos creen que ellos
+creen que existe) y la lógica bayesiana se mueve en ese marco de
+referencia. Los bayesianos hacen las inferencias en términos de la
+verosimilitud de los eventos observados, mientras que los frecuentistas
+hacen inferencias en términos de eventos que ni siquiera han ocurrido. .</p>
+<div id="factor-de-bayes" class="section level3" number="2.2.1">
+<h3><span class="header-section-number">2.2.1</span> Factor de Bayes</h3>
+<p>El juzgamiento de hipótesis del enfoque frecuentista se puede efectuar
+en el ámbito Bayesiano por medio del . Suponiendo
+que existen dos modelos <span class="math inline">\(M1\)</span> y <span class="math inline">\(M2\)</span> candidatos para <span class="math inline">\(\mathbf{Y}\)</span>, se
+define el  en favor del modelo <span class="math inline">\(M1\)</span> como la razón
+de las densidades marginales de los datos para los dos modelos y es
+posible demostrar que es equivale a la siguiente expresión
+<span class="math display">\[\begin{equation}\label{FB}
+FB=\frac{p(\mathbf{Y} \mid M1)}{p(\mathbf{Y} \mid M2)}=\frac{Pr(M1 \mid \mathbf{Y})/Pr(M2 \mid \mathbf{Y})}{Pr(M1)/Pr(M2)}
+\end{equation}\]</span></p>
+<p>Para evaluar esta última expresión es necesario recurrir a la densidad
+previa y posterior del parámetro de interés, asumiendo que los modelos
+están parametrizados por éstos. Se puede ver que cuando los modelos <span class="math inline">\(M1\)</span>
+y <span class="math inline">\(M2\)</span> tienen la misma distribución previa, entonces el factor de Bayes
+se reduce a la razón de densidad posterior de los dos modelos.
+Adicionalmente este factor sólo está definido cuando la integral de la
+densidad marginal de <span class="math inline">\(\mathbf{Y}\)</span> bajo cada modelo converge. En la
+expresión () se claro que valores grandes del factor muestra
+evidencias a favor del modelo <span class="math inline">\(M1\)</span>, valores menores de 1 a favor del
+modelo <span class="math inline">\(M2\)</span>, mientras que valores cercanos a 1 no muestra evidencias
+claras hacia ninguno de los dos modelos.</p>
+<p>En <span class="citation"><label for="tufte-mn-6" class="margin-toggle">&#8853;</label><input type="checkbox" id="tufte-mn-6" class="margin-toggle">Gelman et al. (1995)<span class="marginnote">Gelman, A., J. B. Carlin, H. S. Stern, y D. B. Rubin. 1995. <em>Bayesian Data Analysis</em>. 1.ª ed. Chapman; Hall/CRC.</span></span> se presenta el siguiente ejemplo sencillo sobre la
+presencia o ausencia de la enfermedad hemofilia, una enfermedad genética
+especialmente grave las mujeres. Para una mujer quien tiene un hermano
+portador del gen, el parámetro <span class="math inline">\(\theta\)</span> describe la presencia o ausencia
+del gen en ella, y toma valores de 1 (presencia del gen) y 0 (ausencia
+del gen). La distribución previa del parámetro es
+<span class="math inline">\(P(\theta=1)=P(\theta=0)=0.5\)</span>. El objetivo es evaluar el sistema
+<span class="math inline">\(M_1:\ \theta=1\)</span> y <span class="math inline">\(M_2:\ \theta=0\)</span> con base en el hecho de que ella
+tiene dos hijos ambos no portadores del gen. De esta forma
+<span class="math display">\[\begin{equation*}
+FB=\frac{p(y_1=0,\ y_2=0|\theta=1)}{p(y_1=0,\ y_2=0|\theta=0)}=\frac{0.25}{1}=0.25
+\end{equation*}\]</span> De donde se evidencia mayor apoyo a la hipótesis
+<span class="math inline">\(\theta=0\)</span>.</p>
+</div>
+<div id="valor-p-bayesiano" class="section level3" number="2.2.2">
+<h3><span class="header-section-number">2.2.2</span> Valor <span class="math inline">\(p\)</span> Bayesiano</h3>
+<p>En la inferencia clásica, se define el valor <span class="math inline">\(p\)</span> como la probabilidad de
+que la estadística de prueba tome valores más extremos a los observados,
+y se compara con el nivel de significancia, previamente establecidad,
+para tomar decisión acerca de una hipótesis nula. En el ámbito
+Bayesiano, el valor <span class="math inline">\(p\)</span> se define como la probabilidad de que la
+estadística de prueba <span class="math inline">\(T\)</span> calculado sobre los datos replicados <span class="math inline">\(y^{rep}\)</span>
+sean más extremos al observado, y la probabilidad se toma sobre la
+distribución posterior del parámetro <span class="math inline">\(\theta\)</span> y la distribución
+predictiva posterior de <span class="math inline">\(y^{rep}\)</span>. Específicamente, queda determinado
+por</p>
+<p><span class="math display">\[\begin{equation*}
+p_B=\int\int_{T(y^{rep}) \geq T(y)}p(y^{rep}|\theta)p(\theta|y)dy^{rep}d\theta
+\end{equation*}\]</span></p>
+<p>A diferencia del valor <span class="math inline">\(p\)</span> clásico donde solo valores pequeños muestran
+evidencia en contra de la hipótesis nula, un valor <span class="math inline">\(p\)</span> Bayesiano extremo
+(menor a 0.01 o mayor a 0.99) sugiere que los valores observados
+difícilmente pueden ser replicadso si el modelo fuera verdadero.</p>
+<p>Los criterios de información constituyen una herramienta muy importante
+en el modelamiento estadístico, pues contribuye a la selección de
+modelos de manera simple. Existen una variedad de estos criterios, a
+continuación se describen los dos criterios más comunes en el análisis
+bayesiano.</p>
+</div>
+<div id="criterio-dic" class="section level3" number="2.2.3">
+<h3><span class="header-section-number">2.2.3</span> Criterio DIC</h3>
+<p>El criterio de información de devianza (denotada por DIC por los
+iniciales en inglés) es una generalización del popular criterio AIC para
+los modelos jerárquicos, y se basa en el concepto de la devianza que se
+define como <span class="math display">\[\begin{equation}
+D(y, \boldsymbol \theta)=-2*\log(p(y|\boldsymbol \theta))
+\end{equation}\]</span></p>
+<p>cuya media posterior es una medida usual del ajuste del modelo.
+<span class="citation"><label for="tufte-mn-7" class="margin-toggle">&#8853;</label><input type="checkbox" id="tufte-mn-7" class="margin-toggle">Dempster (1974)<span class="marginnote">Dempster, A. P. 1974. <span>«The Direct Use of Likelihood for Significance Testing»</span>. En <em>Proceedings of Conference on Foundational Questions in Statistical Inference</em>, 335-52. Department of Theoretical Statistics: University of Aarhus.</span></span> sugirió graficar la distribución posteriori de
+la devianza para observar el ajuste del modelo a los datos. Una
+estimación de esta media posterior se basa en simulación de <span class="math inline">\(M\)</span> valores
+<span class="math inline">\(\boldsymbol \theta^1,\cdots,\boldsymbol \theta^M\)</span> de la distribución posterior de <span class="math inline">\(\boldsymbol \theta\)</span>,
+y está dada por <span class="math display">\[\begin{equation*}
+\hat{E}_D=\frac{1}{M}\sum_{m=1}^MD(y,\boldsymbol \theta^m)
+\end{equation*}\]</span></p>
+<p>El DIC se define como <span class="math display">\[\begin{equation*}
+DIC=\hat{E}_D+p_D
+\end{equation*}\]</span></p>
+<p>Donde <span class="math inline">\(p_D\)</span> es el número efectivo de parámetros. Nótese que en la
+anterior formulación, el DIC se puede descomponer en dos partes: la
+parte de la bondad de ajuste del modelo, medido a través de <span class="math inline">\(E_D\)</span>, y la
+parte que mide la complejidad del modelo <span class="math inline">\(p_D\)</span>. Otra formulación
+equivalente del DIC se obtiene teniendo en cuenta que <span class="math display">\[\begin{equation*}
+p_D=\hat{E}_D - \hat{D}
+\end{equation*}\]</span></p>
+<p>Donde <span class="math inline">\(\hat{D}=-2*\log(p(y|\hat{\boldsymbol \theta}))\)</span> con <span class="math inline">\(\hat{\boldsymbol \theta}\)</span>
+denotando la media posterior de <span class="math inline">\(\boldsymbol \theta\)</span>; es decir, <span class="math inline">\(\hat{D}\)</span> es la
+estimación de la devianza usando <span class="math inline">\(\hat{\boldsymbol \theta}\)</span>, y <span class="math inline">\(p_D\)</span> se puede ver
+como la media posterior de la devianza menos la devianza de las medias
+posterior <span class="citation">(<label for="tufte-mn-8" class="margin-toggle">&#8853;</label><input type="checkbox" id="tufte-mn-8" class="margin-toggle">Spiegelhalter et al. 2002<span class="marginnote">Spiegelhalter, D. J., N. G. Best, B. P. Carlin, y A. VanderLinde. 2002. <span>«Bayesian measures of model complexity and fit»</span>. <em>Journal of the Royal Statistical Society</em> B 64: 583-639.</span>)</span>. De esta forma, el DIC también se puede
+escribir como <span class="math display">\[\begin{equation*}
+DIC=\hat{D}+2p_D
+\end{equation*}\]</span></p>
+<p>Interpretación de DIC: El modelo con el menor DIC es considerado como el
+modelo que mejor predice un conjunto de datos con la misma estructura
+que los datos observados. Al respecto se deben tener en cuenta las
+siguientes consideraciones:</p>
+<p>El DIC puede ser negativo puesto que <span class="math inline">\(p(y|\theta)\)</span> puede tomar valores
+mayores a 1 asociado a una devianza pequeña.</p>
+<p><span class="math inline">\(p_D\)</span>, y por consiguiente DIC, no es invariante a parametrizaciones del
+modelo. Se sugiere en la práctica usar parametrizaciones que conducen a
+la normalidad en la distribución posterior.</p>
+</div>
+<div id="criterio-aic-y-bic" class="section level3" number="2.2.4">
+<h3><span class="header-section-number">2.2.4</span> Criterio AIC y BIC</h3>
+<p>El criterio de información de Akaike (AIC) fue formalmente presentado en
+<span class="citation"><label for="tufte-mn-9" class="margin-toggle">&#8853;</label><input type="checkbox" id="tufte-mn-9" class="margin-toggle">Akaike (1974)<span class="marginnote">Akaike, H. 1974. <span>«<span>A new look at the statistical model identification</span>»</span>. <em>IEEE Transactions on Automatic Control</em> 19 (6): 716-23. <a href="https://doi.org/10.1109/TAC.1974.1100705">https://doi.org/10.1109/TAC.1974.1100705</a>.</span></span>. Este criterio mide la pérdida de información al
+ajustar un modelo a un conjunto de datos; por esto, se buscan modelos
+que arrojen valores pequeños de AIC. Posteriormente @[AICc]
+introdujo el factor de corrección para evitar que el AIC escoja modelos
+con demasiados parámetros en situaciones de tamaño de muestra pequeño.
+Por otro lado, el criterio de información bayesiano BIC, también
+conocido como el criterio de Schwarz <span class="citation">(<label for="tufte-mn-10" class="margin-toggle">&#8853;</label><input type="checkbox" id="tufte-mn-10" class="margin-toggle">Schwarz 1978<span class="marginnote">Schwarz, G. 1978. <span>«Estimating the Dimension of a Model»</span>. <em>Annals of Statistics</em> 6: 461-64.</span>)</span>, también está
+formulado en términos de la función de verosimilitudel modelo y del
+número de parámetros. La expresión de estos criterios es como sigue:
+<span class="math display">\[\begin{align*}
+AIC&amp;=-2\log(p(y|\hat{\boldsymbol \theta}))+2p\\
+AIC_c&amp;=AIC+\frac{2p^2+2p}{n-p-1}\\
+BIC&amp;=-2\log(p(y|\hat{\boldsymbol \theta}))+p\log(n)
+\end{align*}\]</span></p>
+<p>Donde <span class="math inline">\(p\)</span> es el número de parámetros en el modelo y <span class="math inline">\(n\)</span> el número de
+datos observados. Cabe resaltar que en el criterio BIC hay una mayor
+penalización por el número excesivo de parámetros que en el criterio
+AIC, y en la práctica se prefieren los modelos con un BIC menor.</p>
+<p> Se debe recalcar que los dos criterios tienen diferentes
+enfoques, el criterio BIC se enfoca en identificar el modelo verdadero,
+mientras que el criterio DIC enfoca en encontrar el modelo con mejor
+capacidad de predicción.</p>
+</div>
+<div id="acerca-de-la-notación" class="section level3" number="2.2.5">
+<h3><span class="header-section-number">2.2.5</span> Acerca de la notación</h3>
+<p>Antes de empezar las próximas secciones, es necesario revisar la
+notación que se seguirá de ahora en adelante. Del teorema de Bayes
+resultan tres grandes definiciones que constituyen la base de la
+estadística Bayesiana y que a lo largo de este texto se mencionarán
+diferenciándolas por medio de la notación. El símbolo más importante de
+la estadística matemática es <span class="math inline">\(p\)</span>, el cual indica que existe una
+distribución de probabilidad para los datos, para el vector de
+parámetros, condicional o no. De hecho todos las definiciones y
+resultados anteriores han estado supeditadas al uso de esta monótona
+notación. En el ámbito de la notación de investigación internacional es
+común diferenciar las distribuciones con el fin de hacer más ameno el
+estudio del enfoque Bayesiano. En este texto se seguirá esta distinción.
+Un ejemplo claro en donde <span class="math inline">\(p\)</span> representa cuatro funciones distintas en
+una sola ecuación es el siguiente:</p>
+<p><span class="math display">\[p(\theta \mid y)=p(y \mid \theta)\frac{p(\theta)}{p(y)}\]</span></p>
+<p><span class="citation"><label for="tufte-mn-11" class="margin-toggle">&#8853;</label><input type="checkbox" id="tufte-mn-11" class="margin-toggle">Gelman et al. (1995)<span class="marginnote">Gelman, A., J. B. Carlin, H. S. Stern, y D. B. Rubin. 1995. <em>Bayesian Data Analysis</em>. 1.ª ed. Chapman; Hall/CRC.</span></span> explica por qué la notación simple, con el uso (a
+veces abuso) de la letra <span class="math inline">\(p\)</span> es más rigurosa de lo que, a simple vista,
+pueda parecer y comenta que,</p>
+<blockquote>
+<p>En realidad no me gusta la notación que la mayoría de los estadísticos
+usan:<span class="math inline">\(f\)</span>, para distribuciones de muestreo; $ $, para
+distribuciones a previa y $ L$, para verosimilitudes. Este estilo de
+notación se desvía de lo que realmente es importante. La notación no
+debería depender del orden en que las distribuciones son
+especificadas. Todas ellas son distribuciones de probabilidad, eso es
+lo realmente importante.</p>
+</blockquote>
+<p>Esto tiene sentido, aún más cuando se estudian las propiedades
+estadísticas de los estimadores desde el punto de vista de la teoría de
+la medida. Siendo así, el símbolo <span class="math inline">\(p\)</span> se refiere a una notación para una
+medida de probabilidad, quizás inducida por un elemento aleatorio. De
+hecho, en la ecuación que determina la regla de Bayes, cada una de las
+<span class="math inline">\(p\)</span> son medidas de probabilidad que no comparten el mismo espacio de
+medida (ni la misma $ $-álgebra, ni el mimo espacio muestral ).</p>
+<p>De hecho, todo queda claro al realizar un diagrama que permita ver el
+espacio de salida y el espacio de llegada de los elementos aleatorios
+que inducen (si es el caso), cada una de las distribuciones de
+probabilidad. Por otra parte, Bob Carpenter, concluye que</p>
+<blockquote>
+<p>Una vez resuelto el problema de identificación de los espacios] la
+notación estadística depende en gran manera del contexto y aunque la
+regla de Bayes no necesite de mucha explicación, es necesario
+conocerlo todo acerca del contexto para poder interpretar las
+funciones que la conforman… El problema se hace mucho más agudo para
+los estadísticos novatos, pero eso se resuelve con la práctica. Una
+vez que uno sabe lo que está haciendo, se vuelve obvia la referencia
+de la distribución <span class="math inline">\(p\)</span>.</p>
+</blockquote>
+<p>Por lo anterior, es natural que algunos de los textos clásicos de
+estadística matemática, parezcan olvidar el contexto de las diferentes
+medidas de probabilidad. En realidad no es que lo olviden, lo que pasa
+es que los autores no son novatos y asumen que el lector sigue la idea
+de la referencia de la $ p$ en cuestión. Sin embargo, y lo digo por mi
+y sólo por mí, sería mejor que no asumieran esa idea. De esta manera, el
+estudio de estos textos sería un poco menos denso.</p>
+
+</div>
+</div>
+<!-- </div> -->
+<p style="text-align: center;">
+<a href="2-1-información-previa.html"><button class="btn btn-default">Previous</button></a>
+</p>
+</div>
+</div>
+
+
+
+</body>
+</html>
