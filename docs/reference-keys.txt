@@ -45,3 +45,5 @@ valor-p-bayesiano
 criterios-de-información
 criterio-dic
 criterios-aic-y-bic
+algunas-distribuciones-de-probabilidad
+distribuciones-discretas

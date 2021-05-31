@@ -248,9 +248,11 @@ relativamente restringuida de distribuciones que a la vez conservan la
 propiedad de ser distribuciones conjugadas, tal como muestra el
 siguiente resultado:
 
+
 ```{proposition, FE1}
 Sea $Y$ una variable aleatoria con función de densidad perteneciente a la familia exponencial uniparamétrica, entonces la familia exponencial uniparamétrica es conjugada con respecto a sí misma.
-```<br> 
+```
+<br> 
 
 ```{proof}
 Observando la expresión \@ref(eq:uniexpo), se debe encontrar una distribución previa en la familia exponencial uniparamétrica, tal que la distribución posterior, resultante del producto de la distribución previa con la verosimilitud sea también miembro de la familia exponencial uniparamétrica. Con base en lo anterior, la distribución previa, parametrizada por el hiperparámetro $\alpha$, debe ser una función exponencial de los términos $d(\theta)$ y $c(\theta)$ como lo afirma @Jordan. Esto es,
@@ -561,7 +563,8 @@ seguir siendo no informativa con diferentes parametrizaciones.
 
 ```{proposition}
 La distribución previa no informativa de Jeffreys es invariante a transformaciones uno a uno. Es decir, si $\phi=h(\theta)$, entonces $p(\phi)\propto(I(\phi))^{1/2}$.
-```<br>
+```
+<br>
 
 ```{proof}
 En primer lugar nótese que

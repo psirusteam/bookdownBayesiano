@@ -4,11 +4,11 @@
 
   <meta charset="utf-8" />
   <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-  <title>Capítulo 1 Tópicos básicos | Modelos Bayesianos con R y STAN</title>
+  <title>Acerca de la notación | Modelos Bayesianos con R y STAN</title>
   <meta name="description" content="Este es el repositorio del libro Modelos Bayesianos con R y STAN." />
   <meta name="generator" content="bookdown 0.22 and GitBook 2.6.7" />
 
-  <meta property="og:title" content="Capítulo 1 Tópicos básicos | Modelos Bayesianos con R y STAN" />
+  <meta property="og:title" content="Acerca de la notación | Modelos Bayesianos con R y STAN" />
   <meta property="og:type" content="book" />
   
   
@@ -16,7 +16,7 @@
   <meta name="github-repo" content="psirusteam/bookdownBayesiano" />
 
   <meta name="twitter:card" content="summary" />
-  <meta name="twitter:title" content="Capítulo 1 Tópicos básicos | Modelos Bayesianos con R y STAN" />
+  <meta name="twitter:title" content="Acerca de la notación | Modelos Bayesianos con R y STAN" />
   
   <meta name="twitter:description" content="Este es el repositorio del libro Modelos Bayesianos con R y STAN." />
   
@@ -31,8 +31,8 @@
   <meta name="apple-mobile-web-app-status-bar-style" content="black" />
   
   
-<link rel="prev" href="index.html"/>
-<link rel="next" href="teoría-de-la-decisión.html"/>
+<link rel="prev" href="cuestionamientos-sobre-el-enfoque-bayesiano.html"/>
+<link rel="next" href="tópicos-básicos.html"/>
 <script src="libs/header-attrs-2.8/header-attrs.js"></script>
 <script src="libs/jquery-2.2.3/jquery.min.js"></script>
 <link href="libs/gitbook-2.6.7/css/style.css" rel="stylesheet" />
@@ -95,9 +95,11 @@ div.csl-indent {
 <li><a href="./">Modelos Bayesianos con R y STAN</a></li>
 
 <li class="divider"></li>
-<li class="chapter" data-level="" data-path="index.html"><a href="index.html"><i class="fa fa-check"></i>Prefacio</a>
+<li class="chapter" data-level="" data-path="index.html"><a href="index.html"><i class="fa fa-check"></i>Prefacio</a></li>
+<li class="chapter" data-level="" data-path="antes-de-comenzar.html"><a href="antes-de-comenzar.html"><i class="fa fa-check"></i>Antes de comenzar</a>
 <ul>
-<li class="chapter" data-level="" data-path="index.html"><a href="index.html#acerca-de-la-notación"><i class="fa fa-check"></i>Acerca de la notación</a></li>
+<li class="chapter" data-level="" data-path="cuestionamientos-sobre-el-enfoque-bayesiano.html"><a href="cuestionamientos-sobre-el-enfoque-bayesiano.html"><i class="fa fa-check"></i>Cuestionamientos sobre el enfoque bayesiano</a></li>
+<li class="chapter" data-level="" data-path="acerca-de-la-notación.html"><a href="acerca-de-la-notación.html"><i class="fa fa-check"></i>Acerca de la notación</a></li>
 </ul></li>
 <li class="chapter" data-level="1" data-path="tópicos-básicos.html"><a href="tópicos-básicos.html"><i class="fa fa-check"></i><b>1</b> Tópicos básicos</a>
 <ul>
@@ -124,6 +126,11 @@ div.csl-indent {
 <li class="chapter" data-level="2.3.2" data-path="criterios-de-información.html"><a href="criterios-de-información.html#criterios-aic-y-bic"><i class="fa fa-check"></i><b>2.3.2</b> Criterios AIC y BIC</a></li>
 </ul></li>
 </ul></li>
+<li class="appendix"><span><b>Apéndice</b></span></li>
+<li class="chapter" data-level="A" data-path="algunas-distribuciones-de-probabilidad.html"><a href="algunas-distribuciones-de-probabilidad.html"><i class="fa fa-check"></i><b>A</b> Algunas distribuciones de probabilidad</a>
+<ul>
+<li class="chapter" data-level="A.1" data-path="distribuciones-discretas.html"><a href="distribuciones-discretas.html"><i class="fa fa-check"></i><b>A.1</b> Distribuciones discretas</a></li>
+</ul></li>
 <li class="chapter" data-level="" data-path="referencias.html"><a href="referencias.html"><i class="fa fa-check"></i>Referencias</a></li>
 <li class="divider"></li>
 <li><a Modelos Bayesianos con R y STAN</a></li>
@@ -145,16 +152,62 @@ div.csl-indent {
           <div class="page-inner">
 
             <section class="normal" id="section-">
-<div id="tópicos-básicos" class="section level1" number="1">
-<h1><span class="header-section-number">Capítulo 1</span> Tópicos básicos</h1>
+<div id="acerca-de-la-notación" class="section level2 unnumbered">
+<h2>Acerca de la notación</h2>
+<p>Antes de empezar las próximas secciones, es necesario revisar la
+notación que se seguirá de ahora en adelante. Del teorema de Bayes
+resultan tres grandes definiciones que constituyen la base de la
+estadística Bayesiana y que a lo largo de este texto se mencionarán
+diferenciándolas por medio de la notación. El símbolo más importante de
+la estadística matemática es <span class="math inline">\(p\)</span>, el cual indica que existe una
+distribución de probabilidad para los datos, para el vector de
+parámetros, condicional o no. De hecho todos las definiciones y
+resultados anteriores han estado supeditadas al uso de esta monótona
+notación. En el ámbito de la notación de investigación internacional es
+común diferenciar las distribuciones con el fin de hacer más ameno el
+estudio del enfoque Bayesiano. En este texto se seguirá esta distinción.
+Un ejemplo claro en donde <span class="math inline">\(p\)</span> representa cuatro funciones distintas en
+una sola ecuación es el siguiente:</p>
+<p><span class="math display">\[p(\theta \mid y)=p(y \mid \theta)\frac{p(\theta)}{p(y)}\]</span></p>
+<p><span class="citation"><a href="#ref-Gelman95" role="doc-biblioref">A. Gelman et al.</a> (<a href="#ref-Gelman95" role="doc-biblioref">1995</a>)</span> explica por qué la notación simple, con el uso (a
+veces abuso) de la letra <span class="math inline">\(p\)</span> es más rigurosa de lo que, a simple vista,
+pueda parecer y comenta que,</p>
+<blockquote>
+<p>En realidad no me gusta la notación que la mayoría de los estadísticos usen <span class="math inline">\(f\)</span> para las distribuciones de muestreo; <span class="math inline">\(\pi\)</span>, para las distribuciones previas y <span class="math inline">\(L\)</span>, para las verosimilitudes. Este estilo de notación se desvía de lo que realmente es importante. La notación no debería depender del orden en que las distribuciones son especificadas. Todas ellas son distribuciones de probabilidad, eso es lo realmente importante.</p>
+</blockquote>
+<p>Esto tiene sentido, aún más cuando se estudian las propiedades
+estadísticas de los estimadores desde el punto de vista de la teoría de
+la medida. Siendo así, el símbolo <span class="math inline">\(p\)</span> se refiere a una notación para una
+medida de probabilidad, quizás inducida por un elemento aleatorio. De
+hecho, en la ecuación que determina la regla de Bayes, cada una de las
+<span class="math inline">\(p\)</span> son medidas de probabilidad que no comparten el mismo espacio de
+medida (ni la misma <span class="math inline">\(\sigma\)</span>-álgebra, ni el mismo espacio muestral).</p>
+<p>De hecho, todo queda claro al realizar un diagrama que permita ver el
+espacio de salida y el espacio de llegada de los elementos aleatorios
+que inducen (si es el caso), cada una de las distribuciones de
+probabilidad. Por otra parte, Bob Carpenter concluye que:</p>
+<blockquote>
+<p>Una vez resuelto el problema de identificación de los espacios, la notación estadística depende en gran manera del contexto y aunque la regla de Bayes no necesite de mucha explicación, es necesario conocerlo todo acerca del contexto para poder interpretar las funciones que la conforman… El problema se hace mucho más agudo para los estadísticos novatos, pero eso se resuelve con la práctica. Una vez que uno sabe lo que está haciendo, se vuelve obvia la referencia de la distribución <span class="math inline">\(p\)</span>.</p>
+</blockquote>
+<p>Por lo anterior, es natural que algunos de los textos clásicos de
+estadística matemática, los autores asumen que el lector sigue la idea
+de la referencia de la distribución <span class="math inline">\(p\)</span> en cuestión.</p>
+
+</div>
+<!-- </div> -->
+<h3>Referencias</h3>
+<div id="refs" class="references csl-bib-body hanging-indent">
+<div id="ref-Gelman95" class="csl-entry">
+Gelman, A., J. B. Carlin, H. S. Stern, y D. B. Rubin. 1995. <em>Bayesian Data Analysis</em>. 1.ª ed. Chapman; Hall/CRC.
+</div>
 </div>
             </section>
 
           </div>
         </div>
       </div>
-<a href="index.html" class="navigation navigation-prev " aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
-<a href="teoría-de-la-decisión.html" class="navigation navigation-next " aria-label="Next page"><i class="fa fa-angle-right"></i></a>
+<a href="cuestionamientos-sobre-el-enfoque-bayesiano.html" class="navigation navigation-prev " aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
+<a href="tópicos-básicos.html" class="navigation navigation-next " aria-label="Next page"><i class="fa fa-angle-right"></i></a>
     </div>
   </div>
 <script src="libs/gitbook-2.6.7/js/app.min.js"></script>

@@ -95,9 +95,11 @@ div.csl-indent {
 <li><a href="./">Modelos Bayesianos con R y STAN</a></li>
 
 <li class="divider"></li>
-<li class="chapter" data-level="" data-path="index.html"><a href="index.html"><i class="fa fa-check"></i>Prefacio</a>
+<li class="chapter" data-level="" data-path="index.html"><a href="index.html"><i class="fa fa-check"></i>Prefacio</a></li>
+<li class="chapter" data-level="" data-path="antes-de-comenzar.html"><a href="antes-de-comenzar.html"><i class="fa fa-check"></i>Antes de comenzar</a>
 <ul>
-<li class="chapter" data-level="" data-path="index.html"><a href="index.html#acerca-de-la-notación"><i class="fa fa-check"></i>Acerca de la notación</a></li>
+<li class="chapter" data-level="" data-path="cuestionamientos-sobre-el-enfoque-bayesiano.html"><a href="cuestionamientos-sobre-el-enfoque-bayesiano.html"><i class="fa fa-check"></i>Cuestionamientos sobre el enfoque bayesiano</a></li>
+<li class="chapter" data-level="" data-path="acerca-de-la-notación.html"><a href="acerca-de-la-notación.html"><i class="fa fa-check"></i>Acerca de la notación</a></li>
 </ul></li>
 <li class="chapter" data-level="1" data-path="tópicos-básicos.html"><a href="tópicos-básicos.html"><i class="fa fa-check"></i><b>1</b> Tópicos básicos</a>
 <ul>
@@ -123,6 +125,11 @@ div.csl-indent {
 <li class="chapter" data-level="2.3.1" data-path="criterios-de-información.html"><a href="criterios-de-información.html#criterio-dic"><i class="fa fa-check"></i><b>2.3.1</b> Criterio DIC</a></li>
 <li class="chapter" data-level="2.3.2" data-path="criterios-de-información.html"><a href="criterios-de-información.html#criterios-aic-y-bic"><i class="fa fa-check"></i><b>2.3.2</b> Criterios AIC y BIC</a></li>
 </ul></li>
+</ul></li>
+<li class="appendix"><span><b>Apéndice</b></span></li>
+<li class="chapter" data-level="A" data-path="algunas-distribuciones-de-probabilidad.html"><a href="algunas-distribuciones-de-probabilidad.html"><i class="fa fa-check"></i><b>A</b> Algunas distribuciones de probabilidad</a>
+<ul>
+<li class="chapter" data-level="A.1" data-path="distribuciones-discretas.html"><a href="distribuciones-discretas.html"><i class="fa fa-check"></i><b>A.1</b> Distribuciones discretas</a></li>
 </ul></li>
 <li class="chapter" data-level="" data-path="referencias.html"><a href="referencias.html"><i class="fa fa-check"></i>Referencias</a></li>
 <li class="divider"></li>
@@ -265,9 +272,9 @@ propiedad de ser distribuciones conjugadas, tal como muestra el
 siguiente resultado:</p>
 
 <div class="proposition">
-<p><span id="prp:FE1" class="proposition"><strong>Resultado 2.1  </strong></span>Sea <span class="math inline">\(Y\)</span> una variable aleatoria con función de densidad perteneciente a la familia exponencial uniparamétrica, entonces la familia exponencial uniparamétrica es conjugada con respecto a sí misma.
-```<br></p>
+<span id="prp:FE1" class="proposition"><strong>Resultado 2.1  </strong></span>Sea <span class="math inline">\(Y\)</span> una variable aleatoria con función de densidad perteneciente a la familia exponencial uniparamétrica, entonces la familia exponencial uniparamétrica es conjugada con respecto a sí misma.
 </div>
+<p><br></p>
 
 <div class="proof">
 <p> <span class="proof"><em>Prueba. </em></span> Observando la expresión <a href="la-distribución-previa.html#eq:uniexpo">(2.2)</a>, se debe encontrar una distribución previa en la familia exponencial uniparamétrica, tal que la distribución posterior, resultante del producto de la distribución previa con la verosimilitud sea también miembro de la familia exponencial uniparamétrica. Con base en lo anterior, la distribución previa, parametrizada por el hiperparámetro <span class="math inline">\(\alpha\)</span>, debe ser una función exponencial de los términos <span class="math inline">\(d(\theta)\)</span> y <span class="math inline">\(c(\theta)\)</span> como lo afirma <span class="citation"><a href="#ref-Jordan" role="doc-biblioref">Jordan</a> (<a href="#ref-Jordan" role="doc-biblioref">2004</a>)</span>. Esto es,
@@ -544,9 +551,9 @@ previa es independiente de los datos observados.</p>
 seguir siendo no informativa con diferentes parametrizaciones.</p>
 
 <div class="proposition">
-<p><span id="prp:unnamed-chunk-17" class="proposition"><strong>Resultado 2.8  </strong></span>La distribución previa no informativa de Jeffreys es invariante a transformaciones uno a uno. Es decir, si <span class="math inline">\(\phi=h(\theta)\)</span>, entonces <span class="math inline">\(p(\phi)\propto(I(\phi))^{1/2}\)</span>.
-```<br></p>
+<span id="prp:unnamed-chunk-17" class="proposition"><strong>Resultado 2.8  </strong></span>La distribución previa no informativa de Jeffreys es invariante a transformaciones uno a uno. Es decir, si <span class="math inline">\(\phi=h(\theta)\)</span>, entonces <span class="math inline">\(p(\phi)\propto(I(\phi))^{1/2}\)</span>.
 </div>
+<p><br></p>
 
 <div class="proof">
 <p> <span class="proof"><em>Prueba. </em></span> En primer lugar nótese que

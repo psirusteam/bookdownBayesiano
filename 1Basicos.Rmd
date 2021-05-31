@@ -80,6 +80,11 @@ De los anteriores ejemplos se observa que, bajo un mismo contexto, cuando se uti
 
 ## Algunos resultados de probabilidad
 
+Antes de entrar en el repaso de estos conceptos fundamentales, se definen los conceptos de **parámetro** y **espacio paramétrico** asociados a una distribución de probabilidad.
+
+1. Un parámetro es aquella cantidad que define la forma funcional de una distribución de probabilidad; es decir, cuando el parámetro cambia de valor, la función de densidad y la función de distribución cambian. Las distribuciones de probabilidad pueden tener más de un parámetro. Cuando una distribución tiene solo un parámetro, éste se denota usualmente por $\theta$, cuando se presenta más de un parámetro, la notación se cambia a $\btheta$, representando el vector de parámetros. 
+2. El espacio paramétrico, $\Theta$, es el conjunto que contiene todos los posibles valores que puede tomar el parámetro o el vector de parámetros. Para distribuciones con un solo parámetro, $\Theta$ será un subconjunto de $\mathbb{R}$, mientras que para distribuciones con dos o más parámetros, $\Theta$ será un subconjunto de $\mathbb{R}\times\mathbb{R}$.
+
 Para entender los fundamentos de la modelación bayesiana, es necesario
 recordar algunas definiciones y resultados de la teoría de probabilidad
 que ayudarán a hacer más expedito este periplo por la estadística

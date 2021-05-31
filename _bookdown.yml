@@ -6,8 +6,11 @@ new_session: yes
 rmd_files: [
   "index.Rmd",
   
+  "0Prefacio.Rmd",
   "1Basicos.Rmd",
   "2Inferencia.Rmd",
+  
+  "A1Distribuciones.Rmd",
   
   "99Referencias.Rmd",
   ]

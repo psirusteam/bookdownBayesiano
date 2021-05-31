@@ -246,9 +246,10 @@ relativamente restringuida de distribuciones que a la vez conservan la
 propiedad de ser distribuciones conjugadas, tal como muestra el
 siguiente resultado:
 
-\BeginKnitrBlock{proposition}<div class="proposition"><span class="proposition" id="prp:FE1"><strong>(\#prp:FE1) </strong></span>Sea $Y$ una variable aleatoria con función de densidad perteneciente a la familia exponencial uniparamétrica, entonces la familia exponencial uniparamétrica es conjugada con respecto a sí misma.
-```<br> 
-</div>\EndKnitrBlock{proposition}
+
+\BeginKnitrBlock{proposition}<div class="proposition"><span class="proposition" id="prp:FE1"><strong>(\#prp:FE1) </strong></span>Sea $Y$ una variable aleatoria con función de densidad perteneciente a la familia exponencial uniparamétrica, entonces la familia exponencial uniparamétrica es conjugada con respecto a sí misma.</div>\EndKnitrBlock{proposition}
+<br> 
+
 \BeginKnitrBlock{proof}<div class="proof">\iffalse{} <span class="proof"><em>Prueba. </em></span>  \fi{}Observando la expresión \@ref(eq:uniexpo), se debe encontrar una distribución previa en la familia exponencial uniparamétrica, tal que la distribución posterior, resultante del producto de la distribución previa con la verosimilitud sea también miembro de la familia exponencial uniparamétrica. Con base en lo anterior, la distribución previa, parametrizada por el hiperparámetro $\alpha$, debe ser una función exponencial de los términos $d(\theta)$ y $c(\theta)$ como lo afirma @Jordan. Esto es,
 \begin{equation}
 p(\theta \mid \alpha)\propto\exp\{w(\alpha) d(\theta)-\delta c(\theta)\},
@@ -526,9 +527,9 @@ previa es independiente de los datos observados.
 A continuación se evidencia la propiedad de esta distribución previa de
 seguir siendo no informativa con diferentes parametrizaciones.
 
-\BeginKnitrBlock{proposition}<div class="proposition"><span class="proposition" id="prp:unnamed-chunk-17"><strong>(\#prp:unnamed-chunk-17) </strong></span>La distribución previa no informativa de Jeffreys es invariante a transformaciones uno a uno. Es decir, si $\phi=h(\theta)$, entonces $p(\phi)\propto(I(\phi))^{1/2}$.
-```<br>
-</div>\EndKnitrBlock{proposition}
+\BeginKnitrBlock{proposition}<div class="proposition"><span class="proposition" id="prp:unnamed-chunk-17"><strong>(\#prp:unnamed-chunk-17) </strong></span>La distribución previa no informativa de Jeffreys es invariante a transformaciones uno a uno. Es decir, si $\phi=h(\theta)$, entonces $p(\phi)\propto(I(\phi))^{1/2}$.</div>\EndKnitrBlock{proposition}
+<br>
+
 \BeginKnitrBlock{proof}<div class="proof">\iffalse{} <span class="proof"><em>Prueba. </em></span>  \fi{}En primer lugar nótese que
 \begin{align*}
 I(\theta)=I(\phi) \mid \frac{\partial\phi}{\partial\theta} \mid ^{2}

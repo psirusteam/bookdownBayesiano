@@ -4,11 +4,11 @@
 
   <meta charset="utf-8" />
   <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-  <title>2.3 Criterios de información | Modelos Bayesianos con R y STAN</title>
+  <title>Antes de comenzar | Modelos Bayesianos con R y STAN</title>
   <meta name="description" content="Este es el repositorio del libro Modelos Bayesianos con R y STAN." />
   <meta name="generator" content="bookdown 0.22 and GitBook 2.6.7" />
 
-  <meta property="og:title" content="2.3 Criterios de información | Modelos Bayesianos con R y STAN" />
+  <meta property="og:title" content="Antes de comenzar | Modelos Bayesianos con R y STAN" />
   <meta property="og:type" content="book" />
   
   
@@ -16,7 +16,7 @@
   <meta name="github-repo" content="psirusteam/bookdownBayesiano" />
 
   <meta name="twitter:card" content="summary" />
-  <meta name="twitter:title" content="2.3 Criterios de información | Modelos Bayesianos con R y STAN" />
+  <meta name="twitter:title" content="Antes de comenzar | Modelos Bayesianos con R y STAN" />
   
   <meta name="twitter:description" content="Este es el repositorio del libro Modelos Bayesianos con R y STAN." />
   
@@ -31,8 +31,8 @@
   <meta name="apple-mobile-web-app-status-bar-style" content="black" />
   
   
-<link rel="prev" href="pruebas-de-hipótesis.html"/>
-<link rel="next" href="algunas-distribuciones-de-probabilidad.html"/>
+<link rel="prev" href="index.html"/>
+<link rel="next" href="cuestionamientos-sobre-el-enfoque-bayesiano.html"/>
 <script src="libs/header-attrs-2.8/header-attrs.js"></script>
 <script src="libs/jquery-2.2.3/jquery.min.js"></script>
 <link href="libs/gitbook-2.6.7/css/style.css" rel="stylesheet" />
@@ -152,118 +152,16 @@ div.csl-indent {
           <div class="page-inner">
 
             <section class="normal" id="section-">
-<div id="criterios-de-información" class="section level2" number="2.3">
-<h2><span class="header-section-number">2.3</span> Criterios de información</h2>
-<p>Los criterios de información constituyen una herramienta muy importante
-en el modelamiento estadístico, pues contribuyen a la selección de
-modelos de manera simple. Existen una variedad de estos criterios, a
-continuación se describen los dos criterios más comunes en el análisis
-bayesiano.</p>
-<div id="criterio-dic" class="section level3" number="2.3.1">
-<h3><span class="header-section-number">2.3.1</span> Criterio DIC</h3>
-<p>El criterio de información de <em>devianza</em> (DIC, por sus iniciales en inglés) es una generalización del popular criterio AIC para
-los modelos jerárquicos, y se basa en el concepto de la devianza que se
-define como</p>
-<p><span class="math display">\[\begin{equation}
-D(y, \boldsymbol \theta)=-2*\log(p(y|\boldsymbol \theta))
-\end{equation}\]</span></p>
-<p>cuya media posterior es una medida usual del ajuste del modelo.
-<span class="citation"><a href="#ref-Dempster74" role="doc-biblioref">Dempster</a> (<a href="#ref-Dempster74" role="doc-biblioref">1974</a>)</span> sugirió graficar la distribución posterior de
-la devianza para observar el ajuste del modelo a los datos. Una
-estimación de esta media posterior se basa en simulación de <span class="math inline">\(M\)</span> valores
-<span class="math inline">\(\boldsymbol \theta^1,\cdots,\boldsymbol \theta^M\)</span> de la distribución posterior de <span class="math inline">\(\boldsymbol \theta\)</span>,
-y está dada por</p>
-<p><span class="math display">\[\begin{equation*}
-\hat{E}_D=\frac{1}{M}\sum_{m=1}^MD(y,\boldsymbol \theta^m)
-\end{equation*}\]</span></p>
-<p>El DIC se define como</p>
-<p><span class="math display">\[\begin{equation*}
-DIC=\hat{E}_D+p_D
-\end{equation*}\]</span></p>
-<p>Donde <span class="math inline">\(p_D\)</span> es el número efectivo de parámetros. Nótese que en la
-anterior formulación, el DIC se puede descomponer en dos partes: la
-parte de la bondad de ajuste del modelo, medido a través de <span class="math inline">\(E_D\)</span>, y la
-parte que mide la complejidad del modelo <span class="math inline">\(p_D\)</span>. Otra formulación
-equivalente del DIC se obtiene teniendo en cuenta que</p>
-<p><span class="math display">\[\begin{equation*}
-p_D=\hat{E}_D - \hat{D}
-\end{equation*}\]</span></p>
-<p>Donde <span class="math inline">\(\hat{D}=-2*\log(p(y|\hat{\boldsymbol \theta}))\)</span> con <span class="math inline">\(\hat{\boldsymbol \theta}\)</span>
-denotando la mediposterior de <span class="math inline">\(\boldsymbol \theta\)</span>; es decir, <span class="math inline">\(\hat{D}\)</span> es la
-estimación de la devianza usando <span class="math inline">\(\hat{\boldsymbol \theta}\)</span>, y <span class="math inline">\(p_D\)</span> se puede ver
-como la mediposterior de la devianza menos la devianza de las medias
-posterior <span class="citation">(<a href="#ref-Spiegel" role="doc-biblioref">Spiegelhalter et al. 2002</a>)</span>. De esta forma, el DIC también se puede
-escribir como <span class="math display">\[\begin{equation*}
-DIC=\hat{D}+2p_D
-\end{equation*}\]</span></p>
-<p>Interpretación de DIC: El modelo con el menor DIC es considerado como el
-modelo que mejor predice un conjunto de datos con la misma estructura
-que los datos observados. Al respecto se deben tener en cuenta las
-siguientes consideraciones:</p>
-<ul>
-<li>El DIC puede ser negativo puesto que <span class="math inline">\(p(y|\theta)\)</span> puede tomar valores
-mayores a 1 asociado a una devianza pequeña.</li>
-<li><span class="math inline">\(p_D\)</span>, y por consiguiente el DIC, no es invariante a parametrizaciones del
-modelo. Se sugiere en la práctica usar parametrizaciones que conducen a
-la normalidad en la distribución posterior.</li>
-</ul>
-</div>
-<div id="criterios-aic-y-bic" class="section level3" number="2.3.2">
-<h3><span class="header-section-number">2.3.2</span> Criterios AIC y BIC</h3>
-<p>El criterio de información de Akaike (AIC) fue formalmente presentado por <span class="citation"><a href="#ref-Akaike" role="doc-biblioref">Akaike</a> (<a href="#ref-Akaike" role="doc-biblioref">1974</a>)</span>. Este criterio mide la pérdida de información al
-ajustar un modelo a un conjunto de datos; por esto, se buscan modelos
-que arrojen valores pequeños de AIC. Posteriormente <span class="citation">(<a href="#ref-AICc" role="doc-biblioref">Cavanaugh 1997</a>)</span>
-introdujo el factor de corrección para evitar que el AIC escoja modelos
-con demasiados parámetros en situaciones de tamaño de muestra pequeño.</p>
-<p>Por otro lado, el criterio de información bayesiano BIC, también
-conocido como el criterio de Schwarz <span class="citation">(<a href="#ref-Schwarz" role="doc-biblioref">Schwarz 1978</a>)</span>, también está
-formulado en términos de la función de verosimilitudel modelo y del
-número de parámetros. La expresión de estos criterios es como sigue:</p>
-<p><span class="math display">\[\begin{align*}
-AIC&amp;=-2\log(p(y|\hat{\boldsymbol \theta}))+2p\\
-AIC_c&amp;=AIC+\frac{2p^2+2p}{n-p-1}\\
-BIC&amp;=-2\log(p(y|\hat{\boldsymbol \theta}))+p\log(n)
-\end{align*}\]</span></p>
-<p>Donde <span class="math inline">\(p\)</span> es el número de parámetros en el modelo y <span class="math inline">\(n\)</span> el número de
-datos observados. Cabe resaltar que en el criterio BIC hay una mayor
-penalización por el número excesivo de parámetros que en el criterio
-AIC, y en la práctica se prefieren los modelos con un BIC menor.</p>
-<p>Se debe recalcar que los dos criterios tienen diferentes
-enfoques, el criterio BIC se enfoca en identificar el modelo verdadero,
-mientras que el criterio DIC enfoca en encontrar el modelo con mejor
-capacidad de predicción.</p>
-
-</div>
-</div>
-<!-- </div> -->
-
-
-
-<h3>Referencias</h3>
-<div id="refs" class="references csl-bib-body hanging-indent">
-<div id="ref-Akaike" class="csl-entry">
-Akaike, H. 1974. <span>«<span>A new look at the statistical model identification</span>»</span>. <em>IEEE Transactions on Automatic Control</em> 19 (6): 716-23. <a href="https://doi.org/10.1109/TAC.1974.1100705">https://doi.org/10.1109/TAC.1974.1100705</a>.
-</div>
-<div id="ref-AICc" class="csl-entry">
-Cavanaugh, J. E. 1997. <span>«<span>Unifying the derivations of the Akaike and corrected Akaike information criteria</span>»</span>. <em>Statistics <span class="math inline">\(\&amp;\)</span> Probability Letters</em> 31: 201-8. <a href="https://doi.org/10.1109/TAC.1974.1100705">https://doi.org/10.1109/TAC.1974.1100705</a>.
-</div>
-<div id="ref-Dempster74" class="csl-entry">
-Dempster, A. P. 1974. <span>«The Direct Use of Likelihood for Significance Testing»</span>. En <em>Proceedings of Conference on Foundational Questions in Statistical Inference</em>, 335-52. Department of Theoretical Statistics: University of Aarhus.
-</div>
-<div id="ref-Schwarz" class="csl-entry">
-Schwarz, G. 1978. <span>«Estimating the Dimension of a Model»</span>. <em>Annals of Statistics</em> 6: 461-64.
-</div>
-<div id="ref-Spiegel" class="csl-entry">
-Spiegelhalter, D. J., N. G. Best, B. P. Carlin, y A. VanderLinde. 2002. <span>«Bayesian measures of model complexity and fit»</span>. <em>Journal of the Royal Statistical Society</em> B 64: 583-639.
-</div>
+<div id="antes-de-comenzar" class="section level1 unnumbered">
+<h1>Antes de comenzar</h1>
 </div>
             </section>
 
           </div>
         </div>
       </div>
-<a href="pruebas-de-hipótesis.html" class="navigation navigation-prev " aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
-<a href="algunas-distribuciones-de-probabilidad.html" class="navigation navigation-next " aria-label="Next page"><i class="fa fa-angle-right"></i></a>
+<a href="index.html" class="navigation navigation-prev " aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
+<a href="cuestionamientos-sobre-el-enfoque-bayesiano.html" class="navigation navigation-next " aria-label="Next page"><i class="fa fa-angle-right"></i></a>
     </div>
   </div>
 <script src="libs/gitbook-2.6.7/js/app.min.js"></script>
