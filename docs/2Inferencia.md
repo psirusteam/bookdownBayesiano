@@ -576,7 +576,6 @@ p(\theta \mid Y) &\propto p(Y \mid \theta) p(\theta)\\
 &=\theta^{y+1/2-1}(1-\theta)^{n-y+1/2-1}
 \end{align*}
 Por tanto, la distribución de $\theta \mid Y$ es $Beta(y+1/2,n-y+1/2)$. Por construcción, esta distribución no está alterada ni influenciada por la distribución previa pues la misma es no informativa.</div>\EndKnitrBlock{example}
-<br>
 
 \BeginKnitrBlock{example}<div class="example"><span class="example" id="exm:EjemPoisson"><strong>(\#exm:EjemPoisson) </strong></span>Si $\mathbf{Y}=\{Y_1,\ldots,Y_n\}$ es una muestra aleatoria de variables con distribución de Poisson, entonces el espacio de muestreo del parámetro de interés será el intervalo $(0,\infty)$; por tanto utilizar la distribución uniforme como distribución previa no informativa no es conveniente. Ahora, la información de Fisher para la distribución conjunta es $I(\theta)=n/\theta$ puesto que
 \begin{equation*}
@@ -597,7 +596,6 @@ p(\theta \mid Y) \propto p(Y \mid \theta) p(\theta) \propto e^{-n\theta} \theta^
 =e^{-n\theta} \theta^{\sum_{i=1}^ny_i-1/2}
 \end{align*}
 Por tanto, la distribución de $\theta \mid \mathbf{Y}$ es $Gamma(\sum_{i=1}^ny_i+1/2,n)$. Por construcción, esta distribución no está alterada ni influenciada por la distribución previa pues la misma es no informativa.</div>\EndKnitrBlock{example}
-<br>
 
 \BeginKnitrBlock{example}<div class="example"><span class="example" id="exm:unnamed-chunk-20"><strong>(\#exm:unnamed-chunk-20) </strong></span>Suponga que $\mathbf{Y}=\{Y_1\ldots, Y_n\}$ es una muestra aleatoria con distribución normal de parámetros $(\theta, \sigma^2)'$. Se puede verificar que la matriz de información de Fisher para el vector de parámetros está dada por
 \begin{equation}
@@ -611,7 +609,6 @@ cuyo determinante está dado por $\frac{n^2}{2\sigma^6}$. Por lo tanto, la distr
 \begin{equation}
 p(\theta,\sigma^2)\propto 1/\sigma^3
 \end{equation}</div>\EndKnitrBlock{example}
-<br>
 
 ## Pruebas de hipótesis
 

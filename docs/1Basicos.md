@@ -34,7 +34,6 @@ R=E(A-\theta)^2&=Var(A)+(E(A)-\theta)^2\\
 Y al buscar los coeficientes $c_i$ que minimizan la anterior expresión, encontramos que $c_i=\theta^2/(\sigma^2+n\theta^2)$ para todo $i$. Como estos coeficientes conducen a un estimador que depende del parámetro desconocido, concluimos que no hay ningún estimador que minimiza el riesgo.
 
 Para encontrar una solución, es necesario restringir aún más el rango de estimadores; para eso, se impone la restricción de que $\sum_{i=1}^n c_i=1$. De esta forma, el riesgo está dado por $R=\sum c_i^2\sigma^2$. Dado que $\sigma^2$ es fijo, al minimizar $\sum c_i^2$ sujeto a la restricción, se tiene que la solución es $c_i=1/n$ para todo $i$, y así encontramos que el mejor estimador (en el sentido de minimizar el riesgo de la función de pérdida cuadrática) dentro de todas las formas lineales con $\sum c_i=1$ es la media muestral $\bar{X}$.</div>\EndKnitrBlock{example}
-<br>
 
 \BeginKnitrBlock{example}<div class="example"><span class="example" id="exm:unnamed-chunk-2"><strong>(\#exm:unnamed-chunk-2) </strong></span>Suponga que se desea estimar un parámetro de interés $\theta$ en el contexto de la estadística bayesiana y denotamos la función de densidad posterior de $\theta$ como $p(\theta|\mathbf{X})$, entonces si utilizamos la función de pérdida cuadrática, el riesgo asociado será
 
@@ -43,7 +42,6 @@ R&=E(L(A,\theta))=E (A-\theta)^2=Var(\theta)+(E(\theta)-A)^2
 \end{align*}
 
 que es minimizado si $A=E(\theta)$. Es decir, la mejor acción para estimar $\theta$ es utilizar su tomada con respecto a la distribución posterior $p(\theta|\mathbf{X})$.</div>\EndKnitrBlock{example}
-<br>
 
 \BeginKnitrBlock{example}<div class="example"><span class="example" id="exm:unnamed-chunk-3"><strong>(\#exm:unnamed-chunk-3) </strong></span>En el mismo contexto del ejemplo anterior, si cambiamos la función de pérdida a la siguiente
 \begin{equation*}
@@ -96,7 +94,7 @@ y la distribución condicional de $\mathbf{X}$ dado $\mathbf{Y}$ como
 p(\mathbf{X} \mid \mathbf{Y})
 =\frac{p(\mathbf{X},\mathbf{Y})}{p(\mathbf{Y})}
 \end{equation}</div>\EndKnitrBlock{definition}
-<br>
+
 
 \BeginKnitrBlock{proposition}<div class="proposition"><span class="proposition" id="prp:Res121"><strong>(\#prp:Res121) </strong></span>Suponga los vectores $\mathbf{X}$, $\mathbf{Y}$ y un tercer vector $\mathbf{Z}=(Z_1,\ldots,Z_r)'$ definido sobre el espacio de muestreo  $\mathcal{Z}$. Entonces se tiene que
 \begin{equation}
@@ -130,7 +128,7 @@ Por otro lado,
 \begin{equation}
 p(\mathbf{X},\mathbf{Y} \mid \mathbf{Z})=p(\mathbf{X} \mid \mathbf{Z})p(\mathbf{Y} \mid \mathbf{Z})
 \end{equation}</div>\EndKnitrBlock{definition}
-<br>
+
 
 \BeginKnitrBlock{proposition}<div class="proposition"><span class="proposition" id="prp:Res122"><strong>(\#prp:Res122) </strong></span>Si $\mathbf{X}$ es condicionalmente independiente de $\mathbf{Y}$ con respecto a $\mathbf{Z}$, entonces se tiene que
 \begin{equation}
