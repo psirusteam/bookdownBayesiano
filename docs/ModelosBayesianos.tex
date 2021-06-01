@@ -48,6 +48,46 @@
   urlcolor=Blue,
   pdfcreator={LaTeX via pandoc}}
 \urlstyle{same} % disable monospaced font for URLs
+\usepackage{color}
+\usepackage{fancyvrb}
+\newcommand{\VerbBar}{|}
+\newcommand{\VERB}{\Verb[commandchars=\\\{\}]}
+\DefineVerbatimEnvironment{Highlighting}{Verbatim}{commandchars=\\\{\}}
+% Add ',fontsize=\small' for more characters per line
+\usepackage{framed}
+\definecolor{shadecolor}{RGB}{248,248,248}
+\newenvironment{Shaded}{\begin{snugshade}}{\end{snugshade}}
+\newcommand{\AlertTok}[1]{\textcolor[rgb]{0.94,0.16,0.16}{#1}}
+\newcommand{\AnnotationTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
+\newcommand{\AttributeTok}[1]{\textcolor[rgb]{0.77,0.63,0.00}{#1}}
+\newcommand{\BaseNTok}[1]{\textcolor[rgb]{0.00,0.00,0.81}{#1}}
+\newcommand{\BuiltInTok}[1]{#1}
+\newcommand{\CharTok}[1]{\textcolor[rgb]{0.31,0.60,0.02}{#1}}
+\newcommand{\CommentTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textit{#1}}}
+\newcommand{\CommentVarTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
+\newcommand{\ConstantTok}[1]{\textcolor[rgb]{0.00,0.00,0.00}{#1}}
+\newcommand{\ControlFlowTok}[1]{\textcolor[rgb]{0.13,0.29,0.53}{\textbf{#1}}}
+\newcommand{\DataTypeTok}[1]{\textcolor[rgb]{0.13,0.29,0.53}{#1}}
+\newcommand{\DecValTok}[1]{\textcolor[rgb]{0.00,0.00,0.81}{#1}}
+\newcommand{\DocumentationTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
+\newcommand{\ErrorTok}[1]{\textcolor[rgb]{0.64,0.00,0.00}{\textbf{#1}}}
+\newcommand{\ExtensionTok}[1]{#1}
+\newcommand{\FloatTok}[1]{\textcolor[rgb]{0.00,0.00,0.81}{#1}}
+\newcommand{\FunctionTok}[1]{\textcolor[rgb]{0.00,0.00,0.00}{#1}}
+\newcommand{\ImportTok}[1]{#1}
+\newcommand{\InformationTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
+\newcommand{\KeywordTok}[1]{\textcolor[rgb]{0.13,0.29,0.53}{\textbf{#1}}}
+\newcommand{\NormalTok}[1]{#1}
+\newcommand{\OperatorTok}[1]{\textcolor[rgb]{0.81,0.36,0.00}{\textbf{#1}}}
+\newcommand{\OtherTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{#1}}
+\newcommand{\PreprocessorTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textit{#1}}}
+\newcommand{\RegionMarkerTok}[1]{#1}
+\newcommand{\SpecialCharTok}[1]{\textcolor[rgb]{0.00,0.00,0.00}{#1}}
+\newcommand{\SpecialStringTok}[1]{\textcolor[rgb]{0.31,0.60,0.02}{#1}}
+\newcommand{\StringTok}[1]{\textcolor[rgb]{0.31,0.60,0.02}{#1}}
+\newcommand{\VariableTok}[1]{\textcolor[rgb]{0.00,0.00,0.00}{#1}}
+\newcommand{\VerbatimStringTok}[1]{\textcolor[rgb]{0.31,0.60,0.02}{#1}}
+\newcommand{\WarningTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
 \usepackage{longtable,booktabs,array}
 \usepackage{calc} % for calculating minipage widths
 % Correct order of tables after \paragraph or \subparagraph
@@ -111,7 +151,7 @@
 
 \title{Modelos Bayesianos con R y STAN}
 \author{Andrés Gutiérrez - Hanwen Zhang}
-\date{2021-05-30}
+\date{2021-05-31}
 
 \usepackage{amsthm}
 \newtheorem{theorem}{Teorema}[chapter]
@@ -1548,7 +1588,6 @@ ss
 f_Y(y)=\frac{1}{N}I_{\{1,2,\cdots,N\}}(y)
 \end{equation}
 \end{definition}
-\textbackslash{}
 
 Esta distribución describe situaciones donde los resultados de un experimento aleatorio tienen la misma probabilidad de ocurrencia. Entre los ejemplos de la distribución uniforme discreta en la vida práctica están el lanzamiento de una moneda corriente, el lanzamiento de un dado corriente, la extracción de una urna que contiene bolas enumeradas de 1 a \(N\).
 
@@ -1577,7 +1616,6 @@ f_Y(y)=\frac{\binom{R}{y}\binom{N-R}{n-y}}{\binom{N}{n}}I_{\{0,1,\cdots,n\}}(y),
 \end{equation}
 y se nota como \(Y\sim Hg(n,R,N)\).
 \end{definition}
-\textbackslash{}
 
 Suponga que en una urna hay \(N\) bolas en total, donde \(R\) de ellas son del color negro y los \(N-R\) son del color blanco, se extrae aleatoriamente
 \(n\) bolas de la urna (\(n<N\)), entonces la variable ``número de bolas negras extraídas'' tiene distribución hipergeométrica con parámetros \(n\), \(R\) y
@@ -1595,8 +1633,6 @@ Suponga que en una urna hay \(N\) bolas en total, donde \(R\) de ellas son del c
 \end{itemize}
 \end{proposition}
 
-\textbackslash{}
-
 El anterior resultado no incluye la función generadora de momentos, pues éste no ha resultado ser útil en la teoría relacionada con la distribución hipergeométrica.
 
 \hypertarget{distribuciuxf3n-bernoulli}{%
@@ -1613,9 +1649,6 @@ f_Y(y)=p^y(1-p)^{1-y}I_{\{0,1\}}(y),
 
 y se nota como \(Y\sim Ber(p)\).
 \end{definition}
-\textbackslash{}
-
-La distribución Bernoulli es un caso particular de la distribución binomial cuando \(n=1\).
 
 \begin{proposition}
 \protect\hypertarget{prp:unnamed-chunk-6}{}{\label{prp:unnamed-chunk-6} }Si \(Y\) es una variable aleatoria con distribución Bernoulli con parámetro \(p\), entonces:
@@ -1643,13 +1676,11 @@ f_Y(y)=\binom{n}{y}p^y(1-p)^{n-y}I_{\{0,1,\cdots,n\}}(y),
 
 y se nota como \(Y\sim Bin(n,p)\).
 \end{definition}
-\textbackslash{}
 
 \begin{proposition}
 \protect\hypertarget{prp:unnamed-chunk-8}{}{\label{prp:unnamed-chunk-8} }Sea \(Y_1\), \(\cdots\), \(Y_n\) variables aleatorias independientes e idénticamente distribuidas con distribución Bernoulli con parámetro \(p\),
-entonces la variable \(\sum_{i=1}^nY_i\) tiene distribución \(Bin(n,p)\).
+entonces la variable \(\sum_{i=1}^nY_i\) tiene distribución \(Bin(n,p)\). Por ende, la distribución Bernoulli es un caso particular de la distribución binomial cuando \(n=1\).
 \end{proposition}
-\textbackslash{}
 
 \begin{proof}
 \iffalse{} {Prueba. } \fi{}La demostración radica en el hecho de que la función generadora de momentos caracteriza la distribución probabilística, entonces basta demostrar que la función generadora de momentos de \(\sum_{i=1}^nX_i\) es la de una distribución \(Bin(n,p)\). Tenemos lo siguiente:
@@ -1661,7 +1692,6 @@ m_{\sum Y_i}(t)=E(e^{\sum tY_i})&=E(\prod_{i=1}^ne^{tY_i})\\
                &=(pe^t+1-p)^n
 \end{align*}
 \end{proof}
-\textbackslash{}
 
 Una aplicación de esta distribución es cuando tenemos un número \(n\) de repeticiones independientes de un experimento donde cada uno tiene dos
 posibles resultados que se podrían llamarse como éxito o fracaso y donde la probabilidad de éxito \(p\) es constante en cada una de las repeticiones. Por tanto, la variable número de éxitos obtenidos en las \(n\) repeticiones tiene distribución \(Bin(n,p)\). La distribución binomial tiene dos parámetros, \(n\) y \(p\); sin embargo, cuando \(n\) es conocido, la distribución dependerá sólo del valor \(p\) que sería el único parámetro con espacio paramétrico \(\Theta=(0,1)\).
@@ -1690,7 +1720,6 @@ posibles resultados que se podrían llamarse como éxito o fracaso y donde la pr
 P(y\mid \theta, r)=\frac{\Gamma(r+y_i)}{y_i!\Gamma(r)}\theta^r(1-\theta)^{1-y_i}I_{(0,1,2,\ldots)}(y)
 \end{equation}
 \end{definition}
-\textbackslash{}
 
 Esta distribución siempre ha tenido lugar al resolver el problema del número de ensayos necesarios para lograr un número específico de éxitos. Por supuesto, si \(r\) es el número de éxitos necesarios y se conoce que la probabilidad de éxito es \(\theta\), entonces la distribución binomial negativa corresponde a un modelo probabilístico, afianzado durante siglos, que permite la resolución de este tipo de situaciones.
 
@@ -1727,7 +1756,6 @@ f_Y(y)=\frac{e^{-\lambda}\lambda^y}{y!}I_{\{0,1,\cdots\}}(y)
 
 y se nota como \(Y\sim P(\lambda)\).
 \end{definition}
-\textbackslash{}
 
 Nótese que la distribución Poisson tiene solo un parámetro \(\theta=\lambda\), y el espacio paramétrico es \(\Theta=(0,\infty)\).
 
@@ -1744,8 +1772,6 @@ Nótese que la distribución Poisson tiene solo un parámetro \(\theta=\lambda\)
   \(m_Y(t)=\exp\{\lambda(e^t-1)\}\).
 \end{itemize}
 \end{proposition}
-
-\textbackslash{}
 
 \begin{proposition}
 \protect\hypertarget{prp:unnamed-chunk-15}{}{\label{prp:unnamed-chunk-15} }Sea \(Y_1\), \(\cdots\), \(Y_n\) variables aleatorias independientes con distribución \(P(\lambda_i)\) para \(i=1,\cdots,n\), entonces la variable \(\sum_{i=1}^nX_i\) tiene distribución \(P(\sum_{i=1}^n\lambda_i)\).
@@ -1764,7 +1790,6 @@ Nótese que la distribución Poisson tiene solo un parámetro \(\theta=\lambda\)
 f_Y(y)=\frac{1}{b-a}I_{[a,b]}(y)
 \end{equation}
 \end{definition}
-\textbackslash{}
 
 \begin{proposition}
 \protect\hypertarget{prp:unnamed-chunk-17}{}{\label{prp:unnamed-chunk-17} }Si \(Y\) es una variable aleatoria con distribución uniforme continua sobre \([a,b]\), entonces
@@ -1790,7 +1815,6 @@ f_Y(y)=\frac{1}{b-a}I_{[a,b]}(y)
 p(Y\mid \theta, \gamma)=\frac{\theta}{\gamma^\theta}y^{\theta-1}exp\left\{-\frac{y^\theta}{\gamma^\theta}  \right\}I_{[0,\infty)}(y)
 \end{equation}
 \end{definition}
-\textbackslash{}
 
 \begin{proposition}
 \protect\hypertarget{prp:unnamed-chunk-19}{}{\label{prp:unnamed-chunk-19} }Si \(Y\) es una variable aleatoria con distribución Weibull, entonces
@@ -1816,7 +1840,6 @@ p(Y\mid \theta, \gamma)=\frac{\theta}{\gamma^\theta}y^{\theta-1}exp\left\{-\frac
 p(y \mid \theta, \lambda )= \theta \exp(\theta y)\exp\left\{\lambda-\exp(\lambda+\theta y)\right\}
 \end{equation}
 \end{definition}
-\textbackslash{}
 
 \begin{proposition}
 \protect\hypertarget{prp:unnamed-chunk-21}{}{\label{prp:unnamed-chunk-21} }Si \(Y\) es una variable aleatoria con distribución valor-extremo, entonces
@@ -1844,7 +1867,6 @@ p(\theta \mid \alpha,\beta)=\frac{\beta^\alpha}{\Gamma(\alpha)}\theta^{\alpha-1}
 
 donde \(\Gamma(k)=\int_0^{\infty}u^{k-1}\exp(-u)\ du\).
 \end{definition}
-\textbackslash{}
 
 La distribución Gamma tiene dos parámetros: \(\alpha\) y \(\beta\), en este caso, el vector de hiper-parámetros es \(\boldsymbol \theta=(\alpha,\theta)'\) donde el espacio paramétrico está dado por \(\Theta=(0,\infty)\times(0,\infty)\).
 
@@ -1859,8 +1881,6 @@ La distribución Gamma tiene dos parámetros: \(\alpha\) y \(\beta\), en este ca
   \(Var(Y)=\alpha/\theta^2\).
 \end{itemize}
 \end{proposition}
-
-\textbackslash{}
 
 \begin{proposition}
 \protect\hypertarget{prp:unnamed-chunk-24}{}{\label{prp:unnamed-chunk-24} }Sea \(Y_1\), \(\cdots\), \(Y_n\) variables aleatorias independientes con distribución Gamma con parámetro de forma \(\alpha_i\) y parámetro de escala \(\beta\) para \(i=1,\cdots,n\), entonces la variable \(\sum_{i=1}^nX_i\) tiene distribución Gamma con parámetro de forma \(\sum_{i=1}^n\alpha_i\) y parámetro de escala \(\theta\).
@@ -1878,7 +1898,6 @@ p(y \mid \alpha,\beta)=\frac{\beta^\alpha}{\Gamma(\alpha)}y^{-\alpha-1} e^{-\bet
 
 donde \(\Gamma(k)=\int_0^{\infty}u^{k-1}\exp(-u)\ du\).
 \end{definition}
-\textbackslash{}
 
 La distribución Gamma-inversa tiene dos parámetros: \(\alpha\) y \(\beta\); en este caso, el vector de hiper-parámetros es \(\boldsymbol \theta=(\alpha,\beta)'\) donde el espacio paramétrico está dado por \(\Theta=(0,\infty)\times(0,\infty)\).
 
@@ -1894,8 +1913,6 @@ La distribución Gamma-inversa tiene dos parámetros: \(\alpha\) y \(\beta\); en
 \end{itemize}
 \end{proposition}
 
-\textbackslash{}
-
 \begin{proposition}
 \protect\hypertarget{prp:unnamed-chunk-27}{}{\label{prp:unnamed-chunk-27} }Si \(X\) es una variable aleatoria con distribución \(Gamma(\alpha,\beta)\), entonces \(1/X\) tiene distribución \(Gamma-inversa(\alpha,1/\beta)\).
 \end{proposition}
@@ -1910,7 +1927,6 @@ La distribución Gamma-inversa tiene dos parámetros: \(\alpha\) y \(\beta\); en
 f_Y(y)=\frac{1}{\theta}e^{-y/\theta}I_{(0,\infty)}(y)
 \end{equation}
 \end{definition}
-\textbackslash{}
 
 La distribución exponencial es un caso particular de la distribución Gamma cuando el parámetro de forma \(k\) toma el valor 1, y usualmente se utiliza para describir la vida útil de un componente eléctrico o el tiempo necesario para la ocurrencia de algún evento.
 
@@ -1928,8 +1944,6 @@ La distribución exponencial es un caso particular de la distribución Gamma cua
 \end{itemize}
 \end{proposition}
 
-\textbackslash{}
-
 \begin{proposition}
 \protect\hypertarget{prp:unnamed-chunk-30}{}{\label{prp:unnamed-chunk-30} }Sea \(Y_1\), \(\cdots\), \(Y_n\) variables aleatorias independientes e idénticamente distribuidas con distribución exponencial con parámetro de escala \(\theta\), entonces la variable \(\sum_{i=1}^nX_i\) tiene distribución Gamma con parámetro de forma \(n\) y parámetro de escala \(\theta\).
 \end{proposition}
@@ -1946,7 +1960,6 @@ f_Y(y)=\frac{1}{Beta(\alpha,\beta)}y^{\alpha-1}(1-y)^{\beta-1}I_{[0,1]}(y).
 
 donde \(Beta(\alpha,\beta)=\dfrac{\gamma(\alpha)\gamma(\beta)}{\gamma(\alpha+\beta)}\).
 \end{definition}
-\textbackslash{}
 
 La distribución Beta tiene dos parámetros: \(\alpha\) y \(\beta\); en este caso, el vector de parámetros es \(\boldsymbol \theta=(\alpha,\beta)'\) donde el espacio paramétrico está dado por \(\Theta=(0,\infty)\times(0,\infty)\). Pero cuando uno de los dos parámetros es fijo, por ejemplo \(\theta\), entonces la distribución tendría un sólo parámetro: \(k\).
 
@@ -1976,7 +1989,6 @@ f_Y(y)=\frac{1}{\sqrt{2\pi\sigma^2}}\exp\left\{-\frac{1}{2\sigma^2}(y-\mu)^2\rig
 
 donde \(\sigma>0\) y se nota como \(Y\sim N(\mu,\sigma^2)\).
 \end{definition}
-\textbackslash{}
 
 La distribución normal tiene dos parámetros, representado como \(\boldsymbol \theta=(\mu,\sigma^2)\), mientras que su espacio paramétrico es \(\Theta=\mathbb{R}\times(0,\infty)\).
 
@@ -1994,14 +2006,11 @@ La distribución normal tiene dos parámetros, representado como \(\boldsymbol \
 \end{itemize}
 \end{proposition}
 
-\textbackslash{}
-
 Cuando \(\mu=0\) y \(\sigma=1\), se dice que \(Y\) tiene distribución normal estándar y usualmente se denota por \(Z\).
 
 \begin{proposition}
 \protect\hypertarget{prp:unnamed-chunk-35}{}{\label{prp:unnamed-chunk-35} }Si \(Y\sim N(\mu,\sigma^2)\), y \(\alpha\), \(\beta\) son constantes, entonces la variable \(\alpha Y+\beta\) tiene distribución \(N(\alpha\mu+\beta,\alpha^2\sigma^2)\).
 \end{proposition}
-\textbackslash{}
 
 \begin{proof}
 \iffalse{} {Prueba. } \fi{}Se usará el hecho de que la función generadora de momentos caracteriza la distribución probabilística. Se tiene que:
@@ -2016,7 +2025,6 @@ m_{\alpha Y+\beta}(t)&=E(e^{t(\alpha Y+\beta)})\\
 
 la cual es la función generadora de momentos de una distribución \(N(\alpha\mu+\beta,\alpha^2\sigma^2)\), y el resultado queda demostrado.
 \end{proof}
-\textbackslash{}
 
 Como consecuencia inmediata del anterior resultado, se define la estandarización, que es fundamental en la teoría relacionada con las distribuciones normales. Si \(Y\sim N(\mu,\sigma^2)\), entonces la variable \(Z=\frac{Y-\mu}{\sigma}\) tiene distribución normal estándar, y la anterior transformación se conoce como la normal estandarizada.
 
@@ -2036,7 +2044,6 @@ p(Y\mid \mu, \sigma^2)=\frac{1}{y\sqrt{2\pi\sigma^2}}\exp\{\frac{-1}{2\sigma^2(\
 
 Nótese que si \(\mu\) y \(\sigma^2\) son la media y la varianza de \(\ln(Y)\), entonces \(\ln(Y)\) tiene distribución normal de media \(\mu\) y varianza \(\sigma^2\).
 \end{definition}
-\textbackslash{}
 
 \begin{proposition}
 \protect\hypertarget{prp:unnamed-chunk-39}{}{\label{prp:unnamed-chunk-39} }Si \(Y\) es una variable aleatoria con distribución log-normal, entonces
@@ -2062,14 +2069,12 @@ f_Y(y)=\frac{y^{(n/2)-1}e^{-y/2}}{2^{n/2}\Gamma(n/2)}I_{(0,\infty)}(y),
 
 y se nota como \(Y\sim\chi^2_n\).
 \end{definition}
-\textbackslash{}
 
 La distribución Ji-cuadrado con \(n\) grados de libertad es un caso particular de la distribución Gamma cuando el parámetro de forma \(k\) toma el valor \(n/2\) y el parámetro de escala toma el valor 2. También, en la literatura estadística existe la siguiente definición para la distribución Ji-cuadrado.
 
 \begin{definition}
 \protect\hypertarget{def:unnamed-chunk-41}{}{\label{def:unnamed-chunk-41} }Si \(Z_1\), \(\cdots\), \(Z_n\) son variables aleatorias independientes e idénticamente distribuidas con distribución normal estándar, entonces la variable \(\sum_{i=1}^nZ_i^2\) tiene distribución Ji-cuadrado con \(n\) grados de libertad.
 \end{definition}
-\textbackslash{}
 
 \begin{proposition}
 \protect\hypertarget{prp:unnamed-chunk-42}{}{\label{prp:unnamed-chunk-42} }Si \(Y\) es una variable aleatoria con distribución Ji-cuadro con \(n\) grados de libertad, entonces
@@ -2084,8 +2089,6 @@ La distribución Ji-cuadrado con \(n\) grados de libertad es un caso particular 
   \(m_Y(t)=\left(\frac{1}{1-2t}\right)^{n/2}\) para \(t<1/2\), y no existe para otros valores de \(t\).
 \end{itemize}
 \end{proposition}
-
-\textbackslash{}
 
 \begin{proposition}
 \protect\hypertarget{prp:unnamed-chunk-43}{}{\label{prp:unnamed-chunk-43} }Sea \(Z_1\), \(\cdots\), \(Z_m\) variables aleatorias independientes con distribución \(\chi^2_{n_i}\) para \(i=1,\cdots,m\), entonces la variable \(\sum_{i=1}^mZ_i\) tiene distribución Ji-cuadrado con \(\sum_{i=1}^mn_i\) grados de libertad.
@@ -2105,14 +2108,12 @@ f_Y(y)=\frac{\Gamma(\frac{n+1}{2})}{\sqrt{\pi n}\ \Gamma(\frac{n}{2})}\left(1+\f
 
 donde \(n>0\) y se nota como \(Y\sim t_n\).
 \end{definition}
-\textbackslash{}
 
 Otra definición que se encuentra frecuentemente en la literatura estadística es la siguiente.
 
 \begin{definition}
 \protect\hypertarget{def:unnamed-chunk-45}{}{\label{def:unnamed-chunk-45} }Sea \(Z\) una variable aleatoria con distribución normal estándar y \(Y\) una variable aleatoria con distribución Ji-cuadrado con \(n\) grados de libertad, si \(Z\) y \(Y\) son independientes, entonces la variable \(\frac{Z}{\sqrt{Y/n}}\) tiene distribución t-student con \(n\) grados de libertad.
 \end{definition}
-\textbackslash{}
 
 La función de densidad de la distribución t-student es muy parecida a la de distribución normal estándar, entre más grande sea el grado de libertad, más se parece a la distribución normal estándar.
 
@@ -2143,7 +2144,6 @@ I_\mathbb{R}(y),
 
 donde \(n>0\) y se nota como \(Y\sim t_n(\theta,\sigma^2)\).
 \end{definition}
-\textbackslash{}
 
 \begin{proposition}
 \protect\hypertarget{prp:unnamed-chunk-48}{}{\label{prp:unnamed-chunk-48} }Si \(Y\) es una variable aleatoria con distribución t-student generalizada, entonces
@@ -2171,14 +2171,12 @@ f_Y(y)=\frac{\Gamma(\frac{m+n}{2})}{\Gamma(\frac{m}{2})\Gamma(\frac{n}{2})}\left
 
 y se nota como \(Y\sim F^m_n\).
 \end{definition}
-\textbackslash{}
 
 Otra definición para la distribución F es como sigue:
 
 \begin{definition}
 \protect\hypertarget{def:unnamed-chunk-50}{}{\label{def:unnamed-chunk-50} }Sea \(Y\) y \(Y\) variables aleatorias independientes con distribuciones Ji-cuadrado con \(m\) y \(n\) grados de libertad, respectivamente, entonces la variable \(\frac{Y/m}{Y/n}\) tiene distribución F con \(m\) grados de libertad en el numerador y \(n\) grados de libertado en el denominador.
 \end{definition}
-\textbackslash{}
 
 \begin{proposition}
 \protect\hypertarget{prp:unnamed-chunk-51}{}{\label{prp:unnamed-chunk-51} }Si \(Y\) es una variable aleatoria con distribución F con \(m\) grados de libertad en el numerador y \(n\) grados de libertado en el denominador, entonces
@@ -2213,7 +2211,6 @@ donde
 \binom{p}{y_1,\ldots,y_p}=\frac{p!}{y_1!\cdots y_p!}.
 \end{equation}
 \end{definition}
-\textbackslash{}
 
 Como \citet{Gelman03}, afirma esta distribución es una generalización de la distribución binomial. La distribución marginal de una sola variable \(Y_i\) es \(Binomial(p,\theta_i)\)
 
@@ -2240,7 +2237,6 @@ p(\mathbf{Y} \mid \boldsymbol \theta)=\frac{\Gamma(\theta_1+\cdots+\theta_p)}{\G
 y^{\theta_1-1}\cdots y^{\theta_p-1} \ \ \ \ \ \theta_i>0 \texttt{ y } \sum_{i=1}^p\theta_i=1.
 \end{equation}
 \end{definition}
-\textbackslash{}
 
 Esta distribución es una generalización de la distribución beta. La distribución marginal de una sola variable \(Y_i\) es \(Beta(\theta_i,(\sum_{i=1}^p\theta_i)-\theta_i)\)
 
@@ -2269,7 +2265,6 @@ p(\mathbf{Y} \mid \boldsymbol \theta,\boldsymbol \Sigma)=(2\pi)^{-p/2} \mid \bol
 
 donde \(\mid \boldsymbol \Sigma\mid\) se refiere al determinante de la matriz \(\boldsymbol \Sigma\), la cual es simétrica y definida positiva de orden \(p\times p\).
 \end{definition}
-\textbackslash{}
 
 La distribución Normal Multivariante es el baluarte de una gran cantidad de técnicas y métodos estadísticos como son los modelos lineales, los modelos lineales generalizados, el análisis factorial, etc. Algunas de sus propiedades se citan a continuación.
 
@@ -2295,8 +2290,6 @@ La distribución Normal Multivariante es el baluarte de una gran cantidad de té
 \end{itemize}
 \end{proposition}
 
-\textbackslash{}
-
 \begin{proposition}
 \protect\hypertarget{prp:unnamed-chunk-58}{}{\label{prp:unnamed-chunk-58} }Si \(\mathbf{Y}\) es una vector aleatorio con distribución Normal Multivariante, entonces
 
@@ -2308,8 +2301,6 @@ La distribución Normal Multivariante es el baluarte de una gran cantidad de té
   \(Var(\mathbf{Y})=\boldsymbol \Sigma\)
 \end{itemize}
 \end{proposition}
-
-\textbackslash{}
 
 \begin{proposition}
 \protect\hypertarget{prp:unnamed-chunk-59}{}{\label{prp:unnamed-chunk-59} }Dado \(\mathbf{Y}\) un vector aleatorio particionado como \(\mathbf{Y}=(\mathbf{Y}_1',\mathbf{Y}_2')\) con esperanza \(\boldsymbol \theta=(\boldsymbol \theta_1',\boldsymbol \theta_2')\) y matrix de varianzas y covarianzas
@@ -2327,7 +2318,6 @@ Si \(\mathbf{Y}_1 \mid \mathbf{Y}_2\sim N(\boldsymbol \theta_1+\boldsymbol \Sigm
 \mathbf{Y}\sim N(\boldsymbol \theta,\boldsymbol \Sigma).
 \end{equation*}
 \end{proposition}
-\textbackslash{}
 
 \begin{proposition}
 \protect\hypertarget{prp:unnamed-chunk-60}{}{\label{prp:unnamed-chunk-60} }Si \(\mathbf{Y}_1,\ldots,\mathbf{Y}_n\) es una muestra aleatoria de vectores con distribución Normal Multivariante, entonces la verosimilitud de la muestra se puede escribir como
@@ -2338,7 +2328,6 @@ Si \(\mathbf{Y}_1 \mid \mathbf{Y}_2\sim N(\boldsymbol \theta_1+\boldsymbol \Sigm
 
 Donde \(\mathbf{S}_{\boldsymbol \theta}=\sum_{i=1}^n(\mathbf{Y}_i-\boldsymbol \theta)(\mathbf{Y}_i-\boldsymbol \theta)'\).
 \end{proposition}
-\textbackslash{}
 
 \begin{proof}
 \iffalse{} {Prueba. } \fi{}La verosimilitud de la muestra aleatoria está dada por
@@ -2388,7 +2377,6 @@ p(\boldsymbol \Sigma)&=\left( 2^{vp/2}\pi^{p(p-1)/4}\prod_{i=1}^p \Gamma\left(\f
 
 donde \(\mid \boldsymbol \Lambda\mid\) se refiere al determinante de la matriz \(\boldsymbol \Lambda\), la cual es simétrica y definida positiva de orden \(p\times p\).
 \end{definition}
-\textbackslash{}
 
 \begin{proposition}
 \protect\hypertarget{prp:unnamed-chunk-63}{}{\label{prp:unnamed-chunk-63} }Si \(\boldsymbol \Sigma\) es una matriz aleatoria con distribución Wishart con \(v\) grados de libertad, entonces \(E(\boldsymbol \Sigma)=v\boldsymbol \Lambda\)
@@ -2409,16 +2397,532 @@ p(\boldsymbol \Sigma)&=\left( 2^{vp/2}\pi^{p(p-1)/4}\prod_{i=1}^p \Gamma\left(\f
 
 donde \(\mid \boldsymbol \Lambda\mid\) se refiere al determinante de la matriz \(\boldsymbol \Lambda\), la cual es simétrica y definida positiva de orden \(p\times p\).
 \end{definition}
-\textbackslash{}
 
 \begin{proposition}
 \protect\hypertarget{prp:unnamed-chunk-65}{}{\label{prp:unnamed-chunk-65} }Si \(\boldsymbol \Sigma\) es una matriz aleatoria con distribución inversa-Wishart con \(v\) grados de libertad, entonces \(E(\boldsymbol \Sigma)=\dfrac{1}{v-p-1}\boldsymbol \Lambda\)
 \end{proposition}
-\textbackslash{}
 
 \begin{proposition}
 \protect\hypertarget{prp:unnamed-chunk-66}{}{\label{prp:unnamed-chunk-66} }Si \(\boldsymbol \Sigma^{-1}\) es una matriz aleatoria con distribución inversa-Wishart, entonces con \(\boldsymbol \Sigma\) tiene distribución Wishart.
 \end{proposition}
+
+\hypertarget{matriz-de-informaciuxf3n}{%
+\chapter{Matriz de información}\label{matriz-de-informaciuxf3n}}
+
+\begin{definition}
+\protect\hypertarget{def:unnamed-chunk-1}{}{\label{def:unnamed-chunk-1} }Dada \(X\) una variable aleatoria con función de densidad \(f(x,\theta)\), donde \(\theta\) es el parámetro de la distribución, y además existe \(\dfrac{\partial}{\partial\theta}\ln{f(x,\theta)}\), entonces se define la información contenida en \(X\) acerca de \(\theta\) como
+
+\begin{equation}
+I_X(\theta)=E\left\{\left[\frac{\partial}{\partial\theta}\ln{f(X,\theta)}\right]^2\right\}.
+\end{equation}
+\end{definition}
+
+\begin{proposition}
+\protect\hypertarget{prp:unnamed-chunk-2}{}{\label{prp:unnamed-chunk-2} }En la anterior definición, si además existe \(\dfrac{\partial^2}{\partial\theta^2}\ln{f(x,\theta)}\), entonces se tiene que
+
+\begin{equation}
+I_X(\theta)=-E\left\{\dfrac{\partial^2}{\partial\theta^2}\ln{f(X,\theta)}\right\}.
+\end{equation}
+\end{proposition}
+
+Las anteriores definiciones introducen la información contenida en una variable; sin embargo, cuando tenemos disponible una muestra aleatoria, es necesario definir la información contenida en una muestra aleatoria acerca de algún parámetro.
+
+\begin{definition}
+\protect\hypertarget{def:unnamed-chunk-3}{}{\label{def:unnamed-chunk-3} }Dada \(X_1\), \(\cdots\), \(X_n\) variables aleatorias con función de densidad \(f(x_i,\theta)\), donde \(\theta\) es el parámetro de la distribución, y además existe \(\dfrac{\partial}{\partial\theta}\ln{\prod_{i=1}^nf(x_i,\theta)}\), entonces se define la información contenida en la muestra aleatoria acerca de \(\theta\) como
+
+\begin{equation}
+I_{X_1,\cdots,X_n}(\theta)=E\left\{\left[\frac{\partial}{\partial\theta}\ln{\prod_{i=1}^nf(X_i,\theta)}\right]^2\right\}.
+\end{equation}
+\end{definition}
+
+\begin{proposition}
+\protect\hypertarget{prp:unnamed-chunk-4}{}{\label{prp:unnamed-chunk-4} }Dada \(X_1\), \(\cdots\), \(X_n\) una muestra aleatoria, entonces
+
+\begin{equation*}
+I_{X_1,\cdots,X_n}(\theta)=nI_X(\theta),
+\end{equation*}
+
+donde \(I_X(\theta)=I_{X_i}(\theta)\), con \(i=1,\cdots,n\). Es decir, en una muestra aleatoria, cada variable aporta la misma cantidad de información, y la cantidad total de información en la muestra es la suma de la información en cada variable.
+\end{proposition}
+
+\begin{proof}
+\iffalse{} {Prueba. } \fi{}\begin{align*}
+I_{X_1,\cdots,X_n}(\theta)&=E\left\{\left[\frac{\partial}{\partial\theta}\ln{\prod_{i=1}^nf(X_i,\theta)}\right]^2\right\}\\                   &=E\left\{\left[\sum_{i=1}^n\frac{\partial}{\partial\theta}\ln{f(X_i,\theta)}\right]^2\right\}\\                       &=E\left\{\sum_{i=1}^n\left[\frac{\partial}{\partial\theta}\ln{f(X_i,\theta)}\right]^2\right\}+\\
+                          &\ \ \ \ \ \ \ \ \ \ \ \ \underbrace{E\left\{\sum_{\substack{i,j=1\\i\neq j}}^n\left[\frac{\partial}{\partial\theta}\ln{f(X_i,\theta)}\frac{\partial}{\partial\theta}\ln{f(X_j,\theta)}\right]\right\}}_{=0,\ \text{por la independencia entre}\ X_i\ \text{y}\ X_j}\\                      &=\sum_{i=1}^nE\left\{\left[\frac{\partial}{\partial\theta}\ln{f(X_i,\theta)}\right]^2\right\}\\
+                          &=\sum_{i=1}^nI_X(\theta)=nI_X(\theta).
+\end{align*}
+\end{proof}
+
+\begin{example}
+\protect\hypertarget{exm:unnamed-chunk-6}{}{\label{exm:unnamed-chunk-6} }Sea \(X_1\), \(\cdots\), \(X_n\) una muestra aleatoria proveniente de la distribución \(N(\mu,\sigma^2)\), la información contenida en la muestra acerca de \(\mu\) es \(n/\sigma^2\). Para verificar esta afirmación, calculamos la información acerca de \(\mu\) en una variable \(X\) con distribución \(N(\mu,\sigma^2)\). Tenemos:
+
+\begin{align*}
+I_X(\mu)&=-E\left\{\dfrac{\partial^2}{\partial\mu^2}\ln{f(X,\theta)}\right\}\\
+        &=-E\left\{\dfrac{\partial^2}{\partial\mu^2}\left[-\frac{1}{2}\ln2\pi\sigma^2-\frac{1}{2\sigma^2}(X-\mu)^2\right]\right\}\\
+        &=-E\left\{\frac{\partial}{\partial\mu}\left[\frac{X-\mu}{\sigma^2}\right]\right\}\\
+        &=-E\left\{-\frac{1}{\sigma^2}\right\}\\
+        &=\frac{1}{\sigma^2}.
+\end{align*}
+
+Ahora, usando el Resultado 2.3.4, se tiene que \(I_{X_1,\cdots,X_n}(\mu)=n/\sigma^2\).
+\end{example}
+
+Nótese que esta información, en primer lugar, depende del tamaño \(n\) de manera que entre más grande sea la muestra, hay mayor información acerca de \(\mu\); en segundo lugar, entre más pequeña sea la varianza \(\sigma^2\), la cantidad de información acerca de \(\mu\) también incrementa, esto es natural, puesto que si \(\sigma^2\) es pequeña, los datos de la muestra están muy concentrados alrededor de \(\mu\), entonces estos datos aportan más información que otros datos con más dispersión.
+
+\begin{definition}
+\protect\hypertarget{def:unnamed-chunk-7}{}{\label{def:unnamed-chunk-7} }Dada una variable aleatoria \(X\) con función de densidad \(f(x,\boldsymbol \theta)\), la matriz de información contenida en \(X\) acerca de \(\boldsymbol \theta\) se define como
+
+\begin{equation}
+I_X(\boldsymbol \theta)=E\left\{\frac{\partial\ln f(X,\boldsymbol \theta)}{\partial\boldsymbol \theta}\left(\frac{\partial\ln f(X,\boldsymbol \theta)}{\partial\boldsymbol \theta}\right)'\right\}
+\end{equation}
+\end{definition}
+
+\begin{definition}
+\protect\hypertarget{def:unnamed-chunk-8}{}{\label{def:unnamed-chunk-8} }Dada una muestra aleatoria \(X_1\), \(\cdots\), \(X_n\) con función de densidad \(f(x_i,\boldsymbol \theta)\), la matriz de información contenida en la muestra acerca de \(\boldsymbol \theta\) se define como
+
+\begin{equation*}
+I_{X_1,\cdots,X_n}(\boldsymbol \theta)=E\left\{\frac{\partial\ln \prod_{i=1}^nf(X_i,\boldsymbol \theta)}{\partial\boldsymbol \theta}\left(\frac{\partial\ln \prod_{i=1}^nf(X_i,\boldsymbol \theta)}{\partial\boldsymbol \theta}\right)'\right\}
+\end{equation*}
+\end{definition}
+
+\begin{example}
+\protect\hypertarget{exm:unnamed-chunk-9}{}{\label{exm:unnamed-chunk-9} }Dada una muestra aleatoria \(X_1\), \(\cdots\), \(X_n\) con distribución común \(N(\mu,\sigma^2)\), vamos a hallar la matriz de información contenida en la muestra acerca del vector de parámetros \((\mu,\sigma^2)\). Tenemos que
+
+\begin{align*}
+&\ \ \ \ \ \ \ I_{X_1,\cdots,X_n}(\mu,\sigma^2)\\
+&=E\left\{
+\begin{pmatrix}
+\dfrac{\partial\ln \prod_{i=1}^nf(X_i,\mu,\sigma^2)}{\partial\mu}\\
+\dfrac{\partial\ln \prod_{i=1}^nf(X_i,\mu,\sigma^2)}{\partial\sigma^2}
+\end{pmatrix}
+\begin{pmatrix}
+\dfrac{\partial\ln \prod_{i=1}^nf(X_i,\mu,\sigma^2)}{\partial\mu}&
+\dfrac{\partial\ln \prod_{i=1}^nf(X_i,\mu,\sigma^2)}{\partial\sigma^2}
+\end{pmatrix}
+\right\}\\
+&=E\left\{
+\begin{pmatrix}
+\dfrac{\sum_{i=1}^nX_i-n\mu}{\sigma^2}\\
+\dfrac{\sum_{i=1}^n(X_i-\mu)^2-n\sigma^2}{2\sigma^4}
+\end{pmatrix}
+\begin{pmatrix}
+\dfrac{\sum_{i=1}^nX_i-n\mu}{\sigma^2}&
+\dfrac{\sum_{i=1}^n(X_i-\mu)^2-n\sigma^2}{2\sigma^4}
+\end{pmatrix}
+\right\}\\
+&=E\left\{\begin{pmatrix}
+\dfrac{(\sum_{i=1}^nX_i-n\mu)^2}{\sigma^4}&\dfrac{(\sum_{i=1}^nX_i-n\mu)(\sum_{i=1}^n(X_i-\mu)^2-n\sigma^2)}{2\sigma^6}\\
+\dfrac{(\sum_{i=1}^nX_i-n\mu)(\sum_{i=1}^n(X_i-\mu)^2-n\sigma^2)}{2\sigma^6}&\dfrac{(\sum_{i=1}^n(X_i-\mu)^2-n\sigma^2)^2}{4\sigma^8}
+\end{pmatrix}\right\}
+\end{align*}
+
+Donde el primer elemento diagonal de la anterior matriz está dada por
+\begin{align*}
+E\left\{\dfrac{(\sum_{i=1}^nX_i-n\mu)^2}{\sigma^4}\right\}&=\left[Var\left(\sum_{i=1}^nX_i-n\mu\right)+(E\left(\sum_{i=1}^nX_i-n\mu\right))^2\right]/\sigma^4\\
+&=n\sigma^2/\sigma^4=n/\sigma^2.
+\end{align*}
+
+El segundo elemento diagonal está dada por
+\begin{align}\label{feo}
+&\ \ \ \ \ E\left\{\dfrac{(\sum_{i=1}^n(X_i-\mu)^2-n\sigma^2)^2}{4\sigma^8}\right\}\\
+&=\frac{1}{4\sigma^8}E\left\{\left[\sum_{i=1}^n(X_i-\mu)^2\right]^2+n^2\sigma^4-2n\sigma^2\sum_{i=1}^n(X_i-\mu)^2\right\}\\
+&=\frac{1}{4\sigma^8}\left\{Var(\sum_{i=1}^n(X_i-\mu)^2)+\left[E(\sum_{i=1}^n(X_i-\mu)^2)\right]^2+n^2\sigma^4-2n\sigma^2E\left[\sum_{i=1}^n(X_i-\mu)^2\right]\right\}
+\end{align}
+
+Usando el hecho de que
+\begin{equation*}
+\frac{\sum_{i=1}^n(X_i-\mu)^2}{\sigma^2}\sim\chi^2_n
+\end{equation*}
+
+y la esperanza y varianza de la distribución \(\chi^2_n\), tenemos que la expresión (\ref{feo}) está dada por
+\begin{equation*}
+\frac{1}{4\sigma^8}\left\{2n\sigma^4+\left[n\sigma^2\right]^2+n^2\sigma^4-2n\sigma^2n\sigma^2\right\}=\frac{n}{2\sigma^4}.
+\end{equation*}
+
+Finalmente, el elemento fuera de la diagonal de la matriz \(I_{X_1,\cdots,X_n}(\mu,\sigma^2)\) está dado por
+\begin{align*}
+&\ \ \ \ \ \ E\left\{\left(\sum_{i=1}^nX_i-n\mu\right)\left(\sum_{i=1}^n(X_i-\mu)^2-n\sigma^2\right)\right\}\\
+&=E\left\{\sum_{i=1}^nX_i\left(\sum_{i=1}^n(X_i-\mu)^2-n\sigma^2\right)-n\mu\left(\sum_{i=1}^n(X_i-\mu)^2-n\sigma^2\right)\right\}\\
+&=E\left\{\sum_{i=1}^nX_i\sum_{i=1}^n(X_i-\mu)^2\right\}-n\sigma^2E\left(\sum_{i=1}^nX_i\right)-n\mu E\left(\sum_{i=1}^n(X_i-\mu)^2\right)+n^2\mu\sigma^2\\
+&=E\left(\sum_{i=1}^nX_i\sum_{i=1}^nX_i^2\right)-2\mu E\left[(\sum_{i=1}^nX_i)^2\right]+n^2\mu^3-n^2\mu\sigma^2-n^2\mu\sigma^2+n^2\mu\sigma^2\\
+&=E\left(\sum_{i=1}^nX_i^3+\sum_{i\neq j}X_iX_j^2\right)-2\mu(n\sigma^2+n^2\mu^2)+n^2\mu^3-n^2\mu\sigma^2\\
+&=\sum_{i=1}^n\left[3\mu E(X_i^2)-2\mu^3\right]+\sum_{i\neq j}E(X_i)E(X_j^2)-2n\mu\sigma^2-2n^2\mu^3+n^2\mu^3-n^2\mu\sigma^2\\
+&=3n\mu(\sigma^2+\mu^2)-2n\mu^3+\mu(\sigma^2+\mu^2)(n^2-n)-2n\mu\sigma^2-2n^2\mu^3+n^2\mu^3-n^2\mu\sigma^2\\
+&=0
+\end{align*}
+
+De donde obtenemos finalmente la matriz de información \(I_{X_1,\cdots,X_n}(\mu,\sigma^2)\) dada por
+\begin{equation*}
+I_{X_1,\cdots,X_n}(\mu,\sigma^2)=\begin{pmatrix}
+\dfrac{n}{\sigma^2}&0\\
+0&\dfrac{n}{2\sigma^4}
+\end{pmatrix}
+\end{equation*}
+\end{example}
+
+\hypertarget{simulaciuxf3n-de-distribuciones-de-probabilidad}{%
+\chapter{Simulación de distribuciones de probabilidad}\label{simulaciuxf3n-de-distribuciones-de-probabilidad}}
+
+Como lo afirma \citet{Gelman03} la simulación numérica es parte central del análisis bayesiano puesto que la generación de datos provenientes de una distribución de probabilidad se puede realizar fácilmente, incluso cuando la forma estructural de ésta no es conocida o es muy complicada computacionalmente. A lo largo de la historia del desarrollo de la teoría estadística, la simulación de distribuciones de probabilidad ha jugado un papel importante. Aunque son innumerables los métodos de generación de datos, en este apartado, se da cuenta de unos pocos, quizás lo más usados en este auge computacional.
+
+\hypertarget{muxe9todo-de-la-transformaciuxf3n-uniforme}{%
+\section{Método de la transformación uniforme}\label{muxe9todo-de-la-transformaciuxf3n-uniforme}}
+
+Al momento de la simulación estocástica de observaciones provenientes de alguna distribución de interés, la distribución uniforme es quizás la más usada y la más importante. El siguiente resultado adaptado de \citet{Casella} así lo confirma.
+
+\begin{proposition}
+\protect\hypertarget{prp:unnamed-chunk-1}{}{\label{prp:unnamed-chunk-1} }Si \(U\) es una variable aleatoria con distribución uniforme en el intervalo \((0,1)\), entonces la la variable aleatoria \(F^{-1}(U)\) tiene distribución F.
+\end{proposition}
+
+Aunque la función \(F\) no necesariamente es una función uno a uno (por lo menos no lo es en el caso discreto) sí se puede verificar que \(F^{-1}(U)\) es única con probabilidad uno. Una definición general, que encaja en el caso continuo o discreto, de la función \(F\) inversa es la siguiente
+
+\begin{definition}
+\protect\hypertarget{def:unnamed-chunk-2}{}{\label{def:unnamed-chunk-2} }Para cualquier función \(F\) definida sobre \(\mathbb{R}\), se define la función inversa generalizada de \(F\) como
+
+\begin{equation}
+F^{-1}(u)=\inf \{x \mid F(x)\geq u\}
+\end{equation}
+\end{definition}
+
+\begin{example}
+\protect\hypertarget{exm:unnamed-chunk-3}{}{\label{exm:unnamed-chunk-3} }Suponga que \(X\) es una variable aleatoria con distribución exponencial. De esta forma, su función de densidad acumulativa viene dada por
+
+\begin{equation*}
+F(x)=1-\exp\{ -\theta x\}
+\end{equation*}
+
+Del anterior resultado se tiene que si \(u\) es una realización de una variable \(U \sim Uniforme(0,1)\), entonces \(F^{-1}(u)\) es una realización de una variable con distribución exponencial. Como \(x=F^{-1}(u)\), entonces \(F(x)=u\) y despejando \(x\), se llega a que la siguiente expresión
+
+\begin{equation*}
+F^{-1}(u)=-\frac{\ln(1-u)}{\theta}
+\end{equation*}
+
+entrega una forma diáfana para la simulación de una observación con distribución exponencial. Para simular una muestra de \(n\) observaciones, simplemente se repite el anterior procedimiento \(n\) veces. En \texttt{R}, el código necesario para la simulación de una muestra de tamaño 1000 proveniente de una distribución exponencial con parámetro \(\theta=5\) es
+\end{example}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{theta }\OtherTok{\textless{}{-}} \DecValTok{5}
+\NormalTok{u }\OtherTok{\textless{}{-}} \FunctionTok{runif}\NormalTok{(}\DecValTok{1000}\NormalTok{)}
+\NormalTok{rexpo }\OtherTok{\textless{}{-}} \FunctionTok{log}\NormalTok{(}\DecValTok{1} \SpecialCharTok{{-}}\NormalTok{ u)}\SpecialCharTok{/}\NormalTok{(}\SpecialCharTok{{-}}\NormalTok{theta)}
+\DecValTok{1}\SpecialCharTok{/}\FunctionTok{mean}\NormalTok{(rexpo)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## [1] 5.145846
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{hist}\NormalTok{(rexpo, }\AttributeTok{freq =} \ConstantTok{FALSE}\NormalTok{)}
+\FunctionTok{lines}\NormalTok{(}\FunctionTok{density}\NormalTok{(rexpo), }\AttributeTok{col =} \DecValTok{2}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{figure}
+\centering
+\includegraphics{A3Simulacion_files/figure-latex/unnamed-chunk-4-1.pdf}
+\caption{\label{fig:unnamed-chunk-4}Histograma de observaciones con distribución exponencial}
+\end{figure}
+
+\hypertarget{muxe9todo-de-la-grilla}{%
+\section{Método de la grilla}\label{muxe9todo-de-la-grilla}}
+
+Existen distribuciones de probabilidad cuya forma estructural es muy compleja. Mas aún, existen distribuciones de probabilidad conocidas para las cuales la inversa de la función de de densidad acumulativa es difícil de solucionar analíticamente. En los anteriores casos, el método analítico dado por el teorema de la transformación integral de probabilidad no siempre resulta efectivo. Sin embargo, es posible realizar una variante, manteniendo el espíritu de la anterior técnica.
+
+El presente método utiliza una distribución discreta para aproximar cualquier tipo de distribución (discreta o continua) sin importar su nivel de complejidad. El algoritmo que enmarca este método se da a continuación:
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\tightlist
+\item
+  Escribir la densidad de interés como \(f(\cdot)\) y establecer el rango de la variable aleatoria de interés.
+\item
+  Fijar un conjunto de \(n\) valores \(x_1<\cdots<x_n\) equiespaciados que cubran una gran parte del rango de la variable aleatoria.
+\item
+  Para \(x_k\) \((k=1,\ldots,n)\) calcular \(f(x_k)\) que equivale al valor de la densidad en el punto \(x_k\). Nótese que si \(f(\cdot)\) es una función de densidad continua, entonces \(f(x_k)\) no corresponde a una probabilidad;
+\item
+  Calcular la probabilidad asociada al punto \(x_k\) definida por la aproximación discreta a \(f(\cdot)\) y dada por
+  \begin{equation*}
+  p(x_k)=\frac{f(x_k)}{\sum_{k=1}^{n}f(x_k)}
+  \end{equation*}
+\item
+  Calcular la función de densidad acumulativa aproximada definida como
+  \begin{equation*}
+  F(x)=
+  \begin{cases}
+  0, \ \ \ \text{si $x<x_1$}\\
+  \sum_{l=1}^kp(x_l), \ \ \ \text{si $x_k\leq x<x_{k+1}$}\\
+  1, \ \ \ \text{si $x>x_n$}
+  \end{cases}
+  \end{equation*}
+\item
+  Simular una observación \(u\) proveniente de una distribución uniforme continua en el intervalo \((0,1)\).
+\item
+  Si \(F(x_k)<u\leq F(x_{k+1})\), entonces \(F^{-1}(u)=x_{k+1}\) y por consiguiente el valor \(x_{k+1}\) es una pseudo-observación proveniente de la densidad de interés.
+\end{enumerate}
+
+Nótese que en el anterior proceso, la unidad \(x_{k+1}\) es seleccionada con probabilidad \(p_{k+1}\); puesto que
+
+\begin{align*}
+P(F(x_k)< U \leq F(x_{k+1}))&=F(x_{k+1})-F(x_{k})\\
+&=\sum_{l=1}^{k+1}p(x_l)-\sum_{l=1}^kp(x_l)=p_{k+1}
+\end{align*}
+
+Si se quiere extraer una muestra aleatoria de \(N\) observaciones provenientes de la distribución de interés, entonces basta con repetir el anterior proceso \(N\) veces. Por supuesto, como se trata de una muestra aleatoria cada selección se debe realizar con repetición; de esta manera no importa si \(N>n\). Suponiendo que el conjunto \(x_1,\ldots,x_n\) conforma una grilla de puntos lo suficientemente cercanos y que no sucede nada importante entre cada uno de ellos, entonces esta técnica debe tener un buen funcionamiento.
+
+\begin{example}
+\protect\hypertarget{exm:unnamed-chunk-5}{}{\label{exm:unnamed-chunk-5} }El siguiente código computacional permite utilizar el método de la grilla para simular mil valores provenientes de una distribución exponencial con parámetro \(\theta = 5\).
+\end{example}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{theta }\OtherTok{\textless{}{-}} \DecValTok{5}
+\NormalTok{x.grid }\OtherTok{\textless{}{-}} \FunctionTok{seq}\NormalTok{(}\DecValTok{0}\NormalTok{, }\DecValTok{100}\NormalTok{, }\AttributeTok{by=}\FloatTok{0.01}\NormalTok{)}
+\NormalTok{p.exp }\OtherTok{\textless{}{-}}\NormalTok{ theta }\SpecialCharTok{*} \FunctionTok{exp}\NormalTok{(}\SpecialCharTok{{-}}\NormalTok{theta }\SpecialCharTok{*}\NormalTok{ x.grid)}
+\NormalTok{r.exp }\OtherTok{\textless{}{-}} \FunctionTok{sample}\NormalTok{(x.grid, }\DecValTok{1000}\NormalTok{, }\AttributeTok{prob =}\NormalTok{ p.exp, }\AttributeTok{replace =}\NormalTok{ T)}
+\DecValTok{1}\SpecialCharTok{/}\FunctionTok{mean}\NormalTok{(r.exp)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## [1] 5.05459
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{hist}\NormalTok{(r.exp, }\AttributeTok{freq =} \ConstantTok{FALSE}\NormalTok{)}
+\FunctionTok{lines}\NormalTok{(}\FunctionTok{density}\NormalTok{(rexpo), }\AttributeTok{col =} \DecValTok{2}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\includegraphics{A3Simulacion_files/figure-latex/unnamed-chunk-6-1.pdf}
+\begin{example}
+\protect\hypertarget{exm:unnamed-chunk-7}{}{\label{exm:unnamed-chunk-7} }De la misma manera, el método de la grilla permite simular valores de un distribución discreta. El siguiente código computacional permite utilizar el método de la grilla para simular mil valores provenientes de una distribución Poisson con parámetro \(\theta = 2\).
+\end{example}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{p.poisson }\OtherTok{\textless{}{-}}\ControlFlowTok{function}\NormalTok{(theta, x.grid)\{}
+\NormalTok{  N }\OtherTok{\textless{}{-}} \FunctionTok{length}\NormalTok{(x.grid)}
+\NormalTok{  res }\OtherTok{\textless{}{-}} \FunctionTok{rep}\NormalTok{(}\ConstantTok{NA}\NormalTok{, N)}
+  \ControlFlowTok{for}\NormalTok{(k }\ControlFlowTok{in} \DecValTok{1}\SpecialCharTok{:}\NormalTok{N)\{}
+\NormalTok{    P1 }\OtherTok{\textless{}{-}} \FunctionTok{exp}\NormalTok{(}\SpecialCharTok{{-}}\NormalTok{theta) }\SpecialCharTok{*}\NormalTok{ theta}\SpecialCharTok{\^{}}\NormalTok{(x.grid[k])}
+\NormalTok{    P2 }\OtherTok{\textless{}{-}} \FunctionTok{factorial}\NormalTok{(x.grid[k])}
+\NormalTok{    res[k] }\OtherTok{\textless{}{-}}\NormalTok{ P1}\SpecialCharTok{/}\NormalTok{P2}
+\NormalTok{  \}}
+  \FunctionTok{return}\NormalTok{(res)}
+\NormalTok{\}}
+
+\NormalTok{theta }\OtherTok{\textless{}{-}} \DecValTok{2}
+\NormalTok{x.grid }\OtherTok{\textless{}{-}} \FunctionTok{seq}\NormalTok{(}\DecValTok{0}\NormalTok{, }\DecValTok{100}\NormalTok{, }\AttributeTok{by =} \DecValTok{1}\NormalTok{)}
+\NormalTok{f.x }\OtherTok{\textless{}{-}} \FunctionTok{p.poisson}\NormalTok{(theta, x.grid)}
+\NormalTok{p.x }\OtherTok{\textless{}{-}}\NormalTok{ f.x}\SpecialCharTok{/}\FunctionTok{sum}\NormalTok{(f.x)}
+\FunctionTok{sum}\NormalTok{(p.x)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## [1] 1
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{rpois }\OtherTok{\textless{}{-}} \FunctionTok{sample}\NormalTok{(x.grid, }\DecValTok{1000}\NormalTok{, }\AttributeTok{prob=}\NormalTok{p.x, }\AttributeTok{replace =}\NormalTok{ T)}
+\FunctionTok{mean}\NormalTok{(rpois)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## [1] 2.059
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{var}\NormalTok{(rpois)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## [1] 2.095615
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{hist}\NormalTok{(rpois, }\AttributeTok{freq =} \ConstantTok{FALSE}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{figure}
+\centering
+\includegraphics{A3Simulacion_files/figure-latex/unnamed-chunk-8-1.pdf}
+\caption{\label{fig:unnamed-chunk-8}Histograma de observaciones con distribución Poisson}
+\end{figure}
+
+\begin{example}
+\protect\hypertarget{exm:unnamed-chunk-9}{}{\label{exm:unnamed-chunk-9} }El método de la grilla también puede utilizarse para simular observaciones de una distribución biparamétrica, univariada y continua. El siguiente código computacional permite utilizar el método de la grilla para simular mil valores provenientes de una distribución Gamma con parámetros \(\alpha = 4\), \(\beta = 2\).
+\end{example}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{p.gamma }\OtherTok{\textless{}{-}} \ControlFlowTok{function}\NormalTok{(a, b, x.grid)\{}
+\NormalTok{  N }\OtherTok{\textless{}{-}}\FunctionTok{length}\NormalTok{(x.grid)}
+\NormalTok{  res }\OtherTok{\textless{}{-}} \FunctionTok{rep}\NormalTok{(}\ConstantTok{NA}\NormalTok{, N)}
+  \ControlFlowTok{for}\NormalTok{(k }\ControlFlowTok{in} \DecValTok{1}\SpecialCharTok{:}\NormalTok{N)\{}
+\NormalTok{    P1 }\OtherTok{\textless{}{-}}\NormalTok{ (b}\SpecialCharTok{\^{}}\NormalTok{a)}\SpecialCharTok{/}\FunctionTok{gamma}\NormalTok{(a)}
+\NormalTok{    P2 }\OtherTok{\textless{}{-}}\NormalTok{ x.grid[k]}\SpecialCharTok{\^{}}\NormalTok{(a }\SpecialCharTok{{-}} \DecValTok{1}\NormalTok{)}
+\NormalTok{    P3 }\OtherTok{\textless{}{-}} \FunctionTok{exp}\NormalTok{(}\SpecialCharTok{{-}}\NormalTok{b }\SpecialCharTok{*}\NormalTok{ x.grid[k])}
+\NormalTok{    res[k] }\OtherTok{\textless{}{-}}\NormalTok{ P1}\SpecialCharTok{*}\NormalTok{P2}\SpecialCharTok{*}\NormalTok{P3}
+\NormalTok{  \}}
+  \FunctionTok{return}\NormalTok{(res)}
+\NormalTok{\}}
+
+\NormalTok{alpha }\OtherTok{\textless{}{-}} \DecValTok{4}
+\NormalTok{beta }\OtherTok{\textless{}{-}} \DecValTok{2}
+\NormalTok{x.grid }\OtherTok{\textless{}{-}} \FunctionTok{seq}\NormalTok{(}\DecValTok{0}\NormalTok{, }\DecValTok{100}\NormalTok{, }\AttributeTok{by =} \FloatTok{0.1}\NormalTok{)}
+\NormalTok{f.x }\OtherTok{\textless{}{-}} \FunctionTok{p.gamma}\NormalTok{(alpha, beta, x.grid)}
+\NormalTok{p.x }\OtherTok{\textless{}{-}}\NormalTok{ f.x }\SpecialCharTok{/} \FunctionTok{sum}\NormalTok{(f.x)}
+
+\NormalTok{rgamma }\OtherTok{\textless{}{-}} \FunctionTok{sample}\NormalTok{(x.grid, }\DecValTok{1000}\NormalTok{, }\AttributeTok{prob =}\NormalTok{ p.x, }\AttributeTok{replace =}\NormalTok{ T)}
+\FunctionTok{mean}\NormalTok{(rgamma)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## [1] 2.0458
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{var}\NormalTok{(rgamma)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## [1] 0.9759383
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{hist}\NormalTok{(rgamma, }\AttributeTok{freq =}\NormalTok{ F)}
+\FunctionTok{lines}\NormalTok{(}\FunctionTok{density}\NormalTok{(rgamma), }\AttributeTok{col =} \DecValTok{2}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{figure}
+\centering
+\includegraphics{A3Simulacion_files/figure-latex/unnamed-chunk-10-1.pdf}
+\caption{\label{fig:unnamed-chunk-10}Histograma de observaciones con distribución Gamma.}
+\end{figure}
+
+\begin{example}
+\protect\hypertarget{exm:unnamed-chunk-11}{}{\label{exm:unnamed-chunk-11} }Para comprobar el poder de este método de simulación, se presenta el siguiente código que permite simular valores de una distribución multiparamétrica, bivariada y continua. En particular, se simulan valores de la distribución Normal multivariante con vector de medias \(\boldsymbol \mu= (2, 4)'\) y matriz de varianzas covarianzas
+\(\boldsymbol \Sigma= \begin{bmatrix} 25 & 30 \\ 30 & 16 \end{bmatrix}\)
+\end{example}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{p.normal2 }\OtherTok{\textless{}{-}} \ControlFlowTok{function}\NormalTok{(mu, Sigma, x, y)\{}
+\NormalTok{  P1  }\OtherTok{\textless{}{-}} \DecValTok{1}\SpecialCharTok{/}\NormalTok{(}\DecValTok{2} \SpecialCharTok{*}\NormalTok{ pi)}
+\NormalTok{  P2  }\OtherTok{\textless{}{-}} \DecValTok{1}\SpecialCharTok{/}\FunctionTok{sqrt}\NormalTok{(}\FunctionTok{det}\NormalTok{(Sigma))}
+\NormalTok{  P3a }\OtherTok{\textless{}{-}} \FunctionTok{t}\NormalTok{((}\FunctionTok{c}\NormalTok{(x, y) }\SpecialCharTok{{-}}\NormalTok{ mu)) }\SpecialCharTok{\%*\%} \FunctionTok{solve}\NormalTok{(Sigma) }\SpecialCharTok{\%*\%}\NormalTok{ (}\FunctionTok{c}\NormalTok{(x, y) }\SpecialCharTok{{-}}\NormalTok{ mu)}
+\NormalTok{  P3  }\OtherTok{\textless{}{-}} \FunctionTok{exp}\NormalTok{((}\SpecialCharTok{{-}}\DecValTok{1}\SpecialCharTok{/}\DecValTok{2}\NormalTok{) }\SpecialCharTok{*}\NormalTok{ P3a)}
+\NormalTok{  res }\OtherTok{\textless{}{-}}\NormalTok{ P1 }\SpecialCharTok{*}\NormalTok{ P2 }\SpecialCharTok{*}\NormalTok{ P3}
+  \FunctionTok{return}\NormalTok{(res)}
+\NormalTok{\}}
+
+\NormalTok{grilla }\OtherTok{\textless{}{-}} \ControlFlowTok{function}\NormalTok{(a, b)\{}
+\NormalTok{  A }\OtherTok{\textless{}{-}} \FunctionTok{seq}\NormalTok{(}\DecValTok{1}\SpecialCharTok{:}\FunctionTok{length}\NormalTok{(a))}
+\NormalTok{  unoA }\OtherTok{\textless{}{-}} \FunctionTok{rep}\NormalTok{(}\DecValTok{1}\NormalTok{, }\FunctionTok{length}\NormalTok{(A))}
+\NormalTok{  B }\OtherTok{\textless{}{-}} \FunctionTok{seq}\NormalTok{(}\DecValTok{1}\SpecialCharTok{:}\FunctionTok{length}\NormalTok{(b))}
+\NormalTok{  unoB }\OtherTok{\textless{}{-}} \FunctionTok{rep}\NormalTok{(}\DecValTok{1}\NormalTok{, }\FunctionTok{length}\NormalTok{(B))}
+\NormalTok{  P1 }\OtherTok{\textless{}{-}} \FunctionTok{kronecker}\NormalTok{(A, unoB)}
+\NormalTok{  P2 }\OtherTok{\textless{}{-}} \FunctionTok{kronecker}\NormalTok{(unoA, B)}
+\NormalTok{  grid }\OtherTok{\textless{}{-}} \FunctionTok{cbind}\NormalTok{(a[P1], b[P2])}
+  \FunctionTok{return}\NormalTok{(grid)}
+\NormalTok{\}}
+
+\NormalTok{mu1 }\OtherTok{\textless{}{-}} \FunctionTok{c}\NormalTok{(}\DecValTok{2}\NormalTok{, }\DecValTok{4}\NormalTok{)}
+\NormalTok{Sigma1 }\OtherTok{\textless{}{-}} \FunctionTok{matrix}\NormalTok{(}\FunctionTok{c}\NormalTok{(}\DecValTok{25}\NormalTok{, }\DecValTok{10}\NormalTok{, }\DecValTok{10}\NormalTok{, }\DecValTok{16}\NormalTok{), }\AttributeTok{nrow=}\DecValTok{2}\NormalTok{)}
+
+\NormalTok{x.grid }\OtherTok{\textless{}{-}} \FunctionTok{seq}\NormalTok{(mu1[}\DecValTok{1}\NormalTok{] }\SpecialCharTok{{-}} \DecValTok{3} \SpecialCharTok{*} \FunctionTok{sqrt}\NormalTok{(Sigma1[}\DecValTok{1}\NormalTok{, }\DecValTok{1}\NormalTok{]),}
+\NormalTok{              mu1[}\DecValTok{1}\NormalTok{] }\SpecialCharTok{+} \DecValTok{3} \SpecialCharTok{*} \FunctionTok{sqrt}\NormalTok{(Sigma1[}\DecValTok{1}\NormalTok{, }\DecValTok{1}\NormalTok{]),}
+              \AttributeTok{by =} \FloatTok{0.5}\NormalTok{)}
+\NormalTok{y.grid }\OtherTok{\textless{}{-}} \FunctionTok{seq}\NormalTok{(mu1[}\DecValTok{2}\NormalTok{] }\SpecialCharTok{{-}} \DecValTok{3} \SpecialCharTok{*} \FunctionTok{sqrt}\NormalTok{(Sigma1[}\DecValTok{2}\NormalTok{, }\DecValTok{2}\NormalTok{]),}
+\NormalTok{              mu1[}\DecValTok{2}\NormalTok{] }\SpecialCharTok{+} \DecValTok{3} \SpecialCharTok{*} \FunctionTok{sqrt}\NormalTok{(Sigma1[}\DecValTok{2}\NormalTok{, }\DecValTok{2}\NormalTok{]),}
+              \AttributeTok{by =} \FloatTok{0.5}\NormalTok{)}
+\NormalTok{xy.grid }\OtherTok{\textless{}{-}} \FunctionTok{grilla}\NormalTok{(x.grid, y.grid)}
+\NormalTok{N.grid }\OtherTok{\textless{}{-}} \FunctionTok{dim}\NormalTok{(xy.grid)[}\DecValTok{1}\NormalTok{]}
+
+\NormalTok{f.xy }\OtherTok{\textless{}{-}} \FunctionTok{rep}\NormalTok{(}\ConstantTok{NA}\NormalTok{, N.grid)}
+\ControlFlowTok{for}\NormalTok{(j }\ControlFlowTok{in} \DecValTok{1}\SpecialCharTok{:}\NormalTok{N.grid)\{}
+\NormalTok{  f.xy[j] }\OtherTok{\textless{}{-}} \FunctionTok{p.normal2}\NormalTok{(mu1, Sigma1, }
+\NormalTok{                       xy.grid[j, }\DecValTok{1}\NormalTok{], }
+\NormalTok{                       xy.grid[j, }\DecValTok{2}\NormalTok{])}
+\NormalTok{\}}
+
+\NormalTok{p.xy }\OtherTok{\textless{}{-}} \FunctionTok{as.vector}\NormalTok{(f.xy}\SpecialCharTok{/}\FunctionTok{sum}\NormalTok{(f.xy))}
+\FunctionTok{sum}\NormalTok{(p.xy)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## [1] 1
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{rnormal2 }\OtherTok{\textless{}{-}} \FunctionTok{sample}\NormalTok{(N.grid, }\DecValTok{1000}\NormalTok{, }\AttributeTok{prob =}\NormalTok{ p.xy, }\AttributeTok{replace =}\NormalTok{ T)}
+\NormalTok{rxy.normal2 }\OtherTok{\textless{}{-}}\NormalTok{ xy.grid[rnormal2, ]}
+\NormalTok{rx.normal }\OtherTok{\textless{}{-}}\NormalTok{ rxy.normal2[, }\DecValTok{1}\NormalTok{]}
+\NormalTok{ry.normal }\OtherTok{\textless{}{-}}\NormalTok{ rxy.normal2[, }\DecValTok{2}\NormalTok{]}
+
+\FunctionTok{colMeans}\NormalTok{(rxy.normal2)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## [1] 1.6305 3.7500
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{var}\NormalTok{(rxy.normal2)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+##          [,1]     [,2]
+## [1,] 25.67640 10.63701
+## [2,] 10.63701 15.69820
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{hist}\NormalTok{(rx.normal, }\AttributeTok{freq =}\NormalTok{ F)}
+\FunctionTok{lines}\NormalTok{(}\FunctionTok{density}\NormalTok{(rx.normal), }\AttributeTok{col =} \DecValTok{2}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{figure}
+\centering
+\includegraphics{A3Simulacion_files/figure-latex/unnamed-chunk-12-1.pdf}
+\caption{\label{fig:unnamed-chunk-12-1}Histogramas de observaciones con distribución Normal bivariada.}
+\end{figure}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{hist}\NormalTok{(ry.normal, }\AttributeTok{freq =}\NormalTok{ F)}
+\FunctionTok{lines}\NormalTok{(}\FunctionTok{density}\NormalTok{(ry.normal), }\AttributeTok{col =} \DecValTok{2}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{figure}
+\centering
+\includegraphics{A3Simulacion_files/figure-latex/unnamed-chunk-12-2.pdf}
+\caption{\label{fig:unnamed-chunk-12-2}Histogramas de observaciones con distribución Normal bivariada.}
+\end{figure}
 
 \hypertarget{referencias}{%
 \chapter*{Referencias}\label{referencias}}

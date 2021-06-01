@@ -11,6 +11,8 @@ rmd_files: [
   "2Inferencia.Rmd",
   
   "A1Distribuciones.Rmd",
+  "A2Inferencia.Rmd",
+  "A3Simulacion.Rmd",
   
   "99Referencias.Rmd",
   ]

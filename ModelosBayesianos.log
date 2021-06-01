@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.14159265-2.6-1.40.18 (TeX Live 2017) (preloaded format=pdflatex 2017.5.23)  30 MAY 2021 22:40
+This is pdfTeX, Version 3.14159265-2.6-1.40.18 (TeX Live 2017) (preloaded format=pdflatex 2017.5.23)  31 MAY 2021 23:37
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -776,68 +776,86 @@ File: bkm-pdftex.def 2016/05/17 v1.26 bookmark driver for pdfTeX (HO)
 \BKM@id=\count113
 ))
 Package hyperref Info: Option `colorlinks' set `true' on input line 49.
-(/usr/local/texlive/2017/texmf-dist/tex/latex/tools/longtable.sty
+(/usr/local/texlive/2017/texmf-dist/tex/latex/fancyvrb/fancyvrb.sty
+Package: fancyvrb 2008/02/07
+
+Style option: `fancyvrb' v2.7a, with DG/SPQR fixes, and firstline=lastline fix 
+<2008/02/07> (tvz)
+\FV@CodeLineNo=\count114
+\FV@InFile=\read1
+\FV@TabBox=\box28
+\c@FancyVerbLine=\count115
+\FV@StepNumber=\count116
+\FV@OutFile=\write3
+) (/usr/local/texlive/2017/texmf-dist/tex/latex/framed/framed.sty
+Package: framed 2011/10/22 v 0.96: framed or shaded text with page breaks
+\OuterFrameSep=\skip48
+\fb@frw=\dimen117
+\fb@frh=\dimen118
+\FrameRule=\dimen119
+\FrameSep=\dimen120
+) (/usr/local/texlive/2017/texmf-dist/tex/latex/tools/longtable.sty
 Package: longtable 2014/10/28 v4.11 Multi-page Table package (DPC)
-\LTleft=\skip48
-\LTright=\skip49
-\LTpre=\skip50
-\LTpost=\skip51
-\LTchunksize=\count114
-\LTcapwidth=\dimen117
-\LT@head=\box28
-\LT@firsthead=\box29
-\LT@foot=\box30
-\LT@lastfoot=\box31
-\LT@cols=\count115
-\LT@rows=\count116
-\c@LT@tables=\count117
-\c@LT@chunks=\count118
+\LTleft=\skip49
+\LTright=\skip50
+\LTpre=\skip51
+\LTpost=\skip52
+\LTchunksize=\count117
+\LTcapwidth=\dimen121
+\LT@head=\box29
+\LT@firsthead=\box30
+\LT@foot=\box31
+\LT@lastfoot=\box32
+\LT@cols=\count118
+\LT@rows=\count119
+\c@LT@tables=\count120
+\c@LT@chunks=\count121
 \LT@p@ftn=\toks23
 ) (/usr/local/texlive/2017/texmf-dist/tex/latex/booktabs/booktabs.sty
 Package: booktabs 2016/04/27 v1.618033 publication quality tables
-\heavyrulewidth=\dimen118
-\lightrulewidth=\dimen119
-\cmidrulewidth=\dimen120
-\belowrulesep=\dimen121
-\belowbottomsep=\dimen122
-\aboverulesep=\dimen123
-\abovetopsep=\dimen124
-\cmidrulesep=\dimen125
-\cmidrulekern=\dimen126
-\defaultaddspace=\dimen127
-\@cmidla=\count119
-\@cmidlb=\count120
-\@aboverulesep=\dimen128
-\@belowrulesep=\dimen129
-\@thisruleclass=\count121
-\@lastruleclass=\count122
-\@thisrulewidth=\dimen130
+\heavyrulewidth=\dimen122
+\lightrulewidth=\dimen123
+\cmidrulewidth=\dimen124
+\belowrulesep=\dimen125
+\belowbottomsep=\dimen126
+\aboverulesep=\dimen127
+\abovetopsep=\dimen128
+\cmidrulesep=\dimen129
+\cmidrulekern=\dimen130
+\defaultaddspace=\dimen131
+\@cmidla=\count122
+\@cmidlb=\count123
+\@aboverulesep=\dimen132
+\@belowrulesep=\dimen133
+\@thisruleclass=\count124
+\@lastruleclass=\count125
+\@thisrulewidth=\dimen134
 ) (/usr/local/texlive/2017/texmf-dist/tex/latex/tools/array.sty
 Package: array 2016/10/06 v2.4d Tabular extension package (FMi)
-\col@sep=\dimen131
-\extrarowheight=\dimen132
+\col@sep=\dimen135
+\extrarowheight=\dimen136
 \NC@list=\toks24
-\extratabsurround=\skip52
-\backup@length=\skip53
+\extratabsurround=\skip53
+\backup@length=\skip54
 ) (/usr/local/texlive/2017/texmf-dist/tex/latex/tools/calc.sty
 Package: calc 2014/10/28 v4.3 Infix arithmetic (KKT,FJ)
-\calc@Acount=\count123
-\calc@Bcount=\count124
-\calc@Adimen=\dimen133
-\calc@Bdimen=\dimen134
-\calc@Askip=\skip54
-\calc@Bskip=\skip55
+\calc@Acount=\count126
+\calc@Bcount=\count127
+\calc@Adimen=\dimen137
+\calc@Bdimen=\dimen138
+\calc@Askip=\skip55
+\calc@Bskip=\skip56
 LaTeX Info: Redefining \setlength on input line 80.
 LaTeX Info: Redefining \addtolength on input line 81.
-\calc@Ccount=\count125
-\calc@Cskip=\skip56
+\calc@Ccount=\count128
+\calc@Cskip=\skip57
 ) (/usr/local/texlive/2017/texmf-dist/tex/latex/etoolbox/etoolbox.sty
 Package: etoolbox 2017/01/02 v2.4 e-TeX tools for LaTeX (JAW)
-\etb@tempcnta=\count126
+\etb@tempcnta=\count129
 ) (/usr/local/texlive/2017/texmf-dist/tex/latex/footnotehyper/footnotehyper.sty
 Package: footnotehyper 2017/03/07 v1.0 hyperref aware footnote.sty (JFB)
-\FNH@notes=\box32
-\FNH@width=\dimen135
+\FNH@notes=\box33
+\FNH@width=\dimen139
 ) (/usr/local/texlive/2017/texmf-dist/tex/latex/graphics/graphicx.sty
 Package: graphicx 2014/10/28 v1.0g Enhanced LaTeX Graphics (DPC,SPQR)
 (/usr/local/texlive/2017/texmf-dist/tex/latex/graphics/graphics.sty
@@ -849,8 +867,8 @@ File: graphics.cfg 2016/06/04 v1.11 sample graphics configuration
 )
 Package graphics Info: Driver file: pdftex.def on input line 99.
 )
-\Gin@req@height=\dimen136
-\Gin@req@width=\dimen137
+\Gin@req@height=\dimen140
+\Gin@req@width=\dimen141
 ) (/usr/local/texlive/2017/texmf-dist/tex/latex/setspace/setspace.sty
 Package: setspace 2011/12/19 v6.7a set line spacing
 ) (/usr/local/texlive/2017/texmf-dist/tex/generic/babel/babel.sty
@@ -859,11 +877,11 @@ Package: babel 2017/05/19 3.10 The Babel package
 Language: spanish.ldf 2016/03/03 v5.0p Spanish support from the babel system
 (/usr/local/texlive/2017/texmf-dist/tex/generic/babel/babel.def
 File: babel.def 2017/05/19 3.10 Babel common definitions
-\babel@savecnt=\count127
-\U@D=\dimen138
+\babel@savecnt=\count130
+\U@D=\dimen142
 )
 \es@quottoks=\toks25
-\es@quotdepth=\count128
+\es@quotdepth=\count131
 Package babel Info: Making " an active character on input line 561.
 Package babel Info: Making . an active character on input line 662.
 Package babel Info: Making < an active character on input line 707.
@@ -872,10 +890,10 @@ Package babel Info: Making > an active character on input line 707.
 Language: spanish.ldf 2016/03/03 v5.0p Spanish support from the babel system
 )) (/usr/local/texlive/2017/texmf-dist/tex/latex/natbib/natbib.sty
 Package: natbib 2010/09/13 8.31b (PWD, AO)
-\bibhang=\skip57
-\bibsep=\skip58
+\bibhang=\skip58
+\bibsep=\skip59
 LaTeX Info: Redefining \cite on input line 694.
-\c@NAT@ctr=\count129
+\c@NAT@ctr=\count132
 ) (/usr/local/texlive/2017/texmf-dist/tex/latex/amscls/amsthm.sty
 Package: amsthm 2015/03/04 v2.20.2
 \thm@style=\toks26
@@ -883,20 +901,20 @@ Package: amsthm 2015/03/04 v2.20.2
 \thm@headfont=\toks28
 \thm@notefont=\toks29
 \thm@headpunct=\toks30
-\thm@preskip=\skip59
-\thm@postskip=\skip60
-\thm@headsep=\skip61
+\thm@preskip=\skip60
+\thm@postskip=\skip61
+\thm@headsep=\skip62
 \dth@everypar=\toks31
 )
-\c@theorem=\count130
-\c@lemma=\count131
-\c@corollary=\count132
-\c@proposition=\count133
-\c@conjecture=\count134
-\c@definition=\count135
-\c@example=\count136
-\c@exercise=\count137
-\c@hypothesis=\count138
+\c@theorem=\count133
+\c@lemma=\count134
+\c@corollary=\count135
+\c@proposition=\count136
+\c@conjecture=\count137
+\c@definition=\count138
+\c@example=\count139
+\c@exercise=\count140
+\c@hypothesis=\count141
 (./ModelosBayesianos.aux
 LaTeX Info: Redefining \. on input line 25.
 LaTeX Info: Redefining \% on input line 25.
@@ -912,37 +930,61 @@ LaTeX Warning: Label `def:unnamed-chunk-16' multiply defined.
 
 LaTeX Warning: Label `prp:unnamed-chunk-17' multiply defined.
 
+
+LaTeX Warning: Label `def:unnamed-chunk-1' multiply defined.
+
+
+LaTeX Warning: Label `prp:unnamed-chunk-2' multiply defined.
+
+
+LaTeX Warning: Label `def:unnamed-chunk-3' multiply defined.
+
+
+LaTeX Warning: Label `prp:unnamed-chunk-4' multiply defined.
+
+
+LaTeX Warning: Label `def:unnamed-chunk-7' multiply defined.
+
+
+LaTeX Warning: Label `exm:unnamed-chunk-3' multiply defined.
+
+
+LaTeX Warning: Label `exm:unnamed-chunk-9' multiply defined.
+
+
+LaTeX Warning: Label `exm:unnamed-chunk-11' multiply defined.
+
 )
 \openout1 = `ModelosBayesianos.aux'.
 
-LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 133.
-LaTeX Font Info:    ... okay on input line 133.
-LaTeX Font Info:    Checking defaults for T1/cmr/m/n on input line 133.
-LaTeX Font Info:    ... okay on input line 133.
-LaTeX Font Info:    Checking defaults for OT1/cmr/m/n on input line 133.
-LaTeX Font Info:    ... okay on input line 133.
-LaTeX Font Info:    Checking defaults for OMS/cmsy/m/n on input line 133.
-LaTeX Font Info:    ... okay on input line 133.
-LaTeX Font Info:    Checking defaults for OMX/cmex/m/n on input line 133.
-LaTeX Font Info:    ... okay on input line 133.
-LaTeX Font Info:    Checking defaults for U/cmr/m/n on input line 133.
-LaTeX Font Info:    ... okay on input line 133.
-LaTeX Font Info:    Checking defaults for TS1/cmr/m/n on input line 133.
-LaTeX Font Info:    Try loading font information for TS1+cmr on input line 133.
+LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 173.
+LaTeX Font Info:    ... okay on input line 173.
+LaTeX Font Info:    Checking defaults for T1/cmr/m/n on input line 173.
+LaTeX Font Info:    ... okay on input line 173.
+LaTeX Font Info:    Checking defaults for OT1/cmr/m/n on input line 173.
+LaTeX Font Info:    ... okay on input line 173.
+LaTeX Font Info:    Checking defaults for OMS/cmsy/m/n on input line 173.
+LaTeX Font Info:    ... okay on input line 173.
+LaTeX Font Info:    Checking defaults for OMX/cmex/m/n on input line 173.
+LaTeX Font Info:    ... okay on input line 173.
+LaTeX Font Info:    Checking defaults for U/cmr/m/n on input line 173.
+LaTeX Font Info:    ... okay on input line 173.
+LaTeX Font Info:    Checking defaults for TS1/cmr/m/n on input line 173.
+LaTeX Font Info:    Try loading font information for TS1+cmr on input line 173.
 
 (/usr/local/texlive/2017/texmf-dist/tex/latex/base/ts1cmr.fd
 File: ts1cmr.fd 2014/09/29 v2.5h Standard LaTeX font definitions
 )
-LaTeX Font Info:    ... okay on input line 133.
-LaTeX Font Info:    Checking defaults for PD1/pdf/m/n on input line 133.
-LaTeX Font Info:    ... okay on input line 133.
-LaTeX Font Info:    Checking defaults for PU/pdf/m/n on input line 133.
-LaTeX Font Info:    ... okay on input line 133.
-LaTeX Font Info:    Try loading font information for T1+lmr on input line 133.
+LaTeX Font Info:    ... okay on input line 173.
+LaTeX Font Info:    Checking defaults for PD1/pdf/m/n on input line 173.
+LaTeX Font Info:    ... okay on input line 173.
+LaTeX Font Info:    Checking defaults for PU/pdf/m/n on input line 173.
+LaTeX Font Info:    ... okay on input line 173.
+LaTeX Font Info:    Try loading font information for T1+lmr on input line 173.
 (/usr/local/texlive/2017/texmf-dist/tex/latex/lm/t1lmr.fd
 File: t1lmr.fd 2009/10/30 v1.6 Font defs for Latin Modern
 )
-LaTeX Info: Redefining \microtypecontext on input line 133.
+LaTeX Info: Redefining \microtypecontext on input line 173.
 Package microtype Info: Generating PDF output.
 Package microtype Info: Character protrusion enabled (level 2).
 Package microtype Info: Using protrusion set `basicmath'.
@@ -957,16 +999,16 @@ File: mt-cmr.cfg 2013/05/19 v2.2 microtype config. file: Computer Modern Roman
 (RS)
 ) (/usr/local/texlive/2017/texmf-dist/tex/context/base/mkii/supp-pdf.mkii
 [Loading MPS to PDF converter (version 2006.09.02).]
-\scratchcounter=\count139
-\scratchdimen=\dimen139
-\scratchbox=\box33
-\nofMPsegments=\count140
-\nofMParguments=\count141
+\scratchcounter=\count142
+\scratchdimen=\dimen143
+\scratchbox=\box34
+\nofMPsegments=\count143
+\nofMParguments=\count144
 \everyMPshowfont=\toks32
-\MPscratchCnt=\count142
-\MPscratchDim=\dimen140
-\MPnumerator=\count143
-\makeMPintoPDFobject=\count144
+\MPscratchCnt=\count145
+\MPscratchDim=\dimen144
+\MPnumerator=\count146
+\makeMPintoPDFobject=\count147
 \everyMPtoPDFconversion=\toks33
 ) (/usr/local/texlive/2017/texmf-dist/tex/latex/oberdiek/epstopdf-base.sty
 Package: epstopdf-base 2016/05/15 v2.6 Base part for package epstopdf
@@ -983,53 +1025,53 @@ G,.JBIG2,.JB2,.eps]
 File: epstopdf-sys.cfg 2010/07/13 v1.3 Configuration of (r)epstopdf for TeX Liv
 e
 ))
-\AtBeginShipoutBox=\box34
-Package hyperref Info: Link coloring ON on input line 133.
+\AtBeginShipoutBox=\box35
+Package hyperref Info: Link coloring ON on input line 173.
 (/usr/local/texlive/2017/texmf-dist/tex/latex/hyperref/nameref.sty
 Package: nameref 2016/05/21 v2.44 Cross-referencing by name of section
 (/usr/local/texlive/2017/texmf-dist/tex/generic/oberdiek/gettitlestring.sty
 Package: gettitlestring 2016/05/16 v1.5 Cleanup title references (HO)
 )
-\c@section@level=\count145
+\c@section@level=\count148
 )
-LaTeX Info: Redefining \ref on input line 133.
-LaTeX Info: Redefining \pageref on input line 133.
-LaTeX Info: Redefining \nameref on input line 133.
-LaTeX Info: Redefining \. on input line 133.
-LaTeX Info: Redefining \% on input line 133.
-LaTeX Font Info:    Try loading font information for OT1+lmr on input line 135.
+LaTeX Info: Redefining \ref on input line 173.
+LaTeX Info: Redefining \pageref on input line 173.
+LaTeX Info: Redefining \nameref on input line 173.
+LaTeX Info: Redefining \. on input line 173.
+LaTeX Info: Redefining \% on input line 173.
+LaTeX Font Info:    Try loading font information for OT1+lmr on input line 175.
 
 (/usr/local/texlive/2017/texmf-dist/tex/latex/lm/ot1lmr.fd
 File: ot1lmr.fd 2009/10/30 v1.6 Font defs for Latin Modern
 )
-LaTeX Font Info:    Try loading font information for OML+lmm on input line 135.
+LaTeX Font Info:    Try loading font information for OML+lmm on input line 175.
 
 (/usr/local/texlive/2017/texmf-dist/tex/latex/lm/omllmm.fd
 File: omllmm.fd 2009/10/30 v1.6 Font defs for Latin Modern
 )
-LaTeX Font Info:    Try loading font information for OMS+lmsy on input line 135
+LaTeX Font Info:    Try loading font information for OMS+lmsy on input line 175
 .
 (/usr/local/texlive/2017/texmf-dist/tex/latex/lm/omslmsy.fd
 File: omslmsy.fd 2009/10/30 v1.6 Font defs for Latin Modern
 )
-LaTeX Font Info:    Try loading font information for OMX+lmex on input line 135
+LaTeX Font Info:    Try loading font information for OMX+lmex on input line 175
 .
 (/usr/local/texlive/2017/texmf-dist/tex/latex/lm/omxlmex.fd
 File: omxlmex.fd 2009/10/30 v1.6 Font defs for Latin Modern
 )
 LaTeX Font Info:    External font `lmex10' loaded for size
-(Font)              <12> on input line 135.
+(Font)              <12> on input line 175.
 LaTeX Font Info:    External font `lmex10' loaded for size
-(Font)              <8> on input line 135.
+(Font)              <8> on input line 175.
 LaTeX Font Info:    External font `lmex10' loaded for size
-(Font)              <6> on input line 135.
-LaTeX Font Info:    Try loading font information for U+msa on input line 135.
+(Font)              <6> on input line 175.
+LaTeX Font Info:    Try loading font information for U+msa on input line 175.
 (/usr/local/texlive/2017/texmf-dist/tex/latex/amsfonts/umsa.fd
 File: umsa.fd 2013/01/14 v3.01 AMS symbols A
 ) (/usr/local/texlive/2017/texmf-dist/tex/latex/microtype/mt-msa.cfg
 File: mt-msa.cfg 2006/02/04 v1.1 microtype config. file: AMS symbols (a) (RS)
 )
-LaTeX Font Info:    Try loading font information for U+msb on input line 135.
+LaTeX Font Info:    Try loading font information for U+msb on input line 175.
 (/usr/local/texlive/2017/texmf-dist/tex/latex/amsfonts/umsb.fd
 File: umsb.fd 2013/01/14 v3.01 AMS symbols B
 ) (/usr/local/texlive/2017/texmf-dist/tex/latex/microtype/mt-msb.cfg
@@ -1049,87 +1091,87 @@ LaTeX Font Info:    External font `lmex10' loaded for size
 LaTeX Font Info:    External font `lmex10' loaded for size
 (Font)              <5> on input line 4.
 )
-\tf@toc=\write3
-\openout3 = `ModelosBayesianos.toc'.
+\tf@toc=\write4
+\openout4 = `ModelosBayesianos.toc'.
 
 [3]
-LaTeX Info: Redefining \. on input line 142.
-LaTeX Info: Redefining \% on input line 142.
+LaTeX Info: Redefining \. on input line 182.
+LaTeX Info: Redefining \% on input line 182.
 [4
 
 ] [5]
-LaTeX Info: Redefining \. on input line 146.
-LaTeX Info: Redefining \% on input line 146.
+LaTeX Info: Redefining \. on input line 186.
+LaTeX Info: Redefining \% on input line 186.
 [6
 
 ] [7]
-LaTeX Info: Redefining \. on input line 178.
-LaTeX Info: Redefining \% on input line 178.
+LaTeX Info: Redefining \. on input line 218.
+LaTeX Info: Redefining \% on input line 218.
 [8]
-LaTeX Info: Redefining \. on input line 190.
-LaTeX Info: Redefining \% on input line 190.
+LaTeX Info: Redefining \. on input line 230.
+LaTeX Info: Redefining \% on input line 230.
 [9]
-LaTeX Info: Redefining \. on input line 235.
-LaTeX Info: Redefining \% on input line 235.
+LaTeX Info: Redefining \. on input line 275.
+LaTeX Info: Redefining \% on input line 275.
 [10]
-LaTeX Info: Redefining \. on input line 242.
-LaTeX Info: Redefining \% on input line 242.
+LaTeX Info: Redefining \. on input line 282.
+LaTeX Info: Redefining \% on input line 282.
 [11]
-LaTeX Info: Redefining \. on input line 242.
-LaTeX Info: Redefining \% on input line 242.
+LaTeX Info: Redefining \. on input line 282.
+LaTeX Info: Redefining \% on input line 282.
 [12
 
 ]
 Cap\'{\i }tulo 1.
 [13]
-LaTeX Info: Redefining \. on input line 289.
-LaTeX Info: Redefining \% on input line 289.
+LaTeX Info: Redefining \. on input line 329.
+LaTeX Info: Redefining \% on input line 329.
 [14]
-LaTeX Info: Redefining \. on input line 333.
-LaTeX Info: Redefining \% on input line 333.
+LaTeX Info: Redefining \. on input line 373.
+LaTeX Info: Redefining \% on input line 373.
 [15]
-LaTeX Info: Redefining \. on input line 378.
-LaTeX Info: Redefining \% on input line 378.
+LaTeX Info: Redefining \. on input line 418.
+LaTeX Info: Redefining \% on input line 418.
 [16]
-LaTeX Info: Redefining \. on input line 441.
-LaTeX Info: Redefining \% on input line 441.
+LaTeX Info: Redefining \. on input line 481.
+LaTeX Info: Redefining \% on input line 481.
 [17]
-LaTeX Info: Redefining \. on input line 495.
-LaTeX Info: Redefining \% on input line 495.
+LaTeX Info: Redefining \. on input line 535.
+LaTeX Info: Redefining \% on input line 535.
 [18]
-LaTeX Font Info:    Try loading font information for U+euf on input line 535.
+LaTeX Font Info:    Try loading font information for U+euf on input line 575.
 (/usr/local/texlive/2017/texmf-dist/tex/latex/amsfonts/ueuf.fd
 File: ueuf.fd 2013/01/14 v3.01 Euler Fraktur
 ) (/usr/local/texlive/2017/texmf-dist/tex/latex/microtype/mt-euf.cfg
 File: mt-euf.cfg 2006/07/03 v1.1 microtype config. file: AMS Euler Fraktur (RS)
 
 )
-LaTeX Info: Redefining \. on input line 536.
-LaTeX Info: Redefining \% on input line 536.
+LaTeX Info: Redefining \. on input line 576.
+LaTeX Info: Redefining \% on input line 576.
 [19]
-LaTeX Info: Redefining \. on input line 584.
-LaTeX Info: Redefining \% on input line 584.
+LaTeX Info: Redefining \. on input line 624.
+LaTeX Info: Redefining \% on input line 624.
 [20]
-LaTeX Info: Redefining \. on input line 604.
-LaTeX Info: Redefining \% on input line 604.
+LaTeX Info: Redefining \. on input line 644.
+LaTeX Info: Redefining \% on input line 644.
 [21]
-Overfull \hbox (53.00262pt too wide) in paragraph at lines 627--627
+Overfull \hbox (53.00262pt too wide) in paragraph at lines 667--667
 [] 
  []
 
 
-Overfull \hbox (64.08627pt too wide) in paragraph at lines 633--633
+Overfull \hbox (64.08627pt too wide) in paragraph at lines 673--673
 [] 
  []
 
-LaTeX Info: Redefining \. on input line 650.
-LaTeX Info: Redefining \% on input line 650.
+LaTeX Info: Redefining \. on input line 690.
+LaTeX Info: Redefining \% on input line 690.
 [22]
-LaTeX Info: Redefining \. on input line 653.
-LaTeX Info: Redefining \% on input line 653.
+LaTeX Info: Redefining \. on input line 693.
+LaTeX Info: Redefining \% on input line 693.
 [23]
-LaTeX Info: Redefining \. on input line 653.
-LaTeX Info: Redefining \% on input line 653.
+LaTeX Info: Redefining \. on input line 693.
+LaTeX Info: Redefining \% on input line 693.
 [24
 
 ]
@@ -1138,141 +1180,138 @@ Cap\'{\i }tulo 2.
 Underfull \vbox (badness 10000) has occurred while \output is active []
 
 [25]
-LaTeX Info: Redefining \. on input line 755.
-LaTeX Info: Redefining \% on input line 755.
+LaTeX Info: Redefining \. on input line 795.
+LaTeX Info: Redefining \% on input line 795.
 [26]
-LaTeX Info: Redefining \. on input line 804.
-LaTeX Info: Redefining \% on input line 804.
+LaTeX Info: Redefining \. on input line 844.
+LaTeX Info: Redefining \% on input line 844.
 [27]
-LaTeX Info: Redefining \. on input line 861.
-LaTeX Info: Redefining \% on input line 861.
+LaTeX Info: Redefining \. on input line 901.
+LaTeX Info: Redefining \% on input line 901.
 [28]
-LaTeX Info: Redefining \. on input line 926.
-LaTeX Info: Redefining \% on input line 926.
-[29]
 LaTeX Info: Redefining \. on input line 966.
 LaTeX Info: Redefining \% on input line 966.
+[29]
+LaTeX Info: Redefining \. on input line 1006.
+LaTeX Info: Redefining \% on input line 1006.
 [30]
-Overfull \hbox (4.76614pt too wide) in paragraph at lines 1004--1004
+Overfull \hbox (4.76614pt too wide) in paragraph at lines 1044--1044
 [] 
  []
 
-LaTeX Info: Redefining \. on input line 1007.
-LaTeX Info: Redefining \% on input line 1007.
+LaTeX Info: Redefining \. on input line 1047.
+LaTeX Info: Redefining \% on input line 1047.
 [31]
-LaTeX Info: Redefining \. on input line 1053.
-LaTeX Info: Redefining \% on input line 1053.
+LaTeX Info: Redefining \. on input line 1093.
+LaTeX Info: Redefining \% on input line 1093.
 [32]
-Overfull \hbox (5.31734pt too wide) in paragraph at lines 1102--1102
+Overfull \hbox (5.31734pt too wide) in paragraph at lines 1142--1142
 [] 
  []
 
-LaTeX Info: Redefining \. on input line 1102.
-LaTeX Info: Redefining \% on input line 1102.
-[33]
 LaTeX Info: Redefining \. on input line 1142.
 LaTeX Info: Redefining \% on input line 1142.
+[33]
+LaTeX Info: Redefining \. on input line 1182.
+LaTeX Info: Redefining \% on input line 1182.
 [34]
-LaTeX Info: Redefining \. on input line 1196.
-LaTeX Info: Redefining \% on input line 1196.
+LaTeX Info: Redefining \. on input line 1236.
+LaTeX Info: Redefining \% on input line 1236.
 [35]
 Underfull \vbox (badness 1997) has occurred while \output is active []
 
-LaTeX Info: Redefining \. on input line 1240.
-LaTeX Info: Redefining \% on input line 1240.
+LaTeX Info: Redefining \. on input line 1280.
+LaTeX Info: Redefining \% on input line 1280.
 [36]
-LaTeX Info: Redefining \. on input line 1272.
-LaTeX Info: Redefining \% on input line 1272.
+LaTeX Info: Redefining \. on input line 1312.
+LaTeX Info: Redefining \% on input line 1312.
 [37]
-LaTeX Info: Redefining \. on input line 1320.
-LaTeX Info: Redefining \% on input line 1320.
+LaTeX Info: Redefining \. on input line 1360.
+LaTeX Info: Redefining \% on input line 1360.
 [38]
-LaTeX Info: Redefining \. on input line 1371.
-LaTeX Info: Redefining \% on input line 1371.
+LaTeX Info: Redefining \. on input line 1411.
+LaTeX Info: Redefining \% on input line 1411.
 [39]
-LaTeX Info: Redefining \. on input line 1426.
-LaTeX Info: Redefining \% on input line 1426.
+LaTeX Info: Redefining \. on input line 1466.
+LaTeX Info: Redefining \% on input line 1466.
 [40]
-LaTeX Info: Redefining \. on input line 1479.
-LaTeX Info: Redefining \% on input line 1479.
+LaTeX Info: Redefining \. on input line 1519.
+LaTeX Info: Redefining \% on input line 1519.
 [41]
-LaTeX Info: Redefining \. on input line 1534.
-LaTeX Info: Redefining \% on input line 1534.
+LaTeX Info: Redefining \. on input line 1574.
+LaTeX Info: Redefining \% on input line 1574.
 [42]
 Ap\'{e}ndice A.
 pdfTeX warning (ext4): destination with the same identifier (name{def:unnamed-c
 hunk-1}) has been already used, duplicate ignored
 <to be read again> 
                    \relax 
-l.1545 \protect\hypertarget{def:unnamed-chunk-1}{}
+l.1585 \protect\hypertarget{def:unnamed-chunk-1}{}
                                                   {\label{def:unnamed-chunk-...
 [43
 
 ]
-LaTeX Info: Redefining \. on input line 1631.
-LaTeX Info: Redefining \% on input line 1631.
+LaTeX Info: Redefining \. on input line 1675.
+LaTeX Info: Redefining \% on input line 1675.
 [44]pdfTeX warning (ext4): destination with the same identifier (name{prp:unnam
 ed-chunk-8}) has been already used, duplicate ignored
 <to be read again> 
                    \relax 
-l.1649 \protect\hypertarget{prp:unnamed-chunk-8}{}
+l.1681 \protect\hypertarget{prp:unnamed-chunk-8}{}
                                                   {\label{prp:unnamed-chunk-...
-LaTeX Info: Redefining \. on input line 1671.
-LaTeX Info: Redefining \% on input line 1671.
+LaTeX Info: Redefining \. on input line 1719.
+LaTeX Info: Redefining \% on input line 1719.
 [45]
-LaTeX Info: Redefining \. on input line 1720.
-LaTeX Info: Redefining \% on input line 1720.
+LaTeX Info: Redefining \. on input line 1755.
+LaTeX Info: Redefining \% on input line 1755.
 [46]pdfTeX warning (ext4): destination with the same identifier (name{def:unnam
 ed-chunk-16}) has been already used, duplicate ignored
 <to be read again> 
                    \relax 
-l.1761 ...tect\hypertarget{def:unnamed-chunk-16}{}
+l.1787 ...tect\hypertarget{def:unnamed-chunk-16}{}
                                                   {\label{def:unnamed-chunk-...
 pdfTeX warning (ext4): destination with the same identifier (name{prp:unnamed-c
 hunk-17}) has been already used, duplicate ignored
 <to be read again> 
                    \relax 
-l.1770 ...tect\hypertarget{prp:unnamed-chunk-17}{}
+l.1795 ...tect\hypertarget{prp:unnamed-chunk-17}{}
                                                   {\label{prp:unnamed-chunk-...
-LaTeX Info: Redefining \. on input line 1780.
-LaTeX Info: Redefining \% on input line 1780.
+LaTeX Info: Redefining \. on input line 1827.
+LaTeX Info: Redefining \% on input line 1827.
 [47]
-LaTeX Info: Redefining \. on input line 1849.
-LaTeX Info: Redefining \% on input line 1849.
+LaTeX Info: Redefining \. on input line 1894.
+LaTeX Info: Redefining \% on input line 1894.
 [48]
-LaTeX Info: Redefining \. on input line 1911.
-LaTeX Info: Redefining \% on input line 1911.
+LaTeX Info: Redefining \. on input line 1956.
+LaTeX Info: Redefining \% on input line 1956.
 [49]
-LaTeX Info: Redefining \. on input line 1969.
-LaTeX Info: Redefining \% on input line 1969.
+LaTeX Info: Redefining \. on input line 2010.
+LaTeX Info: Redefining \% on input line 2010.
 [50]
-LaTeX Info: Redefining \. on input line 2018.
-LaTeX Info: Redefining \% on input line 2018.
+LaTeX Info: Redefining \. on input line 2065.
+LaTeX Info: Redefining \% on input line 2065.
 [51]
-LaTeX Info: Redefining \. on input line 2068.
-LaTeX Info: Redefining \% on input line 2068.
+LaTeX Info: Redefining \. on input line 2116.
+LaTeX Info: Redefining \% on input line 2116.
 [52]
-LaTeX Info: Redefining \. on input line 2120.
-LaTeX Info: Redefining \% on input line 2120.
+LaTeX Info: Redefining \. on input line 2173.
+LaTeX Info: Redefining \% on input line 2173.
 [53]
-LaTeX Info: Redefining \. on input line 2179.
-LaTeX Info: Redefining \% on input line 2179.
-[54]
-LaTeX Font Info:    Try loading font information for T1+lmtt on input line 2207
+LaTeX Font Info:    Try loading font information for T1+lmtt on input line 2205
 .
 (/usr/local/texlive/2017/texmf-dist/tex/latex/lm/t1lmtt.fd
 File: t1lmtt.fd 2009/10/30 v1.6 Font defs for Latin Modern
 )
-LaTeX Info: Redefining \. on input line 2238.
-LaTeX Info: Redefining \% on input line 2238.
+LaTeX Info: Redefining \. on input line 2235.
+LaTeX Info: Redefining \% on input line 2235.
+[54]
+LaTeX Info: Redefining \. on input line 2283.
+LaTeX Info: Redefining \% on input line 2283.
 [55]
-LaTeX Info: Redefining \. on input line 2286.
-LaTeX Info: Redefining \% on input line 2286.
+LaTeX Info: Redefining \. on input line 2340.
+LaTeX Info: Redefining \% on input line 2340.
 [56]
-LaTeX Info: Redefining \. on input line 2344.
-LaTeX Info: Redefining \% on input line 2344.
-[57]
-Overfull \hbox (8.56467pt too wide) in paragraph at lines 2362--2363
+Overfull \hbox (8.56467pt too wide) in paragraph at lines 2351--2352
 []\T1/lmr/m/n/10 (-20) Si $\OT1/lmr/bx/n/10 A[]$ \T1/lmr/m/n/10 (-20) (i=1,...,
 n) son ma-tri-ces del mis-mo ta-ma-ño, en-ton-ces $[][] \OML/lmm/m/it/10 traza\
 OT1/lmr/m/n/10 (-20) (\OT1/lmr/bx/n/10 A[]\OT1/lmr/m/n/10 (-20) ) =
@@ -1280,42 +1319,247 @@ OT1/lmr/m/n/10 (-20) (\OT1/lmr/bx/n/10 A[]\OT1/lmr/m/n/10 (-20) ) =
 
 LaTeX Info: Redefining \. on input line 2390.
 LaTeX Info: Redefining \% on input line 2390.
+[57]
+LaTeX Info: Redefining \. on input line 2410.
+LaTeX Info: Redefining \% on input line 2410.
 [58]
-LaTeX Info: Redefining \. on input line 2424.
-LaTeX Info: Redefining \% on input line 2424.
-[59]
-LaTeX Info: Redefining \. on input line 2424.
-LaTeX Info: Redefining \% on input line 2424.
-[60
+Ap\'{e}ndice B.
+pdfTeX warning (ext4): destination with the same identifier (name{def:unnamed-c
+hunk-1}) has been already used, duplicate ignored
+<to be read again> 
+                   \relax 
+l.2413 \protect\hypertarget{def:unnamed-chunk-1}{}
+                                                  {\label{def:unnamed-chunk-...
+pdfTeX warning (ext4): destination with the same identifier (name{prp:unnamed-c
+hunk-2}) has been already used, duplicate ignored
+<to be read again> 
+                   \relax 
+l.2421 \protect\hypertarget{prp:unnamed-chunk-2}{}
+                                                  {\label{prp:unnamed-chunk-...
+pdfTeX warning (ext4): destination with the same identifier (name{def:unnamed-c
+hunk-3}) has been already used, duplicate ignored
+<to be read again> 
+                   \relax 
+l.2431 \protect\hypertarget{def:unnamed-chunk-3}{}
+                                                  {\label{def:unnamed-chunk-...
+pdfTeX warning (ext4): destination with the same identifier (name{prp:unnamed-c
+hunk-4}) has been already used, duplicate ignored
+<to be read again> 
+                   \relax 
+l.2439 \protect\hypertarget{prp:unnamed-chunk-4}{}
+                                                  {\label{prp:unnamed-chunk-...
+[59
 
-] (./ModelosBayesianos.bbl [61]
+]
+Underfull \vbox (badness 5817) has occurred while \output is active []
+
+LaTeX Info: Redefining \. on input line 2465.
+LaTeX Info: Redefining \% on input line 2465.
+[60]pdfTeX warning (ext4): destination with the same identifier (name{def:unnam
+ed-chunk-7}) has been already used, duplicate ignored
+<to be read again> 
+                   \relax 
+l.2473 \protect\hypertarget{def:unnamed-chunk-7}{}
+                                                  {\label{def:unnamed-chunk-...
+
+Overfull \hbox (72.06693pt too wide) in paragraph at lines 2517--2517
+[] 
+ []
+
+
+Underfull \vbox (badness 6220) has occurred while \output is active []
+
+[61]
+Overfull \hbox (33.81186pt too wide) in paragraph at lines 2530--2530
+[] 
+ []
+
+
+Overfull \hbox (7.57162pt too wide) in paragraph at lines 2552--2552
+[] 
+ []
+
+LaTeX Info: Redefining \. on input line 2552.
+LaTeX Info: Redefining \% on input line 2552.
+[62] [63]
+LaTeX Info: Redefining \. on input line 2564.
+LaTeX Info: Redefining \% on input line 2564.
+[64
+
+]
+Ap\'{e}ndice C.
+[65]pdfTeX warning (ext4): destination with the same identifier (name{exm:unnam
+ed-chunk-3}) has been already used, duplicate ignored
+<to be read again> 
+                   \relax 
+l.2588 \protect\hypertarget{exm:unnamed-chunk-3}{}
+                                                  {\label{exm:unnamed-chunk-...
+
+<A3Simulacion_files/figure-latex/unnamed-chunk-4-1.pdf, id=792, 435.6275pt x 28
+5.065pt>
+File: A3Simulacion_files/figure-latex/unnamed-chunk-4-1.pdf Graphic file (type 
+pdf)
+<use A3Simulacion_files/figure-latex/unnamed-chunk-4-1.pdf>
+Package pdftex.def Info: A3Simulacion_files/figure-latex/unnamed-chunk-4-1.pdf 
+used on input line 2625.
+(pdftex.def)             Requested size: 344.99944pt x 225.76pt.
+LaTeX Info: Redefining \. on input line 2642.
+LaTeX Info: Redefining \% on input line 2642.
+
+Overfull \hbox (6.10435pt too wide) has occurred while \output is active
+\T1/lmr/m/n/10 66 \T1/lmr/m/sl/10 APÉNDICE C.  SIMULACIÓN DE DISTRIBUCIONES DE 
+PROBABILIDAD
+ []
+
+[66]
+LaTeX Info: Redefining \. on input line 2668.
+LaTeX Info: Redefining \% on input line 2668.
+[67 <./A3Simulacion_files/figure-latex/unnamed-chunk-4-1.pdf>]
+<A3Simulacion_files/figure-latex/unnamed-chunk-6-1.pdf, id=823, 429.605pt x 285
+.065pt>
+File: A3Simulacion_files/figure-latex/unnamed-chunk-6-1.pdf Graphic file (type 
+pdf)
+<use A3Simulacion_files/figure-latex/unnamed-chunk-6-1.pdf>
+Package pdftex.def Info: A3Simulacion_files/figure-latex/unnamed-chunk-6-1.pdf 
+used on input line 2700.
+(pdftex.def)             Requested size: 345.00206pt x 228.9266pt.
+
+Underfull \vbox (badness 10000) has occurred while \output is active []
+
+LaTeX Info: Redefining \. on input line 2702.
+LaTeX Info: Redefining \% on input line 2702.
+
+Overfull \hbox (6.10435pt too wide) has occurred while \output is active
+\T1/lmr/m/n/10 68 \T1/lmr/m/sl/10 APÉNDICE C.  SIMULACIÓN DE DISTRIBUCIONES DE 
+PROBABILIDAD
+ []
+
+[68]
+LaTeX Font Info:    Font shape `T1/lmtt/bx/n' in size <10> not available
+(Font)              Font shape `T1/lmtt/b/n' tried instead on input line 2707.
+LaTeX Info: Redefining \. on input line 2741.
+LaTeX Info: Redefining \% on input line 2741.
+[69 <./A3Simulacion_files/figure-latex/unnamed-chunk-6-1.pdf>]
+<A3Simulacion_files/figure-latex/unnamed-chunk-8-1.pdf, id=845, 424.58624pt x 2
+85.065pt>
+File: A3Simulacion_files/figure-latex/unnamed-chunk-8-1.pdf Graphic file (type 
+pdf)
+<use A3Simulacion_files/figure-latex/unnamed-chunk-8-1.pdf>
+Package pdftex.def Info: A3Simulacion_files/figure-latex/unnamed-chunk-8-1.pdf 
+used on input line 2759.
+(pdftex.def)             Requested size: 345.01434pt x 231.64084pt.
+pdfTeX warning (ext4): destination with the same identifier (name{exm:unnamed-c
+hunk-9}) has been already used, duplicate ignored
+<to be read again> 
+                   \relax 
+l.2764 \protect\hypertarget{exm:unnamed-chunk-9}{}
+                                                  {\label{exm:unnamed-chunk-...
+LaTeX Info: Redefining \. on input line 2790.
+LaTeX Info: Redefining \% on input line 2790.
+
+Overfull \hbox (6.10435pt too wide) has occurred while \output is active
+\T1/lmr/m/n/10 70 \T1/lmr/m/sl/10 APÉNDICE C.  SIMULACIÓN DE DISTRIBUCIONES DE 
+PROBABILIDAD
+ []
+
+[70 <./A3Simulacion_files/figure-latex/unnamed-chunk-8-1.pdf>]
+<A3Simulacion_files/figure-latex/unnamed-chunk-10-1.pdf, id=861, 435.6275pt x 2
+85.065pt>
+File: A3Simulacion_files/figure-latex/unnamed-chunk-10-1.pdf Graphic file (type
+ pdf)
+<use A3Simulacion_files/figure-latex/unnamed-chunk-10-1.pdf>
+Package pdftex.def Info: A3Simulacion_files/figure-latex/unnamed-chunk-10-1.pdf
+ used on input line 2815.
+(pdftex.def)             Requested size: 344.99944pt x 225.76pt.
+pdfTeX warning (ext4): destination with the same identifier (name{exm:unnamed-c
+hunk-11}) has been already used, duplicate ignored
+<to be read again> 
+                   \relax 
+l.2820 ...tect\hypertarget{exm:unnamed-chunk-11}{}
+                                                  {\label{exm:unnamed-chunk-...
+
+Underfull \vbox (badness 1337) has occurred while \output is active []
+
+LaTeX Info: Redefining \. on input line 2824.
+LaTeX Info: Redefining \% on input line 2824.
+[71 <./A3Simulacion_files/figure-latex/unnamed-chunk-10-1.pdf>]
+Overfull \vbox (0.33347pt too high) detected at line 2883
+ []
+
+LaTeX Info: Redefining \. on input line 2883.
+LaTeX Info: Redefining \% on input line 2883.
+
+Overfull \hbox (6.10435pt too wide) has occurred while \output is active
+\T1/lmr/m/n/10 72 \T1/lmr/m/sl/10 APÉNDICE C.  SIMULACIÓN DE DISTRIBUCIONES DE 
+PROBABILIDAD
+ []
+
+[72]
+<A3Simulacion_files/figure-latex/unnamed-chunk-12-1.pdf, id=880, 435.6275pt x 2
+83.0575pt>
+File: A3Simulacion_files/figure-latex/unnamed-chunk-12-1.pdf Graphic file (type
+ pdf)
+<use A3Simulacion_files/figure-latex/unnamed-chunk-12-1.pdf>
+Package pdftex.def Info: A3Simulacion_files/figure-latex/unnamed-chunk-12-1.pdf
+ used on input line 2910.
+(pdftex.def)             Requested size: 344.99944pt x 224.17012pt.
+
+<A3Simulacion_files/figure-latex/unnamed-chunk-12-2.pdf, id=881, 435.6275pt x 2
+85.065pt>
+File: A3Simulacion_files/figure-latex/unnamed-chunk-12-2.pdf Graphic file (type
+ pdf)
+<use A3Simulacion_files/figure-latex/unnamed-chunk-12-2.pdf>
+Package pdftex.def Info: A3Simulacion_files/figure-latex/unnamed-chunk-12-2.pdf
+ used on input line 2923.
+(pdftex.def)             Requested size: 344.99944pt x 225.76pt.
+LaTeX Info: Redefining \. on input line 2928.
+LaTeX Info: Redefining \% on input line 2928.
+[73 <./A3Simulacion_files/figure-latex/unnamed-chunk-12-1.pdf>]
+LaTeX Info: Redefining \. on input line 2928.
+LaTeX Info: Redefining \% on input line 2928.
+
+Overfull \hbox (6.10435pt too wide) has occurred while \output is active
+\T1/lmr/m/n/10 74 \T1/lmr/m/sl/10 APÉNDICE C.  SIMULACIÓN DE DISTRIBUCIONES DE 
+PROBABILIDAD
+ []
+
+[74 <./A3Simulacion_files/figure-latex/unnamed-chunk-12-2.pdf>] (./ModelosBayes
+ianos.bbl [75
+
+]
 LaTeX Info: Redefining \. on input line 1.
 LaTeX Info: Redefining \% on input line 1.
-[62
 
-] [63])
-Package atveryend Info: Empty hook `BeforeClearDocument' on input line 2429.
-LaTeX Info: Redefining \. on input line 2429.
-LaTeX Info: Redefining \% on input line 2429.
-[64]
-Package atveryend Info: Empty hook `AfterLastShipout' on input line 2429.
+Overfull \hbox (6.10435pt too wide) has occurred while \output is active
+\T1/lmr/m/n/10 76 \T1/lmr/m/sl/10 APÉNDICE C.  SIMULACIÓN DE DISTRIBUCIONES DE 
+PROBABILIDAD
+ []
+
+[76
+
+] [77])
+Package atveryend Info: Empty hook `BeforeClearDocument' on input line 2933.
+LaTeX Info: Redefining \. on input line 2933.
+LaTeX Info: Redefining \% on input line 2933.
+[78]
+Package atveryend Info: Empty hook `AfterLastShipout' on input line 2933.
 (./ModelosBayesianos.aux
 LaTeX Info: Redefining \. on input line 25.
 LaTeX Info: Redefining \% on input line 25.
 )
-Package atveryend Info: Executing hook `AtVeryEndDocument' on input line 2429.
-Package atveryend Info: Empty hook `AtEndAfterFileList' on input line 2429.
+Package atveryend Info: Executing hook `AtVeryEndDocument' on input line 2933.
+Package atveryend Info: Empty hook `AtEndAfterFileList' on input line 2933.
 
 LaTeX Warning: There were multiply-defined labels.
 
-Package atveryend Info: Empty hook `AtVeryVeryEnd' on input line 2429.
+Package atveryend Info: Empty hook `AtVeryVeryEnd' on input line 2933.
  ) 
 Here is how much of TeX's memory you used:
- 15422 strings out of 492995
- 220931 string characters out of 6132704
- 347545 words of memory out of 5000000
- 18046 multiletter control sequences out of 15000+600000
- 128208 words of font info for 206 fonts, out of 8000000 for 9000
+ 16010 strings out of 492995
+ 230951 string characters out of 6132704
+ 365455 words of memory out of 5000000
+ 18545 multiletter control sequences out of 15000+600000
+ 128858 words of font info for 211 fonts, out of 8000000 for 9000
  1141 hyphenation exceptions out of 8191
  34i,21n,38p,1168b,490s stack positions out of 5000i,500n,10000p,200000b,80000s
 pdfTeX warning (dest): name{Hfootnote.4} has been referenced but does not exi
@@ -1357,13 +1601,14 @@ t/fonts/type1/public/lm/lmro10.pfb></usr/local/texlive/2017/texmf-dist/fonts/ty
 pe1/public/lm/lmsy10.pfb></usr/local/texlive/2017/texmf-dist/fonts/type1/public
 /lm/lmsy5.pfb></usr/local/texlive/2017/texmf-dist/fonts/type1/public/lm/lmsy7.p
 fb></usr/local/texlive/2017/texmf-dist/fonts/type1/public/lm/lmsy8.pfb></usr/lo
-cal/texlive/2017/texmf-dist/fonts/type1/public/lm/lmtt10.pfb></usr/local/texliv
-e/2017/texmf-dist/fonts/type1/public/amsfonts/symbols/msbm10.pfb></usr/local/te
-xlive/2017/texmf-dist/fonts/type1/public/amsfonts/symbols/msbm7.pfb>
-Output written on ModelosBayesianos.pdf (64 pages, 588688 bytes).
+cal/texlive/2017/texmf-dist/fonts/type1/public/lm/lmtk10.pfb></usr/local/texliv
+e/2017/texmf-dist/fonts/type1/public/lm/lmtt10.pfb></usr/local/texlive/2017/tex
+mf-dist/fonts/type1/public/amsfonts/symbols/msbm10.pfb></usr/local/texlive/2017
+/texmf-dist/fonts/type1/public/amsfonts/symbols/msbm7.pfb>
+Output written on ModelosBayesianos.pdf (78 pages, 700320 bytes).
 PDF statistics:
- 999 PDF objects out of 1000 (max. 8388607)
- 895 compressed objects within 9 object streams
- 434 named destinations out of 1000 (max. 500000)
- 18569 words of extra memory for PDF output out of 20736 (max. 10000000)
+ 1202 PDF objects out of 1440 (max. 8388607)
+ 1063 compressed objects within 11 object streams
+ 499 named destinations out of 1000 (max. 500000)
+ 18631 words of extra memory for PDF output out of 20736 (max. 10000000)
 
