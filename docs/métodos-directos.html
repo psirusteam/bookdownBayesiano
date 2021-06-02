@@ -1,0 +1,580 @@
+<!DOCTYPE html>
+<html lang="es" xml:lang="es">
+<head>
+
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <title>C.1 Métodos directos | Modelos Bayesianos con R y STAN</title>
+  <meta name="description" content="Este es el repositorio del libro Modelos Bayesianos con R y STAN." />
+  <meta name="generator" content="bookdown 0.22 and GitBook 2.6.7" />
+
+  <meta property="og:title" content="C.1 Métodos directos | Modelos Bayesianos con R y STAN" />
+  <meta property="og:type" content="book" />
+  
+  
+  <meta property="og:description" content="Este es el repositorio del libro Modelos Bayesianos con R y STAN." />
+  <meta name="github-repo" content="psirusteam/bookdownBayesiano" />
+
+  <meta name="twitter:card" content="summary" />
+  <meta name="twitter:title" content="C.1 Métodos directos | Modelos Bayesianos con R y STAN" />
+  
+  <meta name="twitter:description" content="Este es el repositorio del libro Modelos Bayesianos con R y STAN." />
+  
+
+<meta name="author" content="Andrés Gutiérrez - Hanwen Zhang" />
+
+
+<meta name="date" content="2021-06-01" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black" />
+  
+  
+<link rel="prev" href="elementos-de-simulación-estadística.html"/>
+<link rel="next" href="métodos-de-monte-carlo-vía-cadenas-de-markov.html"/>
+<script src="libs/header-attrs-2.8/header-attrs.js"></script>
+<script src="libs/jquery-2.2.3/jquery.min.js"></script>
+<link href="libs/gitbook-2.6.7/css/style.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-table.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-bookdown.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-highlight.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-search.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-fontsettings.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-clipboard.css" rel="stylesheet" />
+
+
+
+
+
+
+
+
+
+<link href="libs/anchor-sections-1.0.1/anchor-sections.css" rel="stylesheet" />
+<script src="libs/anchor-sections-1.0.1/anchor-sections.js"></script>
+
+
+<style type="text/css">
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+    color: #aaaaaa;
+  }
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code span.at { color: #7d9029; } /* Attribute */
+code span.bn { color: #40a070; } /* BaseN */
+code span.bu { } /* BuiltIn */
+code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code span.ch { color: #4070a0; } /* Char */
+code span.cn { color: #880000; } /* Constant */
+code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code span.dt { color: #902000; } /* DataType */
+code span.dv { color: #40a070; } /* DecVal */
+code span.er { color: #ff0000; font-weight: bold; } /* Error */
+code span.ex { } /* Extension */
+code span.fl { color: #40a070; } /* Float */
+code span.fu { color: #06287e; } /* Function */
+code span.im { } /* Import */
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code span.op { color: #666666; } /* Operator */
+code span.ot { color: #007020; } /* Other */
+code span.pp { color: #bc7a00; } /* Preprocessor */
+code span.sc { color: #4070a0; } /* SpecialChar */
+code span.ss { color: #bb6688; } /* SpecialString */
+code span.st { color: #4070a0; } /* String */
+code span.va { color: #19177c; } /* Variable */
+code span.vs { color: #4070a0; } /* VerbatimString */
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+</style>
+
+<style type="text/css">
+/* Used with Pandoc 2.11+ new --citeproc when CSL is used */
+div.csl-bib-body { }
+div.csl-entry {
+  clear: both;
+}
+.hanging div.csl-entry {
+  margin-left:2em;
+  text-indent:-2em;
+}
+div.csl-left-margin {
+  min-width:2em;
+  float:left;
+}
+div.csl-right-inline {
+  margin-left:2em;
+  padding-left:1em;
+}
+div.csl-indent {
+  margin-left: 2em;
+}
+</style>
+
+<link rel="stylesheet" href="style.css" type="text/css" />
+</head>
+
+<body>
+
+
+
+  <div class="book without-animation with-summary font-size-2 font-family-1" data-basepath=".">
+
+    <div class="book-summary">
+      <nav role="navigation">
+
+<ul class="summary">
+<li><a href="./">Modelos Bayesianos con R y STAN</a></li>
+
+<li class="divider"></li>
+<li class="chapter" data-level="" data-path="index.html"><a href="index.html"><i class="fa fa-check"></i>Prefacio</a></li>
+<li class="chapter" data-level="" data-path="antes-de-comenzar.html"><a href="antes-de-comenzar.html"><i class="fa fa-check"></i>Antes de comenzar</a>
+<ul>
+<li class="chapter" data-level="" data-path="cuestionamientos-sobre-el-enfoque-bayesiano.html"><a href="cuestionamientos-sobre-el-enfoque-bayesiano.html"><i class="fa fa-check"></i>Cuestionamientos sobre el enfoque bayesiano</a></li>
+<li class="chapter" data-level="" data-path="acerca-de-la-notación.html"><a href="acerca-de-la-notación.html"><i class="fa fa-check"></i>Acerca de la notación</a></li>
+</ul></li>
+<li class="chapter" data-level="1" data-path="tópicos-básicos.html"><a href="tópicos-básicos.html"><i class="fa fa-check"></i><b>1</b> Tópicos básicos</a>
+<ul>
+<li class="chapter" data-level="1.1" data-path="teoría-de-la-decisión.html"><a href="teoría-de-la-decisión.html"><i class="fa fa-check"></i><b>1.1</b> Teoría de la decisión</a></li>
+<li class="chapter" data-level="1.2" data-path="algunos-resultados-de-probabilidad.html"><a href="algunos-resultados-de-probabilidad.html"><i class="fa fa-check"></i><b>1.2</b> Algunos resultados de probabilidad</a></li>
+<li class="chapter" data-level="1.3" data-path="teorema-de-bayes.html"><a href="teorema-de-bayes.html"><i class="fa fa-check"></i><b>1.3</b> Teorema de Bayes</a></li>
+</ul></li>
+<li class="chapter" data-level="2" data-path="inferencia-bayesiana.html"><a href="inferencia-bayesiana.html"><i class="fa fa-check"></i><b>2</b> Inferencia bayesiana</a>
+<ul>
+<li class="chapter" data-level="2.1" data-path="la-distribución-previa.html"><a href="la-distribución-previa.html"><i class="fa fa-check"></i><b>2.1</b> La distribución previa</a>
+<ul>
+<li class="chapter" data-level="2.1.1" data-path="la-distribución-previa.html"><a href="la-distribución-previa.html#distribuciones-conjugadas"><i class="fa fa-check"></i><b>2.1.1</b> Distribuciones conjugadas</a></li>
+<li class="chapter" data-level="2.1.2" data-path="la-distribución-previa.html"><a href="la-distribución-previa.html#familia-exponencial"><i class="fa fa-check"></i><b>2.1.2</b> Familia exponencial</a></li>
+<li class="chapter" data-level="2.1.3" data-path="la-distribución-previa.html"><a href="la-distribución-previa.html#distribuciones-previas-no-informativas"><i class="fa fa-check"></i><b>2.1.3</b> Distribuciones previas no informativas</a></li>
+</ul></li>
+<li class="chapter" data-level="2.2" data-path="pruebas-de-hipótesis.html"><a href="pruebas-de-hipótesis.html"><i class="fa fa-check"></i><b>2.2</b> Pruebas de hipótesis</a>
+<ul>
+<li class="chapter" data-level="2.2.1" data-path="pruebas-de-hipótesis.html"><a href="pruebas-de-hipótesis.html#factor-de-bayes"><i class="fa fa-check"></i><b>2.2.1</b> Factor de Bayes</a></li>
+<li class="chapter" data-level="2.2.2" data-path="pruebas-de-hipótesis.html"><a href="pruebas-de-hipótesis.html#valor-p-bayesiano"><i class="fa fa-check"></i><b>2.2.2</b> Valor-<span class="math inline">\(p\)</span> Bayesiano</a></li>
+</ul></li>
+<li class="chapter" data-level="2.3" data-path="criterios-de-información.html"><a href="criterios-de-información.html"><i class="fa fa-check"></i><b>2.3</b> Criterios de información</a>
+<ul>
+<li class="chapter" data-level="2.3.1" data-path="criterios-de-información.html"><a href="criterios-de-información.html#criterio-dic"><i class="fa fa-check"></i><b>2.3.1</b> Criterio DIC</a></li>
+<li class="chapter" data-level="2.3.2" data-path="criterios-de-información.html"><a href="criterios-de-información.html#criterios-aic-y-bic"><i class="fa fa-check"></i><b>2.3.2</b> Criterios AIC y BIC</a></li>
+</ul></li>
+</ul></li>
+<li class="appendix"><span><b>Apéndice</b></span></li>
+<li class="chapter" data-level="A" data-path="elementos-de-probabilidad.html"><a href="elementos-de-probabilidad.html"><i class="fa fa-check"></i><b>A</b> Elementos de probabilidad</a>
+<ul>
+<li class="chapter" data-level="A.1" data-path="distribuciones-discretas.html"><a href="distribuciones-discretas.html"><i class="fa fa-check"></i><b>A.1</b> Distribuciones discretas</a>
+<ul>
+<li class="chapter" data-level="A.1.1" data-path="distribuciones-discretas.html"><a href="distribuciones-discretas.html#distribución-uniforme-discreta"><i class="fa fa-check"></i><b>A.1.1</b> Distribución uniforme discreta</a></li>
+<li class="chapter" data-level="A.1.2" data-path="distribuciones-discretas.html"><a href="distribuciones-discretas.html#distribución-hipergeométrica"><i class="fa fa-check"></i><b>A.1.2</b> Distribución hipergeométrica</a></li>
+<li class="chapter" data-level="A.1.3" data-path="distribuciones-discretas.html"><a href="distribuciones-discretas.html#distribución-bernoulli"><i class="fa fa-check"></i><b>A.1.3</b> Distribución Bernoulli</a></li>
+<li class="chapter" data-level="A.1.4" data-path="distribuciones-discretas.html"><a href="distribuciones-discretas.html#distribución-binomial"><i class="fa fa-check"></i><b>A.1.4</b> Distribución binomial</a></li>
+<li class="chapter" data-level="A.1.5" data-path="distribuciones-discretas.html"><a href="distribuciones-discretas.html#distribución-binomial-negativa"><i class="fa fa-check"></i><b>A.1.5</b> Distribución Binomial negativa</a></li>
+<li class="chapter" data-level="A.1.6" data-path="distribuciones-discretas.html"><a href="distribuciones-discretas.html#distribución-de-poisson"><i class="fa fa-check"></i><b>A.1.6</b> Distribución de Poisson</a></li>
+</ul></li>
+<li class="chapter" data-level="A.2" data-path="distribuciones-continuas.html"><a href="distribuciones-continuas.html"><i class="fa fa-check"></i><b>A.2</b> Distribuciones continuas</a>
+<ul>
+<li class="chapter" data-level="A.2.1" data-path="distribuciones-continuas.html"><a href="distribuciones-continuas.html#distribución-uniforme-continua"><i class="fa fa-check"></i><b>A.2.1</b> Distribución Uniforme Continua</a></li>
+<li class="chapter" data-level="A.2.2" data-path="distribuciones-continuas.html"><a href="distribuciones-continuas.html#distribución-weibull"><i class="fa fa-check"></i><b>A.2.2</b> Distribución Weibull</a></li>
+<li class="chapter" data-level="A.2.3" data-path="distribuciones-continuas.html"><a href="distribuciones-continuas.html#distribución-valor-extremo"><i class="fa fa-check"></i><b>A.2.3</b> Distribución valor-extremo</a></li>
+<li class="chapter" data-level="A.2.4" data-path="distribuciones-continuas.html"><a href="distribuciones-continuas.html#distribución-gamma"><i class="fa fa-check"></i><b>A.2.4</b> Distribución Gamma</a></li>
+<li class="chapter" data-level="A.2.5" data-path="distribuciones-continuas.html"><a href="distribuciones-continuas.html#distribución-gamma-inversa"><i class="fa fa-check"></i><b>A.2.5</b> Distribución Gamma-inversa</a></li>
+<li class="chapter" data-level="A.2.6" data-path="distribuciones-continuas.html"><a href="distribuciones-continuas.html#distribución-exponencial"><i class="fa fa-check"></i><b>A.2.6</b> Distribución exponencial</a></li>
+<li class="chapter" data-level="A.2.7" data-path="distribuciones-continuas.html"><a href="distribuciones-continuas.html#distribución-beta"><i class="fa fa-check"></i><b>A.2.7</b> Distribución Beta</a></li>
+<li class="chapter" data-level="A.2.8" data-path="distribuciones-continuas.html"><a href="distribuciones-continuas.html#distribución-normal"><i class="fa fa-check"></i><b>A.2.8</b> Distribución normal</a></li>
+<li class="chapter" data-level="A.2.9" data-path="distribuciones-continuas.html"><a href="distribuciones-continuas.html#distribución-log-normal"><i class="fa fa-check"></i><b>A.2.9</b> Distribución log-normal</a></li>
+<li class="chapter" data-level="A.2.10" data-path="distribuciones-continuas.html"><a href="distribuciones-continuas.html#distribución-ji-cuadrado"><i class="fa fa-check"></i><b>A.2.10</b> Distribución Ji-cuadrado</a></li>
+<li class="chapter" data-level="A.2.11" data-path="distribuciones-continuas.html"><a href="distribuciones-continuas.html#distribución-t-student"><i class="fa fa-check"></i><b>A.2.11</b> Distribución t-student</a></li>
+<li class="chapter" data-level="A.2.12" data-path="distribuciones-continuas.html"><a href="distribuciones-continuas.html#distribución-t-student-generalizada"><i class="fa fa-check"></i><b>A.2.12</b> Distribución t-student generalizada</a></li>
+<li class="chapter" data-level="A.2.13" data-path="distribuciones-continuas.html"><a href="distribuciones-continuas.html#distribución-f"><i class="fa fa-check"></i><b>A.2.13</b> Distribución F</a></li>
+</ul></li>
+<li class="chapter" data-level="A.3" data-path="distribuciones-multivariadas.html"><a href="distribuciones-multivariadas.html"><i class="fa fa-check"></i><b>A.3</b> Distribuciones multivariadas</a>
+<ul>
+<li class="chapter" data-level="A.3.1" data-path="distribuciones-multivariadas.html"><a href="distribuciones-multivariadas.html#distribución-multinomial"><i class="fa fa-check"></i><b>A.3.1</b> Distribución Multinomial</a></li>
+<li class="chapter" data-level="A.3.2" data-path="distribuciones-multivariadas.html"><a href="distribuciones-multivariadas.html#distribución-dirichelt"><i class="fa fa-check"></i><b>A.3.2</b> Distribución Dirichelt</a></li>
+<li class="chapter" data-level="A.3.3" data-path="distribuciones-multivariadas.html"><a href="distribuciones-multivariadas.html#distribución-normal-multivariante"><i class="fa fa-check"></i><b>A.3.3</b> Distribución Normal Multivariante</a></li>
+<li class="chapter" data-level="A.3.4" data-path="distribuciones-multivariadas.html"><a href="distribuciones-multivariadas.html#distribución-wishart"><i class="fa fa-check"></i><b>A.3.4</b> Distribución Wishart</a></li>
+<li class="chapter" data-level="A.3.5" data-path="distribuciones-multivariadas.html"><a href="distribuciones-multivariadas.html#distribución-inversa-wishart"><i class="fa fa-check"></i><b>A.3.5</b> Distribución inversa-Wishart</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="B" data-path="matriz-de-información.html"><a href="matriz-de-información.html"><i class="fa fa-check"></i><b>B</b> Matriz de información</a></li>
+<li class="chapter" data-level="C" data-path="elementos-de-simulación-estadística.html"><a href="elementos-de-simulación-estadística.html"><i class="fa fa-check"></i><b>C</b> Elementos de simulación estadística</a>
+<ul>
+<li class="chapter" data-level="C.1" data-path="métodos-directos.html"><a href="métodos-directos.html"><i class="fa fa-check"></i><b>C.1</b> Métodos directos</a>
+<ul>
+<li class="chapter" data-level="C.1.1" data-path="métodos-directos.html"><a href="métodos-directos.html#método-de-la-transformación-uniforme"><i class="fa fa-check"></i><b>C.1.1</b> Método de la transformación uniforme</a></li>
+<li class="chapter" data-level="C.1.2" data-path="métodos-directos.html"><a href="métodos-directos.html#método-de-la-grilla"><i class="fa fa-check"></i><b>C.1.2</b> Método de la grilla</a></li>
+</ul></li>
+<li class="chapter" data-level="C.2" data-path="métodos-de-monte-carlo-vía-cadenas-de-markov.html"><a href="métodos-de-monte-carlo-vía-cadenas-de-markov.html"><i class="fa fa-check"></i><b>C.2</b> Métodos de Monte Carlo vía cadenas de Markov</a>
+<ul>
+<li class="chapter" data-level="C.2.1" data-path="métodos-de-monte-carlo-vía-cadenas-de-markov.html"><a href="métodos-de-monte-carlo-vía-cadenas-de-markov.html#el-muestreador-de-gibbs"><i class="fa fa-check"></i><b>C.2.1</b> El muestreador de Gibbs</a></li>
+<li class="chapter" data-level="C.2.2" data-path="métodos-de-monte-carlo-vía-cadenas-de-markov.html"><a href="métodos-de-monte-carlo-vía-cadenas-de-markov.html#buenas-prácticas-en-la-aplicación-de-métodos-mcmc"><i class="fa fa-check"></i><b>C.2.2</b> Buenas prácticas en la aplicación de métodos MCMC</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="referencias.html"><a href="referencias.html"><i class="fa fa-check"></i>Referencias</a></li>
+<li class="divider"></li>
+<li><a Modelos Bayesianos con R y STAN</a></li>
+
+</ul>
+
+      </nav>
+    </div>
+
+    <div class="book-body">
+      <div class="body-inner">
+        <div class="book-header" role="navigation">
+          <h1>
+            <i class="fa fa-circle-o-notch fa-spin"></i><a href="./">Modelos Bayesianos con R y STAN</a>
+          </h1>
+        </div>
+
+        <div class="page-wrapper" tabindex="-1" role="main">
+          <div class="page-inner">
+
+            <section class="normal" id="section-">
+<div id="métodos-directos" class="section level2" number="5.1">
+<h2><span class="header-section-number">C.1</span> Métodos directos</h2>
+<div id="método-de-la-transformación-uniforme" class="section level3" number="5.1.1">
+<h3><span class="header-section-number">C.1.1</span> Método de la transformación uniforme</h3>
+<p>Al momento de la simulación estocástica de observaciones provenientes de alguna distribución de interés, la distribución uniforme es quizás la más usada y la más importante. El siguiente resultado adaptado de <span class="citation"><a href="#ref-Casella" role="doc-biblioref">Robert y Casella</a> (<a href="#ref-Casella" role="doc-biblioref">1999</a>)</span> así lo confirma.</p>
+
+<div class="proposition">
+<span id="prp:unnamed-chunk-1" class="proposition"><strong>Resultado C.1  </strong></span>Si <span class="math inline">\(U\)</span> es una variable aleatoria con distribución uniforme en el intervalo <span class="math inline">\((0,1)\)</span>, entonces la la variable aleatoria <span class="math inline">\(F^{-1}(U)\)</span> tiene distribución F.
+</div>
+<p><br></p>
+<p>Aunque la función <span class="math inline">\(F\)</span> no necesariamente es una función uno a uno (por lo menos no lo es en el caso discreto) sí se puede verificar que <span class="math inline">\(F^{-1}(U)\)</span> es única con probabilidad uno. Una definición general, que encaja en el caso continuo o discreto, de la función <span class="math inline">\(F\)</span> inversa es la siguiente</p>
+
+<div class="definition">
+<p><span id="def:unnamed-chunk-2" class="definition"><strong>Definición C.1  </strong></span>Para cualquier función <span class="math inline">\(F\)</span> definida sobre <span class="math inline">\(\mathbb{R}\)</span>, se define la función inversa generalizada de <span class="math inline">\(F\)</span> como</p>
+<span class="math display">\[\begin{equation}
+F^{-1}(u)=\inf \{x \mid F(x)\geq u\}
+\end{equation}\]</span>
+</div>
+
+<div class="example">
+<p><span id="exm:unnamed-chunk-3" class="example"><strong>Ejemplo 1.3  </strong></span>Suponga que <span class="math inline">\(X\)</span> es una variable aleatoria con distribución exponencial. De esta forma, su función de densidad acumulativa viene dada por</p>
+<p><span class="math display">\[\begin{equation*}
+F(x)=1-\exp\{ -\theta x\}
+\end{equation*}\]</span></p>
+<p>Del anterior resultado se tiene que si <span class="math inline">\(u\)</span> es una realización de una variable <span class="math inline">\(U \sim Uniforme(0,1)\)</span>, entonces <span class="math inline">\(F^{-1}(u)\)</span> es una realización de una variable con distribución exponencial. Como <span class="math inline">\(x=F^{-1}(u)\)</span>, entonces <span class="math inline">\(F(x)=u\)</span> y despejando <span class="math inline">\(x\)</span>, se llega a que la siguiente expresión</p>
+<p><span class="math display">\[\begin{equation*}
+F^{-1}(u)=-\frac{\ln(1-u)}{\theta}
+\end{equation*}\]</span></p>
+entrega una forma diáfana para la simulación de una observación con distribución exponencial. Para simular una muestra de <span class="math inline">\(n\)</span> observaciones, simplemente se repite el anterior procedimiento <span class="math inline">\(n\)</span> veces. En <code>R</code>, el código necesario para la simulación de una muestra de tamaño 1000 proveniente de una distribución exponencial con parámetro <span class="math inline">\(\theta=5\)</span> es
+</div>
+<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1-1"><a href="métodos-directos.html#cb1-1" aria-hidden="true" tabindex="-1"></a>theta <span class="ot">&lt;-</span> <span class="dv">5</span></span>
+<span id="cb1-2"><a href="métodos-directos.html#cb1-2" aria-hidden="true" tabindex="-1"></a>u <span class="ot">&lt;-</span> <span class="fu">runif</span>(<span class="dv">1000</span>)</span>
+<span id="cb1-3"><a href="métodos-directos.html#cb1-3" aria-hidden="true" tabindex="-1"></a>rexpo <span class="ot">&lt;-</span> <span class="fu">log</span>(<span class="dv">1</span> <span class="sc">-</span> u)<span class="sc">/</span>(<span class="sc">-</span>theta)</span>
+<span id="cb1-4"><a href="métodos-directos.html#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="dv">1</span><span class="sc">/</span><span class="fu">mean</span>(rexpo)</span></code></pre></div>
+<pre><code>## [1] 5.073495</code></pre>
+<div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb3-1"><a href="métodos-directos.html#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="fu">hist</span>(rexpo, <span class="at">freq =</span> <span class="cn">FALSE</span>)</span>
+<span id="cb3-2"><a href="métodos-directos.html#cb3-2" aria-hidden="true" tabindex="-1"></a><span class="fu">lines</span>(<span class="fu">density</span>(rexpo), <span class="at">col =</span> <span class="dv">2</span>)</span></code></pre></div>
+<div class="figure"><span id="fig:unnamed-chunk-4"></span>
+<img src="A3Simulacion_files/figure-html/unnamed-chunk-4-1.png" alt="Histograma de observaciones con distribución exponencial" width="672" />
+<p class="caption">
+Figura C.1: Histograma de observaciones con distribución exponencial
+</p>
+</div>
+</div>
+<div id="método-de-la-grilla" class="section level3" number="5.1.2">
+<h3><span class="header-section-number">C.1.2</span> Método de la grilla</h3>
+<p>Existen distribuciones de probabilidad cuya forma estructural es muy compleja. Mas aún, existen distribuciones de probabilidad conocidas para las cuales la inversa de la función de de densidad acumulativa es difícil de solucionar analíticamente. En los anteriores casos, el método analítico dado por el teorema de la transformación integral de probabilidad no siempre resulta efectivo. Sin embargo, es posible realizar una variante, manteniendo el espíritu de la anterior técnica.</p>
+<p>El presente método utiliza una distribución discreta para aproximar cualquier tipo de distribución (discreta o continua) sin importar su nivel de complejidad. El algoritmo que enmarca este método se da a continuación:</p>
+<ol style="list-style-type: decimal">
+<li>Escribir la densidad de interés como <span class="math inline">\(f(\cdot)\)</span> y establecer el rango de la variable aleatoria de interés.</li>
+<li>Fijar un conjunto de <span class="math inline">\(n\)</span> valores <span class="math inline">\(x_1&lt;\cdots&lt;x_n\)</span> equiespaciados que cubran una gran parte del rango de la variable aleatoria.</li>
+<li>Para <span class="math inline">\(x_k\)</span> <span class="math inline">\((k=1,\ldots,n)\)</span> calcular <span class="math inline">\(f(x_k)\)</span> que equivale al valor de la densidad en el punto <span class="math inline">\(x_k\)</span>. Nótese que si <span class="math inline">\(f(\cdot)\)</span> es una función de densidad continua, entonces <span class="math inline">\(f(x_k)\)</span> no corresponde a una probabilidad;</li>
+<li>Calcular la probabilidad asociada al punto <span class="math inline">\(x_k\)</span> definida por la aproximación discreta a <span class="math inline">\(f(\cdot)\)</span> y dada por
+<span class="math display">\[\begin{equation*}
+p(x_k)=\frac{f(x_k)}{\sum_{k=1}^{n}f(x_k)}
+\end{equation*}\]</span></li>
+<li>Calcular la función de densidad acumulativa aproximada definida como
+<span class="math display">\[\begin{equation*}
+F(x)=
+\begin{cases}
+0, \ \ \ \text{si $x&lt;x_1$}\\
+\sum_{l=1}^kp(x_l), \ \ \ \text{si $x_k\leq x&lt;x_{k+1}$}\\
+1, \ \ \ \text{si $x&gt;x_n$}
+\end{cases}
+\end{equation*}\]</span></li>
+<li>Simular una observación <span class="math inline">\(u\)</span> proveniente de una distribución uniforme continua en el intervalo <span class="math inline">\((0,1)\)</span>.</li>
+<li>Si <span class="math inline">\(F(x_k)&lt;u\leq F(x_{k+1})\)</span>, entonces <span class="math inline">\(F^{-1}(u)=x_{k+1}\)</span> y por consiguiente el valor <span class="math inline">\(x_{k+1}\)</span> es una pseudo-observación proveniente de la densidad de interés.</li>
+</ol>
+<p>Nótese que en el anterior proceso, la unidad <span class="math inline">\(x_{k+1}\)</span> es seleccionada con probabilidad <span class="math inline">\(p_{k+1}\)</span>; puesto que</p>
+<p><span class="math display">\[\begin{align*}
+P(F(x_k)&lt; U \leq F(x_{k+1}))&amp;=F(x_{k+1})-F(x_{k})\\
+&amp;=\sum_{l=1}^{k+1}p(x_l)-\sum_{l=1}^kp(x_l)=p_{k+1}
+\end{align*}\]</span></p>
+<p>Si se quiere extraer una muestra aleatoria de <span class="math inline">\(N\)</span> observaciones provenientes de la distribución de interés, entonces basta con repetir el anterior proceso <span class="math inline">\(N\)</span> veces. Por supuesto, como se trata de una muestra aleatoria cada selección se debe realizar con repetición; de esta manera no importa si <span class="math inline">\(N&gt;n\)</span>. Suponiendo que el conjunto <span class="math inline">\(x_1,\ldots,x_n\)</span> conforma una grilla de puntos lo suficientemente cercanos y que no sucede nada importante entre cada uno de ellos, entonces esta técnica debe tener un buen funcionamiento.</p>
+
+<div class="example">
+<span id="exm:unnamed-chunk-5" class="example"><strong>Ejemplo C.1  </strong></span>El siguiente código computacional permite utilizar el método de la grilla para simular mil valores provenientes de una distribución exponencial con parámetro <span class="math inline">\(\theta = 5\)</span>.
+</div>
+<div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb4-1"><a href="métodos-directos.html#cb4-1" aria-hidden="true" tabindex="-1"></a>theta <span class="ot">&lt;-</span> <span class="dv">5</span></span>
+<span id="cb4-2"><a href="métodos-directos.html#cb4-2" aria-hidden="true" tabindex="-1"></a>x.grid <span class="ot">&lt;-</span> <span class="fu">seq</span>(<span class="dv">0</span>, <span class="dv">100</span>, <span class="at">by=</span><span class="fl">0.01</span>)</span>
+<span id="cb4-3"><a href="métodos-directos.html#cb4-3" aria-hidden="true" tabindex="-1"></a>p.exp <span class="ot">&lt;-</span> theta <span class="sc">*</span> <span class="fu">exp</span>(<span class="sc">-</span>theta <span class="sc">*</span> x.grid)</span>
+<span id="cb4-4"><a href="métodos-directos.html#cb4-4" aria-hidden="true" tabindex="-1"></a>r.exp <span class="ot">&lt;-</span> <span class="fu">sample</span>(x.grid, <span class="dv">1000</span>, <span class="at">prob =</span> p.exp, <span class="at">replace =</span> T)</span>
+<span id="cb4-5"><a href="métodos-directos.html#cb4-5" aria-hidden="true" tabindex="-1"></a><span class="dv">1</span><span class="sc">/</span><span class="fu">mean</span>(r.exp)</span></code></pre></div>
+<pre><code>## [1] 5.111429</code></pre>
+<div class="sourceCode" id="cb6"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb6-1"><a href="métodos-directos.html#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="fu">hist</span>(r.exp, <span class="at">freq =</span> <span class="cn">FALSE</span>)</span>
+<span id="cb6-2"><a href="métodos-directos.html#cb6-2" aria-hidden="true" tabindex="-1"></a><span class="fu">lines</span>(<span class="fu">density</span>(rexpo), <span class="at">col =</span> <span class="dv">2</span>)</span></code></pre></div>
+<div class="figure"><span id="fig:unnamed-chunk-6"></span>
+<img src="A3Simulacion_files/figure-html/unnamed-chunk-6-1.png" alt="Histograma de observaciones con distribución exponencial" width="672" />
+<p class="caption">
+Figura C.2: Histograma de observaciones con distribución exponencial
+</p>
+</div>
+
+<div class="example">
+<span id="exm:unnamed-chunk-7" class="example"><strong>Ejemplo C.2  </strong></span>De la misma manera, el método de la grilla permite simular valores de un distribución discreta. El siguiente código computacional permite utilizar el método de la grilla para simular mil valores provenientes de una distribución Poisson con parámetro <span class="math inline">\(\theta = 2\)</span>.
+</div>
+<div class="sourceCode" id="cb7"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb7-1"><a href="métodos-directos.html#cb7-1" aria-hidden="true" tabindex="-1"></a>p.poisson <span class="ot">&lt;-</span><span class="cf">function</span>(theta, x.grid){</span>
+<span id="cb7-2"><a href="métodos-directos.html#cb7-2" aria-hidden="true" tabindex="-1"></a>  N <span class="ot">&lt;-</span> <span class="fu">length</span>(x.grid)</span>
+<span id="cb7-3"><a href="métodos-directos.html#cb7-3" aria-hidden="true" tabindex="-1"></a>  res <span class="ot">&lt;-</span> <span class="fu">rep</span>(<span class="cn">NA</span>, N)</span>
+<span id="cb7-4"><a href="métodos-directos.html#cb7-4" aria-hidden="true" tabindex="-1"></a>  <span class="cf">for</span>(k <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span>N){</span>
+<span id="cb7-5"><a href="métodos-directos.html#cb7-5" aria-hidden="true" tabindex="-1"></a>    P1 <span class="ot">&lt;-</span> <span class="fu">exp</span>(<span class="sc">-</span>theta) <span class="sc">*</span> theta<span class="sc">^</span>(x.grid[k])</span>
+<span id="cb7-6"><a href="métodos-directos.html#cb7-6" aria-hidden="true" tabindex="-1"></a>    P2 <span class="ot">&lt;-</span> <span class="fu">factorial</span>(x.grid[k])</span>
+<span id="cb7-7"><a href="métodos-directos.html#cb7-7" aria-hidden="true" tabindex="-1"></a>    res[k] <span class="ot">&lt;-</span> P1<span class="sc">/</span>P2</span>
+<span id="cb7-8"><a href="métodos-directos.html#cb7-8" aria-hidden="true" tabindex="-1"></a>  }</span>
+<span id="cb7-9"><a href="métodos-directos.html#cb7-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">return</span>(res)</span>
+<span id="cb7-10"><a href="métodos-directos.html#cb7-10" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb7-11"><a href="métodos-directos.html#cb7-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-12"><a href="métodos-directos.html#cb7-12" aria-hidden="true" tabindex="-1"></a>theta <span class="ot">&lt;-</span> <span class="dv">2</span></span>
+<span id="cb7-13"><a href="métodos-directos.html#cb7-13" aria-hidden="true" tabindex="-1"></a>x.grid <span class="ot">&lt;-</span> <span class="fu">seq</span>(<span class="dv">0</span>, <span class="dv">100</span>, <span class="at">by =</span> <span class="dv">1</span>)</span>
+<span id="cb7-14"><a href="métodos-directos.html#cb7-14" aria-hidden="true" tabindex="-1"></a>f.x <span class="ot">&lt;-</span> <span class="fu">p.poisson</span>(theta, x.grid)</span>
+<span id="cb7-15"><a href="métodos-directos.html#cb7-15" aria-hidden="true" tabindex="-1"></a>p.x <span class="ot">&lt;-</span> f.x<span class="sc">/</span><span class="fu">sum</span>(f.x)</span>
+<span id="cb7-16"><a href="métodos-directos.html#cb7-16" aria-hidden="true" tabindex="-1"></a><span class="fu">sum</span>(p.x)</span></code></pre></div>
+<pre><code>## [1] 1</code></pre>
+<div class="sourceCode" id="cb9"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb9-1"><a href="métodos-directos.html#cb9-1" aria-hidden="true" tabindex="-1"></a>rpois <span class="ot">&lt;-</span> <span class="fu">sample</span>(x.grid, <span class="dv">1000</span>, <span class="at">prob=</span>p.x, <span class="at">replace =</span> T)</span>
+<span id="cb9-2"><a href="métodos-directos.html#cb9-2" aria-hidden="true" tabindex="-1"></a><span class="fu">mean</span>(rpois)</span></code></pre></div>
+<pre><code>## [1] 2.012</code></pre>
+<div class="sourceCode" id="cb11"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb11-1"><a href="métodos-directos.html#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="fu">var</span>(rpois)</span></code></pre></div>
+<pre><code>## [1] 1.929786</code></pre>
+<div class="sourceCode" id="cb13"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb13-1"><a href="métodos-directos.html#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="fu">hist</span>(rpois, <span class="at">freq =</span> <span class="cn">FALSE</span>)</span></code></pre></div>
+<div class="figure"><span id="fig:unnamed-chunk-8"></span>
+<img src="A3Simulacion_files/figure-html/unnamed-chunk-8-1.png" alt="Histograma de observaciones con distribución Poisson" width="672" />
+<p class="caption">
+Figura C.3: Histograma de observaciones con distribución Poisson
+</p>
+</div>
+
+<div class="example">
+<span id="exm:unnamed-chunk-9" class="example"><strong>Ejemplo B.2  </strong></span>El método de la grilla también puede utilizarse para simular observaciones de una distribución biparamétrica, univariada y continua. El siguiente código computacional permite utilizar el método de la grilla para simular mil valores provenientes de una distribución Gamma con parámetros <span class="math inline">\(\theta = 4\)</span>, <span class="math inline">\(\beta = 2\)</span>.
+</div>
+<div class="sourceCode" id="cb14"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb14-1"><a href="métodos-directos.html#cb14-1" aria-hidden="true" tabindex="-1"></a>p.gamma <span class="ot">&lt;-</span> <span class="cf">function</span>(a, b, x.grid){</span>
+<span id="cb14-2"><a href="métodos-directos.html#cb14-2" aria-hidden="true" tabindex="-1"></a>  N <span class="ot">&lt;-</span><span class="fu">length</span>(x.grid)</span>
+<span id="cb14-3"><a href="métodos-directos.html#cb14-3" aria-hidden="true" tabindex="-1"></a>  res <span class="ot">&lt;-</span> <span class="fu">rep</span>(<span class="cn">NA</span>, N)</span>
+<span id="cb14-4"><a href="métodos-directos.html#cb14-4" aria-hidden="true" tabindex="-1"></a>  <span class="cf">for</span>(k <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span>N){</span>
+<span id="cb14-5"><a href="métodos-directos.html#cb14-5" aria-hidden="true" tabindex="-1"></a>    P1 <span class="ot">&lt;-</span> (b<span class="sc">^</span>a)<span class="sc">/</span><span class="fu">gamma</span>(a)</span>
+<span id="cb14-6"><a href="métodos-directos.html#cb14-6" aria-hidden="true" tabindex="-1"></a>    P2 <span class="ot">&lt;-</span> x.grid[k]<span class="sc">^</span>(a <span class="sc">-</span> <span class="dv">1</span>)</span>
+<span id="cb14-7"><a href="métodos-directos.html#cb14-7" aria-hidden="true" tabindex="-1"></a>    P3 <span class="ot">&lt;-</span> <span class="fu">exp</span>(<span class="sc">-</span>b <span class="sc">*</span> x.grid[k])</span>
+<span id="cb14-8"><a href="métodos-directos.html#cb14-8" aria-hidden="true" tabindex="-1"></a>    res[k] <span class="ot">&lt;-</span> P1<span class="sc">*</span>P2<span class="sc">*</span>P3</span>
+<span id="cb14-9"><a href="métodos-directos.html#cb14-9" aria-hidden="true" tabindex="-1"></a>  }</span>
+<span id="cb14-10"><a href="métodos-directos.html#cb14-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">return</span>(res)</span>
+<span id="cb14-11"><a href="métodos-directos.html#cb14-11" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb14-12"><a href="métodos-directos.html#cb14-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-13"><a href="métodos-directos.html#cb14-13" aria-hidden="true" tabindex="-1"></a>alpha <span class="ot">&lt;-</span> <span class="dv">4</span></span>
+<span id="cb14-14"><a href="métodos-directos.html#cb14-14" aria-hidden="true" tabindex="-1"></a>beta <span class="ot">&lt;-</span> <span class="dv">2</span></span>
+<span id="cb14-15"><a href="métodos-directos.html#cb14-15" aria-hidden="true" tabindex="-1"></a>x.grid <span class="ot">&lt;-</span> <span class="fu">seq</span>(<span class="dv">0</span>, <span class="dv">100</span>, <span class="at">by =</span> <span class="fl">0.1</span>)</span>
+<span id="cb14-16"><a href="métodos-directos.html#cb14-16" aria-hidden="true" tabindex="-1"></a>f.x <span class="ot">&lt;-</span> <span class="fu">p.gamma</span>(alpha, beta, x.grid)</span>
+<span id="cb14-17"><a href="métodos-directos.html#cb14-17" aria-hidden="true" tabindex="-1"></a>p.x <span class="ot">&lt;-</span> f.x <span class="sc">/</span> <span class="fu">sum</span>(f.x)</span>
+<span id="cb14-18"><a href="métodos-directos.html#cb14-18" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-19"><a href="métodos-directos.html#cb14-19" aria-hidden="true" tabindex="-1"></a>rgamma <span class="ot">&lt;-</span> <span class="fu">sample</span>(x.grid, <span class="dv">1000</span>, <span class="at">prob =</span> p.x, <span class="at">replace =</span> T)</span>
+<span id="cb14-20"><a href="métodos-directos.html#cb14-20" aria-hidden="true" tabindex="-1"></a><span class="fu">mean</span>(rgamma)</span></code></pre></div>
+<pre><code>## [1] 2.0266</code></pre>
+<div class="sourceCode" id="cb16"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb16-1"><a href="métodos-directos.html#cb16-1" aria-hidden="true" tabindex="-1"></a><span class="fu">var</span>(rgamma)</span></code></pre></div>
+<pre><code>## [1] 1.045178</code></pre>
+<div class="sourceCode" id="cb18"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb18-1"><a href="métodos-directos.html#cb18-1" aria-hidden="true" tabindex="-1"></a><span class="fu">hist</span>(rgamma, <span class="at">freq =</span> F)</span>
+<span id="cb18-2"><a href="métodos-directos.html#cb18-2" aria-hidden="true" tabindex="-1"></a><span class="fu">lines</span>(<span class="fu">density</span>(rgamma), <span class="at">col =</span> <span class="dv">2</span>)</span></code></pre></div>
+<div class="figure"><span id="fig:unnamed-chunk-10"></span>
+<img src="A3Simulacion_files/figure-html/unnamed-chunk-10-1.png" alt="Histograma de observaciones con distribución Gamma." width="672" />
+<p class="caption">
+Figura C.4: Histograma de observaciones con distribución Gamma.
+</p>
+</div>
+
+<div class="example">
+<span id="exm:unnamed-chunk-11" class="example"><strong>Ejemplo 1.4  </strong></span>Para comprobar el poder de este método de simulación, se presenta el siguiente código que permite simular valores de una distribución multiparamétrica, bivariada y continua. En particular, se simulan valores de la distribución Normal multivariante con vector de medias <span class="math inline">\(\boldsymbol \mu= (2, 4)&#39;\)</span> y matriz de varianzas covarianzas
+<span class="math inline">\(\boldsymbol \Sigma= \begin{bmatrix} 25 &amp; 30 \\ 30 &amp; 16 \end{bmatrix}\)</span>
+</div>
+<div class="sourceCode" id="cb19"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb19-1"><a href="métodos-directos.html#cb19-1" aria-hidden="true" tabindex="-1"></a>p.normal2 <span class="ot">&lt;-</span> <span class="cf">function</span>(mu, Sigma, x, y){</span>
+<span id="cb19-2"><a href="métodos-directos.html#cb19-2" aria-hidden="true" tabindex="-1"></a>  P1  <span class="ot">&lt;-</span> <span class="dv">1</span><span class="sc">/</span>(<span class="dv">2</span> <span class="sc">*</span> pi)</span>
+<span id="cb19-3"><a href="métodos-directos.html#cb19-3" aria-hidden="true" tabindex="-1"></a>  P2  <span class="ot">&lt;-</span> <span class="dv">1</span><span class="sc">/</span><span class="fu">sqrt</span>(<span class="fu">det</span>(Sigma))</span>
+<span id="cb19-4"><a href="métodos-directos.html#cb19-4" aria-hidden="true" tabindex="-1"></a>  P3a <span class="ot">&lt;-</span> <span class="fu">t</span>((<span class="fu">c</span>(x, y) <span class="sc">-</span> mu)) <span class="sc">%*%</span> <span class="fu">solve</span>(Sigma) <span class="sc">%*%</span> (<span class="fu">c</span>(x, y) <span class="sc">-</span> mu)</span>
+<span id="cb19-5"><a href="métodos-directos.html#cb19-5" aria-hidden="true" tabindex="-1"></a>  P3  <span class="ot">&lt;-</span> <span class="fu">exp</span>((<span class="sc">-</span><span class="dv">1</span><span class="sc">/</span><span class="dv">2</span>) <span class="sc">*</span> P3a)</span>
+<span id="cb19-6"><a href="métodos-directos.html#cb19-6" aria-hidden="true" tabindex="-1"></a>  res <span class="ot">&lt;-</span> P1 <span class="sc">*</span> P2 <span class="sc">*</span> P3</span>
+<span id="cb19-7"><a href="métodos-directos.html#cb19-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">return</span>(res)</span>
+<span id="cb19-8"><a href="métodos-directos.html#cb19-8" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb19-9"><a href="métodos-directos.html#cb19-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb19-10"><a href="métodos-directos.html#cb19-10" aria-hidden="true" tabindex="-1"></a>grilla <span class="ot">&lt;-</span> <span class="cf">function</span>(a, b){</span>
+<span id="cb19-11"><a href="métodos-directos.html#cb19-11" aria-hidden="true" tabindex="-1"></a>  A <span class="ot">&lt;-</span> <span class="fu">seq</span>(<span class="dv">1</span><span class="sc">:</span><span class="fu">length</span>(a))</span>
+<span id="cb19-12"><a href="métodos-directos.html#cb19-12" aria-hidden="true" tabindex="-1"></a>  unoA <span class="ot">&lt;-</span> <span class="fu">rep</span>(<span class="dv">1</span>, <span class="fu">length</span>(A))</span>
+<span id="cb19-13"><a href="métodos-directos.html#cb19-13" aria-hidden="true" tabindex="-1"></a>  B <span class="ot">&lt;-</span> <span class="fu">seq</span>(<span class="dv">1</span><span class="sc">:</span><span class="fu">length</span>(b))</span>
+<span id="cb19-14"><a href="métodos-directos.html#cb19-14" aria-hidden="true" tabindex="-1"></a>  unoB <span class="ot">&lt;-</span> <span class="fu">rep</span>(<span class="dv">1</span>, <span class="fu">length</span>(B))</span>
+<span id="cb19-15"><a href="métodos-directos.html#cb19-15" aria-hidden="true" tabindex="-1"></a>  P1 <span class="ot">&lt;-</span> <span class="fu">kronecker</span>(A, unoB)</span>
+<span id="cb19-16"><a href="métodos-directos.html#cb19-16" aria-hidden="true" tabindex="-1"></a>  P2 <span class="ot">&lt;-</span> <span class="fu">kronecker</span>(unoA, B)</span>
+<span id="cb19-17"><a href="métodos-directos.html#cb19-17" aria-hidden="true" tabindex="-1"></a>  grid <span class="ot">&lt;-</span> <span class="fu">cbind</span>(a[P1], b[P2])</span>
+<span id="cb19-18"><a href="métodos-directos.html#cb19-18" aria-hidden="true" tabindex="-1"></a>  <span class="fu">return</span>(grid)</span>
+<span id="cb19-19"><a href="métodos-directos.html#cb19-19" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb19-20"><a href="métodos-directos.html#cb19-20" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb19-21"><a href="métodos-directos.html#cb19-21" aria-hidden="true" tabindex="-1"></a>mu1 <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="dv">2</span>, <span class="dv">4</span>)</span>
+<span id="cb19-22"><a href="métodos-directos.html#cb19-22" aria-hidden="true" tabindex="-1"></a>Sigma1 <span class="ot">&lt;-</span> <span class="fu">matrix</span>(<span class="fu">c</span>(<span class="dv">25</span>, <span class="dv">10</span>, <span class="dv">10</span>, <span class="dv">16</span>), <span class="at">nrow=</span><span class="dv">2</span>)</span>
+<span id="cb19-23"><a href="métodos-directos.html#cb19-23" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb19-24"><a href="métodos-directos.html#cb19-24" aria-hidden="true" tabindex="-1"></a>x.grid <span class="ot">&lt;-</span> <span class="fu">seq</span>(mu1[<span class="dv">1</span>] <span class="sc">-</span> <span class="dv">3</span> <span class="sc">*</span> <span class="fu">sqrt</span>(Sigma1[<span class="dv">1</span>, <span class="dv">1</span>]),</span>
+<span id="cb19-25"><a href="métodos-directos.html#cb19-25" aria-hidden="true" tabindex="-1"></a>              mu1[<span class="dv">1</span>] <span class="sc">+</span> <span class="dv">3</span> <span class="sc">*</span> <span class="fu">sqrt</span>(Sigma1[<span class="dv">1</span>, <span class="dv">1</span>]),</span>
+<span id="cb19-26"><a href="métodos-directos.html#cb19-26" aria-hidden="true" tabindex="-1"></a>              <span class="at">by =</span> <span class="fl">0.5</span>)</span>
+<span id="cb19-27"><a href="métodos-directos.html#cb19-27" aria-hidden="true" tabindex="-1"></a>y.grid <span class="ot">&lt;-</span> <span class="fu">seq</span>(mu1[<span class="dv">2</span>] <span class="sc">-</span> <span class="dv">3</span> <span class="sc">*</span> <span class="fu">sqrt</span>(Sigma1[<span class="dv">2</span>, <span class="dv">2</span>]),</span>
+<span id="cb19-28"><a href="métodos-directos.html#cb19-28" aria-hidden="true" tabindex="-1"></a>              mu1[<span class="dv">2</span>] <span class="sc">+</span> <span class="dv">3</span> <span class="sc">*</span> <span class="fu">sqrt</span>(Sigma1[<span class="dv">2</span>, <span class="dv">2</span>]),</span>
+<span id="cb19-29"><a href="métodos-directos.html#cb19-29" aria-hidden="true" tabindex="-1"></a>              <span class="at">by =</span> <span class="fl">0.5</span>)</span>
+<span id="cb19-30"><a href="métodos-directos.html#cb19-30" aria-hidden="true" tabindex="-1"></a>xy.grid <span class="ot">&lt;-</span> <span class="fu">grilla</span>(x.grid, y.grid)</span>
+<span id="cb19-31"><a href="métodos-directos.html#cb19-31" aria-hidden="true" tabindex="-1"></a>N.grid <span class="ot">&lt;-</span> <span class="fu">dim</span>(xy.grid)[<span class="dv">1</span>]</span>
+<span id="cb19-32"><a href="métodos-directos.html#cb19-32" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb19-33"><a href="métodos-directos.html#cb19-33" aria-hidden="true" tabindex="-1"></a>f.xy <span class="ot">&lt;-</span> <span class="fu">rep</span>(<span class="cn">NA</span>, N.grid)</span>
+<span id="cb19-34"><a href="métodos-directos.html#cb19-34" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span>(j <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span>N.grid){</span>
+<span id="cb19-35"><a href="métodos-directos.html#cb19-35" aria-hidden="true" tabindex="-1"></a>  f.xy[j] <span class="ot">&lt;-</span> <span class="fu">p.normal2</span>(mu1, Sigma1, </span>
+<span id="cb19-36"><a href="métodos-directos.html#cb19-36" aria-hidden="true" tabindex="-1"></a>                       xy.grid[j, <span class="dv">1</span>], </span>
+<span id="cb19-37"><a href="métodos-directos.html#cb19-37" aria-hidden="true" tabindex="-1"></a>                       xy.grid[j, <span class="dv">2</span>])</span>
+<span id="cb19-38"><a href="métodos-directos.html#cb19-38" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb19-39"><a href="métodos-directos.html#cb19-39" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb19-40"><a href="métodos-directos.html#cb19-40" aria-hidden="true" tabindex="-1"></a>p.xy <span class="ot">&lt;-</span> <span class="fu">as.vector</span>(f.xy<span class="sc">/</span><span class="fu">sum</span>(f.xy))</span>
+<span id="cb19-41"><a href="métodos-directos.html#cb19-41" aria-hidden="true" tabindex="-1"></a><span class="fu">sum</span>(p.xy)</span></code></pre></div>
+<pre><code>## [1] 1</code></pre>
+<div class="sourceCode" id="cb21"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb21-1"><a href="métodos-directos.html#cb21-1" aria-hidden="true" tabindex="-1"></a>rnormal2 <span class="ot">&lt;-</span> <span class="fu">sample</span>(N.grid, <span class="dv">1000</span>, <span class="at">prob =</span> p.xy, <span class="at">replace =</span> T)</span>
+<span id="cb21-2"><a href="métodos-directos.html#cb21-2" aria-hidden="true" tabindex="-1"></a>rxy.normal2 <span class="ot">&lt;-</span> xy.grid[rnormal2, ]</span>
+<span id="cb21-3"><a href="métodos-directos.html#cb21-3" aria-hidden="true" tabindex="-1"></a>rx.normal <span class="ot">&lt;-</span> rxy.normal2[, <span class="dv">1</span>]</span>
+<span id="cb21-4"><a href="métodos-directos.html#cb21-4" aria-hidden="true" tabindex="-1"></a>ry.normal <span class="ot">&lt;-</span> rxy.normal2[, <span class="dv">2</span>]</span>
+<span id="cb21-5"><a href="métodos-directos.html#cb21-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb21-6"><a href="métodos-directos.html#cb21-6" aria-hidden="true" tabindex="-1"></a><span class="fu">colMeans</span>(rxy.normal2)</span></code></pre></div>
+<pre><code>## [1] 2.0100 4.0955</code></pre>
+<div class="sourceCode" id="cb23"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb23-1"><a href="métodos-directos.html#cb23-1" aria-hidden="true" tabindex="-1"></a><span class="fu">var</span>(rxy.normal2)</span></code></pre></div>
+<pre><code>##          [,1]     [,2]
+## [1,] 25.23213 10.38343
+## [2,] 10.38343 15.95759</code></pre>
+<div class="sourceCode" id="cb25"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb25-1"><a href="métodos-directos.html#cb25-1" aria-hidden="true" tabindex="-1"></a><span class="fu">hist</span>(rx.normal, <span class="at">freq =</span> F)</span>
+<span id="cb25-2"><a href="métodos-directos.html#cb25-2" aria-hidden="true" tabindex="-1"></a><span class="fu">lines</span>(<span class="fu">density</span>(rx.normal), <span class="at">col =</span> <span class="dv">2</span>)</span></code></pre></div>
+<div class="figure"><span id="fig:unnamed-chunk-12-1"></span>
+<img src="A3Simulacion_files/figure-html/unnamed-chunk-12-1.png" alt="Histogramas de observaciones con distribución Normal bivariada." width="672" />
+<p class="caption">
+Figura C.5: Histogramas de observaciones con distribución Normal bivariada.
+</p>
+</div>
+<div class="sourceCode" id="cb26"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb26-1"><a href="métodos-directos.html#cb26-1" aria-hidden="true" tabindex="-1"></a><span class="fu">hist</span>(ry.normal, <span class="at">freq =</span> F)</span>
+<span id="cb26-2"><a href="métodos-directos.html#cb26-2" aria-hidden="true" tabindex="-1"></a><span class="fu">lines</span>(<span class="fu">density</span>(ry.normal), <span class="at">col =</span> <span class="dv">2</span>)</span></code></pre></div>
+<div class="figure"><span id="fig:unnamed-chunk-12-2"></span>
+<img src="A3Simulacion_files/figure-html/unnamed-chunk-12-2.png" alt="Histogramas de observaciones con distribución Normal bivariada." width="672" />
+<p class="caption">
+Figura C.6: Histogramas de observaciones con distribución Normal bivariada.
+</p>
+</div>
+</div>
+</div>
+<h3>Referencias</h3>
+<div id="refs" class="references csl-bib-body hanging-indent">
+<div id="ref-Casella" class="csl-entry">
+Robert, C. P., y G. Casella. 1999. <em>Monte Carlo Statistical Methods</em>. Springer.
+</div>
+</div>
+            </section>
+
+          </div>
+        </div>
+      </div>
+<a href="elementos-de-simulación-estadística.html" class="navigation navigation-prev " aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
+<a href="métodos-de-monte-carlo-vía-cadenas-de-markov.html" class="navigation navigation-next " aria-label="Next page"><i class="fa fa-angle-right"></i></a>
+    </div>
+  </div>
+<script src="libs/gitbook-2.6.7/js/app.min.js"></script>
+<script src="libs/gitbook-2.6.7/js/lunr.js"></script>
+<script src="libs/gitbook-2.6.7/js/clipboard.min.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-search.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-sharing.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-fontsettings.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-bookdown.js"></script>
+<script src="libs/gitbook-2.6.7/js/jquery.highlight.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-clipboard.js"></script>
+<script>
+gitbook.require(["gitbook"], function(gitbook) {
+gitbook.start({
+"sharing": {
+"github": false,
+"facebook": true,
+"twitter": true,
+"linkedin": false,
+"weibo": false,
+"instapaper": false,
+"vk": false,
+"whatsapp": false,
+"all": ["facebook", "twitter", "linkedin", "weibo", "instapaper"]
+},
+"fontsettings": {
+"theme": "white",
+"family": "sans",
+"size": 2
+},
+"edit": {
+"link": null,
+"text": null
+},
+"history": {
+"link": null,
+"text": null
+},
+"view": {
+"link": null,
+"text": null
+},
+"download": ["ModelosBayesianos.pdf", "ModelosBayesianos.epub"],
+"toc": {
+"collapse": "section"
+}
+});
+});
+</script>
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    var src = "true";
+    if (src === "" || src === "true") src = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-MML-AM_CHTML";
+    if (location.protocol !== "file:")
+      if (/^https?:/.test(src))
+        src = src.replace(/^https?:/, '');
+    script.src = src;
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+</body>
+
+</html>

@@ -1,6 +1,6 @@
 # (APPENDIX) Apéndice {-} 
 
-# Algunas distribuciones de probabilidad
+# Elementos de probabilidad
 
 ss
 
@@ -283,7 +283,7 @@ Si $Y$ es una variable aleatoria con distribución Gamma-inversa con parámetro 
 
 ```
 
-```{proposition}
+```{proposition, gammainver}
 Si $X$ es una variable aleatoria con distribución $Gamma(\alpha,\beta)$, entonces $1/X$ tiene distribución $Gamma-inversa(\alpha,1/\beta)$.
 ```
 
@@ -598,7 +598,7 @@ donde $\mid \bSigma \mid$ se refiere al determinante de la matriz $\bSigma$, la 
 
 La distribución Normal Multivariante es el baluarte de una gran cantidad de técnicas y métodos estadísticos como son los modelos lineales, los modelos lineales generalizados, el análisis factorial, etc. Algunas de sus propiedades se citan a continuación.
 
-```{proposition}
+```{proposition, normalmulti}
 Si $\mathbf{Y}=(Y_1,\ldots,Y_p')$ es una vector aleatorio con distribución normal multivariante, entonces
 
 *  La distribución marginal de cualquier subconjunto de componentes de $\mathbf{Y}$ es también normal multivariante. Por ejemplo si $\mathbf{Y}$ es particionado en $\mathbf{Y}=(\mathbf{Y}_1',\mathbf{Y}_2')$, entonces $p(\mathbf{Y}_1)$ seguiría una distribución normal multivariante, al igual que $p(\mathbf{Y}_2)$.

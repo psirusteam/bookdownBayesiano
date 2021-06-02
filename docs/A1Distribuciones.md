@@ -1,6 +1,6 @@
 # (APPENDIX) Apéndice {-} 
 
-# Algunas distribuciones de probabilidad
+# Elementos de probabilidad
 
 ss
 
@@ -231,11 +231,11 @@ La distribución Gamma-inversa tiene dos parámetros: $\alpha$ y $\beta$; en est
 *  $Var(Y)=\theta^2/(\alpha-1)^2(\alpha-2)$.
 </div>\EndKnitrBlock{proposition}
 
-\BeginKnitrBlock{proposition}<div class="proposition"><span class="proposition" id="prp:unnamed-chunk-27"><strong>(\#prp:unnamed-chunk-27) </strong></span>Si $X$ es una variable aleatoria con distribución $Gamma(\alpha,\beta)$, entonces $1/X$ tiene distribución $Gamma-inversa(\alpha,1/\beta)$.</div>\EndKnitrBlock{proposition}
+\BeginKnitrBlock{proposition}<div class="proposition"><span class="proposition" id="prp:gammainver"><strong>(\#prp:gammainver) </strong></span>Si $X$ es una variable aleatoria con distribución $Gamma(\alpha,\beta)$, entonces $1/X$ tiene distribución $Gamma-inversa(\alpha,1/\beta)$.</div>\EndKnitrBlock{proposition}
 
 ### Distribución exponencial
 
-\BeginKnitrBlock{definition}<div class="definition"><span class="definition" id="def:unnamed-chunk-28"><strong>(\#def:unnamed-chunk-28) </strong></span>Una variable aleatoria $Y$ tiene distribución exponencial con parámetro de escala $\theta>0$ si su función de densidad está dada por:
+\BeginKnitrBlock{definition}<div class="definition"><span class="definition" id="def:unnamed-chunk-27"><strong>(\#def:unnamed-chunk-27) </strong></span>Una variable aleatoria $Y$ tiene distribución exponencial con parámetro de escala $\theta>0$ si su función de densidad está dada por:
   
 \begin{equation}
 f_Y(y)=\frac{1}{\theta}e^{-y/\theta}I_{(0,\infty)}(y)
@@ -243,18 +243,18 @@ f_Y(y)=\frac{1}{\theta}e^{-y/\theta}I_{(0,\infty)}(y)
 
 La distribución exponencial es un caso particular de la distribución Gamma cuando el parámetro de forma $k$ toma el valor 1, y usualmente se utiliza para describir la vida útil de un componente eléctrico o el tiempo necesario para la ocurrencia de algún evento.
 
-\BeginKnitrBlock{proposition}<div class="proposition"><span class="proposition" id="prp:unnamed-chunk-29"><strong>(\#prp:unnamed-chunk-29) </strong></span>Si $Y$ es una variable aleatoria con distribución exponencial con parámetro $\theta$, entonces
+\BeginKnitrBlock{proposition}<div class="proposition"><span class="proposition" id="prp:unnamed-chunk-28"><strong>(\#prp:unnamed-chunk-28) </strong></span>Si $Y$ es una variable aleatoria con distribución exponencial con parámetro $\theta$, entonces
     
 *  $E(Y)=\theta$.
 *  $Var(Y)=\theta^2$.
 *  $m_Y(t)=\frac{1}{1-\theta t}$ para $t<1/\theta$, y no existe para otros valores de $t$.
 </div>\EndKnitrBlock{proposition}
 
-\BeginKnitrBlock{proposition}<div class="proposition"><span class="proposition" id="prp:unnamed-chunk-30"><strong>(\#prp:unnamed-chunk-30) </strong></span>Sea $Y_1$, $\cdots$, $Y_n$ variables aleatorias independientes e idénticamente distribuidas con distribución exponencial con parámetro de escala $\theta$, entonces la variable $\sum_{i=1}^nX_i$ tiene distribución Gamma con parámetro de forma $n$ y parámetro de escala $\theta$.</div>\EndKnitrBlock{proposition}
+\BeginKnitrBlock{proposition}<div class="proposition"><span class="proposition" id="prp:unnamed-chunk-29"><strong>(\#prp:unnamed-chunk-29) </strong></span>Sea $Y_1$, $\cdots$, $Y_n$ variables aleatorias independientes e idénticamente distribuidas con distribución exponencial con parámetro de escala $\theta$, entonces la variable $\sum_{i=1}^nX_i$ tiene distribución Gamma con parámetro de forma $n$ y parámetro de escala $\theta$.</div>\EndKnitrBlock{proposition}
 
 ### Distribución Beta
 
-\BeginKnitrBlock{definition}<div class="definition"><span class="definition" id="def:unnamed-chunk-31"><strong>(\#def:unnamed-chunk-31) </strong></span>Una variable aleatoria $Y$ tiene distribución Beta con parámetro de forma $\alpha>0$ y parámetro de escala $\beta>0$ si su función de densidad está dada por:
+\BeginKnitrBlock{definition}<div class="definition"><span class="definition" id="def:unnamed-chunk-30"><strong>(\#def:unnamed-chunk-30) </strong></span>Una variable aleatoria $Y$ tiene distribución Beta con parámetro de forma $\alpha>0$ y parámetro de escala $\beta>0$ si su función de densidad está dada por:
   
 \begin{equation}
 f_Y(y)=\frac{1}{Beta(\alpha,\beta)}y^{\alpha-1}(1-y)^{\beta-1}I_{[0,1]}(y).
@@ -265,7 +265,7 @@ donde $Beta(\alpha,\beta)=\dfrac{\gamma(\alpha)\gamma(\beta)}{\gamma(\alpha+\bet
 
 La distribución Beta tiene dos parámetros: $\alpha$ y $\beta$; en este caso, el vector de parámetros es $\btheta=(\alpha,\beta)'$ donde el espacio paramétrico está dado por $\Theta=(0,\infty)\times(0,\infty)$. Pero cuando uno de los dos parámetros es fijo, por ejemplo $\theta$, entonces la distribución tendría un sólo parámetro: $k$.
 
-\BeginKnitrBlock{proposition}<div class="proposition"><span class="proposition" id="prp:unnamed-chunk-32"><strong>(\#prp:unnamed-chunk-32) </strong></span>Si $Y$ es una variable aleatoria con distribución Gamma con parámetro de forma $k$ y parámetro de escala $\theta$, entonces
+\BeginKnitrBlock{proposition}<div class="proposition"><span class="proposition" id="prp:unnamed-chunk-31"><strong>(\#prp:unnamed-chunk-31) </strong></span>Si $Y$ es una variable aleatoria con distribución Gamma con parámetro de forma $k$ y parámetro de escala $\theta$, entonces
     
 *  $E(Y)=\frac{\alpha}{\alpha + \beta}$.
 *  $Var(Y)=\frac{\alpha\beta}{(\alpha+\beta)^2(\alpha+\beta+1)}$
@@ -275,7 +275,7 @@ La distribución Beta tiene dos parámetros: $\alpha$ y $\beta$; en este caso, e
 
 La distribución normal también es llamada la distribución gaussiana, rindiendo homenaje al matemático alemán Carl Friedrich Gauss (1777-1855). La distribución normal es, sin duda, una de las distribuciones más importantes, puesto que una gran parte de la teoría estadística fue desarrollada inicialmente para variables con esta distribución; por el otro lado, gracias al teorema central del límite, muchas distribuciones ajenas a la normal puede ser aproximadas por esta.
 
-\BeginKnitrBlock{definition}<div class="definition"><span class="definition" id="def:unnamed-chunk-33"><strong>(\#def:unnamed-chunk-33) </strong></span>Una variable aleatoria $Y$ tiene distribución normal con parámetros $\mu$ y $\sigma^2$ si su función de densidad está dada por:
+\BeginKnitrBlock{definition}<div class="definition"><span class="definition" id="def:unnamed-chunk-32"><strong>(\#def:unnamed-chunk-32) </strong></span>Una variable aleatoria $Y$ tiene distribución normal con parámetros $\mu$ y $\sigma^2$ si su función de densidad está dada por:
   
 \begin{equation}
 f_Y(y)=\frac{1}{\sqrt{2\pi\sigma^2}}\exp\left\{-\frac{1}{2\sigma^2}(y-\mu)^2\right\}I_\mathbb{R}(y),
@@ -286,7 +286,7 @@ donde $\sigma>0$ y se nota como $Y\sim N(\mu,\sigma^2)$.</div>\EndKnitrBlock{def
 
 La distribución normal tiene dos parámetros, representado como $\btheta=(\mu,\sigma^2)$, mientras que su espacio paramétrico es  $\Theta=\mathbb{R}\times(0,\infty)$.
 
-\BeginKnitrBlock{proposition}<div class="proposition"><span class="proposition" id="prp:unnamed-chunk-34"><strong>(\#prp:unnamed-chunk-34) </strong></span>Si $Y$ es una variable aleatoria con distribución normal con parámetros $\mu$ y $\sigma^2$, entonces
+\BeginKnitrBlock{proposition}<div class="proposition"><span class="proposition" id="prp:unnamed-chunk-33"><strong>(\#prp:unnamed-chunk-33) </strong></span>Si $Y$ es una variable aleatoria con distribución normal con parámetros $\mu$ y $\sigma^2$, entonces
     
 *  $E(Y)=\mu$.
 *  $Var(Y)=\sigma^2$.
@@ -295,7 +295,7 @@ La distribución normal tiene dos parámetros, representado como $\btheta=(\mu,\
 
 Cuando $\mu=0$ y $\sigma=1$, se dice que $Y$ tiene distribución normal estándar y usualmente se denota por $Z$.
 
-\BeginKnitrBlock{proposition}<div class="proposition"><span class="proposition" id="prp:unnamed-chunk-35"><strong>(\#prp:unnamed-chunk-35) </strong></span>Si $Y\sim N(\mu,\sigma^2)$, y $\alpha$, $\beta$ son constantes, entonces la variable $\alpha Y+\beta$ tiene distribución $N(\alpha\mu+\beta,\alpha^2\sigma^2)$.</div>\EndKnitrBlock{proposition}
+\BeginKnitrBlock{proposition}<div class="proposition"><span class="proposition" id="prp:unnamed-chunk-34"><strong>(\#prp:unnamed-chunk-34) </strong></span>Si $Y\sim N(\mu,\sigma^2)$, y $\alpha$, $\beta$ son constantes, entonces la variable $\alpha Y+\beta$ tiene distribución $N(\alpha\mu+\beta,\alpha^2\sigma^2)$.</div>\EndKnitrBlock{proposition}
 <br>
 
 \BeginKnitrBlock{proof}<div class="proof">\iffalse{} <span class="proof"><em>Prueba. </em></span>  \fi{}Se usará el hecho de que la función generadora de momentos caracteriza la distribución probabilística. Se tiene que:
@@ -313,11 +313,11 @@ la cual es la función generadora de momentos de una distribución $N(\alpha\mu+
 
 Como consecuencia inmediata del anterior resultado, se define la estandarización, que es fundamental en la teoría relacionada con las distribuciones normales. Si $Y\sim N(\mu,\sigma^2)$, entonces la variable $Z=\frac{Y-\mu}{\sigma}$ tiene distribución normal estándar, y la anterior transformación se conoce como la normal estandarizada.
 
-\BeginKnitrBlock{proposition}<div class="proposition"><span class="proposition" id="prp:unnamed-chunk-37"><strong>(\#prp:unnamed-chunk-37) </strong></span>Sea $Y_1$, $\cdots$, $Y_n$ variables aleatorias independientes, donde $Y_i\sim N(\mu_i,\sigma^2_i)$ con $i=1,\cdots,n$, entonces la variable $\sum_{i=1}^nY_i$ tiene distribución $N(\sum_{i=1}^n\mu_i,\sum_{i=1}^n\sigma_i^2)$.</div>\EndKnitrBlock{proposition}
+\BeginKnitrBlock{proposition}<div class="proposition"><span class="proposition" id="prp:unnamed-chunk-36"><strong>(\#prp:unnamed-chunk-36) </strong></span>Sea $Y_1$, $\cdots$, $Y_n$ variables aleatorias independientes, donde $Y_i\sim N(\mu_i,\sigma^2_i)$ con $i=1,\cdots,n$, entonces la variable $\sum_{i=1}^nY_i$ tiene distribución $N(\sum_{i=1}^n\mu_i,\sum_{i=1}^n\sigma_i^2)$.</div>\EndKnitrBlock{proposition}
 
 ### Distribución log-normal
 
-\BeginKnitrBlock{definition}<div class="definition"><span class="definition" id="def:unnamed-chunk-38"><strong>(\#def:unnamed-chunk-38) </strong></span>Una variable aleatoria $Y$ tiene distribución log-normal si su función de densidad está dada por:
+\BeginKnitrBlock{definition}<div class="definition"><span class="definition" id="def:unnamed-chunk-37"><strong>(\#def:unnamed-chunk-37) </strong></span>Una variable aleatoria $Y$ tiene distribución log-normal si su función de densidad está dada por:
   
 \begin{equation}
 p(Y\mid \mu, \sigma^2)=\frac{1}{y\sqrt{2\pi\sigma^2}}\exp\{\frac{-1}{2\sigma^2(\ln(y)-\mu)^2}\}
@@ -325,7 +325,7 @@ p(Y\mid \mu, \sigma^2)=\frac{1}{y\sqrt{2\pi\sigma^2}}\exp\{\frac{-1}{2\sigma^2(\
 
 Nótese que si $\mu$ y $\sigma^2$ son la media y la varianza de $\ln(Y)$, entonces $\ln(Y)$ tiene distribución normal de media $\mu$ y varianza $\sigma^2$.</div>\EndKnitrBlock{definition}
 
-\BeginKnitrBlock{proposition}<div class="proposition"><span class="proposition" id="prp:unnamed-chunk-39"><strong>(\#prp:unnamed-chunk-39) </strong></span>Si $Y$ es una variable aleatoria con distribución log-normal, entonces
+\BeginKnitrBlock{proposition}<div class="proposition"><span class="proposition" id="prp:unnamed-chunk-38"><strong>(\#prp:unnamed-chunk-38) </strong></span>Si $Y$ es una variable aleatoria con distribución log-normal, entonces
     
 *  $E(Y)=\exp(\mu+\sigma^2/2)$.
 *  $Var(Y)=(\exp(\sigma^2-1)) \exp(2\mu+\sigma^2)$.
@@ -333,7 +333,7 @@ Nótese que si $\mu$ y $\sigma^2$ son la media y la varianza de $\ln(Y)$, entonc
 
 ### Distribución Ji-cuadrado
 
-\BeginKnitrBlock{definition}<div class="definition"><span class="definition" id="def:unnamed-chunk-40"><strong>(\#def:unnamed-chunk-40) </strong></span>Una variable aleatoria $Y$ tiene distribución Ji-cuadrado con $n$ grados de libertad, con $n$ entero positivo, si su función de densidad está dada por:
+\BeginKnitrBlock{definition}<div class="definition"><span class="definition" id="def:unnamed-chunk-39"><strong>(\#def:unnamed-chunk-39) </strong></span>Una variable aleatoria $Y$ tiene distribución Ji-cuadrado con $n$ grados de libertad, con $n$ entero positivo, si su función de densidad está dada por:
   
 \begin{equation}
 f_Y(y)=\frac{y^{(n/2)-1}e^{-y/2}}{2^{n/2}\Gamma(n/2)}I_{(0,\infty)}(y),
@@ -344,22 +344,22 @@ y se nota como $Y\sim\chi^2_n$.</div>\EndKnitrBlock{definition}
 
 La distribución Ji-cuadrado con $n$ grados de libertad es un caso particular de la distribución Gamma cuando el parámetro de forma $k$ toma el valor $n/2$ y el parámetro de escala toma el valor 2. También, en la literatura estadística existe la siguiente definición para la distribución Ji-cuadrado.
 
-\BeginKnitrBlock{definition}<div class="definition"><span class="definition" id="def:unnamed-chunk-41"><strong>(\#def:unnamed-chunk-41) </strong></span>Si $Z_1$, $\cdots$, $Z_n$ son variables aleatorias independientes e idénticamente distribuidas con distribución normal estándar, entonces la variable $\sum_{i=1}^nZ_i^2$ tiene distribución Ji-cuadrado con $n$ grados de libertad.</div>\EndKnitrBlock{definition}
+\BeginKnitrBlock{definition}<div class="definition"><span class="definition" id="def:unnamed-chunk-40"><strong>(\#def:unnamed-chunk-40) </strong></span>Si $Z_1$, $\cdots$, $Z_n$ son variables aleatorias independientes e idénticamente distribuidas con distribución normal estándar, entonces la variable $\sum_{i=1}^nZ_i^2$ tiene distribución Ji-cuadrado con $n$ grados de libertad.</div>\EndKnitrBlock{definition}
 
-\BeginKnitrBlock{proposition}<div class="proposition"><span class="proposition" id="prp:unnamed-chunk-42"><strong>(\#prp:unnamed-chunk-42) </strong></span>Si $Y$ es una variable aleatoria con distribución Ji-cuadro con $n$ grados de libertad, entonces
+\BeginKnitrBlock{proposition}<div class="proposition"><span class="proposition" id="prp:unnamed-chunk-41"><strong>(\#prp:unnamed-chunk-41) </strong></span>Si $Y$ es una variable aleatoria con distribución Ji-cuadro con $n$ grados de libertad, entonces
     
 *  $E(Y)=n$.
 *  $Var(Y)=2n$.
 *  $m_Y(t)=\left(\frac{1}{1-2t}\right)^{n/2}$ para $t<1/2$, y no existe para otros valores de $t$.
 </div>\EndKnitrBlock{proposition}
 
-\BeginKnitrBlock{proposition}<div class="proposition"><span class="proposition" id="prp:unnamed-chunk-43"><strong>(\#prp:unnamed-chunk-43) </strong></span>Sea $Z_1$, $\cdots$, $Z_m$ variables aleatorias independientes con distribución $\chi^2_{n_i}$ para $i=1,\cdots,m$, entonces la variable $\sum_{i=1}^mZ_i$ tiene distribución Ji-cuadrado con $\sum_{i=1}^mn_i$ grados de libertad.</div>\EndKnitrBlock{proposition}
+\BeginKnitrBlock{proposition}<div class="proposition"><span class="proposition" id="prp:unnamed-chunk-42"><strong>(\#prp:unnamed-chunk-42) </strong></span>Sea $Z_1$, $\cdots$, $Z_m$ variables aleatorias independientes con distribución $\chi^2_{n_i}$ para $i=1,\cdots,m$, entonces la variable $\sum_{i=1}^mZ_i$ tiene distribución Ji-cuadrado con $\sum_{i=1}^mn_i$ grados de libertad.</div>\EndKnitrBlock{proposition}
 
 ### Distribución t-student
 
 El descubrimiento de la distribución t-student fue publicado por el estadístico inglés William Sealy Gosset (1876-1937) en el año 1908 cuando trabajaba en la famosa empresa cervecera *Guinness*. La publicación lo hizo de forma anónimo bajo el nombre de Student, pues Guinness le prohibía la publicación por ser el descubrimiento parte de resultados de investigación realizado por la empresa.
 
-\BeginKnitrBlock{definition}<div class="definition"><span class="definition" id="def:unnamed-chunk-44"><strong>(\#def:unnamed-chunk-44) </strong></span>Una variable aleatoria $Y$ tiene distribución t-student con $n$ grados de libertad si su función de densidad está dada por:
+\BeginKnitrBlock{definition}<div class="definition"><span class="definition" id="def:unnamed-chunk-43"><strong>(\#def:unnamed-chunk-43) </strong></span>Una variable aleatoria $Y$ tiene distribución t-student con $n$ grados de libertad si su función de densidad está dada por:
   
 \begin{equation}
 f_Y(y)=\frac{\Gamma(\frac{n+1}{2})}{\sqrt{\pi n}\ \Gamma(\frac{n}{2})}\left(1+\frac{y^2}{n}\right)^{-(n+1)/2}I_\mathbb{R}(y),
@@ -370,12 +370,12 @@ donde $n>0$ y se nota como $Y\sim t_n$.</div>\EndKnitrBlock{definition}
 
 Otra definición que se encuentra frecuentemente en la literatura estadística es la siguiente.
 
-\BeginKnitrBlock{definition}<div class="definition"><span class="definition" id="def:unnamed-chunk-45"><strong>(\#def:unnamed-chunk-45) </strong></span>Sea $Z$ una variable aleatoria con distribución normal estándar y $Y$ una variable aleatoria con distribución Ji-cuadrado con $n$ grados de libertad, si $Z$ y $Y$ son independientes, entonces la variable $\frac{Z}{\sqrt{Y/n}}$ tiene distribución t-student con $n$ grados de libertad.</div>\EndKnitrBlock{definition}
+\BeginKnitrBlock{definition}<div class="definition"><span class="definition" id="def:unnamed-chunk-44"><strong>(\#def:unnamed-chunk-44) </strong></span>Sea $Z$ una variable aleatoria con distribución normal estándar y $Y$ una variable aleatoria con distribución Ji-cuadrado con $n$ grados de libertad, si $Z$ y $Y$ son independientes, entonces la variable $\frac{Z}{\sqrt{Y/n}}$ tiene distribución t-student con $n$ grados de libertad.</div>\EndKnitrBlock{definition}
 <br>
 
 La función de densidad de la distribución t-student es muy parecida a la de distribución normal estándar, entre más grande sea el grado de libertad, más se parece a la distribución normal estándar.
 
-\BeginKnitrBlock{proposition}<div class="proposition"><span class="proposition" id="prp:unnamed-chunk-46"><strong>(\#prp:unnamed-chunk-46) </strong></span>Si $Y$ es una variable aleatoria con distribución t-student con $n$ grados de libertad, entonces
+\BeginKnitrBlock{proposition}<div class="proposition"><span class="proposition" id="prp:unnamed-chunk-45"><strong>(\#prp:unnamed-chunk-45) </strong></span>Si $Y$ es una variable aleatoria con distribución t-student con $n$ grados de libertad, entonces
     
 *  $E(Y)=0$ para $n>1$.
 *  $Var(Y)=\frac{n}{n-2}$ para $n>2$.
@@ -384,7 +384,7 @@ La distribución t-student no tiene función generadora de momentos.</div>\EndKn
 
 ### Distribución t-student generalizada
 
-\BeginKnitrBlock{definition}<div class="definition"><span class="definition" id="def:unnamed-chunk-47"><strong>(\#def:unnamed-chunk-47) </strong></span>Una variable aleatoria $Y$ tiene distribución t-student con $n$ grados de libertad, parámetro de centralidad $\theta$ y parámetro de escala $\sigma^2$, si su función de densidad está dada por:
+\BeginKnitrBlock{definition}<div class="definition"><span class="definition" id="def:unnamed-chunk-46"><strong>(\#def:unnamed-chunk-46) </strong></span>Una variable aleatoria $Y$ tiene distribución t-student con $n$ grados de libertad, parámetro de centralidad $\theta$ y parámetro de escala $\sigma^2$, si su función de densidad está dada por:
 
 \begin{equation}
 f_Y(y)=\frac{\Gamma((n+1)/2)}{\Gamma(n/2)\sqrt{n\pi}\sigma}\left[1+\frac{1}{n}\left(\frac{y-\theta}{\sigma}\right)^2\right]^{-(n+1)/2}
@@ -393,7 +393,7 @@ I_\mathbb{R}(y),
 
 donde $n>0$ y se nota como $Y\sim t_n(\theta,\sigma^2)$.</div>\EndKnitrBlock{definition}
 
-\BeginKnitrBlock{proposition}<div class="proposition"><span class="proposition" id="prp:unnamed-chunk-48"><strong>(\#prp:unnamed-chunk-48) </strong></span>Si $Y$ es una variable aleatoria con distribución t-student generalizada, entonces
+\BeginKnitrBlock{proposition}<div class="proposition"><span class="proposition" id="prp:unnamed-chunk-47"><strong>(\#prp:unnamed-chunk-47) </strong></span>Si $Y$ es una variable aleatoria con distribución t-student generalizada, entonces
     
 *  $E(Y)=\theta$ para $n>1$.
 *  $Var(Y)=\frac{n}{n-2}\sigma^2$ para $n>2$.
@@ -403,7 +403,7 @@ donde $n>0$ y se nota como $Y\sim t_n(\theta,\sigma^2)$.</div>\EndKnitrBlock{def
 
 La distribución F también se conoce como la distribución F de Fisher o distribución de Fisher-Snedecor, refiriendo al gran estadístico Ronald Aylmer Fisher (1890-1962) y el fundador del primer departamento de estadística en los Estados Unidos, George Waddel Snedecor (1881-1974).
 
-\BeginKnitrBlock{definition}<div class="definition"><span class="definition" id="def:unnamed-chunk-49"><strong>(\#def:unnamed-chunk-49) </strong></span>Una variable aleatoria $Y$ tiene distribución F con $m$ grados de libertad en el numerador y $n$ grados de libertado en el denominador si su función de densidad está dada por:
+\BeginKnitrBlock{definition}<div class="definition"><span class="definition" id="def:unnamed-chunk-48"><strong>(\#def:unnamed-chunk-48) </strong></span>Una variable aleatoria $Y$ tiene distribución F con $m$ grados de libertad en el numerador y $n$ grados de libertado en el denominador si su función de densidad está dada por:
   
 \begin{equation}
 f_Y(y)=\frac{\Gamma(\frac{m+n}{2})}{\Gamma(\frac{m}{2})\Gamma(\frac{n}{2})}\left(\frac{m}{n}\right)^{m/2}\frac{z^{\frac{m}{2}-1}}{\left(1+\frac{m}{n}z\right)^{\frac{m+n}{2}}},
@@ -414,9 +414,9 @@ y se nota como $Y\sim F^m_n$.</div>\EndKnitrBlock{definition}
 
 Otra definición para la distribución F es como sigue:
 
-\BeginKnitrBlock{definition}<div class="definition"><span class="definition" id="def:unnamed-chunk-50"><strong>(\#def:unnamed-chunk-50) </strong></span>Sea $Y$ y $Y$ variables aleatorias independientes con distribuciones Ji-cuadrado con $m$ y $n$ grados de libertad, respectivamente, entonces la variable $\frac{Y/m}{Y/n}$ tiene distribución F con $m$ grados de libertad en el numerador y $n$ grados de libertado en el denominador.</div>\EndKnitrBlock{definition}
+\BeginKnitrBlock{definition}<div class="definition"><span class="definition" id="def:unnamed-chunk-49"><strong>(\#def:unnamed-chunk-49) </strong></span>Sea $Y$ y $Y$ variables aleatorias independientes con distribuciones Ji-cuadrado con $m$ y $n$ grados de libertad, respectivamente, entonces la variable $\frac{Y/m}{Y/n}$ tiene distribución F con $m$ grados de libertad en el numerador y $n$ grados de libertado en el denominador.</div>\EndKnitrBlock{definition}
 
-\BeginKnitrBlock{proposition}<div class="proposition"><span class="proposition" id="prp:unnamed-chunk-51"><strong>(\#prp:unnamed-chunk-51) </strong></span>Si $Y$ es una variable aleatoria con distribución F con $m$ grados de libertad en el numerador y $n$ grados de libertado en el denominador, entonces
+\BeginKnitrBlock{proposition}<div class="proposition"><span class="proposition" id="prp:unnamed-chunk-50"><strong>(\#prp:unnamed-chunk-50) </strong></span>Si $Y$ es una variable aleatoria con distribución F con $m$ grados de libertad en el numerador y $n$ grados de libertado en el denominador, entonces
     
 *  $E(Y)=\frac{n}{n-2}$ para $n>2$.
 *  $Var(Y)=\frac{2n^2(m+n-2)}{m(n-2)^2(n-4)}$ para $n>4$.
@@ -427,7 +427,7 @@ La distribución F no tiene función generadora de momentos.</div>\EndKnitrBlock
 
 ### Distribución Multinomial
 
-\BeginKnitrBlock{definition}<div class="definition"><span class="definition" id="def:unnamed-chunk-52"><strong>(\#def:unnamed-chunk-52) </strong></span>Un vector aleatorio $\mathbf{Y}=(Y_1,\ldots,Y_p')$ tiene distribución multinomial si su función de densidad está dada por:
+\BeginKnitrBlock{definition}<div class="definition"><span class="definition" id="def:unnamed-chunk-51"><strong>(\#def:unnamed-chunk-51) </strong></span>Un vector aleatorio $\mathbf{Y}=(Y_1,\ldots,Y_p')$ tiene distribución multinomial si su función de densidad está dada por:
 
 \begin{equation}
 p(\mathbf{Y} \mid \btheta)=\binom{n}{y_1,\ldots,y_p}\theta_1^{y_1}\cdots\theta_p^{y_p} \ \ \ \ \ \theta_i>0 \texttt{, } \sum_{i=1}^p\theta_i=1  \texttt{ y } \sum_{i=1}^py_i=p
@@ -441,7 +441,7 @@ donde
 
 Como @Gelman03, afirma esta distribución es una generalización de la distribución binomial. La distribución marginal de una sola variable $Y_i$ es $Binomial(p,\theta_i)$
 
-\BeginKnitrBlock{proposition}<div class="proposition"><span class="proposition" id="prp:unnamed-chunk-53"><strong>(\#prp:unnamed-chunk-53) </strong></span>Si $\mathbf{Y}$ es una vector aleatorio con distribución multinomial, entonces
+\BeginKnitrBlock{proposition}<div class="proposition"><span class="proposition" id="prp:unnamed-chunk-52"><strong>(\#prp:unnamed-chunk-52) </strong></span>Si $\mathbf{Y}$ es una vector aleatorio con distribución multinomial, entonces
     
 *  $E(\mathbf{Y})=p(\theta_1,\ldots,\theta_p)'$.
 *  $Var(\mathbf{Y})_{ij}=
@@ -453,7 +453,7 @@ Como @Gelman03, afirma esta distribución es una generalización de la distribuc
 
 ### Distribución Dirichelt
 
-\BeginKnitrBlock{definition}<div class="definition"><span class="definition" id="def:unnamed-chunk-54"><strong>(\#def:unnamed-chunk-54) </strong></span>Un vector aleatorio $\mathbf{Y}=(Y_1,\ldots,Y_p')$ tiene distribución Dirichelt si su función de densidad está dada por:
+\BeginKnitrBlock{definition}<div class="definition"><span class="definition" id="def:unnamed-chunk-53"><strong>(\#def:unnamed-chunk-53) </strong></span>Un vector aleatorio $\mathbf{Y}=(Y_1,\ldots,Y_p')$ tiene distribución Dirichelt si su función de densidad está dada por:
 
 \begin{equation}
 p(\mathbf{Y} \mid \btheta)=\frac{\Gamma(\theta_1+\cdots+\theta_p)}{\Gamma(\theta_1)\cdots\Gamma(\theta_p)}
@@ -462,7 +462,7 @@ y^{\theta_1-1}\cdots y^{\theta_p-1} \ \ \ \ \ \theta_i>0 \texttt{ y } \sum_{i=1}
 
 Esta distribución es una generalización de la distribución beta. La distribución marginal de una sola variable $Y_i$ es $Beta(\theta_i,(\sum_{i=1}^p\theta_i)-\theta_i)$
 
-\BeginKnitrBlock{proposition}<div class="proposition"><span class="proposition" id="prp:unnamed-chunk-55"><strong>(\#prp:unnamed-chunk-55) </strong></span>Si $\mathbf{Y}$ es una vector aleatorio con distribución Dirichlet, entonces
+\BeginKnitrBlock{proposition}<div class="proposition"><span class="proposition" id="prp:unnamed-chunk-54"><strong>(\#prp:unnamed-chunk-54) </strong></span>Si $\mathbf{Y}$ es una vector aleatorio con distribución Dirichlet, entonces
     
 *  $E(\mathbf{Y})=(\sum_{i=1}^p\theta_i)^{-1}(\theta_1,\ldots,\theta_p)'$.
 *  $Var(\mathbf{Y})_{ij}=
@@ -474,7 +474,7 @@ Esta distribución es una generalización de la distribución beta. La distribuc
 
 ### Distribución Normal Multivariante
 
-\BeginKnitrBlock{definition}<div class="definition"><span class="definition" id="def:unnamed-chunk-56"><strong>(\#def:unnamed-chunk-56) </strong></span>Un vector aleatorio $\mathbf{Y}=(Y_1,\ldots,Y_p')$ tiene distribución normal multivariante de orden $p$, denotada como $\mathbf{Y}\sim N_p(\btheta,\bSigma)$, si su función de densidad está dada por:
+\BeginKnitrBlock{definition}<div class="definition"><span class="definition" id="def:unnamed-chunk-55"><strong>(\#def:unnamed-chunk-55) </strong></span>Un vector aleatorio $\mathbf{Y}=(Y_1,\ldots,Y_p')$ tiene distribución normal multivariante de orden $p$, denotada como $\mathbf{Y}\sim N_p(\btheta,\bSigma)$, si su función de densidad está dada por:
 
 \begin{equation}
 p(\mathbf{Y} \mid \btheta,\bSigma)=(2\pi)^{-p/2} \mid \bSigma \mid ^{-1/2}
@@ -486,7 +486,7 @@ donde $\mid \bSigma \mid$ se refiere al determinante de la matriz $\bSigma$, la 
 
 La distribución Normal Multivariante es el baluarte de una gran cantidad de técnicas y métodos estadísticos como son los modelos lineales, los modelos lineales generalizados, el análisis factorial, etc. Algunas de sus propiedades se citan a continuación.
 
-\BeginKnitrBlock{proposition}<div class="proposition"><span class="proposition" id="prp:unnamed-chunk-57"><strong>(\#prp:unnamed-chunk-57) </strong></span>Si $\mathbf{Y}=(Y_1,\ldots,Y_p')$ es una vector aleatorio con distribución normal multivariante, entonces
+\BeginKnitrBlock{proposition}<div class="proposition"><span class="proposition" id="prp:normalmulti"><strong>(\#prp:normalmulti) </strong></span>Si $\mathbf{Y}=(Y_1,\ldots,Y_p')$ es una vector aleatorio con distribución normal multivariante, entonces
 
 *  La distribución marginal de cualquier subconjunto de componentes de $\mathbf{Y}$ es también normal multivariante. Por ejemplo si $\mathbf{Y}$ es particionado en $\mathbf{Y}=(\mathbf{Y}_1',\mathbf{Y}_2')$, entonces $p(\mathbf{Y}_1)$ seguiría una distribución normal multivariante, al igual que $p(\mathbf{Y}_2)$.
 *  Cualquier transformación lineal de $\mathbf{Y}$ es normal multivariante y su dimensión equivale al rango de la transformación. en particular, la suma de las componentes del vector, dada por $\sum_{i=1}^pY_i$ sigue una distribución normal univariada.
@@ -499,13 +499,13 @@ Var(\mathbf{Y}_1 \mid \mathbf{Y}_2)&=Var(\mathbf{Y}_1)-Cov(\mathbf{Y}_1,\mathbf{
 *  Si $\mathbf{X}$ es un vector con distribución normal multivariante, entonces $\mathbf{X}+\mathbf{Y}$ tiene una distribución normal multivariante. En particular si $\mathbf{X}$ es independiente de $\mathbf{Y}$, comparten el mismo orden $p$ y $\mathbf{X}\sim N_p(\bmu,\bGamma)$, entonces $\mathbf{X}+\mathbf{Y}\sim N_p(\bmu+\btheta,\bGamma+\bSigma)$.
 </div>\EndKnitrBlock{proposition}
 
-\BeginKnitrBlock{proposition}<div class="proposition"><span class="proposition" id="prp:unnamed-chunk-58"><strong>(\#prp:unnamed-chunk-58) </strong></span>Si $\mathbf{Y}$ es una vector aleatorio con distribución Normal Multivariante, entonces
+\BeginKnitrBlock{proposition}<div class="proposition"><span class="proposition" id="prp:unnamed-chunk-56"><strong>(\#prp:unnamed-chunk-56) </strong></span>Si $\mathbf{Y}$ es una vector aleatorio con distribución Normal Multivariante, entonces
     
 *  $E(\mathbf{Y})=\btheta=(\theta_1,\ldots,\theta_n)'$.
 *  $Var(\mathbf{Y})=\bSigma$
 </div>\EndKnitrBlock{proposition}
 
-\BeginKnitrBlock{proposition}<div class="proposition"><span class="proposition" id="prp:unnamed-chunk-59"><strong>(\#prp:unnamed-chunk-59) </strong></span>Dado $\mathbf{Y}$ un vector aleatorio particionado como $\mathbf{Y}=(\mathbf{Y}_1',\mathbf{Y}_2')$ con esperanza $\btheta=(\btheta_1',\btheta_2')$ y matrix de varianzas y covarianzas
+\BeginKnitrBlock{proposition}<div class="proposition"><span class="proposition" id="prp:unnamed-chunk-57"><strong>(\#prp:unnamed-chunk-57) </strong></span>Dado $\mathbf{Y}$ un vector aleatorio particionado como $\mathbf{Y}=(\mathbf{Y}_1',\mathbf{Y}_2')$ con esperanza $\btheta=(\btheta_1',\btheta_2')$ y matrix de varianzas y covarianzas
 
 \begin{equation*}
 \bSigma=\begin{pmatrix}
@@ -520,7 +520,7 @@ Si $\mathbf{Y}_1 \mid \mathbf{Y}_2\sim N(\btheta_1+\bSigma_{12}\bSigma_{22}^{-1}
 \mathbf{Y}\sim N(\btheta,\bSigma).
 \end{equation*}</div>\EndKnitrBlock{proposition}
 
-\BeginKnitrBlock{proposition}<div class="proposition"><span class="proposition" id="prp:unnamed-chunk-60"><strong>(\#prp:unnamed-chunk-60) </strong></span>Si $\mathbf{Y}_1,\ldots,\mathbf{Y}_n$ es una muestra aleatoria de vectores con distribución Normal Multivariante, entonces la verosimilitud de la muestra se puede escribir como
+\BeginKnitrBlock{proposition}<div class="proposition"><span class="proposition" id="prp:unnamed-chunk-58"><strong>(\#prp:unnamed-chunk-58) </strong></span>Si $\mathbf{Y}_1,\ldots,\mathbf{Y}_n$ es una muestra aleatoria de vectores con distribución Normal Multivariante, entonces la verosimilitud de la muestra se puede escribir como
 
 \begin{equation}
 \prod_{i=1}^np(\mathbf{Y}_i \mid \btheta,\bSigma)\propto \mid \bSigma \mid ^{-n/2}\exp\left\{-\frac{1}{2}traza(\bSigma^{-1}\mathbf{S}_{\btheta})\right\}
@@ -556,7 +556,7 @@ Por lo anterior,
 
 ### Distribución Wishart
 
-\BeginKnitrBlock{definition}<div class="definition"><span class="definition" id="def:unnamed-chunk-62"><strong>(\#def:unnamed-chunk-62) </strong></span>Sea $\bSigma$ una matriz aleatoria simétrica y definida positiva de tamaño $p\times p$. Se dice que $\bSigma$ tiene distribución Wishart con $v$ grados de libertad, denotada como $\mathbf{Y}\sim Wishart_v(\bLambda)$, si su función de densidad está dada por:
+\BeginKnitrBlock{definition}<div class="definition"><span class="definition" id="def:unnamed-chunk-60"><strong>(\#def:unnamed-chunk-60) </strong></span>Sea $\bSigma$ una matriz aleatoria simétrica y definida positiva de tamaño $p\times p$. Se dice que $\bSigma$ tiene distribución Wishart con $v$ grados de libertad, denotada como $\mathbf{Y}\sim Wishart_v(\bLambda)$, si su función de densidad está dada por:
   
 \begin{align}
 p(\bSigma)&=\left( 2^{vp/2}\pi^{p(p-1)/4}\prod_{i=1}^p \Gamma\left(\frac{v+1-i}{2}\right)    \right)^{-1} \notag \\
@@ -567,11 +567,11 @@ p(\bSigma)&=\left( 2^{vp/2}\pi^{p(p-1)/4}\prod_{i=1}^p \Gamma\left(\frac{v+1-i}{
 
 donde $\mid \bLambda \mid$ se refiere al determinante de la matriz $\bLambda$, la cual es simétrica y definida positiva de orden $p\times p$.</div>\EndKnitrBlock{definition}
 
-\BeginKnitrBlock{proposition}<div class="proposition"><span class="proposition" id="prp:unnamed-chunk-63"><strong>(\#prp:unnamed-chunk-63) </strong></span>Si $\bSigma$ es una matriz aleatoria con distribución Wishart con $v$ grados de libertad, entonces $E(\bSigma)=v\bLambda$</div>\EndKnitrBlock{proposition}
+\BeginKnitrBlock{proposition}<div class="proposition"><span class="proposition" id="prp:unnamed-chunk-61"><strong>(\#prp:unnamed-chunk-61) </strong></span>Si $\bSigma$ es una matriz aleatoria con distribución Wishart con $v$ grados de libertad, entonces $E(\bSigma)=v\bLambda$</div>\EndKnitrBlock{proposition}
 
 ### Distribución inversa-Wishart
 
-\BeginKnitrBlock{definition}<div class="definition"><span class="definition" id="def:unnamed-chunk-64"><strong>(\#def:unnamed-chunk-64) </strong></span>Sea $\bSigma$ una matriz aleatoria simétrica y definida positiva de tamaño $p\times p$. Se dice que $\bSigma$ tiene distribución Wishart con $v$ grados de libertad, denotada como $\mathbf{Y}\sim Wishart_v(\bLambda)$, si su función de densidad está dada por:
+\BeginKnitrBlock{definition}<div class="definition"><span class="definition" id="def:unnamed-chunk-62"><strong>(\#def:unnamed-chunk-62) </strong></span>Sea $\bSigma$ una matriz aleatoria simétrica y definida positiva de tamaño $p\times p$. Se dice que $\bSigma$ tiene distribución Wishart con $v$ grados de libertad, denotada como $\mathbf{Y}\sim Wishart_v(\bLambda)$, si su función de densidad está dada por:
 
 \begin{align}
 p(\bSigma)&=\left( 2^{vp/2}\pi^{p(p-1)/4}\prod_{i=1}^p \Gamma\left(\frac{v+1-i}{2}\right)    \right)^{-1} \notag \\
@@ -582,7 +582,7 @@ p(\bSigma)&=\left( 2^{vp/2}\pi^{p(p-1)/4}\prod_{i=1}^p \Gamma\left(\frac{v+1-i}{
 
 donde $\mid \bLambda \mid$ se refiere al determinante de la matriz $\bLambda$, la cual es simétrica y definida positiva de orden $p\times p$.</div>\EndKnitrBlock{definition}
 
-\BeginKnitrBlock{proposition}<div class="proposition"><span class="proposition" id="prp:unnamed-chunk-65"><strong>(\#prp:unnamed-chunk-65) </strong></span>Si $\bSigma$ es una matriz aleatoria con distribución inversa-Wishart con $v$ grados de libertad, entonces $E(\bSigma)=\dfrac{1}{v-p-1}\bLambda$</div>\EndKnitrBlock{proposition}
+\BeginKnitrBlock{proposition}<div class="proposition"><span class="proposition" id="prp:unnamed-chunk-63"><strong>(\#prp:unnamed-chunk-63) </strong></span>Si $\bSigma$ es una matriz aleatoria con distribución inversa-Wishart con $v$ grados de libertad, entonces $E(\bSigma)=\dfrac{1}{v-p-1}\bLambda$</div>\EndKnitrBlock{proposition}
 
-\BeginKnitrBlock{proposition}<div class="proposition"><span class="proposition" id="prp:unnamed-chunk-66"><strong>(\#prp:unnamed-chunk-66) </strong></span>Si $\bSigma^{-1}$ es una matriz aleatoria con distribución inversa-Wishart, entonces con $\bSigma$ tiene distribución Wishart.</div>\EndKnitrBlock{proposition}
+\BeginKnitrBlock{proposition}<div class="proposition"><span class="proposition" id="prp:unnamed-chunk-64"><strong>(\#prp:unnamed-chunk-64) </strong></span>Si $\bSigma^{-1}$ es una matriz aleatoria con distribución inversa-Wishart, entonces con $\bSigma$ tiene distribución Wishart.</div>\EndKnitrBlock{proposition}
 

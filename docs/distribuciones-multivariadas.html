@@ -191,7 +191,7 @@ div.csl-indent {
 </ul></li>
 </ul></li>
 <li class="appendix"><span><b>Apéndice</b></span></li>
-<li class="chapter" data-level="A" data-path="algunas-distribuciones-de-probabilidad.html"><a href="algunas-distribuciones-de-probabilidad.html"><i class="fa fa-check"></i><b>A</b> Algunas distribuciones de probabilidad</a>
+<li class="chapter" data-level="A" data-path="elementos-de-probabilidad.html"><a href="elementos-de-probabilidad.html"><i class="fa fa-check"></i><b>A</b> Elementos de probabilidad</a>
 <ul>
 <li class="chapter" data-level="A.1" data-path="distribuciones-discretas.html"><a href="distribuciones-discretas.html"><i class="fa fa-check"></i><b>A.1</b> Distribuciones discretas</a>
 <ul>
@@ -230,8 +230,16 @@ div.csl-indent {
 <li class="chapter" data-level="B" data-path="matriz-de-información.html"><a href="matriz-de-información.html"><i class="fa fa-check"></i><b>B</b> Matriz de información</a></li>
 <li class="chapter" data-level="C" data-path="elementos-de-simulación-estadística.html"><a href="elementos-de-simulación-estadística.html"><i class="fa fa-check"></i><b>C</b> Elementos de simulación estadística</a>
 <ul>
-<li class="chapter" data-level="C.1" data-path="método-de-la-transformación-uniforme.html"><a href="método-de-la-transformación-uniforme.html"><i class="fa fa-check"></i><b>C.1</b> Método de la transformación uniforme</a></li>
-<li class="chapter" data-level="C.2" data-path="método-de-la-grilla.html"><a href="método-de-la-grilla.html"><i class="fa fa-check"></i><b>C.2</b> Método de la grilla</a></li>
+<li class="chapter" data-level="C.1" data-path="métodos-directos.html"><a href="métodos-directos.html"><i class="fa fa-check"></i><b>C.1</b> Métodos directos</a>
+<ul>
+<li class="chapter" data-level="C.1.1" data-path="métodos-directos.html"><a href="métodos-directos.html#método-de-la-transformación-uniforme"><i class="fa fa-check"></i><b>C.1.1</b> Método de la transformación uniforme</a></li>
+<li class="chapter" data-level="C.1.2" data-path="métodos-directos.html"><a href="métodos-directos.html#método-de-la-grilla"><i class="fa fa-check"></i><b>C.1.2</b> Método de la grilla</a></li>
+</ul></li>
+<li class="chapter" data-level="C.2" data-path="métodos-de-monte-carlo-vía-cadenas-de-markov.html"><a href="métodos-de-monte-carlo-vía-cadenas-de-markov.html"><i class="fa fa-check"></i><b>C.2</b> Métodos de Monte Carlo vía cadenas de Markov</a>
+<ul>
+<li class="chapter" data-level="C.2.1" data-path="métodos-de-monte-carlo-vía-cadenas-de-markov.html"><a href="métodos-de-monte-carlo-vía-cadenas-de-markov.html#el-muestreador-de-gibbs"><i class="fa fa-check"></i><b>C.2.1</b> El muestreador de Gibbs</a></li>
+<li class="chapter" data-level="C.2.2" data-path="métodos-de-monte-carlo-vía-cadenas-de-markov.html"><a href="métodos-de-monte-carlo-vía-cadenas-de-markov.html#buenas-prácticas-en-la-aplicación-de-métodos-mcmc"><i class="fa fa-check"></i><b>C.2.2</b> Buenas prácticas en la aplicación de métodos MCMC</a></li>
+</ul></li>
 </ul></li>
 <li class="chapter" data-level="" data-path="referencias.html"><a href="referencias.html"><i class="fa fa-check"></i>Referencias</a></li>
 <li class="divider"></li>
@@ -260,7 +268,7 @@ div.csl-indent {
 <h3><span class="header-section-number">A.3.1</span> Distribución Multinomial</h3>
 
 <div class="definition">
-<p><span id="def:unnamed-chunk-52" class="definition"><strong>Definición A.21  </strong></span>Un vector aleatorio <span class="math inline">\(\mathbf{Y}=(Y_1,\ldots,Y_p&#39;)\)</span> tiene distribución multinomial si su función de densidad está dada por:</p>
+<p><span id="def:unnamed-chunk-51" class="definition"><strong>Definición A.21  </strong></span>Un vector aleatorio <span class="math inline">\(\mathbf{Y}=(Y_1,\ldots,Y_p&#39;)\)</span> tiene distribución multinomial si su función de densidad está dada por:</p>
 <p><span class="math display">\[\begin{equation}
 p(\mathbf{Y} \mid \boldsymbol \theta)=\binom{n}{y_1,\ldots,y_p}\theta_1^{y_1}\cdots\theta_p^{y_p} \ \ \ \ \ \theta_i&gt;0 \texttt{, } \sum_{i=1}^p\theta_i=1  \texttt{ y } \sum_{i=1}^py_i=p
 \end{equation}\]</span></p>
@@ -272,7 +280,7 @@ p(\mathbf{Y} \mid \boldsymbol \theta)=\binom{n}{y_1,\ldots,y_p}\theta_1^{y_1}\cd
 <p>Como <span class="citation"><a href="#ref-Gelman03" role="doc-biblioref">A. Gelman et al.</a> (<a href="#ref-Gelman03" role="doc-biblioref">2003</a>)</span>, afirma esta distribución es una generalización de la distribución binomial. La distribución marginal de una sola variable <span class="math inline">\(Y_i\)</span> es <span class="math inline">\(Binomial(p,\theta_i)\)</span></p>
 
 <div class="proposition">
-<p><span id="prp:unnamed-chunk-53" class="proposition"><strong>Resultado A.26  </strong></span>Si <span class="math inline">\(\mathbf{Y}\)</span> es una vector aleatorio con distribución multinomial, entonces</p>
+<p><span id="prp:unnamed-chunk-52" class="proposition"><strong>Resultado A.26  </strong></span>Si <span class="math inline">\(\mathbf{Y}\)</span> es una vector aleatorio con distribución multinomial, entonces</p>
 <ul>
 <li><span class="math inline">\(E(\mathbf{Y})=p(\theta_1,\ldots,\theta_p)&#39;\)</span>.</li>
 <li><span class="math inline">\(Var(\mathbf{Y})_{ij}=  \begin{cases}  p\theta_i(1-\theta_i) &amp; \text{si $i=j$}\\  -p\theta_i\theta_j &amp; \text{si $i\neq j$}  \end{cases}\)</span></li>
@@ -283,7 +291,7 @@ p(\mathbf{Y} \mid \boldsymbol \theta)=\binom{n}{y_1,\ldots,y_p}\theta_1^{y_1}\cd
 <h3><span class="header-section-number">A.3.2</span> Distribución Dirichelt</h3>
 
 <div class="definition">
-<p><span id="def:unnamed-chunk-54" class="definition"><strong>Definición A.22  </strong></span>Un vector aleatorio <span class="math inline">\(\mathbf{Y}=(Y_1,\ldots,Y_p&#39;)\)</span> tiene distribución Dirichelt si su función de densidad está dada por:</p>
+<p><span id="def:unnamed-chunk-53" class="definition"><strong>Definición A.22  </strong></span>Un vector aleatorio <span class="math inline">\(\mathbf{Y}=(Y_1,\ldots,Y_p&#39;)\)</span> tiene distribución Dirichelt si su función de densidad está dada por:</p>
 <span class="math display">\[\begin{equation}
 p(\mathbf{Y} \mid \boldsymbol \theta)=\frac{\Gamma(\theta_1+\cdots+\theta_p)}{\Gamma(\theta_1)\cdots\Gamma(\theta_p)}
 y^{\theta_1-1}\cdots y^{\theta_p-1} \ \ \ \ \ \theta_i&gt;0 \texttt{ y } \sum_{i=1}^p\theta_i=1.
@@ -292,7 +300,7 @@ y^{\theta_1-1}\cdots y^{\theta_p-1} \ \ \ \ \ \theta_i&gt;0 \texttt{ y } \sum_{i
 <p>Esta distribución es una generalización de la distribución beta. La distribución marginal de una sola variable <span class="math inline">\(Y_i\)</span> es <span class="math inline">\(Beta(\theta_i,(\sum_{i=1}^p\theta_i)-\theta_i)\)</span></p>
 
 <div class="proposition">
-<p><span id="prp:unnamed-chunk-55" class="proposition"><strong>Resultado A.27  </strong></span>Si <span class="math inline">\(\mathbf{Y}\)</span> es una vector aleatorio con distribución Dirichlet, entonces</p>
+<p><span id="prp:unnamed-chunk-54" class="proposition"><strong>Resultado A.27  </strong></span>Si <span class="math inline">\(\mathbf{Y}\)</span> es una vector aleatorio con distribución Dirichlet, entonces</p>
 <ul>
 <li><span class="math inline">\(E(\mathbf{Y})=(\sum_{i=1}^p\theta_i)^{-1}(\theta_1,\ldots,\theta_p)&#39;\)</span>.</li>
 <li><span class="math inline">\(Var(\mathbf{Y})_{ij}= \begin{cases} \frac{\theta_i(\sum_{i=1}^p\theta_i-\theta_i)}{(\sum_{i=1}^p\theta_i)^2(\sum_{i=1}^p\theta_i+1)} &amp; \text{si $i=j$}\\ -\frac{\theta_i\theta_j)}{(\sum_{i=1}^p\theta_i)^2(\sum_{i=1}^p\theta_i+1)} &amp; \text{si $i\neq j$}  \end{cases}\)</span>
@@ -303,7 +311,7 @@ y^{\theta_1-1}\cdots y^{\theta_p-1} \ \ \ \ \ \theta_i&gt;0 \texttt{ y } \sum_{i
 <h3><span class="header-section-number">A.3.3</span> Distribución Normal Multivariante</h3>
 
 <div class="definition">
-<p><span id="def:unnamed-chunk-56" class="definition"><strong>Definición A.23  </strong></span>Un vector aleatorio <span class="math inline">\(\mathbf{Y}=(Y_1,\ldots,Y_p&#39;)\)</span> tiene distribución normal multivariante de orden <span class="math inline">\(p\)</span>, denotada como <span class="math inline">\(\mathbf{Y}\sim N_p(\boldsymbol \theta,\boldsymbol \Sigma)\)</span>, si su función de densidad está dada por:</p>
+<p><span id="def:unnamed-chunk-55" class="definition"><strong>Definición A.23  </strong></span>Un vector aleatorio <span class="math inline">\(\mathbf{Y}=(Y_1,\ldots,Y_p&#39;)\)</span> tiene distribución normal multivariante de orden <span class="math inline">\(p\)</span>, denotada como <span class="math inline">\(\mathbf{Y}\sim N_p(\boldsymbol \theta,\boldsymbol \Sigma)\)</span>, si su función de densidad está dada por:</p>
 <p><span class="math display">\[\begin{equation}
 p(\mathbf{Y} \mid \boldsymbol \theta,\boldsymbol \Sigma)=(2\pi)^{-p/2} \mid \boldsymbol \Sigma\mid ^{-1/2}
 \exp\left\{-\frac{1}{2}(\mathbf{y}-\boldsymbol \theta)&#39;\boldsymbol \Sigma(\mathbf{y}-\boldsymbol \theta)\right\}
@@ -314,7 +322,7 @@ donde <span class="math inline">\(\mid \boldsymbol \Sigma\mid\)</span> se refier
 <p>La distribución Normal Multivariante es el baluarte de una gran cantidad de técnicas y métodos estadísticos como son los modelos lineales, los modelos lineales generalizados, el análisis factorial, etc. Algunas de sus propiedades se citan a continuación.</p>
 
 <div class="proposition">
-<p><span id="prp:unnamed-chunk-57" class="proposition"><strong>Resultado A.28  </strong></span>Si <span class="math inline">\(\mathbf{Y}=(Y_1,\ldots,Y_p&#39;)\)</span> es una vector aleatorio con distribución normal multivariante, entonces</p>
+<p><span id="prp:normalmulti" class="proposition"><strong>Resultado A.28  </strong></span>Si <span class="math inline">\(\mathbf{Y}=(Y_1,\ldots,Y_p&#39;)\)</span> es una vector aleatorio con distribución normal multivariante, entonces</p>
 <ul>
 <li>La distribución marginal de cualquier subconjunto de componentes de <span class="math inline">\(\mathbf{Y}\)</span> es también normal multivariante. Por ejemplo si <span class="math inline">\(\mathbf{Y}\)</span> es particionado en <span class="math inline">\(\mathbf{Y}=(\mathbf{Y}_1&#39;,\mathbf{Y}_2&#39;)\)</span>, entonces <span class="math inline">\(p(\mathbf{Y}_1)\)</span> seguiría una distribución normal multivariante, al igual que <span class="math inline">\(p(\mathbf{Y}_2)\)</span>.</li>
 <li>Cualquier transformación lineal de <span class="math inline">\(\mathbf{Y}\)</span> es normal multivariante y su dimensión equivale al rango de la transformación. en particular, la suma de las componentes del vector, dada por <span class="math inline">\(\sum_{i=1}^pY_i\)</span> sigue una distribución normal univariada.</li>
@@ -329,7 +337,7 @@ Var(\mathbf{Y}_1 \mid \mathbf{Y}_2)&amp;=Var(\mathbf{Y}_1)-Cov(\mathbf{Y}_1,\mat
 </div>
 
 <div class="proposition">
-<p><span id="prp:unnamed-chunk-58" class="proposition"><strong>Resultado A.29  </strong></span>Si <span class="math inline">\(\mathbf{Y}\)</span> es una vector aleatorio con distribución Normal Multivariante, entonces</p>
+<p><span id="prp:unnamed-chunk-56" class="proposition"><strong>Resultado A.29  </strong></span>Si <span class="math inline">\(\mathbf{Y}\)</span> es una vector aleatorio con distribución Normal Multivariante, entonces</p>
 <ul>
 <li><span class="math inline">\(E(\mathbf{Y})=\boldsymbol \theta=(\theta_1,\ldots,\theta_n)&#39;\)</span>.</li>
 <li><span class="math inline">\(Var(\mathbf{Y})=\boldsymbol \Sigma\)</span></li>
@@ -337,7 +345,7 @@ Var(\mathbf{Y}_1 \mid \mathbf{Y}_2)&amp;=Var(\mathbf{Y}_1)-Cov(\mathbf{Y}_1,\mat
 </div>
 
 <div class="proposition">
-<p><span id="prp:unnamed-chunk-59" class="proposition"><strong>Resultado A.30  </strong></span>Dado <span class="math inline">\(\mathbf{Y}\)</span> un vector aleatorio particionado como <span class="math inline">\(\mathbf{Y}=(\mathbf{Y}_1&#39;,\mathbf{Y}_2&#39;)\)</span> con esperanza <span class="math inline">\(\boldsymbol \theta=(\boldsymbol \theta_1&#39;,\boldsymbol \theta_2&#39;)\)</span> y matrix de varianzas y covarianzas</p>
+<p><span id="prp:unnamed-chunk-57" class="proposition"><strong>Resultado A.30  </strong></span>Dado <span class="math inline">\(\mathbf{Y}\)</span> un vector aleatorio particionado como <span class="math inline">\(\mathbf{Y}=(\mathbf{Y}_1&#39;,\mathbf{Y}_2&#39;)\)</span> con esperanza <span class="math inline">\(\boldsymbol \theta=(\boldsymbol \theta_1&#39;,\boldsymbol \theta_2&#39;)\)</span> y matrix de varianzas y covarianzas</p>
 <p><span class="math display">\[\begin{equation*}
 \boldsymbol \Sigma=\begin{pmatrix}
 \boldsymbol \Sigma_{11}&amp;\boldsymbol \Sigma_{12}\\
@@ -351,7 +359,7 @@ Var(\mathbf{Y}_1 \mid \mathbf{Y}_2)&amp;=Var(\mathbf{Y}_1)-Cov(\mathbf{Y}_1,\mat
 </div>
 
 <div class="proposition">
-<p><span id="prp:unnamed-chunk-60" class="proposition"><strong>Resultado A.31  </strong></span>Si <span class="math inline">\(\mathbf{Y}_1,\ldots,\mathbf{Y}_n\)</span> es una muestra aleatoria de vectores con distribución Normal Multivariante, entonces la verosimilitud de la muestra se puede escribir como</p>
+<p><span id="prp:unnamed-chunk-58" class="proposition"><strong>Resultado A.31  </strong></span>Si <span class="math inline">\(\mathbf{Y}_1,\ldots,\mathbf{Y}_n\)</span> es una muestra aleatoria de vectores con distribución Normal Multivariante, entonces la verosimilitud de la muestra se puede escribir como</p>
 <p><span class="math display">\[\begin{equation}
 \prod_{i=1}^np(\mathbf{Y}_i \mid \boldsymbol \theta,\boldsymbol \Sigma)\propto \mid \boldsymbol \Sigma\mid ^{-n/2}\exp\left\{-\frac{1}{2}traza(\boldsymbol \Sigma^{-1}\mathbf{S}_{\boldsymbol \theta})\right\}
 \end{equation}\]</span></p>
@@ -387,7 +395,7 @@ Donde <span class="math inline">\(\mathbf{S}_{\boldsymbol \theta}=\sum_{i=1}^n(\
 <h3><span class="header-section-number">A.3.4</span> Distribución Wishart</h3>
 
 <div class="definition">
-<p><span id="def:unnamed-chunk-62" class="definition"><strong>Definición A.24  </strong></span>Sea <span class="math inline">\(\boldsymbol \Sigma\)</span> una matriz aleatoria simétrica y definida positiva de tamaño <span class="math inline">\(p\times p\)</span>. Se dice que <span class="math inline">\(\boldsymbol \Sigma\)</span> tiene distribución Wishart con <span class="math inline">\(v\)</span> grados de libertad, denotada como <span class="math inline">\(\mathbf{Y}\sim Wishart_v(\boldsymbol \Lambda)\)</span>, si su función de densidad está dada por:</p>
+<p><span id="def:unnamed-chunk-60" class="definition"><strong>Definición A.24  </strong></span>Sea <span class="math inline">\(\boldsymbol \Sigma\)</span> una matriz aleatoria simétrica y definida positiva de tamaño <span class="math inline">\(p\times p\)</span>. Se dice que <span class="math inline">\(\boldsymbol \Sigma\)</span> tiene distribución Wishart con <span class="math inline">\(v\)</span> grados de libertad, denotada como <span class="math inline">\(\mathbf{Y}\sim Wishart_v(\boldsymbol \Lambda)\)</span>, si su función de densidad está dada por:</p>
 <p><span class="math display">\[\begin{align}
 p(\boldsymbol \Sigma)&amp;=\left( 2^{vp/2}\pi^{p(p-1)/4}\prod_{i=1}^p \Gamma\left(\frac{v+1-i}{2}\right)    \right)^{-1} \notag \\
 &amp;\hspace{2cm}\times
@@ -398,14 +406,14 @@ donde <span class="math inline">\(\mid \boldsymbol \Lambda\mid\)</span> se refie
 </div>
 
 <div class="proposition">
-<span id="prp:unnamed-chunk-63" class="proposition"><strong>Resultado A.32  </strong></span>Si <span class="math inline">\(\boldsymbol \Sigma\)</span> es una matriz aleatoria con distribución Wishart con <span class="math inline">\(v\)</span> grados de libertad, entonces <span class="math inline">\(E(\boldsymbol \Sigma)=v\boldsymbol \Lambda\)</span>
+<span id="prp:unnamed-chunk-61" class="proposition"><strong>Resultado A.32  </strong></span>Si <span class="math inline">\(\boldsymbol \Sigma\)</span> es una matriz aleatoria con distribución Wishart con <span class="math inline">\(v\)</span> grados de libertad, entonces <span class="math inline">\(E(\boldsymbol \Sigma)=v\boldsymbol \Lambda\)</span>
 </div>
 </div>
 <div id="distribución-inversa-wishart" class="section level3" number="3.3.5">
 <h3><span class="header-section-number">A.3.5</span> Distribución inversa-Wishart</h3>
 
 <div class="definition">
-<p><span id="def:unnamed-chunk-64" class="definition"><strong>Definición A.25  </strong></span>Sea <span class="math inline">\(\boldsymbol \Sigma\)</span> una matriz aleatoria simétrica y definida positiva de tamaño <span class="math inline">\(p\times p\)</span>. Se dice que <span class="math inline">\(\boldsymbol \Sigma\)</span> tiene distribución Wishart con <span class="math inline">\(v\)</span> grados de libertad, denotada como <span class="math inline">\(\mathbf{Y}\sim Wishart_v(\boldsymbol \Lambda)\)</span>, si su función de densidad está dada por:</p>
+<p><span id="def:unnamed-chunk-62" class="definition"><strong>Definición A.25  </strong></span>Sea <span class="math inline">\(\boldsymbol \Sigma\)</span> una matriz aleatoria simétrica y definida positiva de tamaño <span class="math inline">\(p\times p\)</span>. Se dice que <span class="math inline">\(\boldsymbol \Sigma\)</span> tiene distribución Wishart con <span class="math inline">\(v\)</span> grados de libertad, denotada como <span class="math inline">\(\mathbf{Y}\sim Wishart_v(\boldsymbol \Lambda)\)</span>, si su función de densidad está dada por:</p>
 <p><span class="math display">\[\begin{align}
 p(\boldsymbol \Sigma)&amp;=\left( 2^{vp/2}\pi^{p(p-1)/4}\prod_{i=1}^p \Gamma\left(\frac{v+1-i}{2}\right)    \right)^{-1} \notag \\
 &amp;\hspace{2cm}\times
@@ -416,11 +424,11 @@ donde <span class="math inline">\(\mid \boldsymbol \Lambda\mid\)</span> se refie
 </div>
 
 <div class="proposition">
-<span id="prp:unnamed-chunk-65" class="proposition"><strong>Resultado A.33  </strong></span>Si <span class="math inline">\(\boldsymbol \Sigma\)</span> es una matriz aleatoria con distribución inversa-Wishart con <span class="math inline">\(v\)</span> grados de libertad, entonces <span class="math inline">\(E(\boldsymbol \Sigma)=\dfrac{1}{v-p-1}\boldsymbol \Lambda\)</span>
+<span id="prp:unnamed-chunk-63" class="proposition"><strong>Resultado A.33  </strong></span>Si <span class="math inline">\(\boldsymbol \Sigma\)</span> es una matriz aleatoria con distribución inversa-Wishart con <span class="math inline">\(v\)</span> grados de libertad, entonces <span class="math inline">\(E(\boldsymbol \Sigma)=\dfrac{1}{v-p-1}\boldsymbol \Lambda\)</span>
 </div>
 
 <div class="proposition">
-<span id="prp:unnamed-chunk-66" class="proposition"><strong>Resultado A.34  </strong></span>Si <span class="math inline">\(\boldsymbol \Sigma^{-1}\)</span> es una matriz aleatoria con distribución inversa-Wishart, entonces con <span class="math inline">\(\boldsymbol \Sigma\)</span> tiene distribución Wishart.
+<span id="prp:unnamed-chunk-64" class="proposition"><strong>Resultado A.34  </strong></span>Si <span class="math inline">\(\boldsymbol \Sigma^{-1}\)</span> es una matriz aleatoria con distribución inversa-Wishart, entonces con <span class="math inline">\(\boldsymbol \Sigma\)</span> tiene distribución Wishart.
 </div>
 
 </div>

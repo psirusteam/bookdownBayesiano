@@ -191,7 +191,7 @@ div.csl-indent {
 </ul></li>
 </ul></li>
 <li class="appendix"><span><b>Apéndice</b></span></li>
-<li class="chapter" data-level="A" data-path="algunas-distribuciones-de-probabilidad.html"><a href="algunas-distribuciones-de-probabilidad.html"><i class="fa fa-check"></i><b>A</b> Algunas distribuciones de probabilidad</a>
+<li class="chapter" data-level="A" data-path="elementos-de-probabilidad.html"><a href="elementos-de-probabilidad.html"><i class="fa fa-check"></i><b>A</b> Elementos de probabilidad</a>
 <ul>
 <li class="chapter" data-level="A.1" data-path="distribuciones-discretas.html"><a href="distribuciones-discretas.html"><i class="fa fa-check"></i><b>A.1</b> Distribuciones discretas</a>
 <ul>
@@ -230,8 +230,16 @@ div.csl-indent {
 <li class="chapter" data-level="B" data-path="matriz-de-información.html"><a href="matriz-de-información.html"><i class="fa fa-check"></i><b>B</b> Matriz de información</a></li>
 <li class="chapter" data-level="C" data-path="elementos-de-simulación-estadística.html"><a href="elementos-de-simulación-estadística.html"><i class="fa fa-check"></i><b>C</b> Elementos de simulación estadística</a>
 <ul>
-<li class="chapter" data-level="C.1" data-path="método-de-la-transformación-uniforme.html"><a href="método-de-la-transformación-uniforme.html"><i class="fa fa-check"></i><b>C.1</b> Método de la transformación uniforme</a></li>
-<li class="chapter" data-level="C.2" data-path="método-de-la-grilla.html"><a href="método-de-la-grilla.html"><i class="fa fa-check"></i><b>C.2</b> Método de la grilla</a></li>
+<li class="chapter" data-level="C.1" data-path="métodos-directos.html"><a href="métodos-directos.html"><i class="fa fa-check"></i><b>C.1</b> Métodos directos</a>
+<ul>
+<li class="chapter" data-level="C.1.1" data-path="métodos-directos.html"><a href="métodos-directos.html#método-de-la-transformación-uniforme"><i class="fa fa-check"></i><b>C.1.1</b> Método de la transformación uniforme</a></li>
+<li class="chapter" data-level="C.1.2" data-path="métodos-directos.html"><a href="métodos-directos.html#método-de-la-grilla"><i class="fa fa-check"></i><b>C.1.2</b> Método de la grilla</a></li>
+</ul></li>
+<li class="chapter" data-level="C.2" data-path="métodos-de-monte-carlo-vía-cadenas-de-markov.html"><a href="métodos-de-monte-carlo-vía-cadenas-de-markov.html"><i class="fa fa-check"></i><b>C.2</b> Métodos de Monte Carlo vía cadenas de Markov</a>
+<ul>
+<li class="chapter" data-level="C.2.1" data-path="métodos-de-monte-carlo-vía-cadenas-de-markov.html"><a href="métodos-de-monte-carlo-vía-cadenas-de-markov.html#el-muestreador-de-gibbs"><i class="fa fa-check"></i><b>C.2.1</b> El muestreador de Gibbs</a></li>
+<li class="chapter" data-level="C.2.2" data-path="métodos-de-monte-carlo-vía-cadenas-de-markov.html"><a href="métodos-de-monte-carlo-vía-cadenas-de-markov.html#buenas-prácticas-en-la-aplicación-de-métodos-mcmc"><i class="fa fa-check"></i><b>C.2.2</b> Buenas prácticas en la aplicación de métodos MCMC</a></li>
+</ul></li>
 </ul></li>
 <li class="chapter" data-level="" data-path="referencias.html"><a href="referencias.html"><i class="fa fa-check"></i>Referencias</a></li>
 <li class="divider"></li>
@@ -539,8 +547,8 @@ p(\tilde{\mathbf{y}} \mid \mathbf{Y})=
 <p><br></p>
 
 <div class="proof">
-<p> <span class="proof"><em>Prueba. </em></span> De la definición de distribución predictiva posterior dada por la expresión <a href="inferencia-bayesiana.html#eq:predictpos">(2.1)</a> se tiene que
-<span class="math display">\[\begin{align*}
+<p> <span class="proof"><em>Prueba. </em></span> De la definición de distribución predictiva posterior dada por la expresión <a href="inferencia-bayesiana.html#eq:predictpos">(2.1)</a> se tiene que</p>
+<p><span class="math display">\[\begin{align*}
 p(\tilde{y} \mid Y)&amp;=\int p(\tilde{y} \mid \theta)p(\theta \mid y)\ d\theta\\
 &amp;=\int \exp\{d(\theta)T(\tilde{y})-c(\theta)\}h(\tilde{y})\dfrac{\exp\{[w(\alpha)+T(y)]d(\theta)-(\delta+1)c(\theta)\}}{k(\alpha+T(y),\delta+1)}\ d\theta\\
 &amp;=\frac{h(\tilde{y})}{k(w(\alpha)+T(y),\delta+1)}\int \exp\{[\alpha+T(y)+T(\tilde{y})]d(\theta)-(\delta+2)c(\theta)\}\ d\theta\\
@@ -671,7 +679,7 @@ I(\phi)= - E\left[\frac{\partial^2 \log p(\mathbf{Y} \mid \phi)}{\partial\phi^2}
 &amp;= - E\left[\frac{\partial^2 \log p(\mathbf{Y} \mid \theta =h^{-1}(\phi))}{d\theta^2} \mid \frac{\partial\theta}{\partial\phi} \mid ^{2}\right]\\
 &amp;= I(\theta) \mid \frac{\partial\theta}{\partial\phi} \mid ^{2}
 \end{align*}\]</span></p>
-Ahora, de la definición de función de distribución para una función y utilizando <a href="la-distribución-previa.html#eq:teotransf">(2.4)</a>, se tiene que
+<p>Ahora, de la definición de función de distribución para una función y utilizando <a href="la-distribución-previa.html#eq:teotransf">(2.4)</a>, se tiene que</p>
 <span class="math display">\[\begin{align*}
 p(\phi)&amp;=p(\theta) \mid \frac{\partial\theta}{\partial\phi} \mid
 \propto (I(\theta))^{1/2} \mid \frac{\partial\theta}{\partial\phi} \mid

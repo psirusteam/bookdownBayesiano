@@ -1,0 +1,555 @@
+<!DOCTYPE html>
+<html lang="es" xml:lang="es">
+<head>
+
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <title>C.2 Métodos de Monte Carlo vía cadenas de Markov | Modelos Bayesianos con R y STAN</title>
+  <meta name="description" content="Este es el repositorio del libro Modelos Bayesianos con R y STAN." />
+  <meta name="generator" content="bookdown 0.22 and GitBook 2.6.7" />
+
+  <meta property="og:title" content="C.2 Métodos de Monte Carlo vía cadenas de Markov | Modelos Bayesianos con R y STAN" />
+  <meta property="og:type" content="book" />
+  
+  
+  <meta property="og:description" content="Este es el repositorio del libro Modelos Bayesianos con R y STAN." />
+  <meta name="github-repo" content="psirusteam/bookdownBayesiano" />
+
+  <meta name="twitter:card" content="summary" />
+  <meta name="twitter:title" content="C.2 Métodos de Monte Carlo vía cadenas de Markov | Modelos Bayesianos con R y STAN" />
+  
+  <meta name="twitter:description" content="Este es el repositorio del libro Modelos Bayesianos con R y STAN." />
+  
+
+<meta name="author" content="Andrés Gutiérrez - Hanwen Zhang" />
+
+
+<meta name="date" content="2021-06-01" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black" />
+  
+  
+<link rel="prev" href="métodos-directos.html"/>
+<link rel="next" href="referencias.html"/>
+<script src="libs/header-attrs-2.8/header-attrs.js"></script>
+<script src="libs/jquery-2.2.3/jquery.min.js"></script>
+<link href="libs/gitbook-2.6.7/css/style.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-table.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-bookdown.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-highlight.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-search.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-fontsettings.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-clipboard.css" rel="stylesheet" />
+
+
+
+
+
+
+
+
+
+<link href="libs/anchor-sections-1.0.1/anchor-sections.css" rel="stylesheet" />
+<script src="libs/anchor-sections-1.0.1/anchor-sections.js"></script>
+
+
+<style type="text/css">
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+    color: #aaaaaa;
+  }
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code span.at { color: #7d9029; } /* Attribute */
+code span.bn { color: #40a070; } /* BaseN */
+code span.bu { } /* BuiltIn */
+code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code span.ch { color: #4070a0; } /* Char */
+code span.cn { color: #880000; } /* Constant */
+code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code span.dt { color: #902000; } /* DataType */
+code span.dv { color: #40a070; } /* DecVal */
+code span.er { color: #ff0000; font-weight: bold; } /* Error */
+code span.ex { } /* Extension */
+code span.fl { color: #40a070; } /* Float */
+code span.fu { color: #06287e; } /* Function */
+code span.im { } /* Import */
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code span.op { color: #666666; } /* Operator */
+code span.ot { color: #007020; } /* Other */
+code span.pp { color: #bc7a00; } /* Preprocessor */
+code span.sc { color: #4070a0; } /* SpecialChar */
+code span.ss { color: #bb6688; } /* SpecialString */
+code span.st { color: #4070a0; } /* String */
+code span.va { color: #19177c; } /* Variable */
+code span.vs { color: #4070a0; } /* VerbatimString */
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+</style>
+
+<style type="text/css">
+/* Used with Pandoc 2.11+ new --citeproc when CSL is used */
+div.csl-bib-body { }
+div.csl-entry {
+  clear: both;
+}
+.hanging div.csl-entry {
+  margin-left:2em;
+  text-indent:-2em;
+}
+div.csl-left-margin {
+  min-width:2em;
+  float:left;
+}
+div.csl-right-inline {
+  margin-left:2em;
+  padding-left:1em;
+}
+div.csl-indent {
+  margin-left: 2em;
+}
+</style>
+
+<link rel="stylesheet" href="style.css" type="text/css" />
+</head>
+
+<body>
+
+
+
+  <div class="book without-animation with-summary font-size-2 font-family-1" data-basepath=".">
+
+    <div class="book-summary">
+      <nav role="navigation">
+
+<ul class="summary">
+<li><a href="./">Modelos Bayesianos con R y STAN</a></li>
+
+<li class="divider"></li>
+<li class="chapter" data-level="" data-path="index.html"><a href="index.html"><i class="fa fa-check"></i>Prefacio</a></li>
+<li class="chapter" data-level="" data-path="antes-de-comenzar.html"><a href="antes-de-comenzar.html"><i class="fa fa-check"></i>Antes de comenzar</a>
+<ul>
+<li class="chapter" data-level="" data-path="cuestionamientos-sobre-el-enfoque-bayesiano.html"><a href="cuestionamientos-sobre-el-enfoque-bayesiano.html"><i class="fa fa-check"></i>Cuestionamientos sobre el enfoque bayesiano</a></li>
+<li class="chapter" data-level="" data-path="acerca-de-la-notación.html"><a href="acerca-de-la-notación.html"><i class="fa fa-check"></i>Acerca de la notación</a></li>
+</ul></li>
+<li class="chapter" data-level="1" data-path="tópicos-básicos.html"><a href="tópicos-básicos.html"><i class="fa fa-check"></i><b>1</b> Tópicos básicos</a>
+<ul>
+<li class="chapter" data-level="1.1" data-path="teoría-de-la-decisión.html"><a href="teoría-de-la-decisión.html"><i class="fa fa-check"></i><b>1.1</b> Teoría de la decisión</a></li>
+<li class="chapter" data-level="1.2" data-path="algunos-resultados-de-probabilidad.html"><a href="algunos-resultados-de-probabilidad.html"><i class="fa fa-check"></i><b>1.2</b> Algunos resultados de probabilidad</a></li>
+<li class="chapter" data-level="1.3" data-path="teorema-de-bayes.html"><a href="teorema-de-bayes.html"><i class="fa fa-check"></i><b>1.3</b> Teorema de Bayes</a></li>
+</ul></li>
+<li class="chapter" data-level="2" data-path="inferencia-bayesiana.html"><a href="inferencia-bayesiana.html"><i class="fa fa-check"></i><b>2</b> Inferencia bayesiana</a>
+<ul>
+<li class="chapter" data-level="2.1" data-path="la-distribución-previa.html"><a href="la-distribución-previa.html"><i class="fa fa-check"></i><b>2.1</b> La distribución previa</a>
+<ul>
+<li class="chapter" data-level="2.1.1" data-path="la-distribución-previa.html"><a href="la-distribución-previa.html#distribuciones-conjugadas"><i class="fa fa-check"></i><b>2.1.1</b> Distribuciones conjugadas</a></li>
+<li class="chapter" data-level="2.1.2" data-path="la-distribución-previa.html"><a href="la-distribución-previa.html#familia-exponencial"><i class="fa fa-check"></i><b>2.1.2</b> Familia exponencial</a></li>
+<li class="chapter" data-level="2.1.3" data-path="la-distribución-previa.html"><a href="la-distribución-previa.html#distribuciones-previas-no-informativas"><i class="fa fa-check"></i><b>2.1.3</b> Distribuciones previas no informativas</a></li>
+</ul></li>
+<li class="chapter" data-level="2.2" data-path="pruebas-de-hipótesis.html"><a href="pruebas-de-hipótesis.html"><i class="fa fa-check"></i><b>2.2</b> Pruebas de hipótesis</a>
+<ul>
+<li class="chapter" data-level="2.2.1" data-path="pruebas-de-hipótesis.html"><a href="pruebas-de-hipótesis.html#factor-de-bayes"><i class="fa fa-check"></i><b>2.2.1</b> Factor de Bayes</a></li>
+<li class="chapter" data-level="2.2.2" data-path="pruebas-de-hipótesis.html"><a href="pruebas-de-hipótesis.html#valor-p-bayesiano"><i class="fa fa-check"></i><b>2.2.2</b> Valor-<span class="math inline">\(p\)</span> Bayesiano</a></li>
+</ul></li>
+<li class="chapter" data-level="2.3" data-path="criterios-de-información.html"><a href="criterios-de-información.html"><i class="fa fa-check"></i><b>2.3</b> Criterios de información</a>
+<ul>
+<li class="chapter" data-level="2.3.1" data-path="criterios-de-información.html"><a href="criterios-de-información.html#criterio-dic"><i class="fa fa-check"></i><b>2.3.1</b> Criterio DIC</a></li>
+<li class="chapter" data-level="2.3.2" data-path="criterios-de-información.html"><a href="criterios-de-información.html#criterios-aic-y-bic"><i class="fa fa-check"></i><b>2.3.2</b> Criterios AIC y BIC</a></li>
+</ul></li>
+</ul></li>
+<li class="appendix"><span><b>Apéndice</b></span></li>
+<li class="chapter" data-level="A" data-path="elementos-de-probabilidad.html"><a href="elementos-de-probabilidad.html"><i class="fa fa-check"></i><b>A</b> Elementos de probabilidad</a>
+<ul>
+<li class="chapter" data-level="A.1" data-path="distribuciones-discretas.html"><a href="distribuciones-discretas.html"><i class="fa fa-check"></i><b>A.1</b> Distribuciones discretas</a>
+<ul>
+<li class="chapter" data-level="A.1.1" data-path="distribuciones-discretas.html"><a href="distribuciones-discretas.html#distribución-uniforme-discreta"><i class="fa fa-check"></i><b>A.1.1</b> Distribución uniforme discreta</a></li>
+<li class="chapter" data-level="A.1.2" data-path="distribuciones-discretas.html"><a href="distribuciones-discretas.html#distribución-hipergeométrica"><i class="fa fa-check"></i><b>A.1.2</b> Distribución hipergeométrica</a></li>
+<li class="chapter" data-level="A.1.3" data-path="distribuciones-discretas.html"><a href="distribuciones-discretas.html#distribución-bernoulli"><i class="fa fa-check"></i><b>A.1.3</b> Distribución Bernoulli</a></li>
+<li class="chapter" data-level="A.1.4" data-path="distribuciones-discretas.html"><a href="distribuciones-discretas.html#distribución-binomial"><i class="fa fa-check"></i><b>A.1.4</b> Distribución binomial</a></li>
+<li class="chapter" data-level="A.1.5" data-path="distribuciones-discretas.html"><a href="distribuciones-discretas.html#distribución-binomial-negativa"><i class="fa fa-check"></i><b>A.1.5</b> Distribución Binomial negativa</a></li>
+<li class="chapter" data-level="A.1.6" data-path="distribuciones-discretas.html"><a href="distribuciones-discretas.html#distribución-de-poisson"><i class="fa fa-check"></i><b>A.1.6</b> Distribución de Poisson</a></li>
+</ul></li>
+<li class="chapter" data-level="A.2" data-path="distribuciones-continuas.html"><a href="distribuciones-continuas.html"><i class="fa fa-check"></i><b>A.2</b> Distribuciones continuas</a>
+<ul>
+<li class="chapter" data-level="A.2.1" data-path="distribuciones-continuas.html"><a href="distribuciones-continuas.html#distribución-uniforme-continua"><i class="fa fa-check"></i><b>A.2.1</b> Distribución Uniforme Continua</a></li>
+<li class="chapter" data-level="A.2.2" data-path="distribuciones-continuas.html"><a href="distribuciones-continuas.html#distribución-weibull"><i class="fa fa-check"></i><b>A.2.2</b> Distribución Weibull</a></li>
+<li class="chapter" data-level="A.2.3" data-path="distribuciones-continuas.html"><a href="distribuciones-continuas.html#distribución-valor-extremo"><i class="fa fa-check"></i><b>A.2.3</b> Distribución valor-extremo</a></li>
+<li class="chapter" data-level="A.2.4" data-path="distribuciones-continuas.html"><a href="distribuciones-continuas.html#distribución-gamma"><i class="fa fa-check"></i><b>A.2.4</b> Distribución Gamma</a></li>
+<li class="chapter" data-level="A.2.5" data-path="distribuciones-continuas.html"><a href="distribuciones-continuas.html#distribución-gamma-inversa"><i class="fa fa-check"></i><b>A.2.5</b> Distribución Gamma-inversa</a></li>
+<li class="chapter" data-level="A.2.6" data-path="distribuciones-continuas.html"><a href="distribuciones-continuas.html#distribución-exponencial"><i class="fa fa-check"></i><b>A.2.6</b> Distribución exponencial</a></li>
+<li class="chapter" data-level="A.2.7" data-path="distribuciones-continuas.html"><a href="distribuciones-continuas.html#distribución-beta"><i class="fa fa-check"></i><b>A.2.7</b> Distribución Beta</a></li>
+<li class="chapter" data-level="A.2.8" data-path="distribuciones-continuas.html"><a href="distribuciones-continuas.html#distribución-normal"><i class="fa fa-check"></i><b>A.2.8</b> Distribución normal</a></li>
+<li class="chapter" data-level="A.2.9" data-path="distribuciones-continuas.html"><a href="distribuciones-continuas.html#distribución-log-normal"><i class="fa fa-check"></i><b>A.2.9</b> Distribución log-normal</a></li>
+<li class="chapter" data-level="A.2.10" data-path="distribuciones-continuas.html"><a href="distribuciones-continuas.html#distribución-ji-cuadrado"><i class="fa fa-check"></i><b>A.2.10</b> Distribución Ji-cuadrado</a></li>
+<li class="chapter" data-level="A.2.11" data-path="distribuciones-continuas.html"><a href="distribuciones-continuas.html#distribución-t-student"><i class="fa fa-check"></i><b>A.2.11</b> Distribución t-student</a></li>
+<li class="chapter" data-level="A.2.12" data-path="distribuciones-continuas.html"><a href="distribuciones-continuas.html#distribución-t-student-generalizada"><i class="fa fa-check"></i><b>A.2.12</b> Distribución t-student generalizada</a></li>
+<li class="chapter" data-level="A.2.13" data-path="distribuciones-continuas.html"><a href="distribuciones-continuas.html#distribución-f"><i class="fa fa-check"></i><b>A.2.13</b> Distribución F</a></li>
+</ul></li>
+<li class="chapter" data-level="A.3" data-path="distribuciones-multivariadas.html"><a href="distribuciones-multivariadas.html"><i class="fa fa-check"></i><b>A.3</b> Distribuciones multivariadas</a>
+<ul>
+<li class="chapter" data-level="A.3.1" data-path="distribuciones-multivariadas.html"><a href="distribuciones-multivariadas.html#distribución-multinomial"><i class="fa fa-check"></i><b>A.3.1</b> Distribución Multinomial</a></li>
+<li class="chapter" data-level="A.3.2" data-path="distribuciones-multivariadas.html"><a href="distribuciones-multivariadas.html#distribución-dirichelt"><i class="fa fa-check"></i><b>A.3.2</b> Distribución Dirichelt</a></li>
+<li class="chapter" data-level="A.3.3" data-path="distribuciones-multivariadas.html"><a href="distribuciones-multivariadas.html#distribución-normal-multivariante"><i class="fa fa-check"></i><b>A.3.3</b> Distribución Normal Multivariante</a></li>
+<li class="chapter" data-level="A.3.4" data-path="distribuciones-multivariadas.html"><a href="distribuciones-multivariadas.html#distribución-wishart"><i class="fa fa-check"></i><b>A.3.4</b> Distribución Wishart</a></li>
+<li class="chapter" data-level="A.3.5" data-path="distribuciones-multivariadas.html"><a href="distribuciones-multivariadas.html#distribución-inversa-wishart"><i class="fa fa-check"></i><b>A.3.5</b> Distribución inversa-Wishart</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="B" data-path="matriz-de-información.html"><a href="matriz-de-información.html"><i class="fa fa-check"></i><b>B</b> Matriz de información</a></li>
+<li class="chapter" data-level="C" data-path="elementos-de-simulación-estadística.html"><a href="elementos-de-simulación-estadística.html"><i class="fa fa-check"></i><b>C</b> Elementos de simulación estadística</a>
+<ul>
+<li class="chapter" data-level="C.1" data-path="métodos-directos.html"><a href="métodos-directos.html"><i class="fa fa-check"></i><b>C.1</b> Métodos directos</a>
+<ul>
+<li class="chapter" data-level="C.1.1" data-path="métodos-directos.html"><a href="métodos-directos.html#método-de-la-transformación-uniforme"><i class="fa fa-check"></i><b>C.1.1</b> Método de la transformación uniforme</a></li>
+<li class="chapter" data-level="C.1.2" data-path="métodos-directos.html"><a href="métodos-directos.html#método-de-la-grilla"><i class="fa fa-check"></i><b>C.1.2</b> Método de la grilla</a></li>
+</ul></li>
+<li class="chapter" data-level="C.2" data-path="métodos-de-monte-carlo-vía-cadenas-de-markov.html"><a href="métodos-de-monte-carlo-vía-cadenas-de-markov.html"><i class="fa fa-check"></i><b>C.2</b> Métodos de Monte Carlo vía cadenas de Markov</a>
+<ul>
+<li class="chapter" data-level="C.2.1" data-path="métodos-de-monte-carlo-vía-cadenas-de-markov.html"><a href="métodos-de-monte-carlo-vía-cadenas-de-markov.html#el-muestreador-de-gibbs"><i class="fa fa-check"></i><b>C.2.1</b> El muestreador de Gibbs</a></li>
+<li class="chapter" data-level="C.2.2" data-path="métodos-de-monte-carlo-vía-cadenas-de-markov.html"><a href="métodos-de-monte-carlo-vía-cadenas-de-markov.html#buenas-prácticas-en-la-aplicación-de-métodos-mcmc"><i class="fa fa-check"></i><b>C.2.2</b> Buenas prácticas en la aplicación de métodos MCMC</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="referencias.html"><a href="referencias.html"><i class="fa fa-check"></i>Referencias</a></li>
+<li class="divider"></li>
+<li><a Modelos Bayesianos con R y STAN</a></li>
+
+</ul>
+
+      </nav>
+    </div>
+
+    <div class="book-body">
+      <div class="body-inner">
+        <div class="book-header" role="navigation">
+          <h1>
+            <i class="fa fa-circle-o-notch fa-spin"></i><a href="./">Modelos Bayesianos con R y STAN</a>
+          </h1>
+        </div>
+
+        <div class="page-wrapper" tabindex="-1" role="main">
+          <div class="page-inner">
+
+            <section class="normal" id="section-">
+<div id="métodos-de-monte-carlo-vía-cadenas-de-markov" class="section level2" number="5.2">
+<h2><span class="header-section-number">C.2</span> Métodos de Monte Carlo vía cadenas de Markov</h2>
+<div id="el-muestreador-de-gibbs" class="section level3" number="5.2.1">
+<h3><span class="header-section-number">C.2.1</span> El muestreador de Gibbs</h3>
+<p>Tal como lo afirma <span class="citation"><a href="#ref-Pena2002" role="doc-biblioref">Peña</a> (<a href="#ref-Pena2002" role="doc-biblioref">2002</a>)</span>, este procedimiento es apropiado para obtener muestras de una distribución
+conjunta cuando es fácil muestrear de las distribuciones condicionadas. El algoritmo se implementa asumiendo que <span class="math inline">\(\boldsymbol \theta_i=(\theta^{(1)}_i, . . . , \theta^{(d)}_i)\)</span> representa a los valores actuales de <span class="math inline">\(\boldsymbol \theta\)</span>. Entonces <span class="math inline">\(\boldsymbol \theta_{i+1}\)</span> se obtiene así:</p>
+<ul>
+<li>Generar <span class="math inline">\(\theta^{(1)}_{i+1}\)</span> de <span class="math inline">\(p(\theta^{(1)} \mid \theta^{(2)}_i, \ldots,\theta^{(d)}_i,x)\)</span></li>
+<li>Generar <span class="math inline">\(\theta^{(2)}_{i+1}\)</span> de <span class="math inline">\(p(\theta^{(2)} \mid \theta^{(1)}_{i+1}, \theta^{(3)}_i, \ldots , \theta^{(d)}_i, x)\)</span></li>
+<li><span class="math inline">\(\ldots\)</span></li>
+<li>Generar <span class="math inline">\(\theta^{(d)}_{i+1}\)</span> de <span class="math inline">\(p(\theta^{(d)} \mid \theta^{(1)}_{i+1}, \theta^{(2)}_{i+1}, \ldots , \theta^{(d-1)}_{i+1} , x)\)</span></li>
+</ul>
+<p>La idea de este esquema es renovar cada componente por medio de la simulación de la correspondiente distribución condicional. Una vez que la cadena converge, se tiene que los valores de <span class="math inline">\(\boldsymbol \theta\)</span> corresponden a observaciones de la distribución requerida, <span class="math inline">\(p(\boldsymbol \theta\mid x)\)</span>. Sin embargo, en general, no se garantiza una muestra variables aleatorias <em>totalmente</em> independientes provenientes de la distribución <span class="math inline">\(p(\theta \mid x)\)</span>, dado que el esquema del muestreador de Gibbs usa el valor actual para construir el siguiente valor; por ende, la secuencia de valores que se obtiene estará correlacionada.</p>
+
+<div class="example">
+<p><span id="exm:unnamed-chunk-13" class="example"><strong>Ejemplo C.3  </strong></span>Se puede implementar el muestreador de Gibbs para generar una secuencia de observaciones con densidad
+conjunta</p>
+<p><span class="math display">\[\begin{equation*}
+(x,y) \sim N_2 \Bigl(0,
+ \begin{pmatrix}
+ \rho &amp; 0 \\
+ 0 &amp; \rho
+ \end{pmatrix}
+ \Bigl)
+\end{equation*}\]</span></p>
+<p>Teniendo en cuenta que la media de ambas variables es cero y su
+varianza uno, entonces la covarianza entre ambas variables será <span class="math inline">\(\rho\)</span> <span class="citation">(<a href="#ref-Robert" role="doc-biblioref">Robert y Casella 2009</a>)</span>. Por ende, partiendo de valores iniciales <span class="math inline">\((x_t, y_t)\)</span>, el algoritmo se centra en actualizar las distribuciones condicionales según el resultado <a href="distribuciones-multivariadas.html#prp:normalmulti">A.28</a>.</p>
+<span class="math display">\[\begin{align*}
+x_{t+1}\mid y_t     &amp; \sim N(\rho y_t, 1-\rho^2)\\
+y_{t+1}\mid x_{t+1} &amp; \sim N(\rho x_{t+1}, 1-\rho^2)
+\end{align*}\]</span>
+</div>
+<div class="sourceCode" id="cb27"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb27-1"><a href="métodos-de-monte-carlo-vía-cadenas-de-markov.html#cb27-1" aria-hidden="true" tabindex="-1"></a>bivariate.gibbs <span class="ot">&lt;-</span> <span class="cf">function</span> (n, rho, x, y) {</span>
+<span id="cb27-2"><a href="métodos-de-monte-carlo-vía-cadenas-de-markov.html#cb27-2" aria-hidden="true" tabindex="-1"></a>  mat <span class="ot">&lt;-</span> <span class="fu">matrix</span>(<span class="at">ncol =</span> <span class="dv">2</span>, <span class="at">nrow =</span> n)</span>
+<span id="cb27-3"><a href="métodos-de-monte-carlo-vía-cadenas-de-markov.html#cb27-3" aria-hidden="true" tabindex="-1"></a>  mat[<span class="dv">1</span>, ] <span class="ot">&lt;-</span> <span class="fu">c</span>(x, y)</span>
+<span id="cb27-4"><a href="métodos-de-monte-carlo-vía-cadenas-de-markov.html#cb27-4" aria-hidden="true" tabindex="-1"></a>  <span class="cf">for</span> (i <span class="cf">in</span> <span class="dv">2</span><span class="sc">:</span>n){</span>
+<span id="cb27-5"><a href="métodos-de-monte-carlo-vía-cadenas-de-markov.html#cb27-5" aria-hidden="true" tabindex="-1"></a>    x <span class="ot">&lt;-</span> <span class="fu">rnorm</span>(<span class="dv">1</span>, rho <span class="sc">*</span> y, <span class="fu">sqrt</span>(<span class="dv">1</span> <span class="sc">-</span> rho<span class="sc">^</span><span class="dv">2</span>))</span>
+<span id="cb27-6"><a href="métodos-de-monte-carlo-vía-cadenas-de-markov.html#cb27-6" aria-hidden="true" tabindex="-1"></a>    y <span class="ot">&lt;-</span> <span class="fu">rnorm</span>(<span class="dv">1</span>, rho <span class="sc">*</span> x, <span class="fu">sqrt</span>(<span class="dv">1</span> <span class="sc">-</span> rho<span class="sc">^</span><span class="dv">2</span>))</span>
+<span id="cb27-7"><a href="métodos-de-monte-carlo-vía-cadenas-de-markov.html#cb27-7" aria-hidden="true" tabindex="-1"></a>    mat[i, ] <span class="ot">&lt;-</span> <span class="fu">c</span>(x, y)</span>
+<span id="cb27-8"><a href="métodos-de-monte-carlo-vía-cadenas-de-markov.html#cb27-8" aria-hidden="true" tabindex="-1"></a>  }</span>
+<span id="cb27-9"><a href="métodos-de-monte-carlo-vía-cadenas-de-markov.html#cb27-9" aria-hidden="true" tabindex="-1"></a>  mat<span class="ot">&lt;-</span><span class="fu">as.data.frame</span>(mat)</span>
+<span id="cb27-10"><a href="métodos-de-monte-carlo-vía-cadenas-de-markov.html#cb27-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">return</span>(mat)</span>
+<span id="cb27-11"><a href="métodos-de-monte-carlo-vía-cadenas-de-markov.html#cb27-11" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb27-12"><a href="métodos-de-monte-carlo-vía-cadenas-de-markov.html#cb27-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb27-13"><a href="métodos-de-monte-carlo-vía-cadenas-de-markov.html#cb27-13" aria-hidden="true" tabindex="-1"></a>biv <span class="ot">&lt;-</span> <span class="fu">bivariate.gibbs</span>(<span class="at">n=</span><span class="dv">2000</span>, <span class="at">rho=</span><span class="fl">0.5</span>, <span class="at">x=</span> <span class="dv">0</span>, <span class="at">y =</span> <span class="dv">0</span>)</span>
+<span id="cb27-14"><a href="métodos-de-monte-carlo-vía-cadenas-de-markov.html#cb27-14" aria-hidden="true" tabindex="-1"></a><span class="fu">colMeans</span>(biv)</span></code></pre></div>
+<pre><code>##          V1          V2 
+## -0.03049146 -0.03824099</code></pre>
+<div class="sourceCode" id="cb29"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb29-1"><a href="métodos-de-monte-carlo-vía-cadenas-de-markov.html#cb29-1" aria-hidden="true" tabindex="-1"></a><span class="fu">var</span>(biv)</span></code></pre></div>
+<pre><code>##           V1        V2
+## V1 0.9603237 0.4710118
+## V2 0.4710118 0.9649985</code></pre>
+<div class="sourceCode" id="cb31"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb31-1"><a href="métodos-de-monte-carlo-vía-cadenas-de-markov.html#cb31-1" aria-hidden="true" tabindex="-1"></a><span class="fu">cor</span>(biv)</span></code></pre></div>
+<pre><code>##           V1        V2
+## V1 1.0000000 0.4892825
+## V2 0.4892825 1.0000000</code></pre>
+<div class="sourceCode" id="cb33"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb33-1"><a href="métodos-de-monte-carlo-vía-cadenas-de-markov.html#cb33-1" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(biv)</span></code></pre></div>
+<div class="figure"><span id="fig:unnamed-chunk-14"></span>
+<img src="A3Simulacion_files/figure-html/unnamed-chunk-14-1.png" alt="Generación de valores para una distribución normal bivariada." width="672" />
+<p class="caption">
+Figura C.7: Generación de valores para una distribución normal bivariada.
+</p>
+</div>
+
+<div class="example">
+<p><span id="exm:unnamed-chunk-15" class="example"><strong>Ejemplo 2.1  </strong></span>Un problema común es el de descartar los primeros valores, puesto que el algoritmo puede demorar en obtener convergencia;
+esto se puede resolver en forma empírica utilizando las medias y varianzas acumuladas y graficándolas se puede tomar una decisión acerca del valor óptimo en el que la cadena converge.</p>
+Con el siguiente código computacional, es posible corroborar que un punto de corte óptimo desde el cual se consideraría que las cadenas simuladas anteriormente es a partir de la iteración <strong>600</strong>.
+</div>
+<div class="sourceCode" id="cb34"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb34-1"><a href="métodos-de-monte-carlo-vía-cadenas-de-markov.html#cb34-1" aria-hidden="true" tabindex="-1"></a>g.diag <span class="ot">&lt;-</span> <span class="cf">function</span>(sample){</span>
+<span id="cb34-2"><a href="métodos-de-monte-carlo-vía-cadenas-de-markov.html#cb34-2" aria-hidden="true" tabindex="-1"></a>  n <span class="ot">&lt;-</span> <span class="fu">length</span>(sample) </span>
+<span id="cb34-3"><a href="métodos-de-monte-carlo-vía-cadenas-de-markov.html#cb34-3" aria-hidden="true" tabindex="-1"></a>  res <span class="ot">&lt;-</span> <span class="fu">matrix</span>(<span class="at">nrow=</span><span class="dv">2</span>, <span class="at">ncol=</span>n)</span>
+<span id="cb34-4"><a href="métodos-de-monte-carlo-vía-cadenas-de-markov.html#cb34-4" aria-hidden="true" tabindex="-1"></a>  <span class="cf">for</span>(i <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span>n){</span>
+<span id="cb34-5"><a href="métodos-de-monte-carlo-vía-cadenas-de-markov.html#cb34-5" aria-hidden="true" tabindex="-1"></a>    res[<span class="dv">1</span>, i] <span class="ot">&lt;-</span> <span class="fu">mean</span>(sample[<span class="dv">1</span> <span class="sc">:</span> i])</span>
+<span id="cb34-6"><a href="métodos-de-monte-carlo-vía-cadenas-de-markov.html#cb34-6" aria-hidden="true" tabindex="-1"></a>    res[<span class="dv">2</span>, i] <span class="ot">&lt;-</span> <span class="fu">var</span>(sample[<span class="dv">1</span> <span class="sc">:</span> i])</span>
+<span id="cb34-7"><a href="métodos-de-monte-carlo-vía-cadenas-de-markov.html#cb34-7" aria-hidden="true" tabindex="-1"></a>  }</span>
+<span id="cb34-8"><a href="métodos-de-monte-carlo-vía-cadenas-de-markov.html#cb34-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">return</span>(res)</span>
+<span id="cb34-9"><a href="métodos-de-monte-carlo-vía-cadenas-de-markov.html#cb34-9" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb34-10"><a href="métodos-de-monte-carlo-vía-cadenas-de-markov.html#cb34-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb34-11"><a href="métodos-de-monte-carlo-vía-cadenas-de-markov.html#cb34-11" aria-hidden="true" tabindex="-1"></a>m1 <span class="ot">&lt;-</span> <span class="fu">g.diag</span>(biv[, <span class="dv">1</span>])</span>
+<span id="cb34-12"><a href="métodos-de-monte-carlo-vía-cadenas-de-markov.html#cb34-12" aria-hidden="true" tabindex="-1"></a>m2 <span class="ot">&lt;-</span> <span class="fu">g.diag</span>(biv[, <span class="dv">2</span>])</span>
+<span id="cb34-13"><a href="métodos-de-monte-carlo-vía-cadenas-de-markov.html#cb34-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb34-14"><a href="métodos-de-monte-carlo-vía-cadenas-de-markov.html#cb34-14" aria-hidden="true" tabindex="-1"></a><span class="fu">par</span>(<span class="at">mfcol =</span> <span class="fu">c</span>(<span class="dv">1</span>, <span class="dv">2</span>))</span>
+<span id="cb34-15"><a href="métodos-de-monte-carlo-vía-cadenas-de-markov.html#cb34-15" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(m1[<span class="dv">1</span>, ], <span class="at">type =</span> <span class="st">&#39;l&#39;</span>, <span class="at">ylim=</span><span class="fu">c</span>(<span class="sc">-</span><span class="fl">0.6</span>, <span class="fl">0.6</span>), <span class="at">col=</span><span class="dv">4</span>)</span>
+<span id="cb34-16"><a href="métodos-de-monte-carlo-vía-cadenas-de-markov.html#cb34-16" aria-hidden="true" tabindex="-1"></a><span class="fu">lines</span>(m2[<span class="dv">1</span>, ], <span class="at">lty =</span> <span class="dv">2</span>, <span class="at">col =</span> <span class="dv">2</span>)</span>
+<span id="cb34-17"><a href="métodos-de-monte-carlo-vía-cadenas-de-markov.html#cb34-17" aria-hidden="true" tabindex="-1"></a><span class="fu">title</span>(<span class="st">&quot;Diagnóstico - Media acumulada&quot;</span>)</span>
+<span id="cb34-18"><a href="métodos-de-monte-carlo-vía-cadenas-de-markov.html#cb34-18" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb34-19"><a href="métodos-de-monte-carlo-vía-cadenas-de-markov.html#cb34-19" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(m1[<span class="dv">2</span>, ], <span class="at">type =</span> <span class="st">&#39;l&#39;</span>, <span class="at">ylim =</span> <span class="fu">c</span>(<span class="fl">0.5</span>, <span class="fl">1.5</span>), <span class="at">col=</span><span class="dv">4</span>)</span>
+<span id="cb34-20"><a href="métodos-de-monte-carlo-vía-cadenas-de-markov.html#cb34-20" aria-hidden="true" tabindex="-1"></a><span class="fu">lines</span>(m2[<span class="dv">2</span>, ], <span class="at">lty =</span> <span class="dv">2</span>, <span class="at">col =</span> <span class="dv">2</span>)</span>
+<span id="cb34-21"><a href="métodos-de-monte-carlo-vía-cadenas-de-markov.html#cb34-21" aria-hidden="true" tabindex="-1"></a><span class="fu">title</span>(<span class="st">&quot;Diagnóstico - Varianza acumulada&quot;</span>)</span></code></pre></div>
+<div class="figure"><span id="fig:unnamed-chunk-16"></span>
+<img src="A3Simulacion_files/figure-html/unnamed-chunk-16-1.png" alt="Convergencia de la media y varianza usando el muestreador de Gibbs." width="672" />
+<p class="caption">
+Figura C.8: Convergencia de la media y varianza usando el muestreador de Gibbs.
+</p>
+</div>
+<p>El muestrador de Gibbs también funciona en una “segunda fase”, cuando queremos seleccionar una muestra de <span class="math inline">\(f(\theta\mid x)\)</span>, es decir, la distribución de los parámetros dada la información observada <span class="math inline">\(x\)</span>.</p>
+
+<div class="example">
+<p><span id="exm:unnamed-chunk-17" class="example"><strong>Ejemplo C.4  </strong></span>Suponga que <span class="math inline">\(y\)</span> tiene distribución <span class="math inline">\(N(\mu,\sigma^2=1/\phi)\)</span> y queremos obtener una muestra de la distribución posterior del vector aleatorio <span class="math inline">\(\boldsymbol \theta=(\mu,1/\phi)\)</span>. Para este caso supongamos que conocemos las distribuciones previas; para la media <span class="math inline">\(\mu\)</span> se asume una distribución uniforme y para la varianza <span class="math inline">\(\phi\)</span> una distribución Gamma con parámetros <span class="math inline">\(a\)</span> y <span class="math inline">\(b\)</span>. La distribución posterior de <span class="math inline">\((\mu, \phi)\)</span> satisface:</p>
+<p><span class="math display">\[\begin{equation}  
+p(\mu, \phi \mid y) \propto (\phi)^{n/2}
+\exp\left\{-\phi
+\frac{\sum_{j=1}^n(y_j-\mu)^2}{2}\right\}(\phi)^{a-1}exp(-b/\phi)
+\end{equation}\]</span></p>
+<p>En donde la primera parte después del signo de proporcionalidad, corresponde a la verosimilitud de la información observada y la segunda parte corresponde a la distribución posterior de <span class="math inline">\(\phi\)</span>; la distribución posterior de <span class="math inline">\(\mu\)</span> no
+aparece pues es una constante. Por tanto, ésta se puede escribir como:</p>
+<p><span class="math display">\[\begin{equation*}  
+p(\mu, \phi \mid y)\propto(\phi)^{n/2+a-1}exp\left\{-\phi\Bigl(\frac{\sum_{j=1}^n(y_j-\mu)^2}{2}+b\Bigl)\right\}
+\end{equation*}\]</span></p>
+<p>Acudiendo al resultado <a href="distribuciones-continuas.html#prp:gammainver">A.13</a>, la distribución condicional de la varianza <span class="math inline">\(\sigma^2\)</span> dado <span class="math inline">\((\mu, y)\)</span> es Gamma-inversa con parámetros <span class="math inline">\(a+n/2\)</span> y <span class="math inline">\(\sum_{j=1}^n(y_j-\mu)^2/2+b\)</span>. Por tanto,</p>
+<p><span class="math display" id="eq:apmunormal">\[\begin{equation} 
+\tag{C.1}
+\sigma^2\mid\mu,x\sim Gamma-inversa\biggl(\alpha+n/2,\sum_{j=1}^n(y_j-\mu)^2/2+b\biggl)
+\end{equation}\]</span></p>
+<p>Análogamente, la distribución de <span class="math inline">\(\mu\)</span> dado <span class="math inline">\((\sigma^2, y)\)</span> es normal
+con media <span class="math inline">\(\bar{y}\)</span> y varianza <span class="math inline">\(\sigma^2/n\)</span>, es decir,</p>
+<p><span class="math display" id="eq:apsigmaig">\[\begin{equation}  
+\tag{C.2}
+\mu\mid\sigma^2,y\sim N(\bar{y},\sigma^2/n)
+\end{equation}\]</span></p>
+<p>Para implementar el muestreador de Gibbs con estas distribuciones, primero se deben escoger valores apropiados para <span class="math inline">\(a\)</span> y <span class="math inline">\(b\)</span>, con el propósito de representar correctamente la
+distribución previa, y luego</p>
+<ul>
+<li>Defninir un valor inicial para la media y la varianza, <span class="math inline">\((\mu_0, \sigma^2_0)\)</span>.</li>
+<li>Generar <span class="math inline">\((\mu_{i+1}, \sigma_{i+1}^2)\)</span> simulando <span class="math inline">\(\mu_{i+1}\)</span> de <a href="métodos-de-monte-carlo-vía-cadenas-de-markov.html#eq:apmunormal">(C.1)</a> y luego <span class="math inline">\(\sigma^2_{i+1}\)</span> de <a href="métodos-de-monte-carlo-vía-cadenas-de-markov.html#eq:apsigmaig">(C.2)</a>.</li>
+<li>Iterar para obtener <span class="math inline">\((\mu_0, \sigma^2_0), (\mu_1, \sigma^2_1), (\mu_2, \sigma^2_2),\cdots,\)</span>.</li>
+<li>Suponiendo que el algoritmo converge después de
+<span class="math inline">\(m\)</span> iteraciones, descartar los <span class="math inline">\(m\)</span> primeros valores.</li>
+</ul>
+Entonces <span class="math inline">\((\mu_{m+1}, \sigma^2_{m+1}), (\mu_{m+2}, \sigma^2_{m+2}),\cdots,\)</span> es
+una muestra (correlacionada) de <span class="math inline">\(p(\mu, \sigma^2\mid x)\)</span>.
+</div>
+<p>La siguiente función en <code>R</code> implementa el muestreador de Gibbs para el anterior ejemplo.</p>
+<div class="sourceCode" id="cb35"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb35-1"><a href="métodos-de-monte-carlo-vía-cadenas-de-markov.html#cb35-1" aria-hidden="true" tabindex="-1"></a>normal2 <span class="ot">&lt;-</span> <span class="cf">function</span>(datos, a, b, nsim, inicial){</span>
+<span id="cb35-2"><a href="métodos-de-monte-carlo-vía-cadenas-de-markov.html#cb35-2" aria-hidden="true" tabindex="-1"></a>  n <span class="ot">&lt;-</span> <span class="fu">length</span>(datos)</span>
+<span id="cb35-3"><a href="métodos-de-monte-carlo-vía-cadenas-de-markov.html#cb35-3" aria-hidden="true" tabindex="-1"></a>  xbar <span class="ot">&lt;-</span> <span class="fu">mean</span>(datos)</span>
+<span id="cb35-4"><a href="métodos-de-monte-carlo-vía-cadenas-de-markov.html#cb35-4" aria-hidden="true" tabindex="-1"></a>  mu.now <span class="ot">&lt;-</span> inicial[<span class="dv">1</span>]</span>
+<span id="cb35-5"><a href="métodos-de-monte-carlo-vía-cadenas-de-markov.html#cb35-5" aria-hidden="true" tabindex="-1"></a>  var.now <span class="ot">&lt;-</span> inicial[<span class="dv">2</span>]</span>
+<span id="cb35-6"><a href="métodos-de-monte-carlo-vía-cadenas-de-markov.html#cb35-6" aria-hidden="true" tabindex="-1"></a>  dummy <span class="ot">&lt;-</span> <span class="fu">matrix</span>(<span class="at">ncol =</span> <span class="dv">2</span>, <span class="at">nrow =</span> nsim)</span>
+<span id="cb35-7"><a href="métodos-de-monte-carlo-vía-cadenas-de-markov.html#cb35-7" aria-hidden="true" tabindex="-1"></a>  dummy[<span class="dv">1</span>, <span class="dv">1</span>] <span class="ot">&lt;-</span> mu.now</span>
+<span id="cb35-8"><a href="métodos-de-monte-carlo-vía-cadenas-de-markov.html#cb35-8" aria-hidden="true" tabindex="-1"></a>  dummy[<span class="dv">1</span>, <span class="dv">2</span>] <span class="ot">&lt;-</span> var.now</span>
+<span id="cb35-9"><a href="métodos-de-monte-carlo-vía-cadenas-de-markov.html#cb35-9" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb35-10"><a href="métodos-de-monte-carlo-vía-cadenas-de-markov.html#cb35-10" aria-hidden="true" tabindex="-1"></a>  <span class="cf">for</span> (i <span class="cf">in</span> <span class="dv">2</span> <span class="sc">:</span> nsim){</span>
+<span id="cb35-11"><a href="métodos-de-monte-carlo-vía-cadenas-de-markov.html#cb35-11" aria-hidden="true" tabindex="-1"></a>    mu.next <span class="ot">&lt;-</span> <span class="fu">rnorm</span>(<span class="dv">1</span>, xbar, <span class="fu">sqrt</span>(var.now<span class="sc">/</span>n))</span>
+<span id="cb35-12"><a href="métodos-de-monte-carlo-vía-cadenas-de-markov.html#cb35-12" aria-hidden="true" tabindex="-1"></a>    phi <span class="ot">&lt;-</span> (<span class="fu">rgamma</span>(<span class="dv">1</span>, a <span class="sc">+</span> n<span class="sc">/</span><span class="dv">2</span>)<span class="sc">/</span>(b <span class="sc">+</span> <span class="fu">sum</span>((datos <span class="sc">-</span> mu.next)<span class="sc">^</span><span class="dv">2</span>)<span class="sc">/</span><span class="dv">2</span>))</span>
+<span id="cb35-13"><a href="métodos-de-monte-carlo-vía-cadenas-de-markov.html#cb35-13" aria-hidden="true" tabindex="-1"></a>    var.next <span class="ot">&lt;-</span> <span class="dv">1</span><span class="sc">/</span>phi</span>
+<span id="cb35-14"><a href="métodos-de-monte-carlo-vía-cadenas-de-markov.html#cb35-14" aria-hidden="true" tabindex="-1"></a>    dummy[i, <span class="dv">1</span>] <span class="ot">&lt;-</span> mu.next</span>
+<span id="cb35-15"><a href="métodos-de-monte-carlo-vía-cadenas-de-markov.html#cb35-15" aria-hidden="true" tabindex="-1"></a>    dummy[i, <span class="dv">2</span>] <span class="ot">&lt;-</span> var.next</span>
+<span id="cb35-16"><a href="métodos-de-monte-carlo-vía-cadenas-de-markov.html#cb35-16" aria-hidden="true" tabindex="-1"></a>    mu.now <span class="ot">&lt;-</span> mu.next</span>
+<span id="cb35-17"><a href="métodos-de-monte-carlo-vía-cadenas-de-markov.html#cb35-17" aria-hidden="true" tabindex="-1"></a>    var.now <span class="ot">&lt;-</span> var.next</span>
+<span id="cb35-18"><a href="métodos-de-monte-carlo-vía-cadenas-de-markov.html#cb35-18" aria-hidden="true" tabindex="-1"></a>  }</span>
+<span id="cb35-19"><a href="métodos-de-monte-carlo-vía-cadenas-de-markov.html#cb35-19" aria-hidden="true" tabindex="-1"></a>  <span class="fu">return</span>(dummy)</span>
+<span id="cb35-20"><a href="métodos-de-monte-carlo-vía-cadenas-de-markov.html#cb35-20" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb35-21"><a href="métodos-de-monte-carlo-vía-cadenas-de-markov.html#cb35-21" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb35-22"><a href="métodos-de-monte-carlo-vía-cadenas-de-markov.html#cb35-22" aria-hidden="true" tabindex="-1"></a>datos <span class="ot">&lt;-</span> <span class="fu">rnorm</span>(<span class="dv">50</span>, <span class="dv">2</span>, <span class="dv">1</span>)</span>
+<span id="cb35-23"><a href="métodos-de-monte-carlo-vía-cadenas-de-markov.html#cb35-23" aria-hidden="true" tabindex="-1"></a>mc1.vals <span class="ot">&lt;-</span> <span class="fu">normal2</span>(datos, <span class="at">a =</span> <span class="dv">10</span>, <span class="at">b =</span> <span class="dv">10</span>, </span>
+<span id="cb35-24"><a href="métodos-de-monte-carlo-vía-cadenas-de-markov.html#cb35-24" aria-hidden="true" tabindex="-1"></a>                    <span class="at">nsim =</span> <span class="dv">1000</span>, <span class="at">inicial =</span> <span class="fu">c</span>(<span class="dv">5</span>, <span class="dv">5</span>))</span>
+<span id="cb35-25"><a href="métodos-de-monte-carlo-vía-cadenas-de-markov.html#cb35-25" aria-hidden="true" tabindex="-1"></a>mc1.vals <span class="ot">&lt;-</span> mc1.vals[<span class="dv">101</span><span class="sc">:</span> <span class="dv">1000</span>, ]</span>
+<span id="cb35-26"><a href="métodos-de-monte-carlo-vía-cadenas-de-markov.html#cb35-26" aria-hidden="true" tabindex="-1"></a><span class="fu">colMeans</span>(mc1.vals)</span></code></pre></div>
+<pre><code>## [1] 1.911403 1.026685</code></pre>
+<div class="sourceCode" id="cb37"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb37-1"><a href="métodos-de-monte-carlo-vía-cadenas-de-markov.html#cb37-1" aria-hidden="true" tabindex="-1"></a><span class="fu">par</span>(<span class="at">mfcol =</span> <span class="fu">c</span>(<span class="dv">1</span>, <span class="dv">2</span>))</span>
+<span id="cb37-2"><a href="métodos-de-monte-carlo-vía-cadenas-de-markov.html#cb37-2" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(mc1.vals[, <span class="dv">1</span>], <span class="at">type =</span> <span class="st">&#39;l&#39;</span>, <span class="at">ylab =</span> <span class="st">&#39;mu&#39;</span>)</span>
+<span id="cb37-3"><a href="métodos-de-monte-carlo-vía-cadenas-de-markov.html#cb37-3" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(mc1.vals[, <span class="dv">2</span>], <span class="at">type =</span> <span class="st">&#39;l&#39;</span>, <span class="at">ylab =</span> <span class="st">&#39;sigma^2&#39;</span>)</span></code></pre></div>
+<div class="figure"><span id="fig:unnamed-chunk-19"></span>
+<img src="A3Simulacion_files/figure-html/unnamed-chunk-19-1.png" alt="Cadenas generadas desde el muestreador de Gibbs." width="672" />
+<p class="caption">
+Figura C.9: Cadenas generadas desde el muestreador de Gibbs.
+</p>
+</div>
+<div class="sourceCode" id="cb38"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb38-1"><a href="métodos-de-monte-carlo-vía-cadenas-de-markov.html#cb38-1" aria-hidden="true" tabindex="-1"></a><span class="fu">par</span>(<span class="at">mfcol =</span> <span class="fu">c</span>(<span class="dv">1</span>, <span class="dv">2</span>))</span>
+<span id="cb38-2"><a href="métodos-de-monte-carlo-vía-cadenas-de-markov.html#cb38-2" aria-hidden="true" tabindex="-1"></a><span class="fu">hist</span>(mc1.vals[, <span class="dv">1</span>], <span class="at">prob =</span> T, <span class="at">xlab=</span><span class="st">&#39;mu&#39;</span>, <span class="at">main =</span> <span class="st">&quot;&quot;</span>)</span>
+<span id="cb38-3"><a href="métodos-de-monte-carlo-vía-cadenas-de-markov.html#cb38-3" aria-hidden="true" tabindex="-1"></a><span class="fu">lines</span>(<span class="fu">density</span>(mc1.vals[, <span class="dv">1</span>], <span class="at">kernel=</span><span class="st">&#39;gaussian&#39;</span>))</span>
+<span id="cb38-4"><a href="métodos-de-monte-carlo-vía-cadenas-de-markov.html#cb38-4" aria-hidden="true" tabindex="-1"></a><span class="fu">hist</span>(mc1.vals[, <span class="dv">2</span>], <span class="at">prob =</span> T, <span class="at">xlab=</span><span class="st">&#39;sigma^2&#39;</span>, <span class="at">main =</span> <span class="st">&quot;&quot;</span>)</span>
+<span id="cb38-5"><a href="métodos-de-monte-carlo-vía-cadenas-de-markov.html#cb38-5" aria-hidden="true" tabindex="-1"></a><span class="fu">lines</span>(<span class="fu">density</span>(mc1.vals[, <span class="dv">2</span>], <span class="at">kernel=</span><span class="st">&#39;gaussian&#39;</span>))</span></code></pre></div>
+<div class="figure"><span id="fig:unnamed-chunk-20"></span>
+<img src="A3Simulacion_files/figure-html/unnamed-chunk-20-1.png" alt="Densidades posteriores generadas con el muestreador de Gibbs." width="672" />
+<p class="caption">
+Figura C.10: Densidades posteriores generadas con el muestreador de Gibbs.
+</p>
+</div>
+</div>
+<div id="buenas-prácticas-en-la-aplicación-de-métodos-mcmc" class="section level3" number="5.2.2">
+<h3><span class="header-section-number">C.2.2</span> Buenas prácticas en la aplicación de métodos MCMC</h3>
+<p>Dado que una gran parte de la inferencia bayesiana está ligada a la programación e implementación de los métodos MCMC para realizar inferencias posteriores de los parámetros de interés, se sugiere seguir el razonamiento y recomendaciones de <span class="citation"><a href="#ref-GelShir2010" role="doc-biblioref">A. Gelman y Shirley</a> (<a href="#ref-GelShir2010" role="doc-biblioref">2010</a>)</span>, que puede ser resumido en los siguientes ítemes para cada parámetro de interés:</p>
+<ol style="list-style-type: decimal">
+<li>Simulación de tres o más cadenas de forma paralela. Los valores iniciales de cada cadena deben estar dispersos entre sí.</li>
+<li>Comprobación de la convergencia de las cadenas mediante el descarte de la primera mitad de los valores generados en las cadenas. Esta etapa se conoce como <em>burning stage</em>.</li>
+<li>Una vez que las cadenas converjan, mezclar los tres conjuntos de valores generados por las cadenas. Esto garantiza, en primera instancia, que las cadenas no estén auto-correlacionadas.</li>
+<li>Además de realizar esta mezcla, descartar valores intermedios mediante un muestreo sistemático. Esta etapa se conoce como <em>thining stage</em>. Al final se recomienda almacenar una cantidad elevada de valores simulados.</li>
+<li>Calibrar el algoritmo si la convergencia de las cadenas no se presenta rápidamente.
+<ul>
+<li>Para los algoritmos de Metropolis-Hastings, escoger una distribución de salto acorde con la distribución de la cual se desea simular. Por ejemplo, <span class="citation"><a href="#ref-Cepe1" role="doc-biblioref">Cepeda y Gamerman</a> (<a href="#ref-Cepe1" role="doc-biblioref">2001</a>)</span> presentan dos distribuciones de salto para el problema de la modelación de la varianza (cada una de las propuestas presenta tasas de aceptación diferentes).</li>
+</ul></li>
+<li>Comparación y contraste de los resultados con modelos simples que permitan examinar posibles discrepancias y corregir errores de programación.</li>
+</ol>
+<p>En términos de inferencia bayesiana, se tienen dos tipos de procesos: el primero y más común, que trata de realizar inferencias acerca de un vector de parámetros de interés <span class="math inline">\(\boldsymbol \theta\)</span>; el segundo trata con los momentos del parámetro, por ejemplo su esperanza. Nótese que el primer proceso se presenta con seguridad en ejercicios empíricos simulados; sin embargo, el segundo se presenta en los ejercicios prácticos con datos reales, en donde se quiere contrastar alguna hipótesis.</p>
+<p>Las anteriores dos opciones tienen tratamientos muy diferentes en términos de la cantidad de simulaciones requeridas. Por ejemplo, si el objetivo es inferir acerca de <span class="math inline">\(\boldsymbol \theta\)</span>, para conocer su comportamiento estructural, basta con realizar una simulación que genere una cantidad mediana de valores y que se resumen en un promedio y una desviación estándar. Por otro lado, si el objetivo es inferir acerca de <span class="math inline">\(E(\boldsymbol \theta)\)</span>, se requieren muchas más simulaciones para obtener una buena precisión. Siguiendo a <span class="citation"><a href="#ref-GelShir2010" role="doc-biblioref">A. Gelman y Shirley</a> (<a href="#ref-GelShir2010" role="doc-biblioref">2010</a>)</span>, una vez terminado el proceso de <em>burning</em> y <em>thining</em>, se sugiere que se dividan los valores simulados en las cadenas paralelas y se formen <span class="math inline">\(k\)</span> grupos; de esta forma, una estimación de <span class="math inline">\(E(\boldsymbol \theta)\)</span> será la gran media de las medias muestrales de cada grupo y el error estándar será su desviación estándar dividida por <span class="math inline">\(\sqrt{k}\)</span>.</p>
+
+</div>
+</div>
+<!-- </div> -->
+<h3>Referencias</h3>
+<div id="refs" class="references csl-bib-body hanging-indent">
+<div id="ref-Cepe1" class="csl-entry">
+Cepeda, E., y D. Gamerman. 2001. <span>«Bayesian Modeling of Variance Heterogeneity in Normal Regression Models»</span>. <em>Brazilian Journal of Probability and Statistics</em> 14: 207-21.
+</div>
+<div id="ref-GelShir2010" class="csl-entry">
+Gelman, A., y K Shirley. 2010. <span>«Handbook of Markov Chain Monte Carlo»</span>. En. CRC.
+</div>
+<div id="ref-Pena2002" class="csl-entry">
+Peña, D. 2002. <em><span>Análisis de datos multivariantes</span></em>. <span>McGraw-Hill</span>.
+</div>
+<div id="ref-Robert" class="csl-entry">
+———. 2009. <em>Introducing Monte Carlo Methods with R</em>. Springer.
+</div>
+</div>
+            </section>
+
+          </div>
+        </div>
+      </div>
+<a href="métodos-directos.html" class="navigation navigation-prev " aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
+<a href="referencias.html" class="navigation navigation-next " aria-label="Next page"><i class="fa fa-angle-right"></i></a>
+    </div>
+  </div>
+<script src="libs/gitbook-2.6.7/js/app.min.js"></script>
+<script src="libs/gitbook-2.6.7/js/lunr.js"></script>
+<script src="libs/gitbook-2.6.7/js/clipboard.min.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-search.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-sharing.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-fontsettings.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-bookdown.js"></script>
+<script src="libs/gitbook-2.6.7/js/jquery.highlight.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-clipboard.js"></script>
+<script>
+gitbook.require(["gitbook"], function(gitbook) {
+gitbook.start({
+"sharing": {
+"github": false,
+"facebook": true,
+"twitter": true,
+"linkedin": false,
+"weibo": false,
+"instapaper": false,
+"vk": false,
+"whatsapp": false,
+"all": ["facebook", "twitter", "linkedin", "weibo", "instapaper"]
+},
+"fontsettings": {
+"theme": "white",
+"family": "sans",
+"size": 2
+},
+"edit": {
+"link": null,
+"text": null
+},
+"history": {
+"link": null,
+"text": null
+},
+"view": {
+"link": null,
+"text": null
+},
+"download": ["ModelosBayesianos.pdf", "ModelosBayesianos.epub"],
+"toc": {
+"collapse": "section"
+}
+});
+});
+</script>
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    var src = "true";
+    if (src === "" || src === "true") src = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-MML-AM_CHTML";
+    if (location.protocol !== "file:")
+      if (/^https?:/.test(src))
+        src = src.replace(/^https?:/, '');
+    script.src = src;
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+</body>
+
+</html>

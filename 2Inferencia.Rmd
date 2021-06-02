@@ -434,6 +434,7 @@ p(\tilde{\mathbf{y}} \mid \mathbf{Y})=
 
 ```{proof}
 De la definición de distribución predictiva posterior dada por la expresión \@ref(eq:predictpos) se tiene que
+
 \begin{align*}
 p(\tilde{y} \mid Y)&=\int p(\tilde{y} \mid \theta)p(\theta \mid y)\ d\theta\\
 &=\int \exp\{d(\theta)T(\tilde{y})-c(\theta)\}h(\tilde{y})\dfrac{\exp\{[w(\alpha)+T(y)]d(\theta)-(\delta+1)c(\theta)\}}{k(\alpha+T(y),\delta+1)}\ d\theta\\
@@ -583,6 +584,7 @@ I(\phi)= - E\left[\frac{\partial^2 \log p(\mathbf{Y} \mid \phi)}{\partial\phi^2}
 \end{align*}
 
 Ahora, de la definición de función de distribución para una función y utilizando \@ref(eq:teotransf), se tiene que
+
 \begin{align*}
 p(\phi)&=p(\theta) \mid \frac{\partial\theta}{\partial\phi} \mid
 \propto (I(\theta))^{1/2} \mid \frac{\partial\theta}{\partial\phi} \mid
