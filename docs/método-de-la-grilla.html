@@ -24,7 +24,7 @@
 <meta name="author" content="Andrés Gutiérrez - Hanwen Zhang" />
 
 
-<meta name="date" content="2021-05-31" />
+<meta name="date" content="2021-06-01" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
@@ -228,7 +228,7 @@ div.csl-indent {
 </ul></li>
 </ul></li>
 <li class="chapter" data-level="B" data-path="matriz-de-información.html"><a href="matriz-de-información.html"><i class="fa fa-check"></i><b>B</b> Matriz de información</a></li>
-<li class="chapter" data-level="C" data-path="simulación-de-distribuciones-de-probabilidad.html"><a href="simulación-de-distribuciones-de-probabilidad.html"><i class="fa fa-check"></i><b>C</b> Simulación de distribuciones de probabilidad</a>
+<li class="chapter" data-level="C" data-path="elementos-de-simulación-estadística.html"><a href="elementos-de-simulación-estadística.html"><i class="fa fa-check"></i><b>C</b> Elementos de simulación estadística</a>
 <ul>
 <li class="chapter" data-level="C.1" data-path="método-de-la-transformación-uniforme.html"><a href="método-de-la-transformación-uniforme.html"><i class="fa fa-check"></i><b>C.1</b> Método de la transformación uniforme</a></li>
 <li class="chapter" data-level="C.2" data-path="método-de-la-grilla.html"><a href="método-de-la-grilla.html"><i class="fa fa-check"></i><b>C.2</b> Método de la grilla</a></li>
@@ -293,7 +293,7 @@ P(F(x_k)&lt; U \leq F(x_{k+1}))&amp;=F(x_{k+1})-F(x_{k})\\
 <span id="cb4-3"><a href="método-de-la-grilla.html#cb4-3" aria-hidden="true" tabindex="-1"></a>p.exp <span class="ot">&lt;-</span> theta <span class="sc">*</span> <span class="fu">exp</span>(<span class="sc">-</span>theta <span class="sc">*</span> x.grid)</span>
 <span id="cb4-4"><a href="método-de-la-grilla.html#cb4-4" aria-hidden="true" tabindex="-1"></a>r.exp <span class="ot">&lt;-</span> <span class="fu">sample</span>(x.grid, <span class="dv">1000</span>, <span class="at">prob =</span> p.exp, <span class="at">replace =</span> T)</span>
 <span id="cb4-5"><a href="método-de-la-grilla.html#cb4-5" aria-hidden="true" tabindex="-1"></a><span class="dv">1</span><span class="sc">/</span><span class="fu">mean</span>(r.exp)</span></code></pre></div>
-<pre><code>## [1] 5.449294</code></pre>
+<pre><code>## [1] 5.111429</code></pre>
 <div class="sourceCode" id="cb6"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb6-1"><a href="método-de-la-grilla.html#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="fu">hist</span>(r.exp, <span class="at">freq =</span> <span class="cn">FALSE</span>)</span>
 <span id="cb6-2"><a href="método-de-la-grilla.html#cb6-2" aria-hidden="true" tabindex="-1"></a><span class="fu">lines</span>(<span class="fu">density</span>(rexpo), <span class="at">col =</span> <span class="dv">2</span>)</span></code></pre></div>
 <div class="figure"><span id="fig:unnamed-chunk-6"></span>
@@ -325,9 +325,9 @@ Figura C.2: Histograma de observaciones con distribución exponencial
 <pre><code>## [1] 1</code></pre>
 <div class="sourceCode" id="cb9"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb9-1"><a href="método-de-la-grilla.html#cb9-1" aria-hidden="true" tabindex="-1"></a>rpois <span class="ot">&lt;-</span> <span class="fu">sample</span>(x.grid, <span class="dv">1000</span>, <span class="at">prob=</span>p.x, <span class="at">replace =</span> T)</span>
 <span id="cb9-2"><a href="método-de-la-grilla.html#cb9-2" aria-hidden="true" tabindex="-1"></a><span class="fu">mean</span>(rpois)</span></code></pre></div>
-<pre><code>## [1] 1.978</code></pre>
+<pre><code>## [1] 2.012</code></pre>
 <div class="sourceCode" id="cb11"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb11-1"><a href="método-de-la-grilla.html#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="fu">var</span>(rpois)</span></code></pre></div>
-<pre><code>## [1] 1.997514</code></pre>
+<pre><code>## [1] 1.929786</code></pre>
 <div class="sourceCode" id="cb13"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb13-1"><a href="método-de-la-grilla.html#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="fu">hist</span>(rpois, <span class="at">freq =</span> <span class="cn">FALSE</span>)</span></code></pre></div>
 <div class="figure"><span id="fig:unnamed-chunk-8"></span>
 <img src="A3Simulacion_files/figure-html/unnamed-chunk-8-1.png" alt="Histograma de observaciones con distribución Poisson" width="672" />
@@ -359,9 +359,9 @@ Figura C.3: Histograma de observaciones con distribución Poisson
 <span id="cb14-18"><a href="método-de-la-grilla.html#cb14-18" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb14-19"><a href="método-de-la-grilla.html#cb14-19" aria-hidden="true" tabindex="-1"></a>rgamma <span class="ot">&lt;-</span> <span class="fu">sample</span>(x.grid, <span class="dv">1000</span>, <span class="at">prob =</span> p.x, <span class="at">replace =</span> T)</span>
 <span id="cb14-20"><a href="método-de-la-grilla.html#cb14-20" aria-hidden="true" tabindex="-1"></a><span class="fu">mean</span>(rgamma)</span></code></pre></div>
-<pre><code>## [1] 1.9706</code></pre>
+<pre><code>## [1] 2.0266</code></pre>
 <div class="sourceCode" id="cb16"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb16-1"><a href="método-de-la-grilla.html#cb16-1" aria-hidden="true" tabindex="-1"></a><span class="fu">var</span>(rgamma)</span></code></pre></div>
-<pre><code>## [1] 0.9397954</code></pre>
+<pre><code>## [1] 1.045178</code></pre>
 <div class="sourceCode" id="cb18"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb18-1"><a href="método-de-la-grilla.html#cb18-1" aria-hidden="true" tabindex="-1"></a><span class="fu">hist</span>(rgamma, <span class="at">freq =</span> F)</span>
 <span id="cb18-2"><a href="método-de-la-grilla.html#cb18-2" aria-hidden="true" tabindex="-1"></a><span class="fu">lines</span>(<span class="fu">density</span>(rgamma), <span class="at">col =</span> <span class="dv">2</span>)</span></code></pre></div>
 <div class="figure"><span id="fig:unnamed-chunk-10"></span>
@@ -423,11 +423,11 @@ Figura C.4: Histograma de observaciones con distribución Gamma.
 <span id="cb21-4"><a href="método-de-la-grilla.html#cb21-4" aria-hidden="true" tabindex="-1"></a>ry.normal <span class="ot">&lt;-</span> rxy.normal2[, <span class="dv">2</span>]</span>
 <span id="cb21-5"><a href="método-de-la-grilla.html#cb21-5" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb21-6"><a href="método-de-la-grilla.html#cb21-6" aria-hidden="true" tabindex="-1"></a><span class="fu">colMeans</span>(rxy.normal2)</span></code></pre></div>
-<pre><code>## [1] 2.0975 3.9175</code></pre>
+<pre><code>## [1] 2.0100 4.0955</code></pre>
 <div class="sourceCode" id="cb23"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb23-1"><a href="método-de-la-grilla.html#cb23-1" aria-hidden="true" tabindex="-1"></a><span class="fu">var</span>(rxy.normal2)</span></code></pre></div>
-<pre><code>##           [,1]      [,2]
-## [1,] 23.534278  9.394939
-## [2,]  9.394939 14.898843</code></pre>
+<pre><code>##          [,1]     [,2]
+## [1,] 25.23213 10.38343
+## [2,] 10.38343 15.95759</code></pre>
 <div class="sourceCode" id="cb25"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb25-1"><a href="método-de-la-grilla.html#cb25-1" aria-hidden="true" tabindex="-1"></a><span class="fu">hist</span>(rx.normal, <span class="at">freq =</span> F)</span>
 <span id="cb25-2"><a href="método-de-la-grilla.html#cb25-2" aria-hidden="true" tabindex="-1"></a><span class="fu">lines</span>(<span class="fu">density</span>(rx.normal), <span class="at">col =</span> <span class="dv">2</span>)</span></code></pre></div>
 <div class="figure"><span id="fig:unnamed-chunk-12-1"></span>
