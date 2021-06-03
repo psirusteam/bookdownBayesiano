@@ -24,7 +24,7 @@
 <meta name="author" content="Andrés Gutiérrez - Hanwen Zhang" />
 
 
-<meta name="date" content="2021-06-01" />
+<meta name="date" content="2021-06-02" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
@@ -238,7 +238,8 @@ div.csl-indent {
 <li class="chapter" data-level="C.2" data-path="métodos-de-monte-carlo-vía-cadenas-de-markov.html"><a href="métodos-de-monte-carlo-vía-cadenas-de-markov.html"><i class="fa fa-check"></i><b>C.2</b> Métodos de Monte Carlo vía cadenas de Markov</a>
 <ul>
 <li class="chapter" data-level="C.2.1" data-path="métodos-de-monte-carlo-vía-cadenas-de-markov.html"><a href="métodos-de-monte-carlo-vía-cadenas-de-markov.html#el-muestreador-de-gibbs"><i class="fa fa-check"></i><b>C.2.1</b> El muestreador de Gibbs</a></li>
-<li class="chapter" data-level="C.2.2" data-path="métodos-de-monte-carlo-vía-cadenas-de-markov.html"><a href="métodos-de-monte-carlo-vía-cadenas-de-markov.html#buenas-prácticas-en-la-aplicación-de-métodos-mcmc"><i class="fa fa-check"></i><b>C.2.2</b> Buenas prácticas en la aplicación de métodos MCMC</a></li>
+<li class="chapter" data-level="C.2.2" data-path="métodos-de-monte-carlo-vía-cadenas-de-markov.html"><a href="métodos-de-monte-carlo-vía-cadenas-de-markov.html#el-algoritmo-de-metrópolis-hastings"><i class="fa fa-check"></i><b>C.2.2</b> El algoritmo de Metrópolis-Hastings</a></li>
+<li class="chapter" data-level="C.2.3" data-path="métodos-de-monte-carlo-vía-cadenas-de-markov.html"><a href="métodos-de-monte-carlo-vía-cadenas-de-markov.html#buenas-prácticas-en-la-aplicación-de-métodos-mcmc"><i class="fa fa-check"></i><b>C.2.3</b> Buenas prácticas en la aplicación de métodos MCMC</a></li>
 </ul></li>
 </ul></li>
 <li class="chapter" data-level="" data-path="referencias.html"><a href="referencias.html"><i class="fa fa-check"></i>Referencias</a></li>
@@ -361,7 +362,7 @@ Figura C.8: Convergencia de la media y varianza usando el muestreador de Gibbs.
 <p>El muestrador de Gibbs también funciona en una “segunda fase”, cuando queremos seleccionar una muestra de <span class="math inline">\(f(\theta\mid x)\)</span>, es decir, la distribución de los parámetros dada la información observada <span class="math inline">\(x\)</span>.</p>
 
 <div class="example">
-<p><span id="exm:unnamed-chunk-17" class="example"><strong>Ejemplo C.4  </strong></span>Suponga que <span class="math inline">\(y\)</span> tiene distribución <span class="math inline">\(N(\mu,\sigma^2=1/\phi)\)</span> y queremos obtener una muestra de la distribución posterior del vector aleatorio <span class="math inline">\(\boldsymbol \theta=(\mu,1/\phi)\)</span>. Para este caso supongamos que conocemos las distribuciones previas; para la media <span class="math inline">\(\mu\)</span> se asume una distribución uniforme y para la varianza <span class="math inline">\(\phi\)</span> una distribución Gamma con parámetros <span class="math inline">\(a\)</span> y <span class="math inline">\(b\)</span>. La distribución posterior de <span class="math inline">\((\mu, \phi)\)</span> satisface:</p>
+<p><span id="exm:GibbsN2" class="example"><strong>Ejemplo C.4  </strong></span>Suponga que <span class="math inline">\(y\)</span> tiene distribución <span class="math inline">\(N(\mu,\sigma^2=1/\phi)\)</span> y queremos obtener una muestra de la distribución posterior del vector aleatorio <span class="math inline">\(\boldsymbol \theta=(\mu,1/\phi)\)</span>. Para este caso supongamos que conocemos las distribuciones previas; para la media <span class="math inline">\(\mu\)</span> se asume una distribución uniforme y para la varianza <span class="math inline">\(\phi\)</span> una distribución Gamma con parámetros <span class="math inline">\(a\)</span> y <span class="math inline">\(b\)</span>. La distribución posterior de <span class="math inline">\((\mu, \phi)\)</span> satisface:</p>
 <p><span class="math display">\[\begin{equation}  
 p(\mu, \phi \mid y) \propto (\phi)^{n/2}
 \exp\left\{-\phi
@@ -375,7 +376,7 @@ p(\mu, \phi \mid y)\propto(\phi)^{n/2+a-1}exp\left\{-\phi\Bigl(\frac{\sum_{j=1}^
 <p>Acudiendo al resultado <a href="distribuciones-continuas.html#prp:gammainver">A.13</a>, la distribución condicional de la varianza <span class="math inline">\(\sigma^2\)</span> dado <span class="math inline">\((\mu, y)\)</span> es Gamma-inversa con parámetros <span class="math inline">\(a+n/2\)</span> y <span class="math inline">\(\sum_{j=1}^n(y_j-\mu)^2/2+b\)</span>. Por tanto,</p>
 <p><span class="math display" id="eq:apmunormal">\[\begin{equation} 
 \tag{C.1}
-\sigma^2\mid\mu,x\sim Gamma-inversa\biggl(\alpha+n/2,\sum_{j=1}^n(y_j-\mu)^2/2+b\biggl)
+\sigma^2\mid\mu,x\sim Gamma-inversa\biggl(\theta+n/2,\sum_{j=1}^n(y_j-\mu)^2/2+b\biggl)
 \end{equation}\]</span></p>
 <p>Análogamente, la distribución de <span class="math inline">\(\mu\)</span> dado <span class="math inline">\((\sigma^2, y)\)</span> es normal
 con media <span class="math inline">\(\bar{y}\)</span> y varianza <span class="math inline">\(\sigma^2/n\)</span>, es decir,</p>
@@ -396,38 +397,41 @@ Entonces <span class="math inline">\((\mu_{m+1}, \sigma^2_{m+1}), (\mu_{m+2}, \s
 una muestra (correlacionada) de <span class="math inline">\(p(\mu, \sigma^2\mid x)\)</span>.
 </div>
 <p>La siguiente función en <code>R</code> implementa el muestreador de Gibbs para el anterior ejemplo.</p>
-<div class="sourceCode" id="cb35"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb35-1"><a href="métodos-de-monte-carlo-vía-cadenas-de-markov.html#cb35-1" aria-hidden="true" tabindex="-1"></a>normal2 <span class="ot">&lt;-</span> <span class="cf">function</span>(datos, a, b, nsim, inicial){</span>
-<span id="cb35-2"><a href="métodos-de-monte-carlo-vía-cadenas-de-markov.html#cb35-2" aria-hidden="true" tabindex="-1"></a>  n <span class="ot">&lt;-</span> <span class="fu">length</span>(datos)</span>
-<span id="cb35-3"><a href="métodos-de-monte-carlo-vía-cadenas-de-markov.html#cb35-3" aria-hidden="true" tabindex="-1"></a>  xbar <span class="ot">&lt;-</span> <span class="fu">mean</span>(datos)</span>
-<span id="cb35-4"><a href="métodos-de-monte-carlo-vía-cadenas-de-markov.html#cb35-4" aria-hidden="true" tabindex="-1"></a>  mu.now <span class="ot">&lt;-</span> inicial[<span class="dv">1</span>]</span>
-<span id="cb35-5"><a href="métodos-de-monte-carlo-vía-cadenas-de-markov.html#cb35-5" aria-hidden="true" tabindex="-1"></a>  var.now <span class="ot">&lt;-</span> inicial[<span class="dv">2</span>]</span>
-<span id="cb35-6"><a href="métodos-de-monte-carlo-vía-cadenas-de-markov.html#cb35-6" aria-hidden="true" tabindex="-1"></a>  dummy <span class="ot">&lt;-</span> <span class="fu">matrix</span>(<span class="at">ncol =</span> <span class="dv">2</span>, <span class="at">nrow =</span> nsim)</span>
-<span id="cb35-7"><a href="métodos-de-monte-carlo-vía-cadenas-de-markov.html#cb35-7" aria-hidden="true" tabindex="-1"></a>  dummy[<span class="dv">1</span>, <span class="dv">1</span>] <span class="ot">&lt;-</span> mu.now</span>
-<span id="cb35-8"><a href="métodos-de-monte-carlo-vía-cadenas-de-markov.html#cb35-8" aria-hidden="true" tabindex="-1"></a>  dummy[<span class="dv">1</span>, <span class="dv">2</span>] <span class="ot">&lt;-</span> var.now</span>
-<span id="cb35-9"><a href="métodos-de-monte-carlo-vía-cadenas-de-markov.html#cb35-9" aria-hidden="true" tabindex="-1"></a>  </span>
-<span id="cb35-10"><a href="métodos-de-monte-carlo-vía-cadenas-de-markov.html#cb35-10" aria-hidden="true" tabindex="-1"></a>  <span class="cf">for</span> (i <span class="cf">in</span> <span class="dv">2</span> <span class="sc">:</span> nsim){</span>
-<span id="cb35-11"><a href="métodos-de-monte-carlo-vía-cadenas-de-markov.html#cb35-11" aria-hidden="true" tabindex="-1"></a>    mu.next <span class="ot">&lt;-</span> <span class="fu">rnorm</span>(<span class="dv">1</span>, xbar, <span class="fu">sqrt</span>(var.now<span class="sc">/</span>n))</span>
-<span id="cb35-12"><a href="métodos-de-monte-carlo-vía-cadenas-de-markov.html#cb35-12" aria-hidden="true" tabindex="-1"></a>    phi <span class="ot">&lt;-</span> (<span class="fu">rgamma</span>(<span class="dv">1</span>, a <span class="sc">+</span> n<span class="sc">/</span><span class="dv">2</span>)<span class="sc">/</span>(b <span class="sc">+</span> <span class="fu">sum</span>((datos <span class="sc">-</span> mu.next)<span class="sc">^</span><span class="dv">2</span>)<span class="sc">/</span><span class="dv">2</span>))</span>
-<span id="cb35-13"><a href="métodos-de-monte-carlo-vía-cadenas-de-markov.html#cb35-13" aria-hidden="true" tabindex="-1"></a>    var.next <span class="ot">&lt;-</span> <span class="dv">1</span><span class="sc">/</span>phi</span>
-<span id="cb35-14"><a href="métodos-de-monte-carlo-vía-cadenas-de-markov.html#cb35-14" aria-hidden="true" tabindex="-1"></a>    dummy[i, <span class="dv">1</span>] <span class="ot">&lt;-</span> mu.next</span>
-<span id="cb35-15"><a href="métodos-de-monte-carlo-vía-cadenas-de-markov.html#cb35-15" aria-hidden="true" tabindex="-1"></a>    dummy[i, <span class="dv">2</span>] <span class="ot">&lt;-</span> var.next</span>
-<span id="cb35-16"><a href="métodos-de-monte-carlo-vía-cadenas-de-markov.html#cb35-16" aria-hidden="true" tabindex="-1"></a>    mu.now <span class="ot">&lt;-</span> mu.next</span>
-<span id="cb35-17"><a href="métodos-de-monte-carlo-vía-cadenas-de-markov.html#cb35-17" aria-hidden="true" tabindex="-1"></a>    var.now <span class="ot">&lt;-</span> var.next</span>
-<span id="cb35-18"><a href="métodos-de-monte-carlo-vía-cadenas-de-markov.html#cb35-18" aria-hidden="true" tabindex="-1"></a>  }</span>
-<span id="cb35-19"><a href="métodos-de-monte-carlo-vía-cadenas-de-markov.html#cb35-19" aria-hidden="true" tabindex="-1"></a>  <span class="fu">return</span>(dummy)</span>
-<span id="cb35-20"><a href="métodos-de-monte-carlo-vía-cadenas-de-markov.html#cb35-20" aria-hidden="true" tabindex="-1"></a>}</span>
-<span id="cb35-21"><a href="métodos-de-monte-carlo-vía-cadenas-de-markov.html#cb35-21" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb35-22"><a href="métodos-de-monte-carlo-vía-cadenas-de-markov.html#cb35-22" aria-hidden="true" tabindex="-1"></a>datos <span class="ot">&lt;-</span> <span class="fu">rnorm</span>(<span class="dv">50</span>, <span class="dv">2</span>, <span class="dv">1</span>)</span>
-<span id="cb35-23"><a href="métodos-de-monte-carlo-vía-cadenas-de-markov.html#cb35-23" aria-hidden="true" tabindex="-1"></a>mc1.vals <span class="ot">&lt;-</span> <span class="fu">normal2</span>(datos, <span class="at">a =</span> <span class="dv">10</span>, <span class="at">b =</span> <span class="dv">10</span>, </span>
-<span id="cb35-24"><a href="métodos-de-monte-carlo-vía-cadenas-de-markov.html#cb35-24" aria-hidden="true" tabindex="-1"></a>                    <span class="at">nsim =</span> <span class="dv">1000</span>, <span class="at">inicial =</span> <span class="fu">c</span>(<span class="dv">5</span>, <span class="dv">5</span>))</span>
-<span id="cb35-25"><a href="métodos-de-monte-carlo-vía-cadenas-de-markov.html#cb35-25" aria-hidden="true" tabindex="-1"></a>mc1.vals <span class="ot">&lt;-</span> mc1.vals[<span class="dv">101</span><span class="sc">:</span> <span class="dv">1000</span>, ]</span>
-<span id="cb35-26"><a href="métodos-de-monte-carlo-vía-cadenas-de-markov.html#cb35-26" aria-hidden="true" tabindex="-1"></a><span class="fu">colMeans</span>(mc1.vals)</span></code></pre></div>
-<pre><code>## [1] 1.911403 1.026685</code></pre>
+<div class="sourceCode" id="cb35"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb35-1"><a href="métodos-de-monte-carlo-vía-cadenas-de-markov.html#cb35-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(invgamma)</span>
+<span id="cb35-2"><a href="métodos-de-monte-carlo-vía-cadenas-de-markov.html#cb35-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb35-3"><a href="métodos-de-monte-carlo-vía-cadenas-de-markov.html#cb35-3" aria-hidden="true" tabindex="-1"></a>normal2 <span class="ot">&lt;-</span> <span class="cf">function</span>(datos, a, b, nsim, inicial){</span>
+<span id="cb35-4"><a href="métodos-de-monte-carlo-vía-cadenas-de-markov.html#cb35-4" aria-hidden="true" tabindex="-1"></a>  n <span class="ot">&lt;-</span> <span class="fu">length</span>(datos)</span>
+<span id="cb35-5"><a href="métodos-de-monte-carlo-vía-cadenas-de-markov.html#cb35-5" aria-hidden="true" tabindex="-1"></a>  xbar <span class="ot">&lt;-</span> <span class="fu">mean</span>(datos)</span>
+<span id="cb35-6"><a href="métodos-de-monte-carlo-vía-cadenas-de-markov.html#cb35-6" aria-hidden="true" tabindex="-1"></a>  mu.now <span class="ot">&lt;-</span> inicial[<span class="dv">1</span>]</span>
+<span id="cb35-7"><a href="métodos-de-monte-carlo-vía-cadenas-de-markov.html#cb35-7" aria-hidden="true" tabindex="-1"></a>  var.now <span class="ot">&lt;-</span> inicial[<span class="dv">2</span>]</span>
+<span id="cb35-8"><a href="métodos-de-monte-carlo-vía-cadenas-de-markov.html#cb35-8" aria-hidden="true" tabindex="-1"></a>  dummy <span class="ot">&lt;-</span> <span class="fu">matrix</span>(<span class="at">ncol =</span> <span class="dv">2</span>, <span class="at">nrow =</span> nsim)</span>
+<span id="cb35-9"><a href="métodos-de-monte-carlo-vía-cadenas-de-markov.html#cb35-9" aria-hidden="true" tabindex="-1"></a>  dummy[<span class="dv">1</span>, <span class="dv">1</span>] <span class="ot">&lt;-</span> mu.now</span>
+<span id="cb35-10"><a href="métodos-de-monte-carlo-vía-cadenas-de-markov.html#cb35-10" aria-hidden="true" tabindex="-1"></a>  dummy[<span class="dv">1</span>, <span class="dv">2</span>] <span class="ot">&lt;-</span> var.now</span>
+<span id="cb35-11"><a href="métodos-de-monte-carlo-vía-cadenas-de-markov.html#cb35-11" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb35-12"><a href="métodos-de-monte-carlo-vía-cadenas-de-markov.html#cb35-12" aria-hidden="true" tabindex="-1"></a>  <span class="cf">for</span> (i <span class="cf">in</span> <span class="dv">2</span> <span class="sc">:</span> nsim){</span>
+<span id="cb35-13"><a href="métodos-de-monte-carlo-vía-cadenas-de-markov.html#cb35-13" aria-hidden="true" tabindex="-1"></a>    alp <span class="ot">&lt;-</span> a <span class="sc">+</span> (n<span class="sc">/</span><span class="dv">2</span>)</span>
+<span id="cb35-14"><a href="métodos-de-monte-carlo-vía-cadenas-de-markov.html#cb35-14" aria-hidden="true" tabindex="-1"></a>    bet <span class="ot">&lt;-</span> b <span class="sc">+</span> (<span class="fu">sum</span>((datos <span class="sc">-</span> mu.now)<span class="sc">^</span><span class="dv">2</span>)<span class="sc">/</span><span class="dv">2</span>)</span>
+<span id="cb35-15"><a href="métodos-de-monte-carlo-vía-cadenas-de-markov.html#cb35-15" aria-hidden="true" tabindex="-1"></a>    var.next <span class="ot">&lt;-</span> <span class="fu">rinvgamma</span>(<span class="dv">1</span>, <span class="at">shape =</span> alp, <span class="at">rate =</span> bet)</span>
+<span id="cb35-16"><a href="métodos-de-monte-carlo-vía-cadenas-de-markov.html#cb35-16" aria-hidden="true" tabindex="-1"></a>    mu.next <span class="ot">&lt;-</span> <span class="fu">rnorm</span>(<span class="dv">1</span>, xbar, <span class="fu">sqrt</span>(var.now<span class="sc">/</span>n))</span>
+<span id="cb35-17"><a href="métodos-de-monte-carlo-vía-cadenas-de-markov.html#cb35-17" aria-hidden="true" tabindex="-1"></a>    dummy[i, <span class="dv">1</span>] <span class="ot">&lt;-</span> mu.next</span>
+<span id="cb35-18"><a href="métodos-de-monte-carlo-vía-cadenas-de-markov.html#cb35-18" aria-hidden="true" tabindex="-1"></a>    dummy[i, <span class="dv">2</span>] <span class="ot">&lt;-</span> var.next</span>
+<span id="cb35-19"><a href="métodos-de-monte-carlo-vía-cadenas-de-markov.html#cb35-19" aria-hidden="true" tabindex="-1"></a>    mu.now <span class="ot">&lt;-</span> mu.next</span>
+<span id="cb35-20"><a href="métodos-de-monte-carlo-vía-cadenas-de-markov.html#cb35-20" aria-hidden="true" tabindex="-1"></a>    var.now <span class="ot">&lt;-</span> var.next</span>
+<span id="cb35-21"><a href="métodos-de-monte-carlo-vía-cadenas-de-markov.html#cb35-21" aria-hidden="true" tabindex="-1"></a>  }</span>
+<span id="cb35-22"><a href="métodos-de-monte-carlo-vía-cadenas-de-markov.html#cb35-22" aria-hidden="true" tabindex="-1"></a>  <span class="fu">return</span>(dummy)</span>
+<span id="cb35-23"><a href="métodos-de-monte-carlo-vía-cadenas-de-markov.html#cb35-23" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb35-24"><a href="métodos-de-monte-carlo-vía-cadenas-de-markov.html#cb35-24" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb35-25"><a href="métodos-de-monte-carlo-vía-cadenas-de-markov.html#cb35-25" aria-hidden="true" tabindex="-1"></a>datos <span class="ot">&lt;-</span> <span class="fu">rnorm</span>(<span class="dv">100</span>, <span class="dv">5</span>, <span class="dv">2</span>)</span>
+<span id="cb35-26"><a href="métodos-de-monte-carlo-vía-cadenas-de-markov.html#cb35-26" aria-hidden="true" tabindex="-1"></a>mc1.vals <span class="ot">&lt;-</span> <span class="fu">normal2</span>(datos, <span class="at">a =</span> <span class="dv">2</span>, <span class="at">b =</span> <span class="dv">5</span>, </span>
+<span id="cb35-27"><a href="métodos-de-monte-carlo-vía-cadenas-de-markov.html#cb35-27" aria-hidden="true" tabindex="-1"></a>                    <span class="at">nsim =</span> <span class="dv">1000</span>, <span class="at">inicial =</span> <span class="fu">c</span>(<span class="dv">2</span>, <span class="dv">2</span>))</span>
+<span id="cb35-28"><a href="métodos-de-monte-carlo-vía-cadenas-de-markov.html#cb35-28" aria-hidden="true" tabindex="-1"></a>mc1.vals <span class="ot">&lt;-</span> mc1.vals[<span class="dv">101</span><span class="sc">:</span> <span class="dv">1000</span>, ]</span>
+<span id="cb35-29"><a href="métodos-de-monte-carlo-vía-cadenas-de-markov.html#cb35-29" aria-hidden="true" tabindex="-1"></a><span class="fu">colMeans</span>(mc1.vals)</span></code></pre></div>
+<pre><code>## [1] 4.909503 3.813988</code></pre>
 <div class="sourceCode" id="cb37"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb37-1"><a href="métodos-de-monte-carlo-vía-cadenas-de-markov.html#cb37-1" aria-hidden="true" tabindex="-1"></a><span class="fu">par</span>(<span class="at">mfcol =</span> <span class="fu">c</span>(<span class="dv">1</span>, <span class="dv">2</span>))</span>
 <span id="cb37-2"><a href="métodos-de-monte-carlo-vía-cadenas-de-markov.html#cb37-2" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(mc1.vals[, <span class="dv">1</span>], <span class="at">type =</span> <span class="st">&#39;l&#39;</span>, <span class="at">ylab =</span> <span class="st">&#39;mu&#39;</span>)</span>
 <span id="cb37-3"><a href="métodos-de-monte-carlo-vía-cadenas-de-markov.html#cb37-3" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(mc1.vals[, <span class="dv">2</span>], <span class="at">type =</span> <span class="st">&#39;l&#39;</span>, <span class="at">ylab =</span> <span class="st">&#39;sigma^2&#39;</span>)</span></code></pre></div>
-<div class="figure"><span id="fig:unnamed-chunk-19"></span>
-<img src="A3Simulacion_files/figure-html/unnamed-chunk-19-1.png" alt="Cadenas generadas desde el muestreador de Gibbs." width="672" />
+<div class="figure"><span id="fig:unnamed-chunk-18"></span>
+<img src="A3Simulacion_files/figure-html/unnamed-chunk-18-1.png" alt="Cadenas generadas desde el muestreador de Gibbs." width="672" />
 <p class="caption">
 Figura C.9: Cadenas generadas desde el muestreador de Gibbs.
 </p>
@@ -437,15 +441,103 @@ Figura C.9: Cadenas generadas desde el muestreador de Gibbs.
 <span id="cb38-3"><a href="métodos-de-monte-carlo-vía-cadenas-de-markov.html#cb38-3" aria-hidden="true" tabindex="-1"></a><span class="fu">lines</span>(<span class="fu">density</span>(mc1.vals[, <span class="dv">1</span>], <span class="at">kernel=</span><span class="st">&#39;gaussian&#39;</span>))</span>
 <span id="cb38-4"><a href="métodos-de-monte-carlo-vía-cadenas-de-markov.html#cb38-4" aria-hidden="true" tabindex="-1"></a><span class="fu">hist</span>(mc1.vals[, <span class="dv">2</span>], <span class="at">prob =</span> T, <span class="at">xlab=</span><span class="st">&#39;sigma^2&#39;</span>, <span class="at">main =</span> <span class="st">&quot;&quot;</span>)</span>
 <span id="cb38-5"><a href="métodos-de-monte-carlo-vía-cadenas-de-markov.html#cb38-5" aria-hidden="true" tabindex="-1"></a><span class="fu">lines</span>(<span class="fu">density</span>(mc1.vals[, <span class="dv">2</span>], <span class="at">kernel=</span><span class="st">&#39;gaussian&#39;</span>))</span></code></pre></div>
-<div class="figure"><span id="fig:unnamed-chunk-20"></span>
-<img src="A3Simulacion_files/figure-html/unnamed-chunk-20-1.png" alt="Densidades posteriores generadas con el muestreador de Gibbs." width="672" />
+<div class="figure"><span id="fig:unnamed-chunk-19"></span>
+<img src="A3Simulacion_files/figure-html/unnamed-chunk-19-1.png" alt="Densidades posteriores generadas con el muestreador de Gibbs." width="672" />
 <p class="caption">
 Figura C.10: Densidades posteriores generadas con el muestreador de Gibbs.
 </p>
 </div>
 </div>
-<div id="buenas-prácticas-en-la-aplicación-de-métodos-mcmc" class="section level3" number="5.2.2">
-<h3><span class="header-section-number">C.2.2</span> Buenas prácticas en la aplicación de métodos MCMC</h3>
+<div id="el-algoritmo-de-metrópolis-hastings" class="section level3" number="5.2.2">
+<h3><span class="header-section-number">C.2.2</span> El algoritmo de Metrópolis-Hastings</h3>
+<p>Este algoritmo se basa en proponer un nuevo punto de acuerdo a una función de densidad adecuada y aceptar este nuevo valor propuesto con una probabilidad que depende del punto actual, del nuevo punto y de la densidad de la cual fue propuesto el nuevo punto.</p>
+<p>Suponga que deseamos simular valores de una distribución multivariada <span class="math inline">\(p(\theta \mid y)\)</span>. Sea la función de densidad propuesta <span class="math inline">\(q(\theta, \theta&#39;)\)</span>, una función de densidad de probabilidad arbitraria que
+describe la probabilidad de aceptación de <span class="math inline">\(\theta&#39;\)</span> a partir de la posición actual de <span class="math inline">\(\theta\)</span>. El algoritmo de Metropolis-Hastings está dado por los siguientes pasos:</p>
+<ul>
+<li>Siendo el valor actual <span class="math inline">\(\theta_i\)</span>, genere un valor candidato <span class="math inline">\(\theta&#39;\)</span> obtenido como una observación de la densidad <span class="math inline">\(q(\theta_i, \theta&#39;)\)</span>.</li>
+<li>Calcule
+<span class="math display">\[\begin{equation*}
+T(\theta_i, \theta&#39;) =
+\begin{cases}
+\min \left(1,  \frac{p(\theta&#39; \mid  y)q(\theta&#39;, \theta_i)}{p(\theta_i \mid  y)q(\theta_i, \theta&#39;)} \right),
+&amp; \text{  si   } p(\theta_i \mid  y)q(\theta_i, \theta&#39;) &gt; 0,\\ 
+1, &amp; \text{  si   }
+p(\theta_i \mid y)q(\theta_i, \theta&#39;) = 0
+\end{cases}
+\end{equation*}\]</span></li>
+<li>Acepte el nuevo valor y actualícelo a <span class="math inline">\(\theta_{i+1}=\theta&#39;\)</span> con probabilidad <span class="math inline">\(T(\theta_i, \theta&#39;)\)</span>. De otra forma, rechazar el valor candidato y defina <span class="math inline">\(\theta_{i+1}=\theta_i\)</span>.
+Repita el paso anterior para obtener la secuencia <span class="math inline">\(\theta_0,\theta_1,...,\)</span>
+donde <span class="math inline">\(\theta_0\)</span> denota un valor arbitrario de arranque.
+Descarte los primeros <span class="math inline">\(m\)</span> valores obtenidos.</li>
+</ul>
+<p>Siguiendo el anterior algoritmo, entonces se tiene que <span class="math inline">\(\theta_{m+1}, \theta_{m+2}, \ldots\)</span> es una secuencia (correlacionada) de la distribución requerida. En principio, puede ser usada cualquier densidad <span class="math inline">\(q\)</span>, pero si ésta es escogida ingenuamente, la eficiencia de la cadena puede ser muy pobre. La relación más importante entre el muestreados de Gibbs y el algorítmo de Metropolis-Hastings, está dada como un teorema en el libro de <span class="citation"><a href="#ref-Robert" role="doc-biblioref">Robert y Casella</a> (<a href="#ref-Robert" role="doc-biblioref">2009</a>pág. 296)</span>.</p>
+
+<div class="proposition">
+<span id="prp:unnamed-chunk-20" class="proposition"><strong>Resultado C.2  </strong></span>El muestreador de Gibbs es equivalente al algoritmo de Metropolis-Hastings, con la
+probabilidad de aceptación igual a uno para todos los puntos propuestos.
+</div>
+<p><br></p>
+<p>Lo anterior implica que la convergencia para ambos métodos no es la misma. Para cerrar la sección de cadenas de Markov vía Monte Carlo, es importante hacernos la siguiente pregunta: ¿Son independientes las muestras simuladas? En principio no se puede hablar de independencia, pues es claro que la observación <span class="math inline">\(\{i+1\}\)</span> depende de la observación <span class="math inline">\(\{i\}\)</span>. Dado que las observaciones resultantes
+se encuentran en estricto orden de medición, podríamos utilizar algunos criterios como la función de auto-correlación (ACF) y la función de auto-correlación parcial (PACF), para conocer sobre la correlación entre observaciones.</p>
+<p>Siguiendo con el ejemplo <a href="métodos-de-monte-carlo-vía-cadenas-de-markov.html#exm:GibbsN2">C.4</a> del apartado de Gibbs, se ha escogido usar como como distribuciones propuestas <span class="math inline">\(q\)</span> para la media y para la varianza, densidades normales centradas en el actual
+parámetro, ambas con varianza igual a uno. Dadas las distribuciones propuestas, algunos valores de la varianza pueden ser negativos; aunque este no es un problema porque la distribución posterior le asignará el valor cero, por tanto este valor será rechazado con un probabilidad de uno.</p>
+<div class="sourceCode" id="cb39"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb39-1"><a href="métodos-de-monte-carlo-vía-cadenas-de-markov.html#cb39-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(invgamma)</span>
+<span id="cb39-2"><a href="métodos-de-monte-carlo-vía-cadenas-de-markov.html#cb39-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb39-3"><a href="métodos-de-monte-carlo-vía-cadenas-de-markov.html#cb39-3" aria-hidden="true" tabindex="-1"></a>met.hast <span class="ot">&lt;-</span> <span class="cf">function</span>(datos, a, b, iter, ini){</span>
+<span id="cb39-4"><a href="métodos-de-monte-carlo-vía-cadenas-de-markov.html#cb39-4" aria-hidden="true" tabindex="-1"></a>  mu0 <span class="ot">&lt;-</span> ini[<span class="dv">1</span>] </span>
+<span id="cb39-5"><a href="métodos-de-monte-carlo-vía-cadenas-de-markov.html#cb39-5" aria-hidden="true" tabindex="-1"></a>  var0 <span class="ot">&lt;-</span> ini[<span class="dv">2</span>]</span>
+<span id="cb39-6"><a href="métodos-de-monte-carlo-vía-cadenas-de-markov.html#cb39-6" aria-hidden="true" tabindex="-1"></a>  resul <span class="ot">&lt;-</span> <span class="fu">matrix</span>(<span class="at">ncol =</span> <span class="dv">2</span>, <span class="at">nrow =</span> iter)</span>
+<span id="cb39-7"><a href="métodos-de-monte-carlo-vía-cadenas-de-markov.html#cb39-7" aria-hidden="true" tabindex="-1"></a>  resul[<span class="dv">1</span>, <span class="dv">1</span>] <span class="ot">&lt;-</span> mu0</span>
+<span id="cb39-8"><a href="métodos-de-monte-carlo-vía-cadenas-de-markov.html#cb39-8" aria-hidden="true" tabindex="-1"></a>  resul[<span class="dv">1</span>, <span class="dv">2</span>] <span class="ot">&lt;-</span> var0</span>
+<span id="cb39-9"><a href="métodos-de-monte-carlo-vía-cadenas-de-markov.html#cb39-9" aria-hidden="true" tabindex="-1"></a>  <span class="cf">for</span> (i <span class="cf">in</span> <span class="dv">2</span> <span class="sc">:</span> iter){</span>
+<span id="cb39-10"><a href="métodos-de-monte-carlo-vía-cadenas-de-markov.html#cb39-10" aria-hidden="true" tabindex="-1"></a>    mu.prop <span class="ot">&lt;-</span> <span class="fu">rnorm</span>(<span class="dv">1</span>, mu0, <span class="dv">1</span>)</span>
+<span id="cb39-11"><a href="métodos-de-monte-carlo-vía-cadenas-de-markov.html#cb39-11" aria-hidden="true" tabindex="-1"></a>    var.prop <span class="ot">&lt;-</span> <span class="fu">rnorm</span>(<span class="dv">1</span>, var0, <span class="dv">1</span>)</span>
+<span id="cb39-12"><a href="métodos-de-monte-carlo-vía-cadenas-de-markov.html#cb39-12" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> (var.prop <span class="sc">&lt;=</span> <span class="dv">0</span>){ T.val <span class="ot">&lt;-</span> <span class="dv">0</span> }</span>
+<span id="cb39-13"><a href="métodos-de-monte-carlo-vía-cadenas-de-markov.html#cb39-13" aria-hidden="true" tabindex="-1"></a>    <span class="cf">else</span>{</span>
+<span id="cb39-14"><a href="métodos-de-monte-carlo-vía-cadenas-de-markov.html#cb39-14" aria-hidden="true" tabindex="-1"></a>      p1 <span class="ot">&lt;-</span> <span class="fu">prod</span>(<span class="fu">dnorm</span>(datos, mu.prop, <span class="fu">sqrt</span>(var.prop))) <span class="sc">*</span></span>
+<span id="cb39-15"><a href="métodos-de-monte-carlo-vía-cadenas-de-markov.html#cb39-15" aria-hidden="true" tabindex="-1"></a>        <span class="fu">dinvgamma</span>(var.prop, <span class="at">shape =</span> a, <span class="at">rate =</span> b)</span>
+<span id="cb39-16"><a href="métodos-de-monte-carlo-vía-cadenas-de-markov.html#cb39-16" aria-hidden="true" tabindex="-1"></a>      q1 <span class="ot">&lt;-</span> <span class="fu">dnorm</span>(mu0, mu.prop, <span class="dv">1</span>) <span class="sc">*</span></span>
+<span id="cb39-17"><a href="métodos-de-monte-carlo-vía-cadenas-de-markov.html#cb39-17" aria-hidden="true" tabindex="-1"></a>        <span class="fu">dnorm</span>(var0, var.prop, <span class="dv">1</span>)</span>
+<span id="cb39-18"><a href="métodos-de-monte-carlo-vía-cadenas-de-markov.html#cb39-18" aria-hidden="true" tabindex="-1"></a>      p2 <span class="ot">&lt;-</span> <span class="fu">prod</span>(<span class="fu">dnorm</span>(datos, mu0, <span class="fu">sqrt</span>(var0))) <span class="sc">*</span> </span>
+<span id="cb39-19"><a href="métodos-de-monte-carlo-vía-cadenas-de-markov.html#cb39-19" aria-hidden="true" tabindex="-1"></a>        <span class="fu">dinvgamma</span>(var0, <span class="at">shape =</span> a, <span class="at">rate =</span> b)</span>
+<span id="cb39-20"><a href="métodos-de-monte-carlo-vía-cadenas-de-markov.html#cb39-20" aria-hidden="true" tabindex="-1"></a>      q2 <span class="ot">&lt;-</span> <span class="fu">dnorm</span>(mu.prop, mu0, <span class="dv">1</span>) <span class="sc">*</span> </span>
+<span id="cb39-21"><a href="métodos-de-monte-carlo-vía-cadenas-de-markov.html#cb39-21" aria-hidden="true" tabindex="-1"></a>        <span class="fu">dnorm</span>(var.prop, var0, <span class="dv">1</span>)</span>
+<span id="cb39-22"><a href="métodos-de-monte-carlo-vía-cadenas-de-markov.html#cb39-22" aria-hidden="true" tabindex="-1"></a>      T.val <span class="ot">&lt;-</span> <span class="fu">min</span>(<span class="dv">1</span>, (p1 <span class="sc">*</span> q1)<span class="sc">/</span>(p2 <span class="sc">*</span> q2))</span>
+<span id="cb39-23"><a href="métodos-de-monte-carlo-vía-cadenas-de-markov.html#cb39-23" aria-hidden="true" tabindex="-1"></a>    }</span>
+<span id="cb39-24"><a href="métodos-de-monte-carlo-vía-cadenas-de-markov.html#cb39-24" aria-hidden="true" tabindex="-1"></a>    u <span class="ot">&lt;-</span> <span class="fu">runif</span>(<span class="dv">1</span>) </span>
+<span id="cb39-25"><a href="métodos-de-monte-carlo-vía-cadenas-de-markov.html#cb39-25" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> (u <span class="sc">&lt;=</span> T.val){</span>
+<span id="cb39-26"><a href="métodos-de-monte-carlo-vía-cadenas-de-markov.html#cb39-26" aria-hidden="true" tabindex="-1"></a>      resul[i, <span class="dv">1</span>] <span class="ot">&lt;-</span> mu.prop</span>
+<span id="cb39-27"><a href="métodos-de-monte-carlo-vía-cadenas-de-markov.html#cb39-27" aria-hidden="true" tabindex="-1"></a>      resul[i, <span class="dv">2</span>] <span class="ot">&lt;-</span> var.prop</span>
+<span id="cb39-28"><a href="métodos-de-monte-carlo-vía-cadenas-de-markov.html#cb39-28" aria-hidden="true" tabindex="-1"></a>      } </span>
+<span id="cb39-29"><a href="métodos-de-monte-carlo-vía-cadenas-de-markov.html#cb39-29" aria-hidden="true" tabindex="-1"></a>    <span class="cf">else</span>{</span>
+<span id="cb39-30"><a href="métodos-de-monte-carlo-vía-cadenas-de-markov.html#cb39-30" aria-hidden="true" tabindex="-1"></a>      resul[i, <span class="dv">1</span>] <span class="ot">&lt;-</span> mu0</span>
+<span id="cb39-31"><a href="métodos-de-monte-carlo-vía-cadenas-de-markov.html#cb39-31" aria-hidden="true" tabindex="-1"></a>      resul[i, <span class="dv">2</span>] <span class="ot">&lt;-</span> var0</span>
+<span id="cb39-32"><a href="métodos-de-monte-carlo-vía-cadenas-de-markov.html#cb39-32" aria-hidden="true" tabindex="-1"></a>      }</span>
+<span id="cb39-33"><a href="métodos-de-monte-carlo-vía-cadenas-de-markov.html#cb39-33" aria-hidden="true" tabindex="-1"></a>    mu0 <span class="ot">&lt;-</span> resul[i, <span class="dv">1</span>]</span>
+<span id="cb39-34"><a href="métodos-de-monte-carlo-vía-cadenas-de-markov.html#cb39-34" aria-hidden="true" tabindex="-1"></a>    var0 <span class="ot">&lt;-</span> resul[i, <span class="dv">2</span>]</span>
+<span id="cb39-35"><a href="métodos-de-monte-carlo-vía-cadenas-de-markov.html#cb39-35" aria-hidden="true" tabindex="-1"></a>  }</span>
+<span id="cb39-36"><a href="métodos-de-monte-carlo-vía-cadenas-de-markov.html#cb39-36" aria-hidden="true" tabindex="-1"></a>  <span class="fu">return</span>(resul)</span>
+<span id="cb39-37"><a href="métodos-de-monte-carlo-vía-cadenas-de-markov.html#cb39-37" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb39-38"><a href="métodos-de-monte-carlo-vía-cadenas-de-markov.html#cb39-38" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb39-39"><a href="métodos-de-monte-carlo-vía-cadenas-de-markov.html#cb39-39" aria-hidden="true" tabindex="-1"></a>datos <span class="ot">&lt;-</span> <span class="fu">rnorm</span>(<span class="dv">100</span>, <span class="dv">5</span>, <span class="dv">2</span>)</span>
+<span id="cb39-40"><a href="métodos-de-monte-carlo-vía-cadenas-de-markov.html#cb39-40" aria-hidden="true" tabindex="-1"></a>mc2 <span class="ot">&lt;-</span> <span class="fu">met.hast</span>(datos, <span class="at">a =</span> <span class="dv">2</span>, <span class="at">b =</span> <span class="dv">5</span>, </span>
+<span id="cb39-41"><a href="métodos-de-monte-carlo-vía-cadenas-de-markov.html#cb39-41" aria-hidden="true" tabindex="-1"></a>                <span class="at">iter =</span> <span class="dv">1000</span>, <span class="at">ini =</span> <span class="fu">c</span>(<span class="dv">2</span>, <span class="dv">2</span>))</span>
+<span id="cb39-42"><a href="métodos-de-monte-carlo-vía-cadenas-de-markov.html#cb39-42" aria-hidden="true" tabindex="-1"></a><span class="fu">colMeans</span>(mc2)</span></code></pre></div>
+<pre><code>## [1] 4.900618 4.486181</code></pre>
+<div class="sourceCode" id="cb41"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb41-1"><a href="métodos-de-monte-carlo-vía-cadenas-de-markov.html#cb41-1" aria-hidden="true" tabindex="-1"></a><span class="fu">par</span>(<span class="at">mfrow=</span><span class="fu">c</span>(<span class="dv">2</span>,<span class="dv">2</span>))</span>
+<span id="cb41-2"><a href="métodos-de-monte-carlo-vía-cadenas-de-markov.html#cb41-2" aria-hidden="true" tabindex="-1"></a><span class="fu">pacf</span>(mc2[, <span class="dv">1</span>], <span class="dv">100</span>)</span>
+<span id="cb41-3"><a href="métodos-de-monte-carlo-vía-cadenas-de-markov.html#cb41-3" aria-hidden="true" tabindex="-1"></a><span class="fu">pacf</span>(mc2[, <span class="dv">2</span>], <span class="dv">100</span>)</span>
+<span id="cb41-4"><a href="métodos-de-monte-carlo-vía-cadenas-de-markov.html#cb41-4" aria-hidden="true" tabindex="-1"></a><span class="fu">acf</span>(mc2[, <span class="dv">1</span>], <span class="dv">100</span>)</span>
+<span id="cb41-5"><a href="métodos-de-monte-carlo-vía-cadenas-de-markov.html#cb41-5" aria-hidden="true" tabindex="-1"></a><span class="fu">acf</span>(mc2[, <span class="dv">2</span>], <span class="dv">100</span>)</span></code></pre></div>
+<div class="figure"><span id="fig:unnamed-chunk-22"></span>
+<img src="A3Simulacion_files/figure-html/unnamed-chunk-22-1.png" alt="Autocorrelación y autocorrelación parcial para las cadenas simuladas del algoritmo MH." width="672" />
+<p class="caption">
+Figura C.11: Autocorrelación y autocorrelación parcial para las cadenas simuladas del algoritmo MH.
+</p>
+</div>
+</div>
+<div id="buenas-prácticas-en-la-aplicación-de-métodos-mcmc" class="section level3" number="5.2.3">
+<h3><span class="header-section-number">C.2.3</span> Buenas prácticas en la aplicación de métodos MCMC</h3>
 <p>Dado que una gran parte de la inferencia bayesiana está ligada a la programación e implementación de los métodos MCMC para realizar inferencias posteriores de los parámetros de interés, se sugiere seguir el razonamiento y recomendaciones de <span class="citation"><a href="#ref-GelShir2010" role="doc-biblioref">A. Gelman y Shirley</a> (<a href="#ref-GelShir2010" role="doc-biblioref">2010</a>)</span>, que puede ser resumido en los siguientes ítemes para cada parámetro de interés:</p>
 <ol style="list-style-type: decimal">
 <li>Simulación de tres o más cadenas de forma paralela. Los valores iniciales de cada cadena deben estar dispersos entre sí.</li>

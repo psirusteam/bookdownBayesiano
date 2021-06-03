@@ -105,11 +105,13 @@ fig:unnamed-chunk-12-2
 exm:unnamed-chunk-13
 fig:unnamed-chunk-14
 fig:unnamed-chunk-16
-exm:unnamed-chunk-17
+exm:GibbsN2
 eq:apmunormal
 eq:apsigmaig
+fig:unnamed-chunk-18
 fig:unnamed-chunk-19
-fig:unnamed-chunk-20
+prp:unnamed-chunk-20
+fig:unnamed-chunk-22
 tópicos-básicos
 teoría-de-la-decisión
 algunos-resultados-de-probabilidad
@@ -160,4 +162,5 @@ método-de-la-transformación-uniforme
 método-de-la-grilla
 métodos-de-monte-carlo-vía-cadenas-de-markov
 el-muestreador-de-gibbs
+el-algoritmo-de-metrópolis-hastings
 buenas-prácticas-en-la-aplicación-de-métodos-mcmc

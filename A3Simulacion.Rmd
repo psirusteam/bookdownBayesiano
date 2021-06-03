@@ -316,7 +316,7 @@ title("Diagnóstico - Varianza acumulada")
 
 El muestrador de Gibbs también funciona en una "segunda fase", cuando queremos seleccionar una muestra de $f(\theta\mid x)$, es decir, la distribución de los parámetros dada la información observada $x$. 
 
-```{example}
+```{example, GibbsN2}
 Suponga que $y$ tiene distribución $N(\mu,\sigma^2=1/\phi)$ y queremos obtener una muestra de la distribución posterior del vector aleatorio $\btheta=(\mu,1/\phi)$. Para este caso supongamos que conocemos las distribuciones previas; para la media $\mu$ se asume una distribución uniforme y para la varianza $\phi$ una distribución Gamma con parámetros $a$ y $b$. La distribución posterior de $(\mu, \phi)$ satisface:
 
 \begin{equation}  
@@ -336,7 +336,7 @@ Acudiendo al resultado \@ref(prp:gammainver), la distribución condicional de la
 
 \begin{equation} 
 (\#eq:apmunormal)
-\sigma^2\mid\mu,x\sim Gamma-inversa\biggl(\alpha+n/2,\sum_{j=1}^n(y_j-\mu)^2/2+b\biggl)
+\sigma^2\mid\mu,x\sim Gamma-inversa\biggl(\theta+n/2,\sum_{j=1}^n(y_j-\mu)^2/2+b\biggl)
 \end{equation}
 
 Análogamente, la distribución de $\mu$ dado $(\sigma^2, y)$ es normal
@@ -363,6 +363,8 @@ una muestra (correlacionada) de $p(\mu, \sigma^2\mid x)$.
 La siguiente función en `R` implementa el muestreador de Gibbs para el anterior ejemplo. 
 
 ```{r, cache=TRUE}
+library(invgamma)
+
 normal2 <- function(datos, a, b, nsim, inicial){
   n <- length(datos)
   xbar <- mean(datos)
@@ -373,9 +375,10 @@ normal2 <- function(datos, a, b, nsim, inicial){
   dummy[1, 2] <- var.now
   
   for (i in 2 : nsim){
+    alp <- a + (n/2)
+    bet <- b + (sum((datos - mu.now)^2)/2)
+    var.next <- rinvgamma(1, shape = alp, rate = bet)
     mu.next <- rnorm(1, xbar, sqrt(var.now/n))
-    phi <- (rgamma(1, a + n/2)/(b + sum((datos - mu.next)^2)/2))
-    var.next <- 1/phi
     dummy[i, 1] <- mu.next
     dummy[i, 2] <- var.next
     mu.now <- mu.next
@@ -384,9 +387,9 @@ normal2 <- function(datos, a, b, nsim, inicial){
   return(dummy)
 }
 
-datos <- rnorm(50, 2, 1)
-mc1.vals <- normal2(datos, a = 10, b = 10, 
-                    nsim = 1000, inicial = c(5, 5))
+datos <- rnorm(100, 5, 2)
+mc1.vals <- normal2(datos, a = 2, b = 5, 
+                    nsim = 1000, inicial = c(2, 2))
 mc1.vals <- mc1.vals[101: 1000, ]
 colMeans(mc1.vals)
 ```
@@ -405,7 +408,94 @@ hist(mc1.vals[, 2], prob = T, xlab='sigma^2', main = "")
 lines(density(mc1.vals[, 2], kernel='gaussian'))
 ```
 
+### El algoritmo de Metrópolis-Hastings
 
+Este algoritmo se basa en proponer un nuevo punto de acuerdo a una función de densidad adecuada y aceptar este nuevo valor propuesto con una probabilidad que depende del punto actual, del nuevo punto y de la densidad de la cual fue propuesto el nuevo punto. 
+
+Suponga que deseamos simular valores de una distribución multivariada $p(\theta \mid  y)$. Sea la función de densidad propuesta $q(\theta, \theta')$, una función de densidad de probabilidad arbitraria que
+describe la probabilidad de aceptación de $\theta'$ a partir de la posición actual de $\theta$. El algoritmo de Metropolis-Hastings está dado por los siguientes pasos:
+
+* Siendo el valor actual $\theta_i$, genere un valor candidato $\theta'$ obtenido como una observación de la densidad $q(\theta_i, \theta')$.
+* Calcule
+\begin{equation*}
+T(\theta_i, \theta') =
+\begin{cases}
+\min \left(1,  \frac{p(\theta' \mid  y)q(\theta', \theta_i)}{p(\theta_i \mid  y)q(\theta_i, \theta')} \right),
+& \text{  si   } p(\theta_i \mid  y)q(\theta_i, \theta') > 0,\\ 
+1, & \text{  si   }
+p(\theta_i \mid y)q(\theta_i, \theta') = 0
+\end{cases}
+\end{equation*}
+* Acepte el nuevo valor y actualícelo a  $\theta_{i+1}=\theta'$ con probabilidad $T(\theta_i, \theta')$. De otra forma, rechazar el valor candidato y defina $\theta_{i+1}=\theta_i$.
+\item Repita el paso anterior para obtener la secuencia $\theta_0,\theta_1,...,$
+donde $\theta_0$ denota un valor arbitrario de arranque.
+\item Descarte los primeros $m$ valores obtenidos. 
+
+Siguiendo el anterior algoritmo, entonces se tiene que  $\theta_{m+1}, \theta_{m+2}, \ldots$ es una secuencia (correlacionada) de la distribución requerida. En principio, puede ser usada cualquier densidad $q$, pero si ésta es escogida ingenuamente, la eficiencia de la cadena puede ser muy pobre. La relación más importante entre el muestreados de Gibbs y el algorítmo de Metropolis-Hastings, está dada como un teorema en el libro de @Robert[pág. 296]. 
+
+```{proposition}
+El muestreador de Gibbs es equivalente al algoritmo de Metropolis-Hastings, con la
+probabilidad de aceptación igual a uno para todos los puntos propuestos.
+```
+<br>
+
+Lo anterior implica que la convergencia para ambos métodos no es la misma. Para cerrar la sección de cadenas de Markov vía Monte Carlo, es importante hacernos la siguiente pregunta: ¿Son independientes las muestras simuladas? En principio no se puede hablar de independencia, pues es claro que la observación $\{i+1\}$ depende de la observación $\{i\}$. Dado que las observaciones resultantes
+se encuentran en estricto orden de medición, podríamos utilizar algunos criterios como la función de auto-correlación (ACF) y la función de auto-correlación parcial (PACF), para conocer sobre la correlación entre observaciones. 
+
+Siguiendo con el ejemplo \@ref(exm:GibbsN2) del apartado de Gibbs, se ha escogido usar como como distribuciones propuestas $q$ para la media y para la varianza, densidades normales centradas en el actual
+parámetro, ambas con varianza igual a uno. Dadas las distribuciones propuestas, algunos valores de la varianza pueden ser negativos; aunque este no es un problema porque la distribución posterior le asignará el valor cero, por tanto este valor será rechazado con un probabilidad de uno. 
+
+```{r, cache=TRUE}
+library(invgamma)
+
+met.hast <- function(datos, a, b, iter, ini){
+  mu0 <- ini[1] 
+  var0 <- ini[2]
+  resul <- matrix(ncol = 2, nrow = iter)
+  resul[1, 1] <- mu0
+  resul[1, 2] <- var0
+  for (i in 2 : iter){
+    mu.prop <- rnorm(1, mu0, 1)
+    var.prop <- rnorm(1, var0, 1)
+    if (var.prop <= 0){ T.val <- 0 }
+    else{
+      p1 <- prod(dnorm(datos, mu.prop, sqrt(var.prop))) *
+        dinvgamma(var.prop, shape = a, rate = b)
+      q1 <- dnorm(mu0, mu.prop, 1) *
+        dnorm(var0, var.prop, 1)
+      p2 <- prod(dnorm(datos, mu0, sqrt(var0))) * 
+        dinvgamma(var0, shape = a, rate = b)
+      q2 <- dnorm(mu.prop, mu0, 1) * 
+        dnorm(var.prop, var0, 1)
+      T.val <- min(1, (p1 * q1)/(p2 * q2))
+    }
+    u <- runif(1) 
+    if (u <= T.val){
+      resul[i, 1] <- mu.prop
+      resul[i, 2] <- var.prop
+      } 
+    else{
+      resul[i, 1] <- mu0
+      resul[i, 2] <- var0
+      }
+    mu0 <- resul[i, 1]
+    var0 <- resul[i, 2]
+  }
+  return(resul)
+}
+
+datos <- rnorm(100, 5, 2)
+mc2 <- met.hast(datos, a = 2, b = 5, 
+                iter = 1000, ini = c(2, 2))
+colMeans(mc2)
+```
+```{r, fig.cap="Autocorrelación y autocorrelación parcial para las cadenas simuladas del algoritmo MH.", cache=TRUE}
+par(mfrow=c(2,2))
+pacf(mc2[, 1], 100)
+pacf(mc2[, 2], 100)
+acf(mc2[, 1], 100)
+acf(mc2[, 2], 100)
+```
 
 ### Buenas prácticas en la aplicación de métodos MCMC
 
