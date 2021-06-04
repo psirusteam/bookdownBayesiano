@@ -525,7 +525,7 @@ transformaciones matemáticas. La distribución previa no
 informativa de Jeffreys, definida a continuación, cuenta con esta
 agradable propiedad.
 
-```{definition}
+```{definition, Jeffreys}
 Si la verosimilitud de los datos está determinada por un único parámetro $\theta$, la distribución previa no informativa de Jeffreys tiene distribución de probabilidad dada por
 \begin{equation}
 p(\theta)\propto (I(\theta))^{1/2}

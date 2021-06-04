@@ -24,7 +24,7 @@
 <meta name="author" content="Andrés Gutiérrez - Hanwen Zhang" />
 
 
-<meta name="date" content="2021-06-02" />
+<meta name="date" content="2021-06-03" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
@@ -190,6 +190,10 @@ div.csl-indent {
 <li class="chapter" data-level="2.3.2" data-path="criterios-de-información.html"><a href="criterios-de-información.html#criterios-aic-y-bic"><i class="fa fa-check"></i><b>2.3.2</b> Criterios AIC y BIC</a></li>
 </ul></li>
 </ul></li>
+<li class="chapter" data-level="3" data-path="modelos-uniparamétricos.html"><a href="modelos-uniparamétricos.html"><i class="fa fa-check"></i><b>3</b> Modelos uniparamétricos</a>
+<ul>
+<li class="chapter" data-level="3.1" data-path="modelo-bernoulli.html"><a href="modelo-bernoulli.html"><i class="fa fa-check"></i><b>3.1</b> Modelo Bernoulli</a></li>
+</ul></li>
 <li class="appendix"><span><b>Apéndice</b></span></li>
 <li class="chapter" data-level="A" data-path="elementos-de-probabilidad.html"><a href="elementos-de-probabilidad.html"><i class="fa fa-check"></i><b>A</b> Elementos de probabilidad</a>
 <ul>
@@ -263,20 +267,20 @@ div.csl-indent {
           <div class="page-inner">
 
             <section class="normal" id="section-">
-<div id="distribuciones-continuas" class="section level2" number="3.2">
+<div id="distribuciones-continuas" class="section level2" number="4.2">
 <h2><span class="header-section-number">A.2</span> Distribuciones continuas</h2>
-<div id="distribución-uniforme-continua" class="section level3" number="3.2.1">
+<div id="distribución-uniforme-continua" class="section level3" number="4.2.1">
 <h3><span class="header-section-number">A.2.1</span> Distribución Uniforme Continua</h3>
 
 <div class="definition">
-<p><span id="def:unnamed-chunk-16" class="definition"><strong>Definición 2.2  </strong></span>Una variable aleatoria <span class="math inline">\(Y\)</span> tiene distribución uniforme continua sobre el intervalo <span class="math inline">\([a,b]\)</span> con <span class="math inline">\(a&lt;b\)</span> si su función de densidad está dada por:</p>
+<p><span id="def:unnamed-chunk-16" class="definition"><strong>Definición A.6  </strong></span>Una variable aleatoria <span class="math inline">\(Y\)</span> tiene distribución uniforme continua sobre el intervalo <span class="math inline">\([a,b]\)</span> con <span class="math inline">\(a&lt;b\)</span> si su función de densidad está dada por:</p>
 <span class="math display">\[\begin{equation}
 f_Y(y)=\frac{1}{b-a}I_{[a,b]}(y)
 \end{equation}\]</span>
 </div>
 
 <div class="proposition">
-<p><span id="prp:unnamed-chunk-17" class="proposition"><strong>Resultado 2.8  </strong></span>Si <span class="math inline">\(Y\)</span> es una variable aleatoria con distribución uniforme continua sobre <span class="math inline">\([a,b]\)</span>, entonces</p>
+<p><span id="prp:unnamed-chunk-17" class="proposition"><strong>Resultado A.8  </strong></span>Si <span class="math inline">\(Y\)</span> es una variable aleatoria con distribución uniforme continua sobre <span class="math inline">\([a,b]\)</span>, entonces</p>
 <ul>
 <li><span class="math inline">\(E(Y)=\frac{a+b}{2}\)</span>.</li>
 <li><span class="math inline">\(Var(Y)=\frac{(b-a)^2}{12}\)</span>.</li>
@@ -284,18 +288,18 @@ f_Y(y)=\frac{1}{b-a}I_{[a,b]}(y)
 </ul>
 </div>
 </div>
-<div id="distribución-weibull" class="section level3" number="3.2.2">
+<div id="distribución-weibull" class="section level3" number="4.2.2">
 <h3><span class="header-section-number">A.2.2</span> Distribución Weibull</h3>
 
 <div class="definition">
-<p><span id="def:unnamed-chunk-18" class="definition"><strong>Definición A.6  </strong></span>Una variable aleatoria <span class="math inline">\(Y\)</span> tiene distribución uniforme continua sobre los reales positivos si su función de densidad está dada por:</p>
+<p><span id="def:unnamed-chunk-18" class="definition"><strong>Definición A.7  </strong></span>Una variable aleatoria <span class="math inline">\(Y\)</span> tiene distribución uniforme continua sobre los reales positivos si su función de densidad está dada por:</p>
 <span class="math display">\[\begin{equation}
 p(Y\mid \theta, \gamma)=\frac{\theta}{\gamma^\theta}y^{\theta-1}exp\left\{-\frac{y^\theta}{\gamma^\theta}  \right\}I_{[0,\infty)}(y)
 \end{equation}\]</span>
 </div>
 
 <div class="proposition">
-<p><span id="prp:unnamed-chunk-19" class="proposition"><strong>Resultado A.8  </strong></span>Si <span class="math inline">\(Y\)</span> es una variable aleatoria con distribución Weibull, entonces</p>
+<p><span id="prp:unnamed-chunk-19" class="proposition"><strong>Resultado A.9  </strong></span>Si <span class="math inline">\(Y\)</span> es una variable aleatoria con distribución Weibull, entonces</p>
 <ul>
 <li><span class="math inline">\(E(Y)=\gamma \Gamma\left(1+\frac{1}{\theta}\right)\)</span>.</li>
 <li><span class="math inline">\(Var(Y)=\gamma^2 \left[ \Gamma\left(1+\frac{2}{\theta}\right) + \Gamma^2\left(1+\frac{1}{\theta}\right)\right]\)</span>.</li>
@@ -303,18 +307,18 @@ p(Y\mid \theta, \gamma)=\frac{\theta}{\gamma^\theta}y^{\theta-1}exp\left\{-\frac
 </ul>
 </div>
 </div>
-<div id="distribución-valor-extremo" class="section level3" number="3.2.3">
+<div id="distribución-valor-extremo" class="section level3" number="4.2.3">
 <h3><span class="header-section-number">A.2.3</span> Distribución valor-extremo</h3>
 
 <div class="definition">
-<p><span id="def:unnamed-chunk-20" class="definition"><strong>Definición A.7  </strong></span>Una variable aleatoria <span class="math inline">\(Y\)</span> tiene distribución valor-extremo si su función de densidad está dada por:</p>
+<p><span id="def:unnamed-chunk-20" class="definition"><strong>Definición A.8  </strong></span>Una variable aleatoria <span class="math inline">\(Y\)</span> tiene distribución valor-extremo si su función de densidad está dada por:</p>
 <span class="math display">\[\begin{equation}
 p(y \mid \theta, \lambda )= \theta \exp(\theta y)\exp\left\{\lambda-\exp(\lambda+\theta y)\right\}
 \end{equation}\]</span>
 </div>
 
 <div class="proposition">
-<p><span id="prp:unnamed-chunk-21" class="proposition"><strong>Resultado A.9  </strong></span>Si <span class="math inline">\(Y\)</span> es una variable aleatoria con distribución valor-extremo, entonces</p>
+<p><span id="prp:unnamed-chunk-21" class="proposition"><strong>Resultado A.10  </strong></span>Si <span class="math inline">\(Y\)</span> es una variable aleatoria con distribución valor-extremo, entonces</p>
 <ul>
 <li><span class="math inline">\(E(Y)=-\frac{\lambda}{\theta}-\frac{\epsilon}{\theta}\)</span>.</li>
 <li><span class="math inline">\(Var(Y)=\frac{\pi^2}{6\theta^2}\)</span>.</li>
@@ -322,11 +326,11 @@ p(y \mid \theta, \lambda )= \theta \exp(\theta y)\exp\left\{\lambda-\exp(\lambda
 Donde <span class="math inline">\(\pi\approx 3.1416\)</span> es el número Pi y <span class="math inline">\(\epsilon=0.5772\)</span> es la constante de Euler.
 </div>
 </div>
-<div id="distribución-gamma" class="section level3" number="3.2.4">
+<div id="distribución-gamma" class="section level3" number="4.2.4">
 <h3><span class="header-section-number">A.2.4</span> Distribución Gamma</h3>
 
 <div class="definition">
-<p><span id="def:unnamed-chunk-22" class="definition"><strong>Definición A.8  </strong></span>Una variable aleatoria <span class="math inline">\(Y\)</span> tiene distribución Gamma con parámetro de forma <span class="math inline">\(\alpha&gt;0\)</span> y parámetro de escala <span class="math inline">\(\theta&gt;0\)</span> si su función de densidad está dada por:</p>
+<p><span id="def:unnamed-chunk-22" class="definition"><strong>Definición A.9  </strong></span>Una variable aleatoria <span class="math inline">\(Y\)</span> tiene distribución Gamma con parámetro de forma <span class="math inline">\(\alpha&gt;0\)</span> y parámetro de escala <span class="math inline">\(\theta&gt;0\)</span> si su función de densidad está dada por:</p>
 <p><span class="math display">\[\begin{equation}
 p(\theta \mid \alpha,\beta)=\frac{\beta^\alpha}{\Gamma(\alpha)}\theta^{\alpha-1} e^{-\beta\theta}I_{(0,\infty)}(\theta).
 \end{equation}\]</span></p>
@@ -336,7 +340,7 @@ donde <span class="math inline">\(\Gamma(k)=\int_0^{\infty}u^{k-1}\exp(-u)\ du\)
 <p>La distribución Gamma tiene dos parámetros: <span class="math inline">\(\alpha\)</span> y <span class="math inline">\(\beta\)</span>, en este caso, el vector de hiper-parámetros es <span class="math inline">\(\boldsymbol \theta=(\alpha,\theta)&#39;\)</span> donde el espacio paramétrico está dado por <span class="math inline">\(\Theta=(0,\infty)\times(0,\infty)\)</span>.</p>
 
 <div class="proposition">
-<p><span id="prp:unnamed-chunk-23" class="proposition"><strong>Resultado A.10  </strong></span>Si <span class="math inline">\(Y\)</span> es una variable aleatoria con distribución Gamma con parámetro de forma <span class="math inline">\(\alpha\)</span> y parámetro de escala <span class="math inline">\(\theta\)</span>, entonces</p>
+<p><span id="prp:unnamed-chunk-23" class="proposition"><strong>Resultado A.11  </strong></span>Si <span class="math inline">\(Y\)</span> es una variable aleatoria con distribución Gamma con parámetro de forma <span class="math inline">\(\alpha\)</span> y parámetro de escala <span class="math inline">\(\theta\)</span>, entonces</p>
 <ul>
 <li><span class="math inline">\(E(Y)=\alpha/\beta\)</span>.</li>
 <li><span class="math inline">\(Var(Y)=\alpha/\theta^2\)</span>.</li>
@@ -344,14 +348,14 @@ donde <span class="math inline">\(\Gamma(k)=\int_0^{\infty}u^{k-1}\exp(-u)\ du\)
 </div>
 
 <div class="proposition">
-<span id="prp:unnamed-chunk-24" class="proposition"><strong>Resultado A.11  </strong></span>Sea <span class="math inline">\(Y_1\)</span>, <span class="math inline">\(\cdots\)</span>, <span class="math inline">\(Y_n\)</span> variables aleatorias independientes con distribución Gamma con parámetro de forma <span class="math inline">\(\alpha_i\)</span> y parámetro de escala <span class="math inline">\(\beta\)</span> para <span class="math inline">\(i=1,\cdots,n\)</span>, entonces la variable <span class="math inline">\(\sum_{i=1}^nX_i\)</span> tiene distribución Gamma con parámetro de forma <span class="math inline">\(\sum_{i=1}^n\alpha_i\)</span> y parámetro de escala <span class="math inline">\(\theta\)</span>.
+<span id="prp:unnamed-chunk-24" class="proposition"><strong>Resultado A.12  </strong></span>Sea <span class="math inline">\(Y_1\)</span>, <span class="math inline">\(\cdots\)</span>, <span class="math inline">\(Y_n\)</span> variables aleatorias independientes con distribución Gamma con parámetro de forma <span class="math inline">\(\alpha_i\)</span> y parámetro de escala <span class="math inline">\(\beta\)</span> para <span class="math inline">\(i=1,\cdots,n\)</span>, entonces la variable <span class="math inline">\(\sum_{i=1}^nX_i\)</span> tiene distribución Gamma con parámetro de forma <span class="math inline">\(\sum_{i=1}^n\alpha_i\)</span> y parámetro de escala <span class="math inline">\(\theta\)</span>.
 </div>
 </div>
-<div id="distribución-gamma-inversa" class="section level3" number="3.2.5">
+<div id="distribución-gamma-inversa" class="section level3" number="4.2.5">
 <h3><span class="header-section-number">A.2.5</span> Distribución Gamma-inversa</h3>
 
 <div class="definition">
-<p><span id="def:unnamed-chunk-25" class="definition"><strong>Definición A.9  </strong></span>Una variable aleatoria <span class="math inline">\(Y\)</span> tiene distribución Gamma-inversa con parámetro de forma <span class="math inline">\(\alpha&gt;0\)</span> y parámetro de escala <span class="math inline">\(\beta&gt;0\)</span> si su función de densidad está dada por:</p>
+<p><span id="def:unnamed-chunk-25" class="definition"><strong>Definición A.10  </strong></span>Una variable aleatoria <span class="math inline">\(Y\)</span> tiene distribución Gamma-inversa con parámetro de forma <span class="math inline">\(\alpha&gt;0\)</span> y parámetro de escala <span class="math inline">\(\beta&gt;0\)</span> si su función de densidad está dada por:</p>
 <p><span class="math display">\[\begin{equation}
 p(y \mid \alpha,\beta)=\frac{\beta^\alpha}{\Gamma(\alpha)}y^{-\alpha-1} e^{-\beta/y}I_{(0,\infty)}(y).
 \end{equation}\]</span></p>
@@ -361,7 +365,7 @@ donde <span class="math inline">\(\Gamma(k)=\int_0^{\infty}u^{k-1}\exp(-u)\ du\)
 <p>La distribución Gamma-inversa tiene dos parámetros: <span class="math inline">\(\alpha\)</span> y <span class="math inline">\(\beta\)</span>; en este caso, el vector de hiper-parámetros es <span class="math inline">\(\boldsymbol \theta=(\alpha,\beta)&#39;\)</span> donde el espacio paramétrico está dado por <span class="math inline">\(\Theta=(0,\infty)\times(0,\infty)\)</span>.</p>
 
 <div class="proposition">
-<p><span id="prp:unnamed-chunk-26" class="proposition"><strong>Resultado A.12  </strong></span>Si <span class="math inline">\(Y\)</span> es una variable aleatoria con distribución Gamma-inversa con parámetro de forma <span class="math inline">\(\alpha\)</span> y parámetro de escala <span class="math inline">\(\beta\)</span>, entonces</p>
+<p><span id="prp:unnamed-chunk-26" class="proposition"><strong>Resultado A.13  </strong></span>Si <span class="math inline">\(Y\)</span> es una variable aleatoria con distribución Gamma-inversa con parámetro de forma <span class="math inline">\(\alpha\)</span> y parámetro de escala <span class="math inline">\(\beta\)</span>, entonces</p>
 <ul>
 <li><span class="math inline">\(E(Y)=\beta/(\alpha-1)\)</span>.</li>
 <li><span class="math inline">\(Var(Y)=\theta^2/(\alpha-1)^2(\alpha-2)\)</span>.</li>
@@ -369,14 +373,14 @@ donde <span class="math inline">\(\Gamma(k)=\int_0^{\infty}u^{k-1}\exp(-u)\ du\)
 </div>
 
 <div class="proposition">
-<span id="prp:gammainver" class="proposition"><strong>Resultado A.13  </strong></span>Si <span class="math inline">\(X\)</span> es una variable aleatoria con distribución <span class="math inline">\(Gamma(\alpha,\beta)\)</span>, entonces <span class="math inline">\(1/X\)</span> tiene distribución <span class="math inline">\(Gamma-inversa(\alpha,1/\beta)\)</span>.
+<span id="prp:gammainver" class="proposition"><strong>Resultado A.14  </strong></span>Si <span class="math inline">\(X\)</span> es una variable aleatoria con distribución <span class="math inline">\(Gamma(\alpha,\beta)\)</span>, entonces <span class="math inline">\(1/X\)</span> tiene distribución <span class="math inline">\(Gamma-inversa(\alpha,1/\beta)\)</span>.
 </div>
 </div>
-<div id="distribución-exponencial" class="section level3" number="3.2.6">
+<div id="distribución-exponencial" class="section level3" number="4.2.6">
 <h3><span class="header-section-number">A.2.6</span> Distribución exponencial</h3>
 
 <div class="definition">
-<p><span id="def:unnamed-chunk-27" class="definition"><strong>Definición A.10  </strong></span>Una variable aleatoria <span class="math inline">\(Y\)</span> tiene distribución exponencial con parámetro de escala <span class="math inline">\(\theta&gt;0\)</span> si su función de densidad está dada por:</p>
+<p><span id="def:unnamed-chunk-27" class="definition"><strong>Definición A.11  </strong></span>Una variable aleatoria <span class="math inline">\(Y\)</span> tiene distribución exponencial con parámetro de escala <span class="math inline">\(\theta&gt;0\)</span> si su función de densidad está dada por:</p>
 <span class="math display">\[\begin{equation}
 f_Y(y)=\frac{1}{\theta}e^{-y/\theta}I_{(0,\infty)}(y)
 \end{equation}\]</span>
@@ -384,7 +388,7 @@ f_Y(y)=\frac{1}{\theta}e^{-y/\theta}I_{(0,\infty)}(y)
 <p>La distribución exponencial es un caso particular de la distribución Gamma cuando el parámetro de forma <span class="math inline">\(k\)</span> toma el valor 1, y usualmente se utiliza para describir la vida útil de un componente eléctrico o el tiempo necesario para la ocurrencia de algún evento.</p>
 
 <div class="proposition">
-<p><span id="prp:unnamed-chunk-28" class="proposition"><strong>Resultado A.14  </strong></span>Si <span class="math inline">\(Y\)</span> es una variable aleatoria con distribución exponencial con parámetro <span class="math inline">\(\theta\)</span>, entonces</p>
+<p><span id="prp:unnamed-chunk-28" class="proposition"><strong>Resultado A.15  </strong></span>Si <span class="math inline">\(Y\)</span> es una variable aleatoria con distribución exponencial con parámetro <span class="math inline">\(\theta\)</span>, entonces</p>
 <ul>
 <li><span class="math inline">\(E(Y)=\theta\)</span>.</li>
 <li><span class="math inline">\(Var(Y)=\theta^2\)</span>.</li>
@@ -393,14 +397,14 @@ f_Y(y)=\frac{1}{\theta}e^{-y/\theta}I_{(0,\infty)}(y)
 </div>
 
 <div class="proposition">
-<span id="prp:unnamed-chunk-29" class="proposition"><strong>Resultado A.15  </strong></span>Sea <span class="math inline">\(Y_1\)</span>, <span class="math inline">\(\cdots\)</span>, <span class="math inline">\(Y_n\)</span> variables aleatorias independientes e idénticamente distribuidas con distribución exponencial con parámetro de escala <span class="math inline">\(\theta\)</span>, entonces la variable <span class="math inline">\(\sum_{i=1}^nX_i\)</span> tiene distribución Gamma con parámetro de forma <span class="math inline">\(n\)</span> y parámetro de escala <span class="math inline">\(\theta\)</span>.
+<span id="prp:unnamed-chunk-29" class="proposition"><strong>Resultado A.16  </strong></span>Sea <span class="math inline">\(Y_1\)</span>, <span class="math inline">\(\cdots\)</span>, <span class="math inline">\(Y_n\)</span> variables aleatorias independientes e idénticamente distribuidas con distribución exponencial con parámetro de escala <span class="math inline">\(\theta\)</span>, entonces la variable <span class="math inline">\(\sum_{i=1}^nX_i\)</span> tiene distribución Gamma con parámetro de forma <span class="math inline">\(n\)</span> y parámetro de escala <span class="math inline">\(\theta\)</span>.
 </div>
 </div>
-<div id="distribución-beta" class="section level3" number="3.2.7">
+<div id="distribución-beta" class="section level3" number="4.2.7">
 <h3><span class="header-section-number">A.2.7</span> Distribución Beta</h3>
 
 <div class="definition">
-<p><span id="def:unnamed-chunk-30" class="definition"><strong>Definición A.11  </strong></span>Una variable aleatoria <span class="math inline">\(Y\)</span> tiene distribución Beta con parámetro de forma <span class="math inline">\(\alpha&gt;0\)</span> y parámetro de escala <span class="math inline">\(\beta&gt;0\)</span> si su función de densidad está dada por:</p>
+<p><span id="def:unnamed-chunk-30" class="definition"><strong>Definición A.12  </strong></span>Una variable aleatoria <span class="math inline">\(Y\)</span> tiene distribución Beta con parámetro de forma <span class="math inline">\(\alpha&gt;0\)</span> y parámetro de escala <span class="math inline">\(\beta&gt;0\)</span> si su función de densidad está dada por:</p>
 <p><span class="math display">\[\begin{equation}
 f_Y(y)=\frac{1}{Beta(\alpha,\beta)}y^{\alpha-1}(1-y)^{\beta-1}I_{[0,1]}(y).
 \end{equation}\]</span></p>
@@ -410,19 +414,19 @@ donde <span class="math inline">\(Beta(\alpha,\beta)=\dfrac{\gamma(\alpha)\gamma
 <p>La distribución Beta tiene dos parámetros: <span class="math inline">\(\alpha\)</span> y <span class="math inline">\(\beta\)</span>; en este caso, el vector de parámetros es <span class="math inline">\(\boldsymbol \theta=(\alpha,\beta)&#39;\)</span> donde el espacio paramétrico está dado por <span class="math inline">\(\Theta=(0,\infty)\times(0,\infty)\)</span>. Pero cuando uno de los dos parámetros es fijo, por ejemplo <span class="math inline">\(\theta\)</span>, entonces la distribución tendría un sólo parámetro: <span class="math inline">\(k\)</span>.</p>
 
 <div class="proposition">
-<p><span id="prp:unnamed-chunk-31" class="proposition"><strong>Resultado A.16  </strong></span>Si <span class="math inline">\(Y\)</span> es una variable aleatoria con distribución Gamma con parámetro de forma <span class="math inline">\(k\)</span> y parámetro de escala <span class="math inline">\(\theta\)</span>, entonces</p>
+<p><span id="prp:unnamed-chunk-31" class="proposition"><strong>Resultado A.17  </strong></span>Si <span class="math inline">\(Y\)</span> es una variable aleatoria con distribución Gamma con parámetro de forma <span class="math inline">\(k\)</span> y parámetro de escala <span class="math inline">\(\theta\)</span>, entonces</p>
 <ul>
 <li><span class="math inline">\(E(Y)=\frac{\alpha}{\alpha + \beta}\)</span>.</li>
 <li><span class="math inline">\(Var(Y)=\frac{\alpha\beta}{(\alpha+\beta)^2(\alpha+\beta+1)}\)</span>
 </div></li>
 </ul>
 </div>
-<div id="distribución-normal" class="section level3" number="3.2.8">
+<div id="distribución-normal" class="section level3" number="4.2.8">
 <h3><span class="header-section-number">A.2.8</span> Distribución normal</h3>
 <p>La distribución normal también es llamada la distribución gaussiana, rindiendo homenaje al matemático alemán Carl Friedrich Gauss (1777-1855). La distribución normal es, sin duda, una de las distribuciones más importantes, puesto que una gran parte de la teoría estadística fue desarrollada inicialmente para variables con esta distribución; por el otro lado, gracias al teorema central del límite, muchas distribuciones ajenas a la normal puede ser aproximadas por esta.</p>
 
 <div class="definition">
-<p><span id="def:unnamed-chunk-32" class="definition"><strong>Definición A.12  </strong></span>Una variable aleatoria <span class="math inline">\(Y\)</span> tiene distribución normal con parámetros <span class="math inline">\(\mu\)</span> y <span class="math inline">\(\sigma^2\)</span> si su función de densidad está dada por:</p>
+<p><span id="def:unnamed-chunk-32" class="definition"><strong>Definición A.13  </strong></span>Una variable aleatoria <span class="math inline">\(Y\)</span> tiene distribución normal con parámetros <span class="math inline">\(\mu\)</span> y <span class="math inline">\(\sigma^2\)</span> si su función de densidad está dada por:</p>
 <p><span class="math display">\[\begin{equation}
 f_Y(y)=\frac{1}{\sqrt{2\pi\sigma^2}}\exp\left\{-\frac{1}{2\sigma^2}(y-\mu)^2\right\}I_\mathbb{R}(y),
 \end{equation}\]</span></p>
@@ -432,7 +436,7 @@ donde <span class="math inline">\(\sigma&gt;0\)</span> y se nota como <span clas
 <p>La distribución normal tiene dos parámetros, representado como <span class="math inline">\(\boldsymbol \theta=(\mu,\sigma^2)\)</span>, mientras que su espacio paramétrico es <span class="math inline">\(\Theta=\mathbb{R}\times(0,\infty)\)</span>.</p>
 
 <div class="proposition">
-<p><span id="prp:unnamed-chunk-33" class="proposition"><strong>Resultado A.17  </strong></span>Si <span class="math inline">\(Y\)</span> es una variable aleatoria con distribución normal con parámetros <span class="math inline">\(\mu\)</span> y <span class="math inline">\(\sigma^2\)</span>, entonces</p>
+<p><span id="prp:unnamed-chunk-33" class="proposition"><strong>Resultado A.18  </strong></span>Si <span class="math inline">\(Y\)</span> es una variable aleatoria con distribución normal con parámetros <span class="math inline">\(\mu\)</span> y <span class="math inline">\(\sigma^2\)</span>, entonces</p>
 <ul>
 <li><span class="math inline">\(E(Y)=\mu\)</span>.</li>
 <li><span class="math inline">\(Var(Y)=\sigma^2\)</span>.</li>
@@ -442,7 +446,7 @@ donde <span class="math inline">\(\sigma&gt;0\)</span> y se nota como <span clas
 <p>Cuando <span class="math inline">\(\mu=0\)</span> y <span class="math inline">\(\sigma=1\)</span>, se dice que <span class="math inline">\(Y\)</span> tiene distribución normal estándar y usualmente se denota por <span class="math inline">\(Z\)</span>.</p>
 
 <div class="proposition">
-<span id="prp:unnamed-chunk-34" class="proposition"><strong>Resultado A.18  </strong></span>Si <span class="math inline">\(Y\sim N(\mu,\sigma^2)\)</span>, y <span class="math inline">\(\alpha\)</span>, <span class="math inline">\(\beta\)</span> son constantes, entonces la variable <span class="math inline">\(\alpha Y+\beta\)</span> tiene distribución <span class="math inline">\(N(\alpha\mu+\beta,\alpha^2\sigma^2)\)</span>.
+<span id="prp:unnamed-chunk-34" class="proposition"><strong>Resultado A.19  </strong></span>Si <span class="math inline">\(Y\sim N(\mu,\sigma^2)\)</span>, y <span class="math inline">\(\alpha\)</span>, <span class="math inline">\(\beta\)</span> son constantes, entonces la variable <span class="math inline">\(\alpha Y+\beta\)</span> tiene distribución <span class="math inline">\(N(\alpha\mu+\beta,\alpha^2\sigma^2)\)</span>.
 </div>
 <p><br></p>
 
@@ -461,14 +465,14 @@ la cual es la función generadora de momentos de una distribución <span class="
 <p>Como consecuencia inmediata del anterior resultado, se define la estandarización, que es fundamental en la teoría relacionada con las distribuciones normales. Si <span class="math inline">\(Y\sim N(\mu,\sigma^2)\)</span>, entonces la variable <span class="math inline">\(Z=\frac{Y-\mu}{\sigma}\)</span> tiene distribución normal estándar, y la anterior transformación se conoce como la normal estandarizada.</p>
 
 <div class="proposition">
-<span id="prp:unnamed-chunk-36" class="proposition"><strong>Resultado A.19  </strong></span>Sea <span class="math inline">\(Y_1\)</span>, <span class="math inline">\(\cdots\)</span>, <span class="math inline">\(Y_n\)</span> variables aleatorias independientes, donde <span class="math inline">\(Y_i\sim N(\mu_i,\sigma^2_i)\)</span> con <span class="math inline">\(i=1,\cdots,n\)</span>, entonces la variable <span class="math inline">\(\sum_{i=1}^nY_i\)</span> tiene distribución <span class="math inline">\(N(\sum_{i=1}^n\mu_i,\sum_{i=1}^n\sigma_i^2)\)</span>.
+<span id="prp:unnamed-chunk-36" class="proposition"><strong>Resultado A.20  </strong></span>Sea <span class="math inline">\(Y_1\)</span>, <span class="math inline">\(\cdots\)</span>, <span class="math inline">\(Y_n\)</span> variables aleatorias independientes, donde <span class="math inline">\(Y_i\sim N(\mu_i,\sigma^2_i)\)</span> con <span class="math inline">\(i=1,\cdots,n\)</span>, entonces la variable <span class="math inline">\(\sum_{i=1}^nY_i\)</span> tiene distribución <span class="math inline">\(N(\sum_{i=1}^n\mu_i,\sum_{i=1}^n\sigma_i^2)\)</span>.
 </div>
 </div>
-<div id="distribución-log-normal" class="section level3" number="3.2.9">
+<div id="distribución-log-normal" class="section level3" number="4.2.9">
 <h3><span class="header-section-number">A.2.9</span> Distribución log-normal</h3>
 
 <div class="definition">
-<p><span id="def:unnamed-chunk-37" class="definition"><strong>Definición A.13  </strong></span>Una variable aleatoria <span class="math inline">\(Y\)</span> tiene distribución log-normal si su función de densidad está dada por:</p>
+<p><span id="def:unnamed-chunk-37" class="definition"><strong>Definición A.14  </strong></span>Una variable aleatoria <span class="math inline">\(Y\)</span> tiene distribución log-normal si su función de densidad está dada por:</p>
 <p><span class="math display">\[\begin{equation}
 p(Y\mid \mu, \sigma^2)=\frac{1}{y\sqrt{2\pi\sigma^2}}\exp\{\frac{-1}{2\sigma^2(\ln(y)-\mu)^2}\}
 \end{equation}\]</span></p>
@@ -476,18 +480,18 @@ Nótese que si <span class="math inline">\(\mu\)</span> y <span class="math inli
 </div>
 
 <div class="proposition">
-<p><span id="prp:unnamed-chunk-38" class="proposition"><strong>Resultado A.20  </strong></span>Si <span class="math inline">\(Y\)</span> es una variable aleatoria con distribución log-normal, entonces</p>
+<p><span id="prp:unnamed-chunk-38" class="proposition"><strong>Resultado A.21  </strong></span>Si <span class="math inline">\(Y\)</span> es una variable aleatoria con distribución log-normal, entonces</p>
 <ul>
 <li><span class="math inline">\(E(Y)=\exp(\mu+\sigma^2/2)\)</span>.</li>
 <li><span class="math inline">\(Var(Y)=(\exp(\sigma^2-1)) \exp(2\mu+\sigma^2)\)</span>.</li>
 </ul>
 </div>
 </div>
-<div id="distribución-ji-cuadrado" class="section level3" number="3.2.10">
+<div id="distribución-ji-cuadrado" class="section level3" number="4.2.10">
 <h3><span class="header-section-number">A.2.10</span> Distribución Ji-cuadrado</h3>
 
 <div class="definition">
-<p><span id="def:unnamed-chunk-39" class="definition"><strong>Definición A.14  </strong></span>Una variable aleatoria <span class="math inline">\(Y\)</span> tiene distribución Ji-cuadrado con <span class="math inline">\(n\)</span> grados de libertad, con <span class="math inline">\(n\)</span> entero positivo, si su función de densidad está dada por:</p>
+<p><span id="def:unnamed-chunk-39" class="definition"><strong>Definición A.15  </strong></span>Una variable aleatoria <span class="math inline">\(Y\)</span> tiene distribución Ji-cuadrado con <span class="math inline">\(n\)</span> grados de libertad, con <span class="math inline">\(n\)</span> entero positivo, si su función de densidad está dada por:</p>
 <p><span class="math display">\[\begin{equation}
 f_Y(y)=\frac{y^{(n/2)-1}e^{-y/2}}{2^{n/2}\Gamma(n/2)}I_{(0,\infty)}(y),
 \end{equation}\]</span></p>
@@ -497,11 +501,11 @@ y se nota como <span class="math inline">\(Y\sim\chi^2_n\)</span>.
 <p>La distribución Ji-cuadrado con <span class="math inline">\(n\)</span> grados de libertad es un caso particular de la distribución Gamma cuando el parámetro de forma <span class="math inline">\(k\)</span> toma el valor <span class="math inline">\(n/2\)</span> y el parámetro de escala toma el valor 2. También, en la literatura estadística existe la siguiente definición para la distribución Ji-cuadrado.</p>
 
 <div class="definition">
-<span id="def:unnamed-chunk-40" class="definition"><strong>Definición A.15  </strong></span>Si <span class="math inline">\(Z_1\)</span>, <span class="math inline">\(\cdots\)</span>, <span class="math inline">\(Z_n\)</span> son variables aleatorias independientes e idénticamente distribuidas con distribución normal estándar, entonces la variable <span class="math inline">\(\sum_{i=1}^nZ_i^2\)</span> tiene distribución Ji-cuadrado con <span class="math inline">\(n\)</span> grados de libertad.
+<span id="def:unnamed-chunk-40" class="definition"><strong>Definición A.16  </strong></span>Si <span class="math inline">\(Z_1\)</span>, <span class="math inline">\(\cdots\)</span>, <span class="math inline">\(Z_n\)</span> son variables aleatorias independientes e idénticamente distribuidas con distribución normal estándar, entonces la variable <span class="math inline">\(\sum_{i=1}^nZ_i^2\)</span> tiene distribución Ji-cuadrado con <span class="math inline">\(n\)</span> grados de libertad.
 </div>
 
 <div class="proposition">
-<p><span id="prp:unnamed-chunk-41" class="proposition"><strong>Resultado A.21  </strong></span>Si <span class="math inline">\(Y\)</span> es una variable aleatoria con distribución Ji-cuadro con <span class="math inline">\(n\)</span> grados de libertad, entonces</p>
+<p><span id="prp:unnamed-chunk-41" class="proposition"><strong>Resultado A.22  </strong></span>Si <span class="math inline">\(Y\)</span> es una variable aleatoria con distribución Ji-cuadro con <span class="math inline">\(n\)</span> grados de libertad, entonces</p>
 <ul>
 <li><span class="math inline">\(E(Y)=n\)</span>.</li>
 <li><span class="math inline">\(Var(Y)=2n\)</span>.</li>
@@ -510,15 +514,15 @@ y se nota como <span class="math inline">\(Y\sim\chi^2_n\)</span>.
 </div>
 
 <div class="proposition">
-<span id="prp:unnamed-chunk-42" class="proposition"><strong>Resultado A.22  </strong></span>Sea <span class="math inline">\(Z_1\)</span>, <span class="math inline">\(\cdots\)</span>, <span class="math inline">\(Z_m\)</span> variables aleatorias independientes con distribución <span class="math inline">\(\chi^2_{n_i}\)</span> para <span class="math inline">\(i=1,\cdots,m\)</span>, entonces la variable <span class="math inline">\(\sum_{i=1}^mZ_i\)</span> tiene distribución Ji-cuadrado con <span class="math inline">\(\sum_{i=1}^mn_i\)</span> grados de libertad.
+<span id="prp:unnamed-chunk-42" class="proposition"><strong>Resultado A.23  </strong></span>Sea <span class="math inline">\(Z_1\)</span>, <span class="math inline">\(\cdots\)</span>, <span class="math inline">\(Z_m\)</span> variables aleatorias independientes con distribución <span class="math inline">\(\chi^2_{n_i}\)</span> para <span class="math inline">\(i=1,\cdots,m\)</span>, entonces la variable <span class="math inline">\(\sum_{i=1}^mZ_i\)</span> tiene distribución Ji-cuadrado con <span class="math inline">\(\sum_{i=1}^mn_i\)</span> grados de libertad.
 </div>
 </div>
-<div id="distribución-t-student" class="section level3" number="3.2.11">
+<div id="distribución-t-student" class="section level3" number="4.2.11">
 <h3><span class="header-section-number">A.2.11</span> Distribución t-student</h3>
 <p>El descubrimiento de la distribución t-student fue publicado por el estadístico inglés William Sealy Gosset (1876-1937) en el año 1908 cuando trabajaba en la famosa empresa cervecera <em>Guinness</em>. La publicación lo hizo de forma anónimo bajo el nombre de Student, pues Guinness le prohibía la publicación por ser el descubrimiento parte de resultados de investigación realizado por la empresa.</p>
 
 <div class="definition">
-<p><span id="def:unnamed-chunk-43" class="definition"><strong>Definición A.16  </strong></span>Una variable aleatoria <span class="math inline">\(Y\)</span> tiene distribución t-student con <span class="math inline">\(n\)</span> grados de libertad si su función de densidad está dada por:</p>
+<p><span id="def:unnamed-chunk-43" class="definition"><strong>Definición A.17  </strong></span>Una variable aleatoria <span class="math inline">\(Y\)</span> tiene distribución t-student con <span class="math inline">\(n\)</span> grados de libertad si su función de densidad está dada por:</p>
 <p><span class="math display">\[\begin{equation}
 f_Y(y)=\frac{\Gamma(\frac{n+1}{2})}{\sqrt{\pi n}\ \Gamma(\frac{n}{2})}\left(1+\frac{y^2}{n}\right)^{-(n+1)/2}I_\mathbb{R}(y),
 \end{equation}\]</span></p>
@@ -528,13 +532,13 @@ donde <span class="math inline">\(n&gt;0\)</span> y se nota como <span class="ma
 <p>Otra definición que se encuentra frecuentemente en la literatura estadística es la siguiente.</p>
 
 <div class="definition">
-<span id="def:unnamed-chunk-44" class="definition"><strong>Definición A.17  </strong></span>Sea <span class="math inline">\(Z\)</span> una variable aleatoria con distribución normal estándar y <span class="math inline">\(Y\)</span> una variable aleatoria con distribución Ji-cuadrado con <span class="math inline">\(n\)</span> grados de libertad, si <span class="math inline">\(Z\)</span> y <span class="math inline">\(Y\)</span> son independientes, entonces la variable <span class="math inline">\(\frac{Z}{\sqrt{Y/n}}\)</span> tiene distribución t-student con <span class="math inline">\(n\)</span> grados de libertad.
+<span id="def:unnamed-chunk-44" class="definition"><strong>Definición A.18  </strong></span>Sea <span class="math inline">\(Z\)</span> una variable aleatoria con distribución normal estándar y <span class="math inline">\(Y\)</span> una variable aleatoria con distribución Ji-cuadrado con <span class="math inline">\(n\)</span> grados de libertad, si <span class="math inline">\(Z\)</span> y <span class="math inline">\(Y\)</span> son independientes, entonces la variable <span class="math inline">\(\frac{Z}{\sqrt{Y/n}}\)</span> tiene distribución t-student con <span class="math inline">\(n\)</span> grados de libertad.
 </div>
 <p><br></p>
 <p>La función de densidad de la distribución t-student es muy parecida a la de distribución normal estándar, entre más grande sea el grado de libertad, más se parece a la distribución normal estándar.</p>
 
 <div class="proposition">
-<p><span id="prp:unnamed-chunk-45" class="proposition"><strong>Resultado A.23  </strong></span>Si <span class="math inline">\(Y\)</span> es una variable aleatoria con distribución t-student con <span class="math inline">\(n\)</span> grados de libertad, entonces</p>
+<p><span id="prp:unnamed-chunk-45" class="proposition"><strong>Resultado A.24  </strong></span>Si <span class="math inline">\(Y\)</span> es una variable aleatoria con distribución t-student con <span class="math inline">\(n\)</span> grados de libertad, entonces</p>
 <ul>
 <li><span class="math inline">\(E(Y)=0\)</span> para <span class="math inline">\(n&gt;1\)</span>.</li>
 <li><span class="math inline">\(Var(Y)=\frac{n}{n-2}\)</span> para <span class="math inline">\(n&gt;2\)</span>.</li>
@@ -542,11 +546,11 @@ donde <span class="math inline">\(n&gt;0\)</span> y se nota como <span class="ma
 La distribución t-student no tiene función generadora de momentos.
 </div>
 </div>
-<div id="distribución-t-student-generalizada" class="section level3" number="3.2.12">
+<div id="distribución-t-student-generalizada" class="section level3" number="4.2.12">
 <h3><span class="header-section-number">A.2.12</span> Distribución t-student generalizada</h3>
 
 <div class="definition">
-<p><span id="def:unnamed-chunk-46" class="definition"><strong>Definición A.18  </strong></span>Una variable aleatoria <span class="math inline">\(Y\)</span> tiene distribución t-student con <span class="math inline">\(n\)</span> grados de libertad, parámetro de centralidad <span class="math inline">\(\theta\)</span> y parámetro de escala <span class="math inline">\(\sigma^2\)</span>, si su función de densidad está dada por:</p>
+<p><span id="def:unnamed-chunk-46" class="definition"><strong>Definición A.19  </strong></span>Una variable aleatoria <span class="math inline">\(Y\)</span> tiene distribución t-student con <span class="math inline">\(n\)</span> grados de libertad, parámetro de centralidad <span class="math inline">\(\theta\)</span> y parámetro de escala <span class="math inline">\(\sigma^2\)</span>, si su función de densidad está dada por:</p>
 <p><span class="math display">\[\begin{equation}
 f_Y(y)=\frac{\Gamma((n+1)/2)}{\Gamma(n/2)\sqrt{n\pi}\sigma}\left[1+\frac{1}{n}\left(\frac{y-\theta}{\sigma}\right)^2\right]^{-(n+1)/2}
 I_\mathbb{R}(y),
@@ -555,19 +559,19 @@ donde <span class="math inline">\(n&gt;0\)</span> y se nota como <span class="ma
 </div>
 
 <div class="proposition">
-<p><span id="prp:unnamed-chunk-47" class="proposition"><strong>Resultado A.24  </strong></span>Si <span class="math inline">\(Y\)</span> es una variable aleatoria con distribución t-student generalizada, entonces</p>
+<p><span id="prp:unnamed-chunk-47" class="proposition"><strong>Resultado A.25  </strong></span>Si <span class="math inline">\(Y\)</span> es una variable aleatoria con distribución t-student generalizada, entonces</p>
 <ul>
 <li><span class="math inline">\(E(Y)=\theta\)</span> para <span class="math inline">\(n&gt;1\)</span>.</li>
 <li><span class="math inline">\(Var(Y)=\frac{n}{n-2}\sigma^2\)</span> para <span class="math inline">\(n&gt;2\)</span>.</li>
 </ul>
 </div>
 </div>
-<div id="distribución-f" class="section level3" number="3.2.13">
+<div id="distribución-f" class="section level3" number="4.2.13">
 <h3><span class="header-section-number">A.2.13</span> Distribución F</h3>
 <p>La distribución F también se conoce como la distribución F de Fisher o distribución de Fisher-Snedecor, refiriendo al gran estadístico Ronald Aylmer Fisher (1890-1962) y el fundador del primer departamento de estadística en los Estados Unidos, George Waddel Snedecor (1881-1974).</p>
 
 <div class="definition">
-<p><span id="def:unnamed-chunk-48" class="definition"><strong>Definición A.19  </strong></span>Una variable aleatoria <span class="math inline">\(Y\)</span> tiene distribución F con <span class="math inline">\(m\)</span> grados de libertad en el numerador y <span class="math inline">\(n\)</span> grados de libertado en el denominador si su función de densidad está dada por:</p>
+<p><span id="def:unnamed-chunk-48" class="definition"><strong>Definición A.20  </strong></span>Una variable aleatoria <span class="math inline">\(Y\)</span> tiene distribución F con <span class="math inline">\(m\)</span> grados de libertad en el numerador y <span class="math inline">\(n\)</span> grados de libertado en el denominador si su función de densidad está dada por:</p>
 <p><span class="math display">\[\begin{equation}
 f_Y(y)=\frac{\Gamma(\frac{m+n}{2})}{\Gamma(\frac{m}{2})\Gamma(\frac{n}{2})}\left(\frac{m}{n}\right)^{m/2}\frac{z^{\frac{m}{2}-1}}{\left(1+\frac{m}{n}z\right)^{\frac{m+n}{2}}},
 \end{equation}\]</span></p>
@@ -577,11 +581,11 @@ y se nota como <span class="math inline">\(Y\sim F^m_n\)</span>.
 <p>Otra definición para la distribución F es como sigue:</p>
 
 <div class="definition">
-<span id="def:unnamed-chunk-49" class="definition"><strong>Definición A.20  </strong></span>Sea <span class="math inline">\(Y\)</span> y <span class="math inline">\(Y\)</span> variables aleatorias independientes con distribuciones Ji-cuadrado con <span class="math inline">\(m\)</span> y <span class="math inline">\(n\)</span> grados de libertad, respectivamente, entonces la variable <span class="math inline">\(\frac{Y/m}{Y/n}\)</span> tiene distribución F con <span class="math inline">\(m\)</span> grados de libertad en el numerador y <span class="math inline">\(n\)</span> grados de libertado en el denominador.
+<span id="def:unnamed-chunk-49" class="definition"><strong>Definición A.21  </strong></span>Sea <span class="math inline">\(Y\)</span> y <span class="math inline">\(Y\)</span> variables aleatorias independientes con distribuciones Ji-cuadrado con <span class="math inline">\(m\)</span> y <span class="math inline">\(n\)</span> grados de libertad, respectivamente, entonces la variable <span class="math inline">\(\frac{Y/m}{Y/n}\)</span> tiene distribución F con <span class="math inline">\(m\)</span> grados de libertad en el numerador y <span class="math inline">\(n\)</span> grados de libertado en el denominador.
 </div>
 
 <div class="proposition">
-<p><span id="prp:unnamed-chunk-50" class="proposition"><strong>Resultado A.25  </strong></span>Si <span class="math inline">\(Y\)</span> es una variable aleatoria con distribución F con <span class="math inline">\(m\)</span> grados de libertad en el numerador y <span class="math inline">\(n\)</span> grados de libertado en el denominador, entonces</p>
+<p><span id="prp:unnamed-chunk-50" class="proposition"><strong>Resultado A.26  </strong></span>Si <span class="math inline">\(Y\)</span> es una variable aleatoria con distribución F con <span class="math inline">\(m\)</span> grados de libertad en el numerador y <span class="math inline">\(n\)</span> grados de libertado en el denominador, entonces</p>
 <ul>
 <li><span class="math inline">\(E(Y)=\frac{n}{n-2}\)</span> para <span class="math inline">\(n&gt;2\)</span>.</li>
 <li><span class="math inline">\(Var(Y)=\frac{2n^2(m+n-2)}{m(n-2)^2(n-4)}\)</span> para <span class="math inline">\(n&gt;4\)</span>.</li>

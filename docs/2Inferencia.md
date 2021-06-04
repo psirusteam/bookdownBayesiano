@@ -493,7 +493,7 @@ transformaciones matemáticas. La distribución previa no
 informativa de Jeffreys, definida a continuación, cuenta con esta
 agradable propiedad.
 
-\BeginKnitrBlock{definition}<div class="definition"><span class="definition" id="def:unnamed-chunk-16"><strong>(\#def:unnamed-chunk-16) </strong></span>Si la verosimilitud de los datos está determinada por un único parámetro $\theta$, la distribución previa no informativa de Jeffreys tiene distribución de probabilidad dada por
+\BeginKnitrBlock{definition}<div class="definition"><span class="definition" id="def:Jeffreys"><strong>(\#def:Jeffreys) </strong></span>Si la verosimilitud de los datos está determinada por un único parámetro $\theta$, la distribución previa no informativa de Jeffreys tiene distribución de probabilidad dada por
 \begin{equation}
 p(\theta)\propto (I(\theta))^{1/2}
 \end{equation}
@@ -528,7 +528,7 @@ previa es independiente de los datos observados.
 A continuación se evidencia la propiedad de esta distribución previa de
 seguir siendo no informativa con diferentes parametrizaciones.
 
-\BeginKnitrBlock{proposition}<div class="proposition"><span class="proposition" id="prp:unnamed-chunk-17"><strong>(\#prp:unnamed-chunk-17) </strong></span>La distribución previa no informativa de Jeffreys es invariante a transformaciones uno a uno. Es decir, si $\phi=h(\theta)$, entonces $p(\phi)\propto(I(\phi))^{1/2}$.</div>\EndKnitrBlock{proposition}
+\BeginKnitrBlock{proposition}<div class="proposition"><span class="proposition" id="prp:unnamed-chunk-16"><strong>(\#prp:unnamed-chunk-16) </strong></span>La distribución previa no informativa de Jeffreys es invariante a transformaciones uno a uno. Es decir, si $\phi=h(\theta)$, entonces $p(\phi)\propto(I(\phi))^{1/2}$.</div>\EndKnitrBlock{proposition}
 <br>
 
 \BeginKnitrBlock{proof}<div class="proof">\iffalse{} <span class="proof"><em>Prueba. </em></span>  \fi{}En primer lugar nótese que
@@ -558,7 +558,7 @@ p(\phi)&=p(\theta) \mid \frac{\partial\theta}{\partial\phi} \mid
 En @BoxTiao[p. 59] es posible encontrar un resumen exhaustivo de distribuciones previas no informativas para las distribuciones de verosimilitud más comunes. A continuación, se exponen
 algunos ejemplos que utilizan este enfoque.
 
-\BeginKnitrBlock{example}<div class="example"><span class="example" id="exm:unnamed-chunk-19"><strong>(\#exm:unnamed-chunk-19) </strong></span>Si $Y$ es una variable aleatoria con distribución Binomial, entonces el espacio de muestreo del parámetro de interés será el intervalo $[0,1]$; sería conveniente utilizar la función de distribución uniforme sobre este intervalo como distribución previa no informativa. Con el enfoque de Jeffreys se llega a este mismo resultado puesto que la información de Fisher para la distribución binomial es $J(\theta)=n/\theta(1- \theta)$ dado que
+\BeginKnitrBlock{example}<div class="example"><span class="example" id="exm:unnamed-chunk-18"><strong>(\#exm:unnamed-chunk-18) </strong></span>Si $Y$ es una variable aleatoria con distribución Binomial, entonces el espacio de muestreo del parámetro de interés será el intervalo $[0,1]$; sería conveniente utilizar la función de distribución uniforme sobre este intervalo como distribución previa no informativa. Con el enfoque de Jeffreys se llega a este mismo resultado puesto que la información de Fisher para la distribución binomial es $J(\theta)=n/\theta(1- \theta)$ dado que
 \begin{equation*}
 \log p(Y \mid \theta)=\log \binom{n}{y} + y\log(\theta)+(n-y)\log(1-\theta)
 \end{equation*}
@@ -599,7 +599,7 @@ p(\theta \mid Y) \propto p(Y \mid \theta) p(\theta) \propto e^{-n\theta} \theta^
 \end{align*}
 Por tanto, la distribución de $\theta \mid \mathbf{Y}$ es $Gamma(\sum_{i=1}^ny_i+1/2,n)$. Por construcción, esta distribución no está alterada ni influenciada por la distribución previa pues la misma es no informativa.</div>\EndKnitrBlock{example}
 
-\BeginKnitrBlock{example}<div class="example"><span class="example" id="exm:unnamed-chunk-20"><strong>(\#exm:unnamed-chunk-20) </strong></span>Suponga que $\mathbf{Y}=\{Y_1\ldots, Y_n\}$ es una muestra aleatoria con distribución normal de parámetros $(\theta, \sigma^2)'$. Se puede verificar que la matriz de información de Fisher para el vector de parámetros está dada por
+\BeginKnitrBlock{example}<div class="example"><span class="example" id="exm:unnamed-chunk-19"><strong>(\#exm:unnamed-chunk-19) </strong></span>Suponga que $\mathbf{Y}=\{Y_1\ldots, Y_n\}$ es una muestra aleatoria con distribución normal de parámetros $(\theta, \sigma^2)'$. Se puede verificar que la matriz de información de Fisher para el vector de parámetros está dada por
 \begin{equation}
 \begin{pmatrix}
   \frac{n}{\sigma^2} & 0 \\

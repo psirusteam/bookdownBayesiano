@@ -9,6 +9,7 @@ rmd_files: [
   "0Prefacio.Rmd",
   "1Basicos.Rmd",
   "2Inferencia.Rmd",
+  "3Uniparametricos.Rmd",
   
   "A1Distribuciones.Rmd",
   "A2Inferencia.Rmd",

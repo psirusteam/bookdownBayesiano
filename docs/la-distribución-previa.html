@@ -24,7 +24,7 @@
 <meta name="author" content="Andrés Gutiérrez - Hanwen Zhang" />
 
 
-<meta name="date" content="2021-06-02" />
+<meta name="date" content="2021-06-03" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
@@ -189,6 +189,10 @@ div.csl-indent {
 <li class="chapter" data-level="2.3.1" data-path="criterios-de-información.html"><a href="criterios-de-información.html#criterio-dic"><i class="fa fa-check"></i><b>2.3.1</b> Criterio DIC</a></li>
 <li class="chapter" data-level="2.3.2" data-path="criterios-de-información.html"><a href="criterios-de-información.html#criterios-aic-y-bic"><i class="fa fa-check"></i><b>2.3.2</b> Criterios AIC y BIC</a></li>
 </ul></li>
+</ul></li>
+<li class="chapter" data-level="3" data-path="modelos-uniparamétricos.html"><a href="modelos-uniparamétricos.html"><i class="fa fa-check"></i><b>3</b> Modelos uniparamétricos</a>
+<ul>
+<li class="chapter" data-level="3.1" data-path="modelo-bernoulli.html"><a href="modelo-bernoulli.html"><i class="fa fa-check"></i><b>3.1</b> Modelo Bernoulli</a></li>
 </ul></li>
 <li class="appendix"><span><b>Apéndice</b></span></li>
 <li class="chapter" data-level="A" data-path="elementos-de-probabilidad.html"><a href="elementos-de-probabilidad.html"><i class="fa fa-check"></i><b>A</b> Elementos de probabilidad</a>
@@ -630,7 +634,7 @@ informativa de Jeffreys, definida a continuación, cuenta con esta
 agradable propiedad.</p>
 
 <div class="definition">
-<p><span id="def:unnamed-chunk-16" class="definition"><strong>Definición 2.2  </strong></span>Si la verosimilitud de los datos está determinada por un único parámetro <span class="math inline">\(\theta\)</span>, la distribución previa no informativa de Jeffreys tiene distribución de probabilidad dada por
+<p><span id="def:Jeffreys" class="definition"><strong>Definición 2.2  </strong></span>Si la verosimilitud de los datos está determinada por un único parámetro <span class="math inline">\(\theta\)</span>, la distribución previa no informativa de Jeffreys tiene distribución de probabilidad dada por
 <span class="math display">\[\begin{equation}
 p(\theta)\propto (I(\theta))^{1/2}
 \end{equation}\]</span></p>
@@ -662,7 +666,7 @@ previa es independiente de los datos observados.</p>
 seguir siendo no informativa con diferentes parametrizaciones.</p>
 
 <div class="proposition">
-<span id="prp:unnamed-chunk-17" class="proposition"><strong>Resultado 2.8  </strong></span>La distribución previa no informativa de Jeffreys es invariante a transformaciones uno a uno. Es decir, si <span class="math inline">\(\phi=h(\theta)\)</span>, entonces <span class="math inline">\(p(\phi)\propto(I(\phi))^{1/2}\)</span>.
+<span id="prp:unnamed-chunk-16" class="proposition"><strong>Resultado 2.8  </strong></span>La distribución previa no informativa de Jeffreys es invariante a transformaciones uno a uno. Es decir, si <span class="math inline">\(\phi=h(\theta)\)</span>, entonces <span class="math inline">\(p(\phi)\propto(I(\phi))^{1/2}\)</span>.
 </div>
 <p><br></p>
 
@@ -692,7 +696,7 @@ p(\phi)&amp;=p(\theta) \mid \frac{\partial\theta}{\partial\phi} \mid
 algunos ejemplos que utilizan este enfoque.</p>
 
 <div class="example">
-<span id="exm:unnamed-chunk-19" class="example"><strong>Ejemplo 2.2  </strong></span>Si <span class="math inline">\(Y\)</span> es una variable aleatoria con distribución Binomial, entonces el espacio de muestreo del parámetro de interés será el intervalo <span class="math inline">\([0,1]\)</span>; sería conveniente utilizar la función de distribución uniforme sobre este intervalo como distribución previa no informativa. Con el enfoque de Jeffreys se llega a este mismo resultado puesto que la información de Fisher para la distribución binomial es <span class="math inline">\(J(\theta)=n/\theta(1- \theta)\)</span> dado que
+<span id="exm:unnamed-chunk-18" class="example"><strong>Ejemplo 2.2  </strong></span>Si <span class="math inline">\(Y\)</span> es una variable aleatoria con distribución Binomial, entonces el espacio de muestreo del parámetro de interés será el intervalo <span class="math inline">\([0,1]\)</span>; sería conveniente utilizar la función de distribución uniforme sobre este intervalo como distribución previa no informativa. Con el enfoque de Jeffreys se llega a este mismo resultado puesto que la información de Fisher para la distribución binomial es <span class="math inline">\(J(\theta)=n/\theta(1- \theta)\)</span> dado que
 <span class="math display">\[\begin{equation*}
 \log p(Y \mid \theta)=\log \binom{n}{y} + y\log(\theta)+(n-y)\log(1-\theta)
 \end{equation*}\]</span>
@@ -737,7 +741,7 @@ Por tanto, la distribución de <span class="math inline">\(\theta \mid \mathbf{Y
 </div>
 
 <div class="example">
-<p><span id="exm:unnamed-chunk-20" class="example"><strong>Ejemplo 2.4  </strong></span>Suponga que <span class="math inline">\(\mathbf{Y}=\{Y_1\ldots, Y_n\}\)</span> es una muestra aleatoria con distribución normal de parámetros <span class="math inline">\((\theta, \sigma^2)&#39;\)</span>. Se puede verificar que la matriz de información de Fisher para el vector de parámetros está dada por
+<p><span id="exm:unnamed-chunk-19" class="example"><strong>Ejemplo 2.4  </strong></span>Suponga que <span class="math inline">\(\mathbf{Y}=\{Y_1\ldots, Y_n\}\)</span> es una muestra aleatoria con distribución normal de parámetros <span class="math inline">\((\theta, \sigma^2)&#39;\)</span>. Se puede verificar que la matriz de información de Fisher para el vector de parámetros está dada por
 <span class="math display">\[\begin{equation}
 \begin{pmatrix}
   \frac{n}{\sigma^2} &amp; 0 \\
