@@ -1,0 +1,799 @@
+<!DOCTYPE html>
+<html lang="es" xml:lang="es">
+<head>
+
+<meta charset="utf-8" />
+<meta name="generator" content="pandoc" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta property="og:title" content="2.1 La distribución previa | Modelos Bayesianos con R y STAN" />
+<meta property="og:type" content="book" />
+
+
+<meta property="og:description" content="Este es el repositorio del libro Modelos Bayesianos con R y STAN." />
+<meta name="github-repo" content="psirusteam/bookdownBayesiano" />
+
+<meta name="author" content="Andrés Gutiérrez - Hanwen Zhang" />
+
+<meta name="date" content="2021-06-04" />
+
+<script type="text/x-mathjax-config">
+MathJax.Hub.Config({
+  TeX: { equationNumbers: { autoNumber: "AMS" } }
+});
+</script>
+  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
+
+<meta name="description" content="Este es el repositorio del libro Modelos Bayesianos con R y STAN.">
+
+<title>2.1 La distribución previa | Modelos Bayesianos con R y STAN</title>
+
+<script src="libs/header-attrs-2.8/header-attrs.js"></script>
+<script src="libs/jquery-1.11.3/jquery.min.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link href="libs/bootstrap-3.3.5/css/bootstrap.min.css" rel="stylesheet" />
+<script src="libs/bootstrap-3.3.5/js/bootstrap.min.js"></script>
+<script src="libs/bootstrap-3.3.5/shim/html5shiv.min.js"></script>
+<script src="libs/bootstrap-3.3.5/shim/respond.min.js"></script>
+<style>h1 {font-size: 34px;}
+       h1.title {font-size: 38px;}
+       h2 {font-size: 30px;}
+       h3 {font-size: 24px;}
+       h4 {font-size: 18px;}
+       h5 {font-size: 16px;}
+       h6 {font-size: 12px;}
+       code {color: inherit; background-color: rgba(0, 0, 0, 0.04);}
+       pre:not([class]) { background-color: white }</style>
+<script src="libs/navigation-1.1/tabsets.js"></script>
+
+
+<style type="text/css">code{white-space: pre;}</style>
+<style type="text/css">
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+    color: #aaaaaa;
+  }
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code span.at { color: #7d9029; } /* Attribute */
+code span.bn { color: #40a070; } /* BaseN */
+code span.bu { } /* BuiltIn */
+code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code span.ch { color: #4070a0; } /* Char */
+code span.cn { color: #880000; } /* Constant */
+code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code span.dt { color: #902000; } /* DataType */
+code span.dv { color: #40a070; } /* DecVal */
+code span.er { color: #ff0000; font-weight: bold; } /* Error */
+code span.ex { } /* Extension */
+code span.fl { color: #40a070; } /* Float */
+code span.fu { color: #06287e; } /* Function */
+code span.im { } /* Import */
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code span.op { color: #666666; } /* Operator */
+code span.ot { color: #007020; } /* Other */
+code span.pp { color: #bc7a00; } /* Preprocessor */
+code span.sc { color: #4070a0; } /* SpecialChar */
+code span.ss { color: #bb6688; } /* SpecialString */
+code span.st { color: #4070a0; } /* String */
+code span.va { color: #19177c; } /* Variable */
+code span.vs { color: #4070a0; } /* VerbatimString */
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+</style>
+<style type="text/css">
+  pre:not([class]) {
+    background-color: white;
+  }
+</style>
+
+
+<style type="text/css">
+/* Used with Pandoc 2.11+ new --citeproc when CSL is used */
+div.csl-bib-body { }
+div.csl-entry {
+  clear: both;
+}
+.hanging div.csl-entry {
+  margin-left:2em;
+  text-indent:-2em;
+}
+div.csl-left-margin {
+  min-width:2em;
+  float:left;
+}
+div.csl-right-inline {
+  margin-left:2em;
+  padding-left:1em;
+}
+div.csl-indent {
+  margin-left: 2em;
+}
+</style>
+
+
+<style type = "text/css">
+.main-container {
+  max-width: 940px;
+  margin-left: auto;
+  margin-right: auto;
+}
+code {
+  color: inherit;
+  background-color: rgba(0, 0, 0, 0.04);
+}
+img {
+  max-width:100%;
+  height: auto;
+}
+/* show arrow before summary tag as in bootstrap
+TODO: remove if boostrap in updated in html_document (rmarkdown#1485) */
+details > summary {
+  display: list-item;
+  cursor: pointer;
+}
+</style>
+</head>
+
+<body>
+
+<div class="container-fluid main-container">
+
+
+<div class="row">
+<div class="col-sm-12">
+<div id="TOC">
+<ul>
+<li><a href="index.html#prefacio">Prefacio</a></li>
+<li><a href="antes-de-comenzar.html#antes-de-comenzar">Antes de comenzar</a>
+<ul>
+<li><a href="cuestionamientos-sobre-el-enfoque-bayesiano.html#cuestionamientos-sobre-el-enfoque-bayesiano">Cuestionamientos sobre el enfoque bayesiano</a></li>
+<li><a href="acerca-de-la-notación.html#acerca-de-la-notación">Acerca de la notación</a></li>
+</ul></li>
+<li><a href="1-tópicos-básicos.html#tópicos-básicos"><span class="toc-section-number">1</span> Tópicos básicos</a>
+<ul>
+<li><a href="1-1-teoría-de-la-decisión.html#teoría-de-la-decisión"><span class="toc-section-number">1.1</span> Teoría de la decisión</a></li>
+<li><a href="1-2-algunos-resultados-de-probabilidad.html#algunos-resultados-de-probabilidad"><span class="toc-section-number">1.2</span> Algunos resultados de probabilidad</a></li>
+<li><a href="1-3-teorema-de-bayes.html#teorema-de-bayes"><span class="toc-section-number">1.3</span> Teorema de Bayes</a></li>
+</ul></li>
+<li><a href="2-inferencia-bayesiana.html#inferencia-bayesiana"><span class="toc-section-number">2</span> Inferencia bayesiana</a>
+<ul>
+<li><a href="2-1-la-distribución-previa.html#la-distribución-previa"><span class="toc-section-number">2.1</span> La distribución previa</a>
+<ul>
+<li><a href="2-1-la-distribución-previa.html#distribuciones-conjugadas"><span class="toc-section-number">2.1.1</span> Distribuciones conjugadas</a></li>
+<li><a href="2-1-la-distribución-previa.html#familia-exponencial"><span class="toc-section-number">2.1.2</span> Familia exponencial</a></li>
+<li><a href="2-1-la-distribución-previa.html#distribuciones-previas-no-informativas"><span class="toc-section-number">2.1.3</span> Distribuciones previas no informativas</a></li>
+</ul></li>
+<li><a href="2-2-pruebas-de-hipótesis.html#pruebas-de-hipótesis"><span class="toc-section-number">2.2</span> Pruebas de hipótesis</a>
+<ul>
+<li><a href="2-2-pruebas-de-hipótesis.html#factor-de-bayes"><span class="toc-section-number">2.2.1</span> Factor de Bayes</a></li>
+<li><a href="2-2-pruebas-de-hipótesis.html#valor-p-bayesiano"><span class="toc-section-number">2.2.2</span> Valor-<span class="math inline">\(p\)</span> Bayesiano</a></li>
+</ul></li>
+<li><a href="2-3-criterios-de-información.html#criterios-de-información"><span class="toc-section-number">2.3</span> Criterios de información</a>
+<ul>
+<li><a href="2-3-criterios-de-información.html#criterio-dic"><span class="toc-section-number">2.3.1</span> Criterio DIC</a></li>
+<li><a href="2-3-criterios-de-información.html#criterios-aic-y-bic"><span class="toc-section-number">2.3.2</span> Criterios AIC y BIC</a></li>
+</ul></li>
+</ul></li>
+<li><a href="3-modelos-uniparamétricos.html#modelos-uniparamétricos"><span class="toc-section-number">3</span> Modelos uniparamétricos</a>
+<ul>
+<li><a href="3-1-modelo-bernoulli.html#modelo-bernoulli"><span class="toc-section-number">3.1</span> Modelo Bernoulli</a></li>
+<li><a href="3-2-modelo-binomial.html#modelo-binomial"><span class="toc-section-number">3.2</span> Modelo Binomial</a></li>
+</ul></li>
+<li class="appendix"><span><b>Apéndice</b></span></li>
+<li><a href="A-elementos-de-probabilidad.html#elementos-de-probabilidad"><span class="toc-section-number">A</span> Elementos de probabilidad</a>
+<ul>
+<li><a href="A-1-distribuciones-discretas.html#distribuciones-discretas"><span class="toc-section-number">A.1</span> Distribuciones discretas</a>
+<ul>
+<li><a href="A-1-distribuciones-discretas.html#distribución-uniforme-discreta"><span class="toc-section-number">A.1.1</span> Distribución uniforme discreta</a></li>
+<li><a href="A-1-distribuciones-discretas.html#distribución-hipergeométrica"><span class="toc-section-number">A.1.2</span> Distribución hipergeométrica</a></li>
+<li><a href="A-1-distribuciones-discretas.html#distribución-bernoulli"><span class="toc-section-number">A.1.3</span> Distribución Bernoulli</a></li>
+<li><a href="A-1-distribuciones-discretas.html#distribución-binomial"><span class="toc-section-number">A.1.4</span> Distribución binomial</a></li>
+<li><a href="A-1-distribuciones-discretas.html#distribución-binomial-negativa"><span class="toc-section-number">A.1.5</span> Distribución Binomial negativa</a></li>
+<li><a href="A-1-distribuciones-discretas.html#distribución-de-poisson"><span class="toc-section-number">A.1.6</span> Distribución de Poisson</a></li>
+</ul></li>
+<li><a href="A-2-distribuciones-continuas.html#distribuciones-continuas"><span class="toc-section-number">A.2</span> Distribuciones continuas</a>
+<ul>
+<li><a href="A-2-distribuciones-continuas.html#distribución-uniforme-continua"><span class="toc-section-number">A.2.1</span> Distribución Uniforme Continua</a></li>
+<li><a href="A-2-distribuciones-continuas.html#distribución-weibull"><span class="toc-section-number">A.2.2</span> Distribución Weibull</a></li>
+<li><a href="A-2-distribuciones-continuas.html#distribución-valor-extremo"><span class="toc-section-number">A.2.3</span> Distribución valor-extremo</a></li>
+<li><a href="A-2-distribuciones-continuas.html#distribución-gamma"><span class="toc-section-number">A.2.4</span> Distribución Gamma</a></li>
+<li><a href="A-2-distribuciones-continuas.html#distribución-gamma-inversa"><span class="toc-section-number">A.2.5</span> Distribución Gamma-inversa</a></li>
+<li><a href="A-2-distribuciones-continuas.html#distribución-exponencial"><span class="toc-section-number">A.2.6</span> Distribución exponencial</a></li>
+<li><a href="A-2-distribuciones-continuas.html#distribución-beta"><span class="toc-section-number">A.2.7</span> Distribución Beta</a></li>
+<li><a href="A-2-distribuciones-continuas.html#distribución-normal"><span class="toc-section-number">A.2.8</span> Distribución normal</a></li>
+<li><a href="A-2-distribuciones-continuas.html#distribución-log-normal"><span class="toc-section-number">A.2.9</span> Distribución log-normal</a></li>
+<li><a href="A-2-distribuciones-continuas.html#distribución-ji-cuadrado"><span class="toc-section-number">A.2.10</span> Distribución Ji-cuadrado</a></li>
+<li><a href="A-2-distribuciones-continuas.html#distribución-t-student"><span class="toc-section-number">A.2.11</span> Distribución t-student</a></li>
+<li><a href="A-2-distribuciones-continuas.html#distribución-t-student-generalizada"><span class="toc-section-number">A.2.12</span> Distribución t-student generalizada</a></li>
+<li><a href="A-2-distribuciones-continuas.html#distribución-f"><span class="toc-section-number">A.2.13</span> Distribución F</a></li>
+</ul></li>
+<li><a href="A-3-distribuciones-multivariadas.html#distribuciones-multivariadas"><span class="toc-section-number">A.3</span> Distribuciones multivariadas</a>
+<ul>
+<li><a href="A-3-distribuciones-multivariadas.html#distribución-multinomial"><span class="toc-section-number">A.3.1</span> Distribución Multinomial</a></li>
+<li><a href="A-3-distribuciones-multivariadas.html#distribución-dirichelt"><span class="toc-section-number">A.3.2</span> Distribución Dirichelt</a></li>
+<li><a href="A-3-distribuciones-multivariadas.html#distribución-normal-multivariante"><span class="toc-section-number">A.3.3</span> Distribución Normal Multivariante</a></li>
+<li><a href="A-3-distribuciones-multivariadas.html#distribución-wishart"><span class="toc-section-number">A.3.4</span> Distribución Wishart</a></li>
+<li><a href="A-3-distribuciones-multivariadas.html#distribución-inversa-wishart"><span class="toc-section-number">A.3.5</span> Distribución inversa-Wishart</a></li>
+</ul></li>
+</ul></li>
+<li><a href="B-matriz-de-información.html#matriz-de-información"><span class="toc-section-number">B</span> Matriz de información</a></li>
+<li><a href="C-elementos-de-simulación-estadística.html#elementos-de-simulación-estadística"><span class="toc-section-number">C</span> Elementos de simulación estadística</a>
+<ul>
+<li><a href="C-1-métodos-directos.html#métodos-directos"><span class="toc-section-number">C.1</span> Métodos directos</a>
+<ul>
+<li><a href="C-1-métodos-directos.html#método-de-la-transformación-uniforme"><span class="toc-section-number">C.1.1</span> Método de la transformación uniforme</a></li>
+<li><a href="C-1-métodos-directos.html#método-de-la-grilla"><span class="toc-section-number">C.1.2</span> Método de la grilla</a></li>
+</ul></li>
+<li><a href="C-2-métodos-de-monte-carlo-vía-cadenas-de-markov.html#métodos-de-monte-carlo-vía-cadenas-de-markov"><span class="toc-section-number">C.2</span> Métodos de Monte Carlo vía cadenas de Markov</a>
+<ul>
+<li><a href="C-2-métodos-de-monte-carlo-vía-cadenas-de-markov.html#el-muestreador-de-gibbs"><span class="toc-section-number">C.2.1</span> El muestreador de Gibbs</a></li>
+<li><a href="C-2-métodos-de-monte-carlo-vía-cadenas-de-markov.html#el-algoritmo-de-metrópolis-hastings"><span class="toc-section-number">C.2.2</span> El algoritmo de Metrópolis-Hastings</a></li>
+<li><a href="C-2-métodos-de-monte-carlo-vía-cadenas-de-markov.html#buenas-prácticas-en-la-aplicación-de-métodos-mcmc"><span class="toc-section-number">C.2.3</span> Buenas prácticas en la aplicación de métodos MCMC</a></li>
+</ul></li>
+</ul></li>
+<li><a href="referencias.html#referencias">Referencias</a></li>
+</ul>
+</div>
+</div>
+</div>
+<div class="row">
+<div class="col-sm-12">
+<div id="la-distribución-previa" class="section level2" number="2.1">
+<h2><span class="header-section-number">2.1</span> La distribución previa</h2>
+<p>La escogencia de una distribución previa es muy importante en el
+análisis bayesiano, puesto que ésta afecta directamente en la
+distribución posterior, tal como lo ilustra el teorema de Bayes. En
+primer lugar, la distribución previa debe describir adecuadamente los
+conocimientos previos sobre los parámetros objetivos de estimación. Por
+ejemplo, si se cree que un parámetro toma valores cercanos a 10,
+entonces la distribución escogida para representarla también debe tomar
+valores cercanos a 10, como podría ser una distribución normal centrada en
+ese valor. Por otro lado, dado que en la literatura existe un gran
+número de distribuciones, algunas muy similares entre ellas, a la hora
+de escoger una distribución previa también se debe tener en cuenta las
+implicaciones a la hora de efectuar cálculos de la estimación puntual o
+del intervalo de crediblidad, procurando en la mayoría de casos, obtener
+una distribución posterior fácil de manejar. A continuación exponemos
+algunos aspectos generales relacionados con las distribuciones previas.</p>
+<div id="distribuciones-conjugadas" class="section level3" number="2.1.1">
+<h3><span class="header-section-number">2.1.1</span> Distribuciones conjugadas</h3>
+<p>Como se verá en los capítulos siguientes, muchos problemas de inferencia
+bayesiana comparten la agradable cualidad de que la forma funcional de
+la distribución previa para el parámetro de interés resulta ser
+la misma de la distribución posterior. Por ejemplo:</p>
+<ul>
+<li><p>Cuando se tiene una muestra aleatoria de variables con distribución
+Bernoulli de parámetro <span class="math inline">\(\theta\)</span>, es factible pensar que una distribución
+previa apropiada para este parámetro es la distribución Beta;
+bajo este escenario, la distribución posterior también resulta
+ser Beta.</p></li>
+<li><p>En el caso en que se quiera modelar el parámetro <span class="math inline">\(\theta\)</span> concerniente a
+una variable aleatoria con distribución Poisson, es posible asignar como
+candidata para distribución previa a la distribución Gamma; en
+este caso la distribución posterior también resulta ser Gamma.</p></li>
+</ul>
+<p>Las distribuciones conjugadas son deseadas en el análisis bayesiano pues
+en primer lugar, la distribución posterior del parámetro <span class="math inline">\(\theta\)</span> es
+considerada como la actualización del conocimiento acerca de este
+después de la recolección de los datos, entonces al tener la misma forma
+funcional que la distribución previa, pueden ser comparadas y así
+ver claramente cómo es la influencia de los datos observados sobre la
+creencia inicial acerca de <span class="math inline">\(\theta\)</span>; en segundo lugar, el hecho de que la
+distribución posterior sea de la misma forma funcional que la previa
+permite que la actualización de información se pueda llevar a cabo
+sistemáticamente, pues cada vez que se observan nuevos datos, la
+anterior distribución posterior puede ser tomada como la distribución
+previa y así producir una nueva distribución posterior.</p>
+<p>A continuación exponemos la definición rigurosa de las distribuciones
+conjungadas y algunos tópicos relacionados.</p>
+
+<div class="definition">
+<span id="def:unnamed-chunk-1" class="definition"><strong>Definición 2.1  </strong></span>Sea <span class="math inline">\(\mathcal{F}=\{p(\mathbf{Y} \mid \boldsymbol \theta)\}\)</span> una familia de distribuciones de probabilidad. Una familia de distribuciones <span class="math inline">\(\mathcal{P}\)</span> se dice conjugada con respecto a <span class="math inline">\(\mathcal{F}\)</span> si para toda distribución previa <span class="math inline">\(p(\boldsymbol \theta) \in \mathcal{P}\)</span> y para toda distribución de muestreo o verosimilitud de las observaciones <span class="math inline">\(p(\mathbf{Y} \mid \boldsymbol \theta)\)</span>, <span class="math inline">\(p(\boldsymbol \theta\mid \mathbf{Y})\)</span> también pertenece a la familia <span class="math inline">\(\mathcal{P}\)</span>.
+</div>
+<p><br></p>
+<p>Esta definición es, en la mayoría de los casos prácticos, muy útil. Sin
+embargo, <span class="citation"><a href="#ref-Migon" role="doc-biblioref">Migon y Gamerman</a> (<a href="#ref-Migon" role="doc-biblioref">1999</a>)</span> describe los siguientes dos casos en donde
+esta definición es completamente inútil:</p>
+<ol style="list-style-type: decimal">
+<li><p><em>Caso amplio</em>: sea
+<span class="math inline">\(\mathcal{P}=\{\text{Todas las distribuciones de probabilidad}\}\)</span> y
+<span class="math inline">\(\mathcal{F}\)</span> cualquier familia de distribuciones de probabilidad.
+Entonces <span class="math inline">\(\mathcal{P}\)</span> es conjugada con respecto a <span class="math inline">\(\mathcal{F}\)</span> puesto
+que toda posible distribución posterior será un miembro de
+<span class="math inline">\(\mathcal{P}\)</span>.</p></li>
+<li><p><em>Caso restringido</em>: sea <span class="math inline">\(\mathcal{P}=\{p \mid p(\theta=\theta_0)=1\}\)</span>,
+esto es, <span class="math inline">\(\mathcal{P}\)</span> corresponde a todas las distribuciones
+concentradas en un punto. Sea <span class="math inline">\(\mathcal{F}\)</span> cualquier familia de
+distribuciones de probabilidad. De esta manera, la distribución
+posterior de <span class="math inline">\(\theta\)</span> estará dada por</p></li>
+</ol>
+<p><span class="math display">\[\begin{align*}
+    p(\theta \mid Y)\propto
+    p(Y \mid \theta)p(\theta)
+    &amp;=
+    \begin{cases}
+    p(Y \mid \theta)\times 1 \ \ \ \ \text{si $\theta=\theta_0$}\\
+    p(Y \mid \theta)\times 0 \ \ \ \ \text{si $\theta\neq\theta_0$}\\
+    \end{cases}\\
+    &amp;=
+    \begin{cases}
+    p(Y \mid \theta) \ \ \ \ \text{si $\theta=\theta_0$}\\
+    0           \ \ \ \ \text{si $\theta\neq\theta_0$}\\
+    \end{cases}
+\end{align*}\]</span></p>
+<p>De lo anterior y dado que <span class="math inline">\(\int p(\theta \mid Y)\ d\theta=1\)</span>, entonces
+<span class="math inline">\(p(Y \mid \theta)=1\)</span> si y sólo si <span class="math inline">\(\theta=\theta_0\)</span>. Con el anterior
+razonamiento, se concluye que <span class="math inline">\(\mathcal{P}\)</span> es conjugada con respecto a
+<span class="math inline">\(\mathcal{F}\)</span>.</p>
+<p>Por lo tanto, se deben buscar distribuciones previas que sean
+conjugadas de una forma tan amplia que permita proponer una distribución
+previa adecuada, pero al mismo tiempo tan restringida para que la
+definición de conjugada tenga sentido práctico. Ahora introducimos una
+familia de distribuciones muy importante para el desarrollo de la teoría
+estadística, tanto en el ámbito bayesiano como en el clásico.</p>
+</div>
+<div id="familia-exponencial" class="section level3" number="2.1.2">
+<h3><span class="header-section-number">2.1.2</span> Familia exponencial</h3>
+<p>Dependiendo de la naturaleza del parámetro <span class="math inline">\(\theta\)</span>, la familia
+exponencial puede ser uniparamétrica o multiparamétrica. En el primer
+caso, una distribución de probabilidad pertenece a la familia
+exponencial uniparamétrica si se puede escribir de la forma</p>
+<p><span class="math display" id="eq:uniexpo">\[\begin{equation}
+\tag{2.2}
+p(Y \mid \theta)=\exp\{d(\theta)T(y)-c(\theta)\}h(y)
+\end{equation}\]</span></p>
+<p>donde <span class="math inline">\(T(y)\)</span> y <span class="math inline">\(h(y)\)</span> son funciones que dependen de <span class="math inline">\(y\)</span> únicamente, y
+<span class="math inline">\(d(\theta)\)</span> y <span class="math inline">\(c(\theta)\)</span> son funciones que depende de <span class="math inline">\(\theta\)</span>
+únicamente. Análogamente, una distribución de probabilidad pertenece a
+la familia exponencial multi-paramétrica si se puede escribir de la
+forma</p>
+<p><span class="math display" id="eq:multiexpo">\[\begin{equation}
+\tag{2.3}
+p(Y \mid \boldsymbol \theta)=\exp\{\mathbf{d}(\boldsymbol \theta)&#39;\mathbf{T}(y)-c(\boldsymbol \theta)\}h(y)
+\end{equation}\]</span> donde <span class="math inline">\(\mathbf{T}(y)\)</span> y <span class="math inline">\(\mathbf{d}(\boldsymbol \theta)\)</span> son
+funciones vectoriales, <span class="math inline">\(h(y)\)</span> y <span class="math inline">\(c(\boldsymbol \theta)\)</span> son funciones reales.</p>
+<p>La ventaja de la familia exponencial radica en que es una familia
+relativamente restringuida de distribuciones que a la vez conservan la
+propiedad de ser distribuciones conjugadas, tal como muestra el
+siguiente resultado:</p>
+
+<div class="proposition">
+<span id="prp:FE1" class="proposition"><strong>Resultado 2.1  </strong></span>Sea <span class="math inline">\(Y\)</span> una variable aleatoria con función de densidad perteneciente a la familia exponencial uniparamétrica, entonces la familia exponencial uniparamétrica es conjugada con respecto a sí misma.
+</div>
+<p><br></p>
+
+<div class="proof">
+<p> <span class="proof"><em>Prueba. </em></span> Observando la expresión <a href="2-1-la-distribución-previa.html#eq:uniexpo">(2.2)</a>, se debe encontrar una distribución previa en la familia exponencial uniparamétrica, tal que la distribución posterior, resultante del producto de la distribución previa con la verosimilitud sea también miembro de la familia exponencial uniparamétrica. Con base en lo anterior, la distribución previa, parametrizada por el hiperparámetro <span class="math inline">\(\alpha\)</span>, debe ser una función exponencial de los términos <span class="math inline">\(d(\theta)\)</span> y <span class="math inline">\(c(\theta)\)</span> como lo afirma <span class="citation"><a href="#ref-Jordan" role="doc-biblioref">Jordan</a> (<a href="#ref-Jordan" role="doc-biblioref">2004</a>)</span>. Esto es,
+<span class="math display">\[\begin{equation}
+p(\theta \mid \alpha)\propto\exp\{w(\alpha) d(\theta)-\delta c(\theta)\},
+\end{equation}\]</span></p>
+<p>donde <span class="math inline">\(\delta\)</span> es una constante real (posiblemente dependiente de <span class="math inline">\(\alpha\)</span>). Por otro lado, para garantizar que <span class="math inline">\(p(\theta \mid \alpha)\)</span> sea una auténtica función de densidad se normaliza de la siguiente manera
+<span class="math display">\[\begin{equation}
+p(\theta \mid \alpha)=\frac{1}{k(\alpha,\delta)}\exp\{w(\alpha) d(\theta)-\delta c(\theta)\},
+\end{equation}\]</span></p>
+<p>con
+<span class="math display">\[\begin{equation*}
+k(\alpha,\delta)=\int\exp\{w(\alpha) d(\theta)-\delta c(\theta)\} \ d\theta.
+\end{equation*}\]</span></p>
+<p>De esta manera, no es difícil comprobar que la definición de distribución previa, parametrizada por el hiper-parámetro <span class="math inline">\(\alpha\)</span>, pertenece a la familia exponencial, puesto que
+<span class="math display">\[\begin{equation}
+p(\theta \mid \alpha)=\exp\{\underbrace{w(\alpha)}_{d(\alpha)} \underbrace{d(\theta)}_{T(\theta)} - \underbrace{\ln k(\alpha,\delta)}_{c(\alpha)}\}\underbrace{\exp\{-\delta c(\theta)\}}_{h(\theta)}.
+\end{equation}\]</span></p>
+<p>Por otro lado, del teorema de Bayes se tiene que
+<span class="math display">\[\begin{align*}
+p(\theta \mid Y) &amp;\propto p(Y \mid \theta)p(\theta \mid \alpha)\\
+&amp;=\exp\{w(\alpha) d(\theta) + d(\theta)T(y) - c(\theta) -\ln k(\alpha,\delta) \}\exp\{-\delta c(\theta)\}h(y)\\
+&amp;=\exp\{\underbrace{[\alpha+T(y)]}_{d(y)} \underbrace{d(\theta)}_{T(\theta)} -\underbrace{[\ln k(\alpha,\delta)-\ln h(y)]}_{c(y)}\} \underbrace{\exp\{-(\delta+1) c(\theta)\}}_{h(\theta)}\\
+&amp;\propto \exp\{[w(\alpha)+T(y)] d(\theta)\}\exp\{-(\delta+1) c(\theta)\}.
+\end{align*}\]</span></p>
+Por lo tanto, la distribución posterior resultante también pertenece a la familia exponencial uniparamétrica.
+</div>
+<p><br></p>
+<p>La extensión del anterior resultado puede ser extendedida para el caso en el que se cuenta con una muestra aleatoria de observaciones, tal como se expone a
+continuación:</p>
+
+<div class="proposition">
+<span id="prp:unnamed-chunk-3" class="proposition"><strong>Resultado 2.2  </strong></span>Sean <span class="math inline">\(\mathbf{Y}=\{Y_1, \ldots, Y_n\}\)</span> una muestra aleatoria de variables distribuidas con función de densidad común perteneciente a la familia exponencial uniparamétrica, cuya función de densidad conjunta <span class="math inline">\(p(\mathbf{Y} \mid \theta)\)</span> también pertenece a la familia exponencial uniparamétrica. Bajo las anteriores condiciones la familia exponencial uniparamétrica es conjugada con respecto a sí misma.
+</div>
+<p><br></p>
+
+<div class="proof">
+ <span class="proof"><em>Prueba. </em></span> La demostración es inmediata utilizando el resultado anterior y notando que la forma funcional de la densidad conjunta para <span class="math inline">\(\mathbf{Y}\)</span> es
+<span class="math display">\[\begin{equation}
+p(\mathbf{Y} \mid \theta)=\exp\left\{d(\theta)\sum_{i=1}^nT(y_i)-nc(\theta)\right\}\prod_{i=1}^nh(y_i)
+\end{equation}\]</span>
+la cual hace parte de la familia exponencial.
+</div>
+<p><br></p>
+<p>Otra extensión del resultado <a href="2-1-la-distribución-previa.html#prp:FE1">2.1</a> corresponde al caso cuando la
+distribución de la observación está reparametrizado por un vector de
+parámetros <span class="math inline">\(\boldsymbol \theta\)</span>. A continuación se expone el resultado y la prueba
+correspondiente.</p>
+
+<div class="proposition">
+<span id="prp:unnamed-chunk-5" class="proposition"><strong>Resultado 2.3  </strong></span>Sea <span class="math inline">\(Y\)</span> una variable aleatoria con función de densidad perteneciente a la familia exponencial multiparamétrica. Sea <span class="math inline">\(\boldsymbol \theta\)</span> el parámetro de interés con distribución previa parametrizada por un vector de hiperparámetros <span class="math inline">\(\boldsymbol \eta\)</span> y perteneciente a la familia exponencial multiparamétrica. Entonces la familia exponencial multiparamétrica es conjugada con respecto a sí misma.
+</div>
+<p><br></p>
+
+<div class="proof">
+<p> <span class="proof"><em>Prueba. </em></span> En primer lugar, la distribución de probabilidad de <span class="math inline">\(Y\)</span> perteneciente a la familia exponencial multiparamétrica está dada por <a href="2-1-la-distribución-previa.html#eq:multiexpo">(2.3)</a>. Siguiendo el mismo razonamiento de la demostración del Resultado <a href="2-1-la-distribución-previa.html#prp:FE1">2.1</a>, la distribución previa del parámetro de interés debe estar definida de la siguiente manera
+<span class="math display">\[\begin{equation}
+p(\boldsymbol \theta\mid \boldsymbol \eta)=\exp\left\{\underbrace{w(\boldsymbol \eta)&#39;}_{\mathbf{d}(\boldsymbol \eta)}
+\underbrace{\mathbf{d}(\boldsymbol \theta)}_{\mathbf{T}(\boldsymbol \theta)} - \underbrace{\ln k(\boldsymbol \eta,\delta)}_{c(\boldsymbol \eta)}\right\}\underbrace{\exp\{-\delta c(\boldsymbol \theta)\}}_{h(\boldsymbol \theta)},
+\end{equation}\]</span></p>
+<p>con
+<span class="math display">\[\begin{equation*}
+k(\boldsymbol \eta,\delta)=\int\exp\{w(\boldsymbol \eta)&#39;\mathbf{d}(\boldsymbol \theta)-\delta c(\boldsymbol \theta)\} \ d\boldsymbol \theta.
+\end{equation*}\]</span></p>
+<p>Utilizando el teorema de Bayes, se tiene que, la distribución posterior del parámetro <span class="math inline">\(\theta\)</span> es
+<span class="math display">\[\begin{align*}
+p(\boldsymbol \theta\mid Y) &amp;\propto p(Y \mid \boldsymbol \theta)p(\boldsymbol \theta\mid \boldsymbol \eta)\\
+&amp;= \exp\{\mathbf{T}(y)&#39;\mathbf{d}(\boldsymbol \theta) - c(\boldsymbol \theta) + w(\boldsymbol \eta)&#39; \mathbf{d}(\boldsymbol \theta) - \delta c(\boldsymbol \theta) - \ln k(\boldsymbol \eta,\delta) +\ln h(y)\}\\
+&amp; =
+\exp\left\{\underbrace{(w(\boldsymbol \eta)+\mathbf{T}(y))&#39;}_{\mathbf{d}(y)}
+\underbrace{\mathbf{d}(\boldsymbol \theta)}_{\mathbf{T}(\theta)} - \underbrace{\left[\ln k(\boldsymbol \eta,\delta)-\ln h(y)\right]}_{c(y)}\right\}\underbrace{\exp\{-(\delta+1)c(\boldsymbol \theta)\}}_{h(\boldsymbol \theta)}
+\end{align*}\]</span></p>
+La anterior expresión también hace parte de la familia exponencial biparamétrica y con esto se concluye la demostración
+</div>
+<p><br></p>
+<p>Nótese que el anterior resultado también cobija situaciones donde la
+verosimilitud sea perteneciente a la familia exponencial uniparamétrica.
+Más aún, a cualquier familia exponencial multiparamétrica de orden menor
+o igual al orden de la distribución previa.</p>
+
+<div class="proposition">
+<span id="prp:unnamed-chunk-7" class="proposition"><strong>Resultado 2.4  </strong></span>Sean <span class="math inline">\(\mathbf{Y}=\{Y_1, \ldots, Y_n\}\)</span> una muestra aleatoria con función de densidad conjunta o verosimilitud dada por <a href="2-1-la-distribución-previa.html#eq:multiexpo">(2.3)</a>. Bajo este escenario la familia exponencial multi-paramétrica es conjugada con respecto a sí misma.
+</div>
+<p><br></p>
+
+<div class="proof">
+ <span class="proof"><em>Prueba. </em></span> La demostración sigue los mismos lineamentos que la demostración del resultado anterior concluyendo que la distribución posterior de <span class="math inline">\(\boldsymbol \theta\)</span> está dada por
+<span class="math display">\[\begin{align*}
+&amp;p(\boldsymbol \theta\mid \mathbf{Y}) \propto p(\mathbf{Y} \mid \boldsymbol \theta)p(\boldsymbol \theta\mid \boldsymbol \eta)\\
+&amp;= \exp\left\{\sum_{i=1}^n\mathbf{T}(y_i)&#39;\mathbf{d}(\boldsymbol \theta) - nc(\boldsymbol \theta) + \boldsymbol \eta&#39; \mathbf{d}(\boldsymbol \theta) - \delta c(\boldsymbol \theta) - \ln k(\boldsymbol \eta,\delta) +\sum_{i=1}^n\ln h(y_i)\right\}\\
+&amp; =\exp\left\{\underbrace{\left(\boldsymbol \eta+\sum_{i=1}^n\mathbf{T}(y_i)\right)&#39;}_{\mathbf{d}(\mathbf{y})}
+\underbrace{\mathbf{d}(\boldsymbol \theta)}_{\mathbf{T}(\theta)} - \underbrace{\left[\ln k(\boldsymbol \eta,\delta)-\sum_{i=1}^n\ln h(y_i)\right]}_{c(\mathbf{y})}\right\} \\
+&amp;  \times \underbrace{\exp\left\{-(\delta+n)c(\boldsymbol \theta)\right\}}_{h(\boldsymbol \theta)}
+\end{align*}\]</span>
+La anterior expresión también hace parte de la familia exponencial.
+</div>
+<p><br></p>
+<p>Ahora, estudiamos las expresiones relacionadas con la distribución
+predictiva de nuevas observaciones dentro del contexto de la familia
+exponencial:</p>
+
+<div class="proposition">
+<p><span id="prp:unnamed-chunk-9" class="proposition"><strong>Resultado 2.5  </strong></span>Sea <span class="math inline">\(Y\)</span> una variable aleatoria con función de densidad perteneciente a la familia exponencial, dada por <a href="2-1-la-distribución-previa.html#eq:uniexpo">(2.2)</a>. Sea <span class="math inline">\(\theta\)</span> el parámetro de interés con distribución previa en la familia exponencial biparamétrica. La distribución predictiva previa de <span class="math inline">\(Y\)</span> está dada por</p>
+<p><span class="math display">\[\begin{equation}
+p(Y)=\frac{k(\alpha+T(y),\delta+1)}{k(\alpha,\delta)}h(y)
+\end{equation}\]</span></p>
+donde
+<span class="math display">\[\begin{equation*}
+k(a,b)=\int \exp\{w(a) d(\theta)-b c(\theta)\}\ d\theta
+\end{equation*}\]</span>
+</div>
+<p><br></p>
+
+<div class="proof">
+<p> <span class="proof"><em>Prueba. </em></span> <span class="math display">\[\begin{align*}
+p(Y)&amp;=\int p(\theta)p(Y \mid \theta)\ d\theta\\
+&amp;=\int \exp\{w(\alpha) d(\theta)-\ln k(\alpha,\delta)-\delta c(\theta)\}\exp\{d(\theta)T(y)-c(\theta)\}h(y)d\theta\\
+&amp;=\frac{h(y)}{k(\alpha,\delta)}\int \exp\{[w(\alpha)+T(y)]d(\theta)-(\delta+1)c(\theta)\}d\theta\\
+&amp;=\frac{k(\alpha+T(y),\delta+1)h(y)}{k(\alpha,\delta)}
+\end{align*}\]</span></p>
+<p>donde
+<span class="math display">\[\begin{equation*}
+k(\alpha,\delta)=\int \exp\{w(\alpha) d(\theta)-\delta c(\theta)\}\ d\theta
+\end{equation*}\]</span></p>
+y
+<span class="math display">\[\begin{equation*}
+k(\alpha+T(y),\delta+1)=\int \exp\{[w(\alpha)+T(y)]d(\theta)-(\delta+1)c(\theta)\} \ d\theta.
+\end{equation*}\]</span>
+</div>
+<p><br></p>
+<p>La extensión al caso de contar con una muestra aleatoria de
+observaciones se encuentra a continuación:</p>
+
+<div class="proposition">
+<p><span id="prp:unnamed-chunk-11" class="proposition"><strong>Resultado 2.6  </strong></span>Sea <span class="math inline">\(\mathbf{Y}=\{Y_1\ldots,Y_n\}\)</span> una muestra aleatoria con función de densidad conjunta perteneciente a la familia exponencial, dada por <a href="2-1-la-distribución-previa.html#eq:multiexpo">(2.3)</a>. Sea <span class="math inline">\(\theta\)</span> el parámetro de interés con distribución previa exponencial multiparamétrica. La distribución predictiva previa de <span class="math inline">\(\mathbf{Y}\)</span> está dada por</p>
+<span class="math display">\[\begin{equation}
+p(\mathbf{Y})=\frac{k(\alpha+T(\mathbf{y}),\delta+n)}{k(\alpha,\beta)}h(\mathbf{y})
+\end{equation}\]</span>
+donde <span class="math inline">\(k\)</span> se define tal como en el resultado anterior.
+</div>
+<p><br></p>
+
+<div class="proof">
+ <span class="proof"><em>Prueba. </em></span> La prueba se tiene de inmediato siguiendo los lineamentos de la demostración del anterior resultado.
+</div>
+<p><br></p>
+
+<div class="proposition">
+<span id="prp:unnamed-chunk-13" class="proposition"><strong>Resultado 2.7  </strong></span>En términos de la distribución predictiva posterior, se tiene que para una sola observación <span class="math inline">\(\tilde{y}\)</span>, ésta está dada por
+<span class="math display">\[\begin{equation}
+p(\tilde{y} \mid Y)=\frac{k(\alpha+T(y)+T(\tilde{y}),\delta+2)}{k(\alpha+T(y),\delta+1)}h(\tilde{y})
+\end{equation}\]</span>
+y en el caso en donde se tiene una muestra aleatoria, entonces la distribución predictiva posterior para una nueva muestra <span class="math inline">\(\tilde{\mathbf{y}}=\{\tilde{y}_1,\ldots,\tilde{y}_{n^*}\}\)</span> de tamaño <span class="math inline">\(n^*\)</span> está dada por
+<span class="math display">\[\begin{equation}
+p(\tilde{\mathbf{y}} \mid \mathbf{Y})=
+\frac{k(\alpha+T(\mathbf{y})+T(\tilde{\mathbf{y}}),\delta+n+n^*)}
+{k(\alpha+T(\mathbf{y}),\delta+n)}h(\tilde{\mathbf{y}})
+\end{equation}\]</span>
+</div>
+<p><br></p>
+
+<div class="proof">
+<p> <span class="proof"><em>Prueba. </em></span> De la definición de distribución predictiva posterior dada por la expresión <a href="2-inferencia-bayesiana.html#eq:predictpos">(2.1)</a> se tiene que</p>
+<p><span class="math display">\[\begin{align*}
+p(\tilde{y} \mid Y)&amp;=\int p(\tilde{y} \mid \theta)p(\theta \mid y)\ d\theta\\
+&amp;=\int \exp\{d(\theta)T(\tilde{y})-c(\theta)\}h(\tilde{y})\dfrac{\exp\{[w(\alpha)+T(y)]d(\theta)-(\delta+1)c(\theta)\}}{k(\alpha+T(y),\delta+1)}\ d\theta\\
+&amp;=\frac{h(\tilde{y})}{k(w(\alpha)+T(y),\delta+1)}\int \exp\{[\alpha+T(y)+T(\tilde{y})]d(\theta)-(\delta+2)c(\theta)\}\ d\theta\\
+&amp;=\frac{k(\alpha+T(y)+T(\tilde{y}),\delta+2)}{k(\alpha+T(y),\delta+1)}h(\tilde{y}),
+\end{align*}\]</span></p>
+<p>con
+<span class="math display">\[\begin{equation*}
+k(\alpha+T(y)+T(\tilde{y}),\delta+2)=\int \exp\{[w(\alpha)+T(y)+T(\tilde{y})]d(\theta)-(\delta+2)c(\theta)\}\ d\theta.
+\end{equation*}\]</span></p>
+La demostración para la nueva muestra se lleva a cabo de manera análoga.
+</div>
+<p><br></p>
+</div>
+<div id="distribuciones-previas-no-informativas" class="section level3" number="2.1.3">
+<h3><span class="header-section-number">2.1.3</span> Distribuciones previas no informativas</h3>
+<p>Cuando no existe una base poblacional sobre el parámetro de interés o
+cuando existe total ignorancia de parte del investigador acerca del
+comportamiento de probabilístico del parámetro, es necesario definir
+distribuciones previas que sean no informativas. Es decir, que jueguen un papel mínimo en términos de
+influencia en la distribución posterior. Una característica de
+estas distribuciones es que su forma es vaga, plana o difusa.
+Por tanto la pregunta de interés que surge en este instante es: ¿cómo
+seleccionar distribuciones previas no
+informativas<a href="#fn4" class="footnote-ref" id="fnref4"><sup>4</sup></a>
+sobre el parámetro de interés?</p>
+<p>En los anteriores términos, la distribución uniforme define una
+distribución previa que cumple con las características de no
+información en la mayoría de escenarios. Específicamente en aquellos
+problemas en donde el parámetro de interés está limitado a un espacio de
+muestreo acotado. Por ejemplo, en la distribución Binomial, el parámetro
+de interés está limitado al espacio de muestreo <span class="math inline">\([0,1]\)</span>. Sin embargo, no
+en todos los problemas encaja la distribución uniforme. Nótese, por
+ejemplo, que en el caso en que la distribución exponencial se acomode a
+los datos como candidata a verosimilitud, entonces el espacio de
+muestreo del parámetro de interés estaría dado por <span class="math inline">\((0,\infty)\)</span> en cuyo
+caso la distribución uniforme no sería conveniente puesto que sería una
+distribución impropia en el espacio de muestreo del parámetro de
+interés. Es decir</p>
+<p><span class="math display">\[\begin{equation*}
+\text{Si } p(\theta)\propto k\ I_{\Theta}(\theta) \text{, entonces } \int_{\Theta}p(\theta) \ d(\theta)\longrightarrow \infty
+\end{equation*}\]</span></p>
+<p>donde <span class="math inline">\(\Theta\)</span> denota espacio de muestreo del parámetro <span class="math inline">\(\theta\)</span> e <span class="math inline">\(I\)</span>
+denota la función indicadora. Por otro lado, una característica
+importante que debe tener una distribución previa no informativa
+es que sea invariante en términos de transformaciones matemáticas. Es
+decir, si el parámetro de interés es <span class="math inline">\(\theta\)</span> con distribución
+previa no informativa dada por <span class="math inline">\(p(\theta)\)</span>, y sea
+<span class="math inline">\(\phi=h(\theta)\)</span> una transformaición de <span class="math inline">\(\theta\)</span> por medio de la función
+<span class="math inline">\(h\)</span>, entonces la distribución previa de <span class="math inline">\(\phi\)</span> también debería
+ser no informativa. Sin embargo, la teoría de probabilidad afirma que la
+distribución de probabilidad de una transformación está dada por</p>
+<p><span class="math display" id="eq:teotransf">\[\begin{equation}
+\tag{2.4}
+p(\phi)=p(\theta) \mid \frac{d\theta}{d\phi} \mid =p(\theta) \mid h&#39;(\theta) \mid ^{-1}
+\end{equation}\]</span></p>
+<p>y claramente si la función <span class="math inline">\(h\)</span> no es una función lineal, entonces los
+resultados encontrados por medio de este enfoque indicarían que la
+distribución previa <span class="math inline">\(p(\phi)\)</span> sería informativa contradiciendo
+los supuestos de <span class="math inline">\(p(\theta)\)</span>. El siguiente ejemplo ilustra este
+planteamiento:</p>
+
+<div class="example">
+<p><span id="exm:unnamed-chunk-15" class="example"><strong>Ejemplo 2.1  </strong></span>Suponga que el parámetro de interés es <span class="math inline">\(\theta\)</span> y que está restringido a un espacio de muestreo dado por el intervalo <span class="math inline">\([0,1]\)</span>. Si se supone completa ignorancia acerca del comportamiento del parámetro, entonces una buena opción, con respecto a la distribución previa, sería la distribución uniforme en el intervalo <span class="math inline">\([0,1]\)</span>. Es decir, la distribución previa no informativa estaría dada por
+<span class="math display">\[\begin{equation*}
+p(\theta) = I_{[0,1]}(\theta)
+\end{equation*}\]</span></p>
+<p>Suponga ahora que existe una transformación del parámetro de interés dada por <span class="math inline">\(\phi=h(\theta)=\ln(\theta)\)</span>. Por tanto, siguiendo <a href="2-1-la-distribución-previa.html#eq:teotransf">(2.4)</a> se tiene que la distribución de <span class="math inline">\(\phi\)</span> está dada por
+<span class="math display">\[\begin{equation*}
+p(\phi)=I_{(-\infty,0)}(\phi)e^{\phi}
+\end{equation*}\]</span></p>
+la cual es informativa con respecto al parámetro <span class="math inline">\(\phi\)</span>. Sin embargo, es el mismo problema y existe una contradicción en términos de que para <span class="math inline">\(\theta\)</span> se desconoce todo, pero para una función <span class="math inline">\(\phi\)</span> existe evidencia de que el parámetro se comporta de cierta manera.
+</div>
+<p><br></p>
+<p>Para palear las anteriores diferencias, es necesario encontrar una
+distribución previa no informativa que sea invariante a
+transformaciones matemáticas. La distribución previa no
+informativa de Jeffreys, definida a continuación, cuenta con esta
+agradable propiedad.</p>
+
+<div class="definition">
+<p><span id="def:Jeffreys" class="definition"><strong>Definición 2.2  </strong></span>Si la verosimilitud de los datos está determinada por un único parámetro <span class="math inline">\(\theta\)</span>, la distribución previa no informativa de Jeffreys tiene distribución de probabilidad dada por
+<span class="math display">\[\begin{equation}
+p(\theta)\propto (I(\theta))^{1/2}
+\end{equation}\]</span></p>
+<p>con <span class="math inline">\(I(\theta)\)</span> la información de Fisher definida como
+<span class="math display">\[\begin{align*}
+I(\theta)&amp;=E\left\{\left[\frac{\partial}{\partial\theta}\log{p(\mathbf{Y}\mid\theta)}\right]^2\right\}\\
+&amp;=-E\left\{\dfrac{\partial^2}{\partial\theta^2}\log{p(\mathbf{Y}\mid\theta)}\right\}
+\end{align*}\]</span></p>
+<p>Si la verosimilitud de los datos está determinada por un vector de parámetros <span class="math inline">\(\boldsymbol \theta\)</span>, la distribución previa no informativa de Jeffreys tiene distribución de probabilidad dada por
+<span class="math display">\[\begin{equation}
+p(\theta)\propto |\mathbf{I}(\boldsymbol \theta)|^{1/2}
+\end{equation}\]</span></p>
+donde <span class="math inline">\(\mathbf{I}\)</span> es la matriz de información de Fisher, cuyo elemento en la fila <span class="math inline">\(i\)</span> y columna <span class="math inline">\(j\)</span> está definida como
+<span class="math display">\[\begin{align*}
+\mathbf{I}_{[ij]}(\boldsymbol \theta)&amp;=E\left\{\left[\frac{\partial}{\partial\theta_i}\log{p(\mathbf{Y}\mid\theta)}\right]\left[\frac{\partial}{\partial\theta_j}\log{p(\mathbf{Y}\mid\boldsymbol \theta)}\right]\right\}\\
+&amp;=-E\left\{\dfrac{\partial^2}{\partial\theta_i\partial\theta_j}\log{p(\mathbf{Y}\mid\boldsymbol \theta)}\right\}
+\end{align*}\]</span>
+donde <span class="math inline">\(\theta_i\)</span> y <span class="math inline">\(\theta_j\)</span> son los elementos <span class="math inline">\(i\)</span> y <span class="math inline">\(j\)</span> del vector <span class="math inline">\(\boldsymbol \theta\)</span>.
+</div>
+<p><br></p>
+<p>Nótese que si la verosimilitud de las observaciones pertenecen a la
+familia de distribuciones exponencial, entonces la distribución previa
+de Jeffreys no es difícil de calcular. Por otro lado nótese que la
+distribución previa no informativa de Jeffreys depende, de cierta
+manera, del mecanismo probabilístico que rige a los datos. Lo anterior
+hace que ciertos críticos de la estadística bayesiana manifiesten su incorformidad puesto que se supone que la formulación de la distribución a
+previa es independiente de los datos observados.</p>
+<p>A continuación se evidencia la propiedad de esta distribución previa de
+seguir siendo no informativa con diferentes parametrizaciones.</p>
+
+<div class="proposition">
+<span id="prp:unnamed-chunk-16" class="proposition"><strong>Resultado 2.8  </strong></span>La distribución previa no informativa de Jeffreys es invariante a transformaciones uno a uno. Es decir, si <span class="math inline">\(\phi=h(\theta)\)</span>, entonces <span class="math inline">\(p(\phi)\propto(I(\phi))^{1/2}\)</span>.
+</div>
+<p><br></p>
+
+<div class="proof">
+<p> <span class="proof"><em>Prueba. </em></span> En primer lugar nótese que
+<span class="math display">\[\begin{align*}
+I(\theta)=I(\phi) \mid \frac{\partial\phi}{\partial\theta} \mid ^{2}
+\end{align*}\]</span></p>
+<p>puesto que al utilizar la regla de la cadena del cálculo matemático se tiene que
+<span class="math display">\[\begin{align*}
+I(\phi)= - E\left[\frac{\partial^2 \log p(\mathbf{Y} \mid \phi)}{\partial\phi^2}\right]
+&amp;= - E\left[\frac{\partial}{\partial\phi}\left(\frac{\partial \log p(\mathbf{Y} \mid \phi)}{\partial\phi}\right)\right]\\
+&amp;= - E\left[\frac{\partial}{\partial\theta}\left(\frac{\partial \log p(\mathbf{Y} \mid \phi)}{\partial\phi}\right) \mid \frac{\partial\theta}{\partial\phi} \mid \right]\\
+&amp;= - E\left[\frac{\partial^2 \log p(\mathbf{Y} \mid \phi)}{d\theta^2} \mid \frac{\partial\theta}{\partial\phi} \mid ^{2}\right]\\
+&amp;= - E\left[\frac{\partial^2 \log p(\mathbf{Y} \mid \theta =h^{-1}(\phi))}{d\theta^2} \mid \frac{\partial\theta}{\partial\phi} \mid ^{2}\right]\\
+&amp;= I(\theta) \mid \frac{\partial\theta}{\partial\phi} \mid ^{2}
+\end{align*}\]</span></p>
+<p>Ahora, de la definición de función de distribución para una función y utilizando <a href="2-1-la-distribución-previa.html#eq:teotransf">(2.4)</a>, se tiene que</p>
+<span class="math display">\[\begin{align*}
+p(\phi)&amp;=p(\theta) \mid \frac{\partial\theta}{\partial\phi} \mid
+\propto (I(\theta))^{1/2} \mid \frac{\partial\theta}{\partial\phi} \mid
+\propto I(\phi)^{1/2} \mid \frac{\partial\phi}{\partial\theta} \mid  \mid \frac{d\theta}{\partial\phi} \mid =I(\phi)^{1/2}
+\end{align*}\]</span>
+</div>
+<p><br></p>
+<p>En <span class="citation"><a href="#ref-BoxTiao" role="doc-biblioref">Box y Tiao</a> (<a href="#ref-BoxTiao" role="doc-biblioref">1992, 59</a>)</span> es posible encontrar un resumen exhaustivo de distribuciones previas no informativas para las distribuciones de verosimilitud más comunes. A continuación, se exponen
+algunos ejemplos que utilizan este enfoque.</p>
+
+<div class="example">
+<span id="exm:unnamed-chunk-18" class="example"><strong>Ejemplo 2.2  </strong></span>Si <span class="math inline">\(Y\)</span> es una variable aleatoria con distribución Binomial, entonces el espacio de muestreo del parámetro de interés será el intervalo <span class="math inline">\([0,1]\)</span>; sería conveniente utilizar la función de distribución uniforme sobre este intervalo como distribución previa no informativa. Con el enfoque de Jeffreys se llega a este mismo resultado puesto que la información de Fisher para la distribución binomial es <span class="math inline">\(J(\theta)=n/\theta(1- \theta)\)</span> dado que
+<span class="math display">\[\begin{equation*}
+\log p(Y \mid \theta)=\log \binom{n}{y} + y\log(\theta)+(n-y)\log(1-\theta)
+\end{equation*}\]</span>
+y
+<span class="math display">\[\begin{equation*}
+\frac{\partial^2 \log p(Y \mid \theta)}{\partial\theta^2}=-\frac{y}{\theta^2}-\frac{n-y}{(1-\theta)^2}
+\end{equation*}\]</span>
+Por lo tanto, al calcular la esperanza, y por consiguiente la información de Fisher, se tiene que
+<span class="math display">\[\begin{equation*}
+I(\theta)=- E\left[\frac{\partial^2 \log p(Y \mid \theta)}{\partial\theta^2}\right]
+=\frac{n\theta}{\theta^2}+\frac{n-n\theta}{(1-\theta)^2}= \frac{n}{\theta(1-\theta)}
+\end{equation*}\]</span>
+Es decir, la distribución previa no informativa para el parámetro de interés <span class="math inline">\(\theta\)</span> es proporcional a <span class="math inline">\(\theta^{-1/2}(1-\theta)^{-1/2}\)</span>, la cual comparte la misma forma estructural de una distribución <span class="math inline">\(Beta(1/2,1/2)\)</span> que a su vez es idéntica a la distribución uniforme. En términos de la distribución posterior para el parámetro de interés, se tiene que
+<span class="math display">\[\begin{align*}
+p(\theta \mid Y) &amp;\propto p(Y \mid \theta) p(\theta)\\
+&amp;\propto \theta^{y}(1-\theta)^{n-y}\theta^{-1/2}(1-\theta)^{-1/2}\\
+&amp;=\theta^{y+1/2-1}(1-\theta)^{n-y+1/2-1}
+\end{align*}\]</span>
+Por tanto, la distribución de <span class="math inline">\(\theta \mid Y\)</span> es <span class="math inline">\(Beta(y+1/2,n-y+1/2)\)</span>. Por construcción, esta distribución no está alterada ni influenciada por la distribución previa pues la misma es no informativa.
+</div>
+
+<div class="example">
+<span id="exm:EjemPoisson" class="example"><strong>Ejemplo 2.3  </strong></span>Si <span class="math inline">\(\mathbf{Y}=\{Y_1,\ldots,Y_n\}\)</span> es una muestra aleatoria de variables con distribución de Poisson, entonces el espacio de muestreo del parámetro de interés será el intervalo <span class="math inline">\((0,\infty)\)</span>; por tanto utilizar la distribución uniforme como distribución previa no informativa no es conveniente. Ahora, la información de Fisher para la distribución conjunta es <span class="math inline">\(I(\theta)=n/\theta\)</span> puesto que
+<span class="math display">\[\begin{equation*}
+\log p(\mathbf{Y} \mid \theta)=-n\theta+\log(\theta)\sum_{i=1}^ny_i-\sum_{i=1}^n\log(y_i!)
+\end{equation*}\]</span>
+y
+<span class="math display">\[\begin{equation*}
+\frac{\partial^2 \log p(\mathbf{Y} \mid \theta)}{\partial\theta^2}=-\frac{\sum_{i=1}^ny_i}{\theta^2}
+\end{equation*}\]</span>
+Por lo tanto al calcular la esperanza, y por consiguiente la información de Fisher, se tiene que
+<span class="math display">\[\begin{equation*}
+I(\theta)=- E\left[\frac{\partial^2 \log p(\mathbf{Y} \mid \theta)}{\partial\theta^2}\right]
+=\frac{\sum_{i=1}^nE(y_i)}{\theta^2}=\frac{n}{\theta}
+\end{equation*}\]</span>
+Es decir, la distribución previa no informativa para el parámetro de interés es proporcional a <span class="math inline">\(\theta^{-1/2}\)</span>. En términos de la distribución posterior para el parámetro de interés, se tiene que
+<span class="math display">\[\begin{align*}
+p(\theta \mid Y) \propto p(Y \mid \theta) p(\theta) \propto e^{-n\theta} \theta^{\sum_{i=1}^ny_i}\theta^{-1/2}
+=e^{-n\theta} \theta^{\sum_{i=1}^ny_i-1/2}
+\end{align*}\]</span>
+Por tanto, la distribución de <span class="math inline">\(\theta \mid \mathbf{Y}\)</span> es <span class="math inline">\(Gamma(\sum_{i=1}^ny_i+1/2,n)\)</span>. Por construcción, esta distribución no está alterada ni influenciada por la distribución previa pues la misma es no informativa.
+</div>
+
+<div class="example">
+<p><span id="exm:unnamed-chunk-19" class="example"><strong>Ejemplo 2.4  </strong></span>Suponga que <span class="math inline">\(\mathbf{Y}=\{Y_1\ldots, Y_n\}\)</span> es una muestra aleatoria con distribución normal de parámetros <span class="math inline">\((\theta, \sigma^2)&#39;\)</span>. Se puede verificar que la matriz de información de Fisher para el vector de parámetros está dada por
+<span class="math display">\[\begin{equation}
+\begin{pmatrix}
+  \frac{n}{\sigma^2} &amp; 0 \\
+  0 &amp; \frac{n}{2\sigma^4} \\
+\end{pmatrix}
+\end{equation}\]</span></p>
+cuyo determinante está dado por <span class="math inline">\(\frac{n^2}{2\sigma^6}\)</span>. Por lo tanto, la distribución a previa no informativa de Jeffreys está dada por
+<span class="math display">\[\begin{equation}
+p(\theta,\sigma^2)\propto 1/\sigma^3
+\end{equation}\]</span>
+</div>
+</div>
+</div>
+<h3>Referencias</h3>
+<div id="refs" class="references csl-bib-body hanging-indent">
+<div id="ref-BoxTiao" class="csl-entry">
+Box, G. E. P., y G. C. Tiao. 1992. <em>Bayesian Inference in Statistical Analysis</em>. 1.ª ed. Wiley.
+</div>
+<div id="ref-Jordan" class="csl-entry">
+Jordan, M. I. 2004. <span>«The Exponential Family and Generalized Linear Models»</span>.
+</div>
+<div id="ref-Migon" class="csl-entry">
+Migon, H. S., y D. Gamerman. 1999. <em>Statistical Inference: An Integrated Approach</em>. Arnold.
+</div>
+</div>
+<div class="footnotes">
+<hr />
+<ol start="4">
+<li id="fn4"><p>Existen muchas denominaciones para las distribuciones uniformes que no son informativas. Por ejemplo, <span class="citation"><a href="#ref-BoxTiao" role="doc-biblioref">Box y Tiao</a> (<a href="#ref-BoxTiao" role="doc-biblioref">1992</a>)</span> proponen el nombre de distribuciones localmente uniformes para asegurar que cumplan con las condiciones de función de densidad de probabilidad en un rango particular del espacio paramétrico. Sin embargo, en este texto vamos a utilizar la expresión <em>no informativa</em> al referirse a este tipo de distribuciones a previa.<a href="2-1-la-distribución-previa.html#fnref4" class="footnote-back">↩︎</a></p></li>
+</ol>
+</div>
+<p style="text-align: center;">
+<a href="2-inferencia-bayesiana.html"><button class="btn btn-default">Previous</button></a>
+<a href="2-2-pruebas-de-hipótesis.html"><button class="btn btn-default">Next</button></a>
+</p>
+</div>
+</div>
+
+
+</div>
+
+<script>
+
+// add bootstrap table styles to pandoc tables
+$(document).ready(function () {
+  $('tr.header').parent('thead').parent('table').addClass('table table-condensed');
+});
+
+</script>
+
+</body>
+</html>

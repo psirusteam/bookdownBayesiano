@@ -38,11 +38,18 @@ output:
   pdf_document:
     toc: true
     toc_depth: 2
+    keep_tex: true
+  gitbook:
+    df_print: kable
 ---
 
-```{r setup, include=FALSE} 
+```{r setup, include=FALSE}
 knitr::opts_chunk$set(warning = FALSE, 
-                      message = FALSE) 
+                      message = FALSE,
+                      cache = TRUE)
+library(rstan)
+library(printr)
+rstan_options (javascript = FALSE)
 ```
 
 

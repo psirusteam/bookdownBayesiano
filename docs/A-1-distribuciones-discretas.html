@@ -1,0 +1,450 @@
+<!DOCTYPE html>
+<html lang="es" xml:lang="es">
+<head>
+
+<meta charset="utf-8" />
+<meta name="generator" content="pandoc" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta property="og:title" content="A.1 Distribuciones discretas | Modelos Bayesianos con R y STAN" />
+<meta property="og:type" content="book" />
+
+
+<meta property="og:description" content="Este es el repositorio del libro Modelos Bayesianos con R y STAN." />
+<meta name="github-repo" content="psirusteam/bookdownBayesiano" />
+
+<meta name="author" content="Andrés Gutiérrez - Hanwen Zhang" />
+
+<meta name="date" content="2021-06-04" />
+
+<script type="text/x-mathjax-config">
+MathJax.Hub.Config({
+  TeX: { equationNumbers: { autoNumber: "AMS" } }
+});
+</script>
+  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
+
+<meta name="description" content="Este es el repositorio del libro Modelos Bayesianos con R y STAN.">
+
+<title>A.1 Distribuciones discretas | Modelos Bayesianos con R y STAN</title>
+
+<script src="libs/header-attrs-2.8/header-attrs.js"></script>
+<script src="libs/jquery-1.11.3/jquery.min.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link href="libs/bootstrap-3.3.5/css/bootstrap.min.css" rel="stylesheet" />
+<script src="libs/bootstrap-3.3.5/js/bootstrap.min.js"></script>
+<script src="libs/bootstrap-3.3.5/shim/html5shiv.min.js"></script>
+<script src="libs/bootstrap-3.3.5/shim/respond.min.js"></script>
+<style>h1 {font-size: 34px;}
+       h1.title {font-size: 38px;}
+       h2 {font-size: 30px;}
+       h3 {font-size: 24px;}
+       h4 {font-size: 18px;}
+       h5 {font-size: 16px;}
+       h6 {font-size: 12px;}
+       code {color: inherit; background-color: rgba(0, 0, 0, 0.04);}
+       pre:not([class]) { background-color: white }</style>
+<script src="libs/navigation-1.1/tabsets.js"></script>
+
+
+<style type="text/css">code{white-space: pre;}</style>
+<style type="text/css">
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+    color: #aaaaaa;
+  }
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code span.at { color: #7d9029; } /* Attribute */
+code span.bn { color: #40a070; } /* BaseN */
+code span.bu { } /* BuiltIn */
+code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code span.ch { color: #4070a0; } /* Char */
+code span.cn { color: #880000; } /* Constant */
+code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code span.dt { color: #902000; } /* DataType */
+code span.dv { color: #40a070; } /* DecVal */
+code span.er { color: #ff0000; font-weight: bold; } /* Error */
+code span.ex { } /* Extension */
+code span.fl { color: #40a070; } /* Float */
+code span.fu { color: #06287e; } /* Function */
+code span.im { } /* Import */
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code span.op { color: #666666; } /* Operator */
+code span.ot { color: #007020; } /* Other */
+code span.pp { color: #bc7a00; } /* Preprocessor */
+code span.sc { color: #4070a0; } /* SpecialChar */
+code span.ss { color: #bb6688; } /* SpecialString */
+code span.st { color: #4070a0; } /* String */
+code span.va { color: #19177c; } /* Variable */
+code span.vs { color: #4070a0; } /* VerbatimString */
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+</style>
+<style type="text/css">
+  pre:not([class]) {
+    background-color: white;
+  }
+</style>
+
+
+<style type="text/css">
+/* Used with Pandoc 2.11+ new --citeproc when CSL is used */
+div.csl-bib-body { }
+div.csl-entry {
+  clear: both;
+}
+.hanging div.csl-entry {
+  margin-left:2em;
+  text-indent:-2em;
+}
+div.csl-left-margin {
+  min-width:2em;
+  float:left;
+}
+div.csl-right-inline {
+  margin-left:2em;
+  padding-left:1em;
+}
+div.csl-indent {
+  margin-left: 2em;
+}
+</style>
+
+
+<style type = "text/css">
+.main-container {
+  max-width: 940px;
+  margin-left: auto;
+  margin-right: auto;
+}
+code {
+  color: inherit;
+  background-color: rgba(0, 0, 0, 0.04);
+}
+img {
+  max-width:100%;
+  height: auto;
+}
+/* show arrow before summary tag as in bootstrap
+TODO: remove if boostrap in updated in html_document (rmarkdown#1485) */
+details > summary {
+  display: list-item;
+  cursor: pointer;
+}
+</style>
+</head>
+
+<body>
+
+<div class="container-fluid main-container">
+
+
+<div class="row">
+<div class="col-sm-12">
+<div id="TOC">
+<ul>
+<li><a href="index.html#prefacio">Prefacio</a></li>
+<li><a href="antes-de-comenzar.html#antes-de-comenzar">Antes de comenzar</a>
+<ul>
+<li><a href="cuestionamientos-sobre-el-enfoque-bayesiano.html#cuestionamientos-sobre-el-enfoque-bayesiano">Cuestionamientos sobre el enfoque bayesiano</a></li>
+<li><a href="acerca-de-la-notación.html#acerca-de-la-notación">Acerca de la notación</a></li>
+</ul></li>
+<li><a href="1-tópicos-básicos.html#tópicos-básicos"><span class="toc-section-number">1</span> Tópicos básicos</a>
+<ul>
+<li><a href="1-1-teoría-de-la-decisión.html#teoría-de-la-decisión"><span class="toc-section-number">1.1</span> Teoría de la decisión</a></li>
+<li><a href="1-2-algunos-resultados-de-probabilidad.html#algunos-resultados-de-probabilidad"><span class="toc-section-number">1.2</span> Algunos resultados de probabilidad</a></li>
+<li><a href="1-3-teorema-de-bayes.html#teorema-de-bayes"><span class="toc-section-number">1.3</span> Teorema de Bayes</a></li>
+</ul></li>
+<li><a href="2-inferencia-bayesiana.html#inferencia-bayesiana"><span class="toc-section-number">2</span> Inferencia bayesiana</a>
+<ul>
+<li><a href="2-1-la-distribución-previa.html#la-distribución-previa"><span class="toc-section-number">2.1</span> La distribución previa</a>
+<ul>
+<li><a href="2-1-la-distribución-previa.html#distribuciones-conjugadas"><span class="toc-section-number">2.1.1</span> Distribuciones conjugadas</a></li>
+<li><a href="2-1-la-distribución-previa.html#familia-exponencial"><span class="toc-section-number">2.1.2</span> Familia exponencial</a></li>
+<li><a href="2-1-la-distribución-previa.html#distribuciones-previas-no-informativas"><span class="toc-section-number">2.1.3</span> Distribuciones previas no informativas</a></li>
+</ul></li>
+<li><a href="2-2-pruebas-de-hipótesis.html#pruebas-de-hipótesis"><span class="toc-section-number">2.2</span> Pruebas de hipótesis</a>
+<ul>
+<li><a href="2-2-pruebas-de-hipótesis.html#factor-de-bayes"><span class="toc-section-number">2.2.1</span> Factor de Bayes</a></li>
+<li><a href="2-2-pruebas-de-hipótesis.html#valor-p-bayesiano"><span class="toc-section-number">2.2.2</span> Valor-<span class="math inline">\(p\)</span> Bayesiano</a></li>
+</ul></li>
+<li><a href="2-3-criterios-de-información.html#criterios-de-información"><span class="toc-section-number">2.3</span> Criterios de información</a>
+<ul>
+<li><a href="2-3-criterios-de-información.html#criterio-dic"><span class="toc-section-number">2.3.1</span> Criterio DIC</a></li>
+<li><a href="2-3-criterios-de-información.html#criterios-aic-y-bic"><span class="toc-section-number">2.3.2</span> Criterios AIC y BIC</a></li>
+</ul></li>
+</ul></li>
+<li><a href="3-modelos-uniparamétricos.html#modelos-uniparamétricos"><span class="toc-section-number">3</span> Modelos uniparamétricos</a>
+<ul>
+<li><a href="3-1-modelo-bernoulli.html#modelo-bernoulli"><span class="toc-section-number">3.1</span> Modelo Bernoulli</a></li>
+<li><a href="3-2-modelo-binomial.html#modelo-binomial"><span class="toc-section-number">3.2</span> Modelo Binomial</a></li>
+</ul></li>
+<li class="appendix"><span><b>Apéndice</b></span></li>
+<li><a href="A-elementos-de-probabilidad.html#elementos-de-probabilidad"><span class="toc-section-number">A</span> Elementos de probabilidad</a>
+<ul>
+<li><a href="A-1-distribuciones-discretas.html#distribuciones-discretas"><span class="toc-section-number">A.1</span> Distribuciones discretas</a>
+<ul>
+<li><a href="A-1-distribuciones-discretas.html#distribución-uniforme-discreta"><span class="toc-section-number">A.1.1</span> Distribución uniforme discreta</a></li>
+<li><a href="A-1-distribuciones-discretas.html#distribución-hipergeométrica"><span class="toc-section-number">A.1.2</span> Distribución hipergeométrica</a></li>
+<li><a href="A-1-distribuciones-discretas.html#distribución-bernoulli"><span class="toc-section-number">A.1.3</span> Distribución Bernoulli</a></li>
+<li><a href="A-1-distribuciones-discretas.html#distribución-binomial"><span class="toc-section-number">A.1.4</span> Distribución binomial</a></li>
+<li><a href="A-1-distribuciones-discretas.html#distribución-binomial-negativa"><span class="toc-section-number">A.1.5</span> Distribución Binomial negativa</a></li>
+<li><a href="A-1-distribuciones-discretas.html#distribución-de-poisson"><span class="toc-section-number">A.1.6</span> Distribución de Poisson</a></li>
+</ul></li>
+<li><a href="A-2-distribuciones-continuas.html#distribuciones-continuas"><span class="toc-section-number">A.2</span> Distribuciones continuas</a>
+<ul>
+<li><a href="A-2-distribuciones-continuas.html#distribución-uniforme-continua"><span class="toc-section-number">A.2.1</span> Distribución Uniforme Continua</a></li>
+<li><a href="A-2-distribuciones-continuas.html#distribución-weibull"><span class="toc-section-number">A.2.2</span> Distribución Weibull</a></li>
+<li><a href="A-2-distribuciones-continuas.html#distribución-valor-extremo"><span class="toc-section-number">A.2.3</span> Distribución valor-extremo</a></li>
+<li><a href="A-2-distribuciones-continuas.html#distribución-gamma"><span class="toc-section-number">A.2.4</span> Distribución Gamma</a></li>
+<li><a href="A-2-distribuciones-continuas.html#distribución-gamma-inversa"><span class="toc-section-number">A.2.5</span> Distribución Gamma-inversa</a></li>
+<li><a href="A-2-distribuciones-continuas.html#distribución-exponencial"><span class="toc-section-number">A.2.6</span> Distribución exponencial</a></li>
+<li><a href="A-2-distribuciones-continuas.html#distribución-beta"><span class="toc-section-number">A.2.7</span> Distribución Beta</a></li>
+<li><a href="A-2-distribuciones-continuas.html#distribución-normal"><span class="toc-section-number">A.2.8</span> Distribución normal</a></li>
+<li><a href="A-2-distribuciones-continuas.html#distribución-log-normal"><span class="toc-section-number">A.2.9</span> Distribución log-normal</a></li>
+<li><a href="A-2-distribuciones-continuas.html#distribución-ji-cuadrado"><span class="toc-section-number">A.2.10</span> Distribución Ji-cuadrado</a></li>
+<li><a href="A-2-distribuciones-continuas.html#distribución-t-student"><span class="toc-section-number">A.2.11</span> Distribución t-student</a></li>
+<li><a href="A-2-distribuciones-continuas.html#distribución-t-student-generalizada"><span class="toc-section-number">A.2.12</span> Distribución t-student generalizada</a></li>
+<li><a href="A-2-distribuciones-continuas.html#distribución-f"><span class="toc-section-number">A.2.13</span> Distribución F</a></li>
+</ul></li>
+<li><a href="A-3-distribuciones-multivariadas.html#distribuciones-multivariadas"><span class="toc-section-number">A.3</span> Distribuciones multivariadas</a>
+<ul>
+<li><a href="A-3-distribuciones-multivariadas.html#distribución-multinomial"><span class="toc-section-number">A.3.1</span> Distribución Multinomial</a></li>
+<li><a href="A-3-distribuciones-multivariadas.html#distribución-dirichelt"><span class="toc-section-number">A.3.2</span> Distribución Dirichelt</a></li>
+<li><a href="A-3-distribuciones-multivariadas.html#distribución-normal-multivariante"><span class="toc-section-number">A.3.3</span> Distribución Normal Multivariante</a></li>
+<li><a href="A-3-distribuciones-multivariadas.html#distribución-wishart"><span class="toc-section-number">A.3.4</span> Distribución Wishart</a></li>
+<li><a href="A-3-distribuciones-multivariadas.html#distribución-inversa-wishart"><span class="toc-section-number">A.3.5</span> Distribución inversa-Wishart</a></li>
+</ul></li>
+</ul></li>
+<li><a href="B-matriz-de-información.html#matriz-de-información"><span class="toc-section-number">B</span> Matriz de información</a></li>
+<li><a href="C-elementos-de-simulación-estadística.html#elementos-de-simulación-estadística"><span class="toc-section-number">C</span> Elementos de simulación estadística</a>
+<ul>
+<li><a href="C-1-métodos-directos.html#métodos-directos"><span class="toc-section-number">C.1</span> Métodos directos</a>
+<ul>
+<li><a href="C-1-métodos-directos.html#método-de-la-transformación-uniforme"><span class="toc-section-number">C.1.1</span> Método de la transformación uniforme</a></li>
+<li><a href="C-1-métodos-directos.html#método-de-la-grilla"><span class="toc-section-number">C.1.2</span> Método de la grilla</a></li>
+</ul></li>
+<li><a href="C-2-métodos-de-monte-carlo-vía-cadenas-de-markov.html#métodos-de-monte-carlo-vía-cadenas-de-markov"><span class="toc-section-number">C.2</span> Métodos de Monte Carlo vía cadenas de Markov</a>
+<ul>
+<li><a href="C-2-métodos-de-monte-carlo-vía-cadenas-de-markov.html#el-muestreador-de-gibbs"><span class="toc-section-number">C.2.1</span> El muestreador de Gibbs</a></li>
+<li><a href="C-2-métodos-de-monte-carlo-vía-cadenas-de-markov.html#el-algoritmo-de-metrópolis-hastings"><span class="toc-section-number">C.2.2</span> El algoritmo de Metrópolis-Hastings</a></li>
+<li><a href="C-2-métodos-de-monte-carlo-vía-cadenas-de-markov.html#buenas-prácticas-en-la-aplicación-de-métodos-mcmc"><span class="toc-section-number">C.2.3</span> Buenas prácticas en la aplicación de métodos MCMC</a></li>
+</ul></li>
+</ul></li>
+<li><a href="referencias.html#referencias">Referencias</a></li>
+</ul>
+</div>
+</div>
+</div>
+<div class="row">
+<div class="col-sm-12">
+<div id="distribuciones-discretas" class="section level2" number="4.1">
+<h2><span class="header-section-number">A.1</span> Distribuciones discretas</h2>
+<div id="distribución-uniforme-discreta" class="section level3" number="4.1.1">
+<h3><span class="header-section-number">A.1.1</span> Distribución uniforme discreta</h3>
+
+<div class="definition">
+<p><span id="def:unnamed-chunk-1" class="definition"><strong>Definición 2.1  </strong></span>Una variable aleatoria <span class="math inline">\(Y\)</span> tiene distribución uniforme discreta sobre el conjunto <span class="math inline">\(\{1,2,\cdots,N\}\)</span> si su función de densidad está dada por:</p>
+<span class="math display">\[\begin{equation}
+f_Y(y)=\frac{1}{N}I_{\{1,2,\cdots,N\}}(y)
+\end{equation}\]</span>
+</div>
+<p>Esta distribución describe situaciones donde los resultados de un experimento aleatorio tienen la misma probabilidad de ocurrencia. Entre los ejemplos de la distribución uniforme discreta en la vida práctica están el lanzamiento de una moneda corriente, el lanzamiento de un dado corriente, la extracción de una urna que contiene bolas enumeradas de 1 a <span class="math inline">\(N\)</span>.</p>
+
+<div class="proposition">
+<p><span id="prp:unnamed-chunk-2" class="proposition"><strong>Resultado A.1  </strong></span>Si <span class="math inline">\(Y\)</span> es una variable aleatoria con distribución uniforme discreta sobre el conjunto <span class="math inline">\(\{1,2,\cdots,N\}\)</span>, entonces:</p>
+<ul>
+<li><span class="math inline">\(E(Y)=\frac{N+1}{2}\)</span>.</li>
+<li><span class="math inline">\(Var(Y)=\frac{N^2-1}{12}\)</span>.</li>
+<li><span class="math inline">\(m_Y(t)=\sum_{i=1}^N\frac{e^{ti}}{N}\)</span>.</li>
+</ul>
+</div>
+</div>
+<div id="distribución-hipergeométrica" class="section level3" number="4.1.2">
+<h3><span class="header-section-number">A.1.2</span> Distribución hipergeométrica</h3>
+
+<div class="definition">
+<p><span id="def:unnamed-chunk-3" class="definition"><strong>Definición A.1  </strong></span>Una variable aleatoria <span class="math inline">\(Y\)</span> tiene distribución hipergeométrica con parámetros <span class="math inline">\(n\)</span>, <span class="math inline">\(R\)</span> y <span class="math inline">\(N\)</span> si su función de densidad está dada por:</p>
+<span class="math display">\[\begin{equation}
+f_Y(y)=\frac{\binom{R}{y}\binom{N-R}{n-y}}{\binom{N}{n}}I_{\{0,1,\cdots,n\}}(y),
+\end{equation}\]</span>
+y se nota como <span class="math inline">\(Y\sim Hg(n,R,N)\)</span>.
+</div>
+<p><br></p>
+<p>Suponga que en una urna hay <span class="math inline">\(N\)</span> bolas en total, donde <span class="math inline">\(R\)</span> de ellas son del color negro y los <span class="math inline">\(N-R\)</span> son del color blanco, se extrae aleatoriamente
+<span class="math inline">\(n\)</span> bolas de la urna (<span class="math inline">\(n&lt;N\)</span>), entonces la variable “número de bolas negras extraídas” tiene distribución hipergeométrica con parámetros <span class="math inline">\(n\)</span>, <span class="math inline">\(R\)</span> y
+<span class="math inline">\(N\)</span>. Otro uso de la distribución hipergeométrica es el problema de captura-recaptura.</p>
+
+<div class="proposition">
+<p><span id="prp:unnamed-chunk-4" class="proposition"><strong>Resultado A.2  </strong></span>Si <span class="math inline">\(Y\)</span> es una variable aleatoria con distribución hipergeométrica con parámetros <span class="math inline">\(n\)</span>, <span class="math inline">\(R\)</span> y <span class="math inline">\(N\)</span>, entonces:</p>
+<ul>
+<li><span class="math inline">\(E(Y)=\frac{nR}{N}\)</span>.</li>
+<li><span class="math inline">\(Var(Y)=\frac{nR(N-R)(N-n)}{N^2(N-1)}\)</span>.</li>
+</ul>
+</div>
+<p>El anterior resultado no incluye la función generadora de momentos, pues éste no ha resultado ser útil en la teoría relacionada con la distribución hipergeométrica.</p>
+</div>
+<div id="distribución-bernoulli" class="section level3" number="4.1.3">
+<h3><span class="header-section-number">A.1.3</span> Distribución Bernoulli</h3>
+<p>La distribución Bernoulli debe su nombre al matemático suizo Jacob Bernoulli (1654-1705) que describe el éxito o fracaso de un evento.</p>
+
+<div class="definition">
+<p><span id="def:unnamed-chunk-5" class="definition"><strong>Definición A.2  </strong></span>Una variable aleatoria <span class="math inline">\(Y\)</span> tiene distribución Bernoulli con parámetro <span class="math inline">\(p\in (0,1)\)</span> si su función de densidad está dada por:</p>
+<p><span class="math display">\[\begin{equation}
+f_Y(y)=p^y(1-p)^{1-y}I_{\{0,1\}}(y),
+\end{equation}\]</span></p>
+y se nota como <span class="math inline">\(Y\sim Ber(p)\)</span>.
+</div>
+
+<div class="proposition">
+<p><span id="prp:unnamed-chunk-6" class="proposition"><strong>Resultado A.3  </strong></span>Si <span class="math inline">\(Y\)</span> es una variable aleatoria con distribución Bernoulli con parámetro <span class="math inline">\(p\)</span>, entonces:</p>
+<ul>
+<li><span class="math inline">\(E(Y)=p\)</span>.</li>
+<li><span class="math inline">\(Var(Y)=p(1-p)\)</span>.</li>
+<li><span class="math inline">\(m_Y(t)=pe^t+1-p\)</span>.</li>
+</ul>
+</div>
+</div>
+<div id="distribución-binomial" class="section level3" number="4.1.4">
+<h3><span class="header-section-number">A.1.4</span> Distribución binomial</h3>
+
+<div class="definition">
+<p><span id="def:unnamed-chunk-7" class="definition"><strong>Definición A.3  </strong></span>Una variable aleatoria <span class="math inline">\(Y\)</span> tiene distribución binomial con los parámetros <span class="math inline">\(n\in \mathbb{N}\)</span> y <span class="math inline">\(p\in (0,1)\)</span> si su función de densidad está dada por:</p>
+<p><span class="math display">\[\begin{equation}
+f_Y(y)=\binom{n}{y}p^y(1-p)^{n-y}I_{\{0,1,\cdots,n\}}(y),
+\end{equation}\]</span></p>
+y se nota como <span class="math inline">\(Y\sim Bin(n,p)\)</span>.
+</div>
+
+<div class="proposition">
+<span id="prp:unnamed-chunk-8" class="proposition"><strong>Resultado 1.3  </strong></span>Sea <span class="math inline">\(Y_1\)</span>, <span class="math inline">\(\cdots\)</span>, <span class="math inline">\(Y_n\)</span> variables aleatorias independientes e idénticamente distribuidas con distribución Bernoulli con parámetro <span class="math inline">\(p\)</span>,
+entonces la variable <span class="math inline">\(\sum_{i=1}^nY_i\)</span> tiene distribución <span class="math inline">\(Bin(n,p)\)</span>. Por ende, la distribución Bernoulli es un caso particular de la distribución binomial cuando <span class="math inline">\(n=1\)</span>.
+</div>
+<p><br></p>
+
+<div class="proof">
+<p> <span class="proof"><em>Prueba. </em></span> La demostración radica en el hecho de que la función generadora de momentos caracteriza la distribución probabilística, entonces basta demostrar que la función generadora de momentos de <span class="math inline">\(\sum_{i=1}^nX_i\)</span> es la de una distribución <span class="math inline">\(Bin(n,p)\)</span>. Tenemos lo siguiente:</p>
+<span class="math display">\[\begin{align*}
+m_{\sum Y_i}(t)=E(e^{\sum tY_i})&amp;=E(\prod_{i=1}^ne^{tY_i})\\
+               &amp;=\prod_{i=1}^nE(e^{tY_i})\ \ \ \ (\text{por independencia})\\
+               &amp;=\prod_{i=1}^n(pe^t+1-p)\ \ \ \ (\text{definición de $m_{Y_i}(t)$})\\
+               &amp;=(pe^t+1-p)^n
+\end{align*}\]</span>
+</div>
+<p><br></p>
+<p>Una aplicación de esta distribución es cuando tenemos un número <span class="math inline">\(n\)</span> de repeticiones independientes de un experimento donde cada uno tiene dos
+posibles resultados que se podrían llamarse como éxito o fracaso y donde la probabilidad de éxito <span class="math inline">\(p\)</span> es constante en cada una de las repeticiones. Por tanto, la variable número de éxitos obtenidos en las <span class="math inline">\(n\)</span> repeticiones tiene distribución <span class="math inline">\(Bin(n,p)\)</span>. La distribución binomial tiene dos parámetros, <span class="math inline">\(n\)</span> y <span class="math inline">\(p\)</span>; sin embargo, cuando <span class="math inline">\(n\)</span> es conocido, la distribución dependerá sólo del valor <span class="math inline">\(p\)</span> que sería el único parámetro con espacio paramétrico <span class="math inline">\(\Theta=(0,1)\)</span>.</p>
+
+<div class="proposition">
+<p><span id="prp:unnamed-chunk-10" class="proposition"><strong>Resultado A.4  </strong></span>Si <span class="math inline">\(Y\)</span> es una variable aleatoria con distribución binomial con parámetros <span class="math inline">\(n\)</span> y <span class="math inline">\(p\)</span>, entonces</p>
+<ul>
+<li><span class="math inline">\(E(Y)=np\)</span>.</li>
+<li><span class="math inline">\(Var(Y)=np(1-p)\)</span>.</li>
+<li><span class="math inline">\(m_Y(t)=(pe^t+1-p)^n\)</span>.</li>
+</ul>
+</div>
+</div>
+<div id="distribución-binomial-negativa" class="section level3" number="4.1.5">
+<h3><span class="header-section-number">A.1.5</span> Distribución Binomial negativa</h3>
+
+<div class="definition">
+<p><span id="def:unnamed-chunk-11" class="definition"><strong>Definición A.4  </strong></span>Una variable aleatoria <span class="math inline">\(Y\)</span> tiene distribución Binomial negativa con parámetros <span class="math inline">\((\theta, r)\)</span> si su función de densidad está dada por:</p>
+<span class="math display">\[\begin{equation}
+P(y\mid \theta, r)=\frac{\Gamma(r+y_i)}{y_i!\Gamma(r)}\theta^r(1-\theta)^{1-y_i}I_{(0,1,2,\ldots)}(y)
+\end{equation}\]</span>
+</div>
+<p>Esta distribución siempre ha tenido lugar al resolver el problema del número de ensayos necesarios para lograr un número específico de éxitos. Por supuesto, si <span class="math inline">\(r\)</span> es el número de éxitos necesarios y se conoce que la probabilidad de éxito es <span class="math inline">\(\theta\)</span>, entonces la distribución binomial negativa corresponde a un modelo probabilístico, afianzado durante siglos, que permite la resolución de este tipo de situaciones.</p>
+<p>Por otro lado, es posible asignar al parámetro <span class="math inline">\(r\)</span> valores que sean reales; en este caso no hay ninguna interpretación práctica en el contexto del número de ensayos necesarios para determinados éxitos. Sin embargo, en términos de distribución, <span class="math inline">\(r\)</span> es un parámetro más. Esto nos lleva a uno de los verdaderos usos prácticos de esta distribución: la sobredispersión. Dado que la forma funcional de arriba corresponde a una generalización de la función de distribución Poisson, entonces es posible suponer que los datos de conteo vienen de una distribución binomial negativa.</p>
+<p>Lo anterior trae ventajas puesto que, si la media de los datos recolectados no corresponde con la varianza (característica esencial de la Poisson), entonces cualquier modelo que de allí surgiese sería altamente cuestionable. Si lo anterior se presenta es mejor acudir a la distribución binomial negativa dando valores reales al parámetro <span class="math inline">\(r\)</span>.</p>
+
+<div class="proposition">
+<p><span id="prp:unnamed-chunk-12" class="proposition"><strong>Resultado A.5  </strong></span>Si <span class="math inline">\(Y\)</span> es una variable aleatoria con distribución binomial-negativa con parámetros <span class="math inline">\((\theta, r)\)</span>, entonces</p>
+<ul>
+<li><span class="math inline">\(E(Y)=\frac{r\theta}{1-\theta}\)</span>.</li>
+<li><span class="math inline">\(Var(Y)=\frac{r\theta}{(1-\theta)^2}\)</span>.</li>
+<li><span class="math inline">\(m_Y(t)=\left(\frac{1-\theta}{1-\theta e^t}\right)^r\)</span>.</li>
+</ul>
+</div>
+</div>
+<div id="distribución-de-poisson" class="section level3" number="4.1.6">
+<h3><span class="header-section-number">A.1.6</span> Distribución de Poisson</h3>
+<p>La distribución de Poisson debe su nombre al francés Siméon-Denis Poisson (1781-1840) quien descubrió esta distribución en el año 1838, cuando
+la usó para describir el número de ocurrencias de algún evento durante un intervalo de tiempo de longitud dada.</p>
+
+<div class="definition">
+<p><span id="def:unnamed-chunk-13" class="definition"><strong>Definición A.5  </strong></span>Una variable aleatoria <span class="math inline">\(Y\)</span> tiene distribución de Poisson con parámetros <span class="math inline">\(\lambda&gt;0\)</span> si su función de densidad está dada por:</p>
+<p><span class="math display">\[\begin{equation}
+f_Y(y)=\frac{e^{-\lambda}\lambda^y}{y!}I_{\{0,1,\cdots\}}(y)
+\end{equation}\]</span></p>
+y se nota como <span class="math inline">\(Y\sim P(\lambda)\)</span>.
+</div>
+<p><br></p>
+<p>Nótese que la distribución Poisson tiene solo un parámetro <span class="math inline">\(\theta=\lambda\)</span>, y el espacio paramétrico es <span class="math inline">\(\Theta=(0,\infty)\)</span>.</p>
+
+<div class="proposition">
+<p><span id="prp:unnamed-chunk-14" class="proposition"><strong>Resultado A.6  </strong></span>Si <span class="math inline">\(Y\)</span> es una variable aleatoria con distribución Poisson con parámetro <span class="math inline">\(\lambda\)</span>, entonces</p>
+<ul>
+<li><span class="math inline">\(E(Y)=\lambda\)</span>.</li>
+<li><span class="math inline">\(Var(Y)=\lambda\)</span>.</li>
+<li><span class="math inline">\(m_Y(t)=\exp\{\lambda(e^t-1)\}\)</span>.</li>
+</ul>
+</div>
+
+<div class="proposition">
+<span id="prp:unnamed-chunk-15" class="proposition"><strong>Resultado A.7  </strong></span>Sea <span class="math inline">\(Y_1\)</span>, <span class="math inline">\(\cdots\)</span>, <span class="math inline">\(Y_n\)</span> variables aleatorias independientes con distribución <span class="math inline">\(P(\lambda_i)\)</span> para <span class="math inline">\(i=1,\cdots,n\)</span>, entonces la variable <span class="math inline">\(\sum_{i=1}^nX_i\)</span> tiene distribución <span class="math inline">\(P(\sum_{i=1}^n\lambda_i)\)</span>.
+</div>
+</div>
+</div>
+<p style="text-align: center;">
+<a href="A-elementos-de-probabilidad.html"><button class="btn btn-default">Previous</button></a>
+<a href="A-2-distribuciones-continuas.html"><button class="btn btn-default">Next</button></a>
+</p>
+</div>
+</div>
+
+
+</div>
+
+<script>
+
+// add bootstrap table styles to pandoc tables
+$(document).ready(function () {
+  $('tr.header').parent('thead').parent('table').addClass('table table-condensed');
+});
+
+</script>
+
+</body>
+</html>

@@ -1,0 +1,415 @@
+<!DOCTYPE html>
+<html lang="es" xml:lang="es">
+<head>
+
+<meta charset="utf-8" />
+<meta name="generator" content="pandoc" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta property="og:title" content="Capítulo 2 Inferencia bayesiana | Modelos Bayesianos con R y STAN" />
+<meta property="og:type" content="book" />
+
+
+<meta property="og:description" content="Este es el repositorio del libro Modelos Bayesianos con R y STAN." />
+<meta name="github-repo" content="psirusteam/bookdownBayesiano" />
+
+<meta name="author" content="Andrés Gutiérrez - Hanwen Zhang" />
+
+<meta name="date" content="2021-06-04" />
+
+<script type="text/x-mathjax-config">
+MathJax.Hub.Config({
+  TeX: { equationNumbers: { autoNumber: "AMS" } }
+});
+</script>
+  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
+
+<meta name="description" content="Este es el repositorio del libro Modelos Bayesianos con R y STAN.">
+
+<title>Capítulo 2 Inferencia bayesiana | Modelos Bayesianos con R y STAN</title>
+
+<script src="libs/header-attrs-2.8/header-attrs.js"></script>
+<script src="libs/jquery-1.11.3/jquery.min.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link href="libs/bootstrap-3.3.5/css/bootstrap.min.css" rel="stylesheet" />
+<script src="libs/bootstrap-3.3.5/js/bootstrap.min.js"></script>
+<script src="libs/bootstrap-3.3.5/shim/html5shiv.min.js"></script>
+<script src="libs/bootstrap-3.3.5/shim/respond.min.js"></script>
+<style>h1 {font-size: 34px;}
+       h1.title {font-size: 38px;}
+       h2 {font-size: 30px;}
+       h3 {font-size: 24px;}
+       h4 {font-size: 18px;}
+       h5 {font-size: 16px;}
+       h6 {font-size: 12px;}
+       code {color: inherit; background-color: rgba(0, 0, 0, 0.04);}
+       pre:not([class]) { background-color: white }</style>
+<script src="libs/navigation-1.1/tabsets.js"></script>
+
+
+<style type="text/css">code{white-space: pre;}</style>
+<style type="text/css">
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+    color: #aaaaaa;
+  }
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code span.at { color: #7d9029; } /* Attribute */
+code span.bn { color: #40a070; } /* BaseN */
+code span.bu { } /* BuiltIn */
+code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code span.ch { color: #4070a0; } /* Char */
+code span.cn { color: #880000; } /* Constant */
+code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code span.dt { color: #902000; } /* DataType */
+code span.dv { color: #40a070; } /* DecVal */
+code span.er { color: #ff0000; font-weight: bold; } /* Error */
+code span.ex { } /* Extension */
+code span.fl { color: #40a070; } /* Float */
+code span.fu { color: #06287e; } /* Function */
+code span.im { } /* Import */
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code span.op { color: #666666; } /* Operator */
+code span.ot { color: #007020; } /* Other */
+code span.pp { color: #bc7a00; } /* Preprocessor */
+code span.sc { color: #4070a0; } /* SpecialChar */
+code span.ss { color: #bb6688; } /* SpecialString */
+code span.st { color: #4070a0; } /* String */
+code span.va { color: #19177c; } /* Variable */
+code span.vs { color: #4070a0; } /* VerbatimString */
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+</style>
+<style type="text/css">
+  pre:not([class]) {
+    background-color: white;
+  }
+</style>
+
+
+<style type="text/css">
+/* Used with Pandoc 2.11+ new --citeproc when CSL is used */
+div.csl-bib-body { }
+div.csl-entry {
+  clear: both;
+}
+.hanging div.csl-entry {
+  margin-left:2em;
+  text-indent:-2em;
+}
+div.csl-left-margin {
+  min-width:2em;
+  float:left;
+}
+div.csl-right-inline {
+  margin-left:2em;
+  padding-left:1em;
+}
+div.csl-indent {
+  margin-left: 2em;
+}
+</style>
+
+
+<style type = "text/css">
+.main-container {
+  max-width: 940px;
+  margin-left: auto;
+  margin-right: auto;
+}
+code {
+  color: inherit;
+  background-color: rgba(0, 0, 0, 0.04);
+}
+img {
+  max-width:100%;
+  height: auto;
+}
+/* show arrow before summary tag as in bootstrap
+TODO: remove if boostrap in updated in html_document (rmarkdown#1485) */
+details > summary {
+  display: list-item;
+  cursor: pointer;
+}
+</style>
+</head>
+
+<body>
+
+<div class="container-fluid main-container">
+
+
+<div class="row">
+<div class="col-sm-12">
+<div id="TOC">
+<ul>
+<li><a href="index.html#prefacio">Prefacio</a></li>
+<li><a href="antes-de-comenzar.html#antes-de-comenzar">Antes de comenzar</a>
+<ul>
+<li><a href="cuestionamientos-sobre-el-enfoque-bayesiano.html#cuestionamientos-sobre-el-enfoque-bayesiano">Cuestionamientos sobre el enfoque bayesiano</a></li>
+<li><a href="acerca-de-la-notación.html#acerca-de-la-notación">Acerca de la notación</a></li>
+</ul></li>
+<li><a href="1-tópicos-básicos.html#tópicos-básicos"><span class="toc-section-number">1</span> Tópicos básicos</a>
+<ul>
+<li><a href="1-1-teoría-de-la-decisión.html#teoría-de-la-decisión"><span class="toc-section-number">1.1</span> Teoría de la decisión</a></li>
+<li><a href="1-2-algunos-resultados-de-probabilidad.html#algunos-resultados-de-probabilidad"><span class="toc-section-number">1.2</span> Algunos resultados de probabilidad</a></li>
+<li><a href="1-3-teorema-de-bayes.html#teorema-de-bayes"><span class="toc-section-number">1.3</span> Teorema de Bayes</a></li>
+</ul></li>
+<li><a href="2-inferencia-bayesiana.html#inferencia-bayesiana"><span class="toc-section-number">2</span> Inferencia bayesiana</a>
+<ul>
+<li><a href="2-1-la-distribución-previa.html#la-distribución-previa"><span class="toc-section-number">2.1</span> La distribución previa</a>
+<ul>
+<li><a href="2-1-la-distribución-previa.html#distribuciones-conjugadas"><span class="toc-section-number">2.1.1</span> Distribuciones conjugadas</a></li>
+<li><a href="2-1-la-distribución-previa.html#familia-exponencial"><span class="toc-section-number">2.1.2</span> Familia exponencial</a></li>
+<li><a href="2-1-la-distribución-previa.html#distribuciones-previas-no-informativas"><span class="toc-section-number">2.1.3</span> Distribuciones previas no informativas</a></li>
+</ul></li>
+<li><a href="2-2-pruebas-de-hipótesis.html#pruebas-de-hipótesis"><span class="toc-section-number">2.2</span> Pruebas de hipótesis</a>
+<ul>
+<li><a href="2-2-pruebas-de-hipótesis.html#factor-de-bayes"><span class="toc-section-number">2.2.1</span> Factor de Bayes</a></li>
+<li><a href="2-2-pruebas-de-hipótesis.html#valor-p-bayesiano"><span class="toc-section-number">2.2.2</span> Valor-<span class="math inline">\(p\)</span> Bayesiano</a></li>
+</ul></li>
+<li><a href="2-3-criterios-de-información.html#criterios-de-información"><span class="toc-section-number">2.3</span> Criterios de información</a>
+<ul>
+<li><a href="2-3-criterios-de-información.html#criterio-dic"><span class="toc-section-number">2.3.1</span> Criterio DIC</a></li>
+<li><a href="2-3-criterios-de-información.html#criterios-aic-y-bic"><span class="toc-section-number">2.3.2</span> Criterios AIC y BIC</a></li>
+</ul></li>
+</ul></li>
+<li><a href="3-modelos-uniparamétricos.html#modelos-uniparamétricos"><span class="toc-section-number">3</span> Modelos uniparamétricos</a>
+<ul>
+<li><a href="3-1-modelo-bernoulli.html#modelo-bernoulli"><span class="toc-section-number">3.1</span> Modelo Bernoulli</a></li>
+<li><a href="3-2-modelo-binomial.html#modelo-binomial"><span class="toc-section-number">3.2</span> Modelo Binomial</a></li>
+</ul></li>
+<li class="appendix"><span><b>Apéndice</b></span></li>
+<li><a href="A-elementos-de-probabilidad.html#elementos-de-probabilidad"><span class="toc-section-number">A</span> Elementos de probabilidad</a>
+<ul>
+<li><a href="A-1-distribuciones-discretas.html#distribuciones-discretas"><span class="toc-section-number">A.1</span> Distribuciones discretas</a>
+<ul>
+<li><a href="A-1-distribuciones-discretas.html#distribución-uniforme-discreta"><span class="toc-section-number">A.1.1</span> Distribución uniforme discreta</a></li>
+<li><a href="A-1-distribuciones-discretas.html#distribución-hipergeométrica"><span class="toc-section-number">A.1.2</span> Distribución hipergeométrica</a></li>
+<li><a href="A-1-distribuciones-discretas.html#distribución-bernoulli"><span class="toc-section-number">A.1.3</span> Distribución Bernoulli</a></li>
+<li><a href="A-1-distribuciones-discretas.html#distribución-binomial"><span class="toc-section-number">A.1.4</span> Distribución binomial</a></li>
+<li><a href="A-1-distribuciones-discretas.html#distribución-binomial-negativa"><span class="toc-section-number">A.1.5</span> Distribución Binomial negativa</a></li>
+<li><a href="A-1-distribuciones-discretas.html#distribución-de-poisson"><span class="toc-section-number">A.1.6</span> Distribución de Poisson</a></li>
+</ul></li>
+<li><a href="A-2-distribuciones-continuas.html#distribuciones-continuas"><span class="toc-section-number">A.2</span> Distribuciones continuas</a>
+<ul>
+<li><a href="A-2-distribuciones-continuas.html#distribución-uniforme-continua"><span class="toc-section-number">A.2.1</span> Distribución Uniforme Continua</a></li>
+<li><a href="A-2-distribuciones-continuas.html#distribución-weibull"><span class="toc-section-number">A.2.2</span> Distribución Weibull</a></li>
+<li><a href="A-2-distribuciones-continuas.html#distribución-valor-extremo"><span class="toc-section-number">A.2.3</span> Distribución valor-extremo</a></li>
+<li><a href="A-2-distribuciones-continuas.html#distribución-gamma"><span class="toc-section-number">A.2.4</span> Distribución Gamma</a></li>
+<li><a href="A-2-distribuciones-continuas.html#distribución-gamma-inversa"><span class="toc-section-number">A.2.5</span> Distribución Gamma-inversa</a></li>
+<li><a href="A-2-distribuciones-continuas.html#distribución-exponencial"><span class="toc-section-number">A.2.6</span> Distribución exponencial</a></li>
+<li><a href="A-2-distribuciones-continuas.html#distribución-beta"><span class="toc-section-number">A.2.7</span> Distribución Beta</a></li>
+<li><a href="A-2-distribuciones-continuas.html#distribución-normal"><span class="toc-section-number">A.2.8</span> Distribución normal</a></li>
+<li><a href="A-2-distribuciones-continuas.html#distribución-log-normal"><span class="toc-section-number">A.2.9</span> Distribución log-normal</a></li>
+<li><a href="A-2-distribuciones-continuas.html#distribución-ji-cuadrado"><span class="toc-section-number">A.2.10</span> Distribución Ji-cuadrado</a></li>
+<li><a href="A-2-distribuciones-continuas.html#distribución-t-student"><span class="toc-section-number">A.2.11</span> Distribución t-student</a></li>
+<li><a href="A-2-distribuciones-continuas.html#distribución-t-student-generalizada"><span class="toc-section-number">A.2.12</span> Distribución t-student generalizada</a></li>
+<li><a href="A-2-distribuciones-continuas.html#distribución-f"><span class="toc-section-number">A.2.13</span> Distribución F</a></li>
+</ul></li>
+<li><a href="A-3-distribuciones-multivariadas.html#distribuciones-multivariadas"><span class="toc-section-number">A.3</span> Distribuciones multivariadas</a>
+<ul>
+<li><a href="A-3-distribuciones-multivariadas.html#distribución-multinomial"><span class="toc-section-number">A.3.1</span> Distribución Multinomial</a></li>
+<li><a href="A-3-distribuciones-multivariadas.html#distribución-dirichelt"><span class="toc-section-number">A.3.2</span> Distribución Dirichelt</a></li>
+<li><a href="A-3-distribuciones-multivariadas.html#distribución-normal-multivariante"><span class="toc-section-number">A.3.3</span> Distribución Normal Multivariante</a></li>
+<li><a href="A-3-distribuciones-multivariadas.html#distribución-wishart"><span class="toc-section-number">A.3.4</span> Distribución Wishart</a></li>
+<li><a href="A-3-distribuciones-multivariadas.html#distribución-inversa-wishart"><span class="toc-section-number">A.3.5</span> Distribución inversa-Wishart</a></li>
+</ul></li>
+</ul></li>
+<li><a href="B-matriz-de-información.html#matriz-de-información"><span class="toc-section-number">B</span> Matriz de información</a></li>
+<li><a href="C-elementos-de-simulación-estadística.html#elementos-de-simulación-estadística"><span class="toc-section-number">C</span> Elementos de simulación estadística</a>
+<ul>
+<li><a href="C-1-métodos-directos.html#métodos-directos"><span class="toc-section-number">C.1</span> Métodos directos</a>
+<ul>
+<li><a href="C-1-métodos-directos.html#método-de-la-transformación-uniforme"><span class="toc-section-number">C.1.1</span> Método de la transformación uniforme</a></li>
+<li><a href="C-1-métodos-directos.html#método-de-la-grilla"><span class="toc-section-number">C.1.2</span> Método de la grilla</a></li>
+</ul></li>
+<li><a href="C-2-métodos-de-monte-carlo-vía-cadenas-de-markov.html#métodos-de-monte-carlo-vía-cadenas-de-markov"><span class="toc-section-number">C.2</span> Métodos de Monte Carlo vía cadenas de Markov</a>
+<ul>
+<li><a href="C-2-métodos-de-monte-carlo-vía-cadenas-de-markov.html#el-muestreador-de-gibbs"><span class="toc-section-number">C.2.1</span> El muestreador de Gibbs</a></li>
+<li><a href="C-2-métodos-de-monte-carlo-vía-cadenas-de-markov.html#el-algoritmo-de-metrópolis-hastings"><span class="toc-section-number">C.2.2</span> El algoritmo de Metrópolis-Hastings</a></li>
+<li><a href="C-2-métodos-de-monte-carlo-vía-cadenas-de-markov.html#buenas-prácticas-en-la-aplicación-de-métodos-mcmc"><span class="toc-section-number">C.2.3</span> Buenas prácticas en la aplicación de métodos MCMC</a></li>
+</ul></li>
+</ul></li>
+<li><a href="referencias.html#referencias">Referencias</a></li>
+</ul>
+</div>
+</div>
+</div>
+<div class="row">
+<div class="col-sm-12">
+<div id="inferencia-bayesiana" class="section level1" number="2">
+<h1><span class="header-section-number">Capítulo 2</span> Inferencia bayesiana</h1>
+<p>El enfoque bayesiano, además de especificar un modelo para los datos
+observados <span class="math inline">\(\mathbf{Y}=(y_1,\ldots,y_n)\)</span> dado un vector de parámetros
+desconocidos <span class="math inline">\(\boldsymbol \theta=(\theta_1,\ldots,\theta_K)\)</span>, usualmente en forma
+de densidad condicional <span class="math inline">\(p(\mathbf{Y} \mid \boldsymbol \theta)\)</span>, supone que
+<span class="math inline">\(\boldsymbol \theta\)</span> es aleatorio y que tiene un densidad <em>previa</em>
+<span class="math inline">\(p(\boldsymbol \theta\mid \boldsymbol \eta)\)</span>, donde <span class="math inline">\(\boldsymbol \eta\)</span> es un vector de hiper-parámetros.
+De esta forma, la inferencia concerniente a <span class="math inline">\(\boldsymbol \theta\)</span> se basa en una
+densidad <em>posterior</em> <span class="math inline">\(p(\boldsymbol \theta\mid \mathbf{Y})\)</span>.</p>
+<p>En términos de estimación, inferencia y predicción, el enfoque Bayesiano
+supone dos momentos o etapas:</p>
+<ol style="list-style-type: decimal">
+<li><p>Antes de la recolección de las datos, en donde el investigador propone,
+basado en su conocimiento, experiencia o fuentes externas, una
+distribución de probabilidad previa para el parámetro de interés.
+Con esta distribución es posible calcular estimaciones puntuales y por
+intervalo con el fin de confirmar que la distribución propuesta se
+ajusta al problema de estudio. En esta etapa, basados en la distribución
+previa, también es posible hacer predicciones de cantidades
+observables.</p></li>
+<li><p>Después de la recolección de los datos. Siguiendo el teorema de Bayes,
+el investigador actualiza su conocimiento acerca del comportamiento
+probabilístico del parámetro de interés mediante la distribución
+posterior de este. Con esta distribución es posible calcular
+estimaciones puntuales y por intervalo justo como en el enfoque
+frecuentista. En esta etapa, basados en la distribución
+posterior, también es posible hacer predicciones de cantidades
+observables y pruebas de hipótesis acerca de la adecuación del mejor
+modelo a los datos observados.</p></li>
+</ol>
+<div id="inferencia-previa" class="section level4 unnumbered">
+<h4>Inferencia previa</h4>
+<p>Con las anteriores expresiones es posible calcular la probabilidad
+previa de que <span class="math inline">\(\boldsymbol \theta\)</span> esté en una determinada región <span class="math inline">\(G\)</span> como
+<span class="math display">\[\begin{equation}
+Pr(\boldsymbol \theta\in G)=\int_G p(\boldsymbol \theta\mid \boldsymbol \eta)\ d\boldsymbol \theta
+\end{equation}\]</span></p>
+<p>En esta primera etapa también es posible calcular, con fines
+confirmatorios <span class="citation">(<a href="#ref-Carlin96" role="doc-biblioref">Carlin y Louis 1996</a>)</span>, la estimación puntual para el vector
+<span class="math inline">\(\boldsymbol \theta\)</span> dada por alguna medida de tendencia central para la
+distribución <span class="math inline">\(p(\boldsymbol \theta\mid \boldsymbol \eta)\)</span>. En particular, si se escoge la
+media, entonces</p>
+<p><span class="math display">\[\begin{equation}
+(\#eq:est.prio)
+\hat{\boldsymbol \theta}=E(\boldsymbol \theta)=\int \boldsymbol \theta\ p(\boldsymbol \theta\mid \boldsymbol \eta)\ d\boldsymbol \theta
+\end{equation}\]</span></p>
+<p>También es posible calcular una región <span class="math inline">\(C\)</span> de <span class="math inline">\(100\times(1-\alpha)%\)</span> de
+credibilidad<a href="#fn3" class="footnote-ref" id="fnref3"><sup>3</sup></a> para
+<span class="math inline">\(\boldsymbol \theta\)</span> que en esta primera etapa es tal que <span class="math display">\[\begin{equation}
+1-\alpha \leq Pr(\boldsymbol \theta\in C)=\int_Cp(\boldsymbol \theta\mid \boldsymbol \eta)\ d\boldsymbol \theta
+\end{equation}\]</span></p>
+</div>
+<div id="inferencia-posterior" class="section level4 unnumbered">
+<h4>Inferencia posterior</h4>
+<p>Una vez recolectados los datos, se actualizan las cálculos descritos en
+la sección anterior. Podemos calcular la probabilidad posterior
+de que <span class="math inline">\(\boldsymbol \theta\)</span> esté en la región <span class="math inline">\(G\)</span> dados los datos observados como
+<span class="math display">\[\begin{equation}
+Pr(\boldsymbol \theta\in G  \mid \mathbf{Y})=\int_G p(\boldsymbol \theta\mid \mathbf{Y})\ d\boldsymbol \theta
+\end{equation}\]</span></p>
+<p>También es posible calcular la estimación puntual para el vector
+<span class="math inline">\(\boldsymbol \theta\)</span> dados los datos observados. Ésta está dada por alguna medida
+de tendencia central para la distribución <span class="math inline">\(p(\boldsymbol \theta\mid \mathbf{Y})\)</span>.
+En particular, si se escoge la media, entonces <span class="math display">\[\begin{equation}
+\hat{\boldsymbol \theta}=E(\boldsymbol \theta\mid \mathbf{Y})=\int \boldsymbol \theta\ p(\boldsymbol \theta\mid \mathbf{Y})\ d\boldsymbol \theta
+\end{equation}\]</span></p>
+<p>La región <span class="math inline">\(C\)</span> de <span class="math inline">\(100\times(1-\alpha)%\)</span> de credibilidad es tal que
+<span class="math display">\[\begin{equation}
+1-\alpha \leq Pr(\boldsymbol \theta\in C \mid \mathbf{Y})=\int_Cp(\boldsymbol \theta\mid \mathbf{Y})\ d\boldsymbol \theta
+\end{equation}\]</span></p>
+<p>También la distribución posterior del parámetro <span class="math inline">\(\boldsymbol \theta\)</span> es útil para
+el procedimiento de juzgamiento de hipótesis en el ámbito del análisis
+bayesiano. Esto se lleva a cabo por medio del factor de Bayes que se
+presentará más adelante.</p>
+</div>
+<div id="inferencia-predictiva" class="section level4 unnumbered">
+<h4>Inferencia predictiva</h4>
+<p>En términos de inferencia predictiva existen dos etapas que cubren las
+<em>actuales</em> suposiciones acerca del vector de parámetros <span class="math inline">\(\boldsymbol \theta\)</span>.
+En una primera etapa - antes de la observación de los datos - la
+suposición <em>actual</em> de <span class="math inline">\(\boldsymbol \theta\)</span> está dada por la densidad
+previa <span class="math inline">\(p(\boldsymbol \theta\mid \boldsymbol \eta)\)</span>. En estos términos, utilizando el
+Resultado <a href="1-3-teorema-de-bayes.html#prp:Res131">1.4</a>, la distribución predictiva previa de
+<span class="math inline">\(\mathbf{Y}\)</span> está dada por</p>
+<p><span class="math display">\[\begin{equation}
+p(\mathbf{y})=\int p(\mathbf{Y} \mid \boldsymbol \theta)p(\boldsymbol \theta\mid \boldsymbol \eta)\ d\boldsymbol \theta
+\end{equation}\]</span></p>
+<p>La segunda etapa - después de la recolección de los datos - actualiza
+las suposiciones acerca de <span class="math inline">\(\boldsymbol \theta\)</span> puesto que ahora éste sigue una
+distribución posterior dada por <a href="1-3-teorema-de-bayes.html#eq:Bayes">(1.1)</a>. Por lo tanto, la
+distribución predictiva posterior de <span class="math inline">\(\mathbf{Y}\)</span> está dada por</p>
+<p><span class="math display" id="eq:predictpos">\[\begin{align}
+\tag{2.1}
+p(\tilde{\mathbf{y}} \mid \mathbf{Y})&amp;=\int p(\tilde{\mathbf{y}},\boldsymbol \theta\mid \mathbf{y})\ d\boldsymbol \theta\notag \\
+&amp;=\int p(\tilde{\mathbf{y}} \mid \boldsymbol \theta,\mathbf{Y})p(\boldsymbol \theta\mid \mathbf{Y})\ d\boldsymbol \theta\notag \\
+&amp;=\int p(\tilde{\mathbf{y}} \mid \boldsymbol \theta)p(\boldsymbol \theta\mid \mathbf{Y})\ d\boldsymbol \theta
+\end{align}\]</span> donde <span class="math inline">\(p(\tilde{\mathbf{y}} \mid \boldsymbol \theta)\)</span> es la
+distribución de los datos evaluada en los nuevos valores
+<span class="math inline">\(\tilde{\mathbf{y}}\)</span>. La segunda línea de la anterior igualdad se
+obtiene utilizando el resultado <a href="1-2-algunos-resultados-de-probabilidad.html#prp:Res121">1.1</a> y la última línea se
+obtiene del resultado <a href="1-2-algunos-resultados-de-probabilidad.html#prp:Res122">1.2</a> de la independencia condicional.</p>
+</div>
+</div>
+<h3>Referencias</h3>
+<div id="refs" class="references csl-bib-body hanging-indent">
+<div id="ref-Carlin96" class="csl-entry">
+Carlin, B. P., y T. A. Louis. 1996. <em>Bayes and Empirical Bayes for Data Analysis</em>. 1.ª ed. Chapman; Hall/CRC.
+</div>
+</div>
+<div class="footnotes">
+<hr />
+<ol start="3">
+<li id="fn3"><p>La interpretación de las regiones de credibilidad
+bayesianas difiere de la interpretación de las regiones de confianza
+frecuentistas. La primera se refiere a la probabilidad de que el
+verdadero valor de <span class="math inline">\(\boldsymbol \theta\)</span> esté en la región. La segunda se refiere a
+la región de la distribución muestral para <span class="math inline">\(\boldsymbol \theta\)</span> tal que, dados los
+datos observados, se podría esperar que el <span class="math inline">\(100\times\alpha%\)</span> de las
+futuras estimaciones de <span class="math inline">\(\boldsymbol \theta\)</span> no pertenecieran a dicha región.<a href="2-inferencia-bayesiana.html#fnref3" class="footnote-back">↩︎</a></p></li>
+</ol>
+</div>
+<p style="text-align: center;">
+<a href="1-3-teorema-de-bayes.html"><button class="btn btn-default">Previous</button></a>
+<a href="2-1-la-distribución-previa.html"><button class="btn btn-default">Next</button></a>
+</p>
+</div>
+</div>
+
+
+</div>
+
+<script>
+
+// add bootstrap table styles to pandoc tables
+$(document).ready(function () {
+  $('tr.header').parent('thead').parent('table').addClass('table table-condensed');
+});
+
+</script>
+
+</body>
+</html>

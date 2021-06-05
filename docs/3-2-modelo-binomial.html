@@ -1,0 +1,766 @@
+<!DOCTYPE html>
+<html lang="es" xml:lang="es">
+<head>
+
+<meta charset="utf-8" />
+<meta name="generator" content="pandoc" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta property="og:title" content="3.2 Modelo Binomial | Modelos Bayesianos con R y STAN" />
+<meta property="og:type" content="book" />
+
+
+<meta property="og:description" content="Este es el repositorio del libro Modelos Bayesianos con R y STAN." />
+<meta name="github-repo" content="psirusteam/bookdownBayesiano" />
+
+<meta name="author" content="Andrés Gutiérrez - Hanwen Zhang" />
+
+<meta name="date" content="2021-06-04" />
+
+<script type="text/x-mathjax-config">
+MathJax.Hub.Config({
+  TeX: { equationNumbers: { autoNumber: "AMS" } }
+});
+</script>
+  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
+
+<meta name="description" content="Este es el repositorio del libro Modelos Bayesianos con R y STAN.">
+
+<title>3.2 Modelo Binomial | Modelos Bayesianos con R y STAN</title>
+
+<script src="libs/header-attrs-2.8/header-attrs.js"></script>
+<script src="libs/jquery-1.11.3/jquery.min.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link href="libs/bootstrap-3.3.5/css/bootstrap.min.css" rel="stylesheet" />
+<script src="libs/bootstrap-3.3.5/js/bootstrap.min.js"></script>
+<script src="libs/bootstrap-3.3.5/shim/html5shiv.min.js"></script>
+<script src="libs/bootstrap-3.3.5/shim/respond.min.js"></script>
+<style>h1 {font-size: 34px;}
+       h1.title {font-size: 38px;}
+       h2 {font-size: 30px;}
+       h3 {font-size: 24px;}
+       h4 {font-size: 18px;}
+       h5 {font-size: 16px;}
+       h6 {font-size: 12px;}
+       code {color: inherit; background-color: rgba(0, 0, 0, 0.04);}
+       pre:not([class]) { background-color: white }</style>
+<script src="libs/navigation-1.1/tabsets.js"></script>
+
+
+<style type="text/css">code{white-space: pre;}</style>
+<style type="text/css">
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+    color: #aaaaaa;
+  }
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code span.at { color: #7d9029; } /* Attribute */
+code span.bn { color: #40a070; } /* BaseN */
+code span.bu { } /* BuiltIn */
+code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code span.ch { color: #4070a0; } /* Char */
+code span.cn { color: #880000; } /* Constant */
+code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code span.dt { color: #902000; } /* DataType */
+code span.dv { color: #40a070; } /* DecVal */
+code span.er { color: #ff0000; font-weight: bold; } /* Error */
+code span.ex { } /* Extension */
+code span.fl { color: #40a070; } /* Float */
+code span.fu { color: #06287e; } /* Function */
+code span.im { } /* Import */
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code span.op { color: #666666; } /* Operator */
+code span.ot { color: #007020; } /* Other */
+code span.pp { color: #bc7a00; } /* Preprocessor */
+code span.sc { color: #4070a0; } /* SpecialChar */
+code span.ss { color: #bb6688; } /* SpecialString */
+code span.st { color: #4070a0; } /* String */
+code span.va { color: #19177c; } /* Variable */
+code span.vs { color: #4070a0; } /* VerbatimString */
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+</style>
+<style type="text/css">
+  pre:not([class]) {
+    background-color: white;
+  }
+</style>
+
+
+<style type="text/css">
+/* Used with Pandoc 2.11+ new --citeproc when CSL is used */
+div.csl-bib-body { }
+div.csl-entry {
+  clear: both;
+}
+.hanging div.csl-entry {
+  margin-left:2em;
+  text-indent:-2em;
+}
+div.csl-left-margin {
+  min-width:2em;
+  float:left;
+}
+div.csl-right-inline {
+  margin-left:2em;
+  padding-left:1em;
+}
+div.csl-indent {
+  margin-left: 2em;
+}
+</style>
+
+
+<style type = "text/css">
+.main-container {
+  max-width: 940px;
+  margin-left: auto;
+  margin-right: auto;
+}
+code {
+  color: inherit;
+  background-color: rgba(0, 0, 0, 0.04);
+}
+img {
+  max-width:100%;
+  height: auto;
+}
+/* show arrow before summary tag as in bootstrap
+TODO: remove if boostrap in updated in html_document (rmarkdown#1485) */
+details > summary {
+  display: list-item;
+  cursor: pointer;
+}
+</style>
+</head>
+
+<body>
+
+<div class="container-fluid main-container">
+
+
+<div class="row">
+<div class="col-sm-12">
+<div id="TOC">
+<ul>
+<li><a href="index.html#prefacio">Prefacio</a></li>
+<li><a href="antes-de-comenzar.html#antes-de-comenzar">Antes de comenzar</a>
+<ul>
+<li><a href="cuestionamientos-sobre-el-enfoque-bayesiano.html#cuestionamientos-sobre-el-enfoque-bayesiano">Cuestionamientos sobre el enfoque bayesiano</a></li>
+<li><a href="acerca-de-la-notación.html#acerca-de-la-notación">Acerca de la notación</a></li>
+</ul></li>
+<li><a href="1-tópicos-básicos.html#tópicos-básicos"><span class="toc-section-number">1</span> Tópicos básicos</a>
+<ul>
+<li><a href="1-1-teoría-de-la-decisión.html#teoría-de-la-decisión"><span class="toc-section-number">1.1</span> Teoría de la decisión</a></li>
+<li><a href="1-2-algunos-resultados-de-probabilidad.html#algunos-resultados-de-probabilidad"><span class="toc-section-number">1.2</span> Algunos resultados de probabilidad</a></li>
+<li><a href="1-3-teorema-de-bayes.html#teorema-de-bayes"><span class="toc-section-number">1.3</span> Teorema de Bayes</a></li>
+</ul></li>
+<li><a href="2-inferencia-bayesiana.html#inferencia-bayesiana"><span class="toc-section-number">2</span> Inferencia bayesiana</a>
+<ul>
+<li><a href="2-1-la-distribución-previa.html#la-distribución-previa"><span class="toc-section-number">2.1</span> La distribución previa</a>
+<ul>
+<li><a href="2-1-la-distribución-previa.html#distribuciones-conjugadas"><span class="toc-section-number">2.1.1</span> Distribuciones conjugadas</a></li>
+<li><a href="2-1-la-distribución-previa.html#familia-exponencial"><span class="toc-section-number">2.1.2</span> Familia exponencial</a></li>
+<li><a href="2-1-la-distribución-previa.html#distribuciones-previas-no-informativas"><span class="toc-section-number">2.1.3</span> Distribuciones previas no informativas</a></li>
+</ul></li>
+<li><a href="2-2-pruebas-de-hipótesis.html#pruebas-de-hipótesis"><span class="toc-section-number">2.2</span> Pruebas de hipótesis</a>
+<ul>
+<li><a href="2-2-pruebas-de-hipótesis.html#factor-de-bayes"><span class="toc-section-number">2.2.1</span> Factor de Bayes</a></li>
+<li><a href="2-2-pruebas-de-hipótesis.html#valor-p-bayesiano"><span class="toc-section-number">2.2.2</span> Valor-<span class="math inline">\(p\)</span> Bayesiano</a></li>
+</ul></li>
+<li><a href="2-3-criterios-de-información.html#criterios-de-información"><span class="toc-section-number">2.3</span> Criterios de información</a>
+<ul>
+<li><a href="2-3-criterios-de-información.html#criterio-dic"><span class="toc-section-number">2.3.1</span> Criterio DIC</a></li>
+<li><a href="2-3-criterios-de-información.html#criterios-aic-y-bic"><span class="toc-section-number">2.3.2</span> Criterios AIC y BIC</a></li>
+</ul></li>
+</ul></li>
+<li><a href="3-modelos-uniparamétricos.html#modelos-uniparamétricos"><span class="toc-section-number">3</span> Modelos uniparamétricos</a>
+<ul>
+<li><a href="3-1-modelo-bernoulli.html#modelo-bernoulli"><span class="toc-section-number">3.1</span> Modelo Bernoulli</a></li>
+<li><a href="3-2-modelo-binomial.html#modelo-binomial"><span class="toc-section-number">3.2</span> Modelo Binomial</a></li>
+</ul></li>
+<li class="appendix"><span><b>Apéndice</b></span></li>
+<li><a href="A-elementos-de-probabilidad.html#elementos-de-probabilidad"><span class="toc-section-number">A</span> Elementos de probabilidad</a>
+<ul>
+<li><a href="A-1-distribuciones-discretas.html#distribuciones-discretas"><span class="toc-section-number">A.1</span> Distribuciones discretas</a>
+<ul>
+<li><a href="A-1-distribuciones-discretas.html#distribución-uniforme-discreta"><span class="toc-section-number">A.1.1</span> Distribución uniforme discreta</a></li>
+<li><a href="A-1-distribuciones-discretas.html#distribución-hipergeométrica"><span class="toc-section-number">A.1.2</span> Distribución hipergeométrica</a></li>
+<li><a href="A-1-distribuciones-discretas.html#distribución-bernoulli"><span class="toc-section-number">A.1.3</span> Distribución Bernoulli</a></li>
+<li><a href="A-1-distribuciones-discretas.html#distribución-binomial"><span class="toc-section-number">A.1.4</span> Distribución binomial</a></li>
+<li><a href="A-1-distribuciones-discretas.html#distribución-binomial-negativa"><span class="toc-section-number">A.1.5</span> Distribución Binomial negativa</a></li>
+<li><a href="A-1-distribuciones-discretas.html#distribución-de-poisson"><span class="toc-section-number">A.1.6</span> Distribución de Poisson</a></li>
+</ul></li>
+<li><a href="A-2-distribuciones-continuas.html#distribuciones-continuas"><span class="toc-section-number">A.2</span> Distribuciones continuas</a>
+<ul>
+<li><a href="A-2-distribuciones-continuas.html#distribución-uniforme-continua"><span class="toc-section-number">A.2.1</span> Distribución Uniforme Continua</a></li>
+<li><a href="A-2-distribuciones-continuas.html#distribución-weibull"><span class="toc-section-number">A.2.2</span> Distribución Weibull</a></li>
+<li><a href="A-2-distribuciones-continuas.html#distribución-valor-extremo"><span class="toc-section-number">A.2.3</span> Distribución valor-extremo</a></li>
+<li><a href="A-2-distribuciones-continuas.html#distribución-gamma"><span class="toc-section-number">A.2.4</span> Distribución Gamma</a></li>
+<li><a href="A-2-distribuciones-continuas.html#distribución-gamma-inversa"><span class="toc-section-number">A.2.5</span> Distribución Gamma-inversa</a></li>
+<li><a href="A-2-distribuciones-continuas.html#distribución-exponencial"><span class="toc-section-number">A.2.6</span> Distribución exponencial</a></li>
+<li><a href="A-2-distribuciones-continuas.html#distribución-beta"><span class="toc-section-number">A.2.7</span> Distribución Beta</a></li>
+<li><a href="A-2-distribuciones-continuas.html#distribución-normal"><span class="toc-section-number">A.2.8</span> Distribución normal</a></li>
+<li><a href="A-2-distribuciones-continuas.html#distribución-log-normal"><span class="toc-section-number">A.2.9</span> Distribución log-normal</a></li>
+<li><a href="A-2-distribuciones-continuas.html#distribución-ji-cuadrado"><span class="toc-section-number">A.2.10</span> Distribución Ji-cuadrado</a></li>
+<li><a href="A-2-distribuciones-continuas.html#distribución-t-student"><span class="toc-section-number">A.2.11</span> Distribución t-student</a></li>
+<li><a href="A-2-distribuciones-continuas.html#distribución-t-student-generalizada"><span class="toc-section-number">A.2.12</span> Distribución t-student generalizada</a></li>
+<li><a href="A-2-distribuciones-continuas.html#distribución-f"><span class="toc-section-number">A.2.13</span> Distribución F</a></li>
+</ul></li>
+<li><a href="A-3-distribuciones-multivariadas.html#distribuciones-multivariadas"><span class="toc-section-number">A.3</span> Distribuciones multivariadas</a>
+<ul>
+<li><a href="A-3-distribuciones-multivariadas.html#distribución-multinomial"><span class="toc-section-number">A.3.1</span> Distribución Multinomial</a></li>
+<li><a href="A-3-distribuciones-multivariadas.html#distribución-dirichelt"><span class="toc-section-number">A.3.2</span> Distribución Dirichelt</a></li>
+<li><a href="A-3-distribuciones-multivariadas.html#distribución-normal-multivariante"><span class="toc-section-number">A.3.3</span> Distribución Normal Multivariante</a></li>
+<li><a href="A-3-distribuciones-multivariadas.html#distribución-wishart"><span class="toc-section-number">A.3.4</span> Distribución Wishart</a></li>
+<li><a href="A-3-distribuciones-multivariadas.html#distribución-inversa-wishart"><span class="toc-section-number">A.3.5</span> Distribución inversa-Wishart</a></li>
+</ul></li>
+</ul></li>
+<li><a href="B-matriz-de-información.html#matriz-de-información"><span class="toc-section-number">B</span> Matriz de información</a></li>
+<li><a href="C-elementos-de-simulación-estadística.html#elementos-de-simulación-estadística"><span class="toc-section-number">C</span> Elementos de simulación estadística</a>
+<ul>
+<li><a href="C-1-métodos-directos.html#métodos-directos"><span class="toc-section-number">C.1</span> Métodos directos</a>
+<ul>
+<li><a href="C-1-métodos-directos.html#método-de-la-transformación-uniforme"><span class="toc-section-number">C.1.1</span> Método de la transformación uniforme</a></li>
+<li><a href="C-1-métodos-directos.html#método-de-la-grilla"><span class="toc-section-number">C.1.2</span> Método de la grilla</a></li>
+</ul></li>
+<li><a href="C-2-métodos-de-monte-carlo-vía-cadenas-de-markov.html#métodos-de-monte-carlo-vía-cadenas-de-markov"><span class="toc-section-number">C.2</span> Métodos de Monte Carlo vía cadenas de Markov</a>
+<ul>
+<li><a href="C-2-métodos-de-monte-carlo-vía-cadenas-de-markov.html#el-muestreador-de-gibbs"><span class="toc-section-number">C.2.1</span> El muestreador de Gibbs</a></li>
+<li><a href="C-2-métodos-de-monte-carlo-vía-cadenas-de-markov.html#el-algoritmo-de-metrópolis-hastings"><span class="toc-section-number">C.2.2</span> El algoritmo de Metrópolis-Hastings</a></li>
+<li><a href="C-2-métodos-de-monte-carlo-vía-cadenas-de-markov.html#buenas-prácticas-en-la-aplicación-de-métodos-mcmc"><span class="toc-section-number">C.2.3</span> Buenas prácticas en la aplicación de métodos MCMC</a></li>
+</ul></li>
+</ul></li>
+<li><a href="referencias.html#referencias">Referencias</a></li>
+</ul>
+</div>
+</div>
+</div>
+<div class="row">
+<div class="col-sm-12">
+<div id="modelo-binomial" class="section level2" number="3.2">
+<h2><span class="header-section-number">3.2</span> Modelo Binomial</h2>
+<p>Cuando se dispone de una muestra aleatoria de variables con distribución
+Bernoulli <span class="math inline">\(Y_1,\ldots,Y_n\)</span>, la inferencia bayesiana se puede llevar a
+cabo usando la distribución Binomial, puesto que es bien sabido que la
+suma de variables aleatorias Bernoulli</p>
+<p><span class="math display">\[\begin{equation*}
+S=\sum_{i=1}^nY_i
+\end{equation*}\]</span></p>
+<p>sigue una distribución Binomial. Es decir:</p>
+<p><span class="math display">\[\begin{equation}
+p(S \mid \theta)=\binom{n}{s}\theta^s(1-\theta)^{n-s}I_{\{0,1,\ldots,n\}}(s),
+\end{equation}\]</span></p>
+<p>Nótese que la distribución binomial es un caso general para la
+distribución Bernoulli, cuando <span class="math inline">\(n=1\)</span>. Entonces, así como en la
+distribución Bernoulli, el parámetro <span class="math inline">\(\theta\)</span> está restringido al
+espacio <span class="math inline">\(\Theta=[0,1]\)</span>. Luego, es admisible proponer que <span class="math inline">\(\theta\)</span> siga
+una distribución Beta. Por tanto la distribución previa del parámetro
+<span class="math inline">\(\theta\)</span> está dada por la expresión <a href="3-1-modelo-bernoulli.html#eq:betadistribution">(3.1)</a>. Bajo
+este marco de referencia se tienen los siguientes resultados</p>
+
+<div class="proposition">
+<p><span id="prp:unnamed-chunk-11" class="proposition"><strong>Resultado 2.6  </strong></span>La distribución posterior del parámetro <span class="math inline">\(\theta\)</span> sigue una distribución</p>
+<span class="math display">\[\begin{equation*}
+\theta \mid S \sim Beta(s+\alpha,\beta-s+n)
+\end{equation*}\]</span>
+</div>
+<p><br></p>
+
+<div class="proof">
+<p> <span class="proof"><em>Prueba. </em></span> <span class="math display">\[\begin{align*}
+p(\theta \mid S)&amp;\propto p(S \mid \theta)p(\theta \mid \alpha,\beta)\\
+&amp;=\frac{\binom{n}{s}I_{\{0,1,\ldots,n\}}(s)}{Beta(\alpha,\beta)}
+\theta^s\theta^{\alpha-1} (1-\theta)^{\beta-1}(1-\theta)^{n-s}I_{[0,1]}(\theta)\\
+&amp;\propto \theta^{s+\alpha-1} (1-\theta)^{\beta-s+n-1}I_{[0,1]}(\theta)
+\end{align*}\]</span></p>
+Por lo tanto, factorizando convenientemente, se llega a una expresión idéntica a la función de distribución de una variable aleatoria con distribución <span class="math inline">\(Beta(s+\alpha,\beta-s+n)\)</span>.
+</div>
+<p><br></p>
+<p>Del resultado anterior podemos ver que el estimador bayesiano de
+<span class="math inline">\(\theta\)</span> está dada por la esperanza de la distribución posterior, dada
+por</p>
+<p><span class="math display" id="eq:estibeta">\[\begin{equation}
+\tag{3.3}
+\hat{\theta}_{B}=\frac{s+\alpha}{n+\alpha+\beta}
+\end{equation}\]</span></p>
+<p>En la práctica, se acostumbra a escoger los hiperparámetros <span class="math inline">\(\alpha\)</span> y
+<span class="math inline">\(\beta\)</span> de tal forma que correspondan respectivamente al número de
+éxitos y fracasos obtenidos en datos que pudieron ser recolectados
+previamente. De esta forma, <span class="math inline">\(\hat{\theta}_{P}=\alpha/(\alpha+\beta)\)</span>
+corresponde a la estimación previa del parámetro <span class="math inline">\(\theta\)</span>. Por otro
+lado, el estimador clásico de <span class="math inline">\(\theta\)</span> está dado por
+<span class="math inline">\(\hat{\theta}_{C}=s/n\)</span>. Entonces es posible notar que el estimador
+bayesiano de <span class="math inline">\(\theta\)</span> en <a href="3-2-modelo-binomial.html#eq:estibeta">(3.3)</a> de alguna forma combina el
+estimador clásico con el estimador previo. Más aún, se puede ver que
+<span class="math inline">\(\hat{\theta}_{B}\)</span> se puede escribir como un promedio ponderado entre la
+estimación clásica y la estimación previa. Puesto que</p>
+<p><span class="math display">\[\begin{align*}
+\hat{\theta}_{B}=\frac{s+\alpha}{n+\alpha+\beta}&amp;=\frac{s}{n+\alpha+\beta}+\frac{\alpha}{n+\alpha+\beta}\\
+&amp;=\frac{n}{n+\alpha+\beta}\frac{s}{n}+\frac{\alpha+\beta}{n+\alpha+\beta}\frac{\alpha}{\alpha+\beta}\\
+&amp;=\frac{n}{n+\alpha+\beta}\hat{\theta}_{C}+\frac{\alpha+\beta}{n+\alpha+\beta}\hat{\theta}_{P}
+\end{align*}\]</span></p>
+<p>De esta forma, queda en evidencia que la estimación bayesiana de
+<span class="math inline">\(\theta\)</span> siempre será un valor intermedio entre la estimación clásica y
+la estimación previa. La figura <a href="3-2-modelo-binomial.html#fig:beta3">3.3</a> da una ilustración
+acerca de la anterior afirmación, en donde se puede observar que para
+una distribución previa concentrada en <span class="math inline">\(2/7\)</span> y una función de
+verosimilitud<a href="#fn5" class="footnote-ref" id="fnref5"><sup>5</sup></a> con máximo en <span class="math inline">\(8/10\)</span>, entonces la distribución
+posterior estará centrada en <span class="math inline">\(10/17\)</span>; es decir, la estimación bayesiana
+se encuentra situada entre la estimación previa y la estimación clásica.</p>
+<div class="figure"><span id="fig:beta3"></span>
+<img src="3Uniparametricos_files/figure-html/beta3-1.png" alt="Funciones de verosimilitud, previa y posterior para $\alpha=2$, $\beta=5$, $s=8$ y $n=10$." width="672" />
+<p class="caption">
+Figura 3.3: Funciones de verosimilitud, previa y posterior para <span class="math inline">\(\alpha=2\)</span>, <span class="math inline">\(\beta=5\)</span>, <span class="math inline">\(s=8\)</span> y <span class="math inline">\(n=10\)</span>.
+</p>
+</div>
+<p>Por otro lado, entre más grande sea el tamaño muestral <span class="math inline">\(n\)</span>, más
+cercano estará <span class="math inline">\(\hat{\theta}_{B}\)</span> de <span class="math inline">\(\hat{\theta}_{C}\)</span> o
+equivalentemente la función de densidad posterior de <span class="math inline">\(\theta\)</span> estará más
+concentrada en <span class="math inline">\(s/n\)</span>; mientras que entre mayor número de datos tenga la
+muestra de la distribución previa (<span class="math inline">\(\alpha+\beta\)</span> = número de datos), más
+cercano estará <span class="math inline">\(\hat{\theta}_{B}\)</span> de <span class="math inline">\(\hat{\theta}_{P}\)</span> y la densidad
+posterior de <span class="math inline">\(\theta\)</span> estará más concentrada en <span class="math inline">\(\alpha/(\alpha+\beta)\)</span>.</p>
+<p>Para ilustrar lo anterior, suponga que la distribución previa de
+<span class="math inline">\(\theta\)</span> está parametrizada con <span class="math inline">\(\alpha=\beta=5\)</span>, es decir la estimacion previa es 0.5, y suponga además que la estimación clásica es 0.33, pero el tamaño muestral <span class="math inline">\(n\)</span> incrementa manteniendo constante la estimacion
+clásica. En la figura <a href="3-2-modelo-binomial.html#fig:betan">3.4</a> se muestra la estimación posterior de
+<span class="math inline">\(\theta\)</span>, es evidente que a medida que el tamaño muestral <span class="math inline">\(n\)</span> aumenta,
+la estimación posterior se acerca más a la estimación clásica.</p>
+<div class="figure"><span id="fig:betan"></span>
+<img src="3Uniparametricos_files/figure-html/betan-1.png" alt="Estimación posterior de $\theta$ para diferentes valores de $n$ y $s$ con $\alpha=\beta=5$." width="672" />
+<p class="caption">
+Figura 3.4: Estimación posterior de <span class="math inline">\(\theta\)</span> para diferentes valores de <span class="math inline">\(n\)</span> y <span class="math inline">\(s\)</span> con <span class="math inline">\(\alpha=\beta=5\)</span>.
+</p>
+</div>
+<p>Anteriormente, se comentó que se acostumbra a escoger los parámetros
+<span class="math inline">\(\alpha\)</span> y <span class="math inline">\(\beta\)</span> que correspondan al número de éxitos y fracasos en la
+información previa. Sin embargo, la información previa puede no
+presentarse de esta forma. Por ejemplo, en algunas situaciones, la
+información previa puede proveer el valor de <span class="math inline">\(\theta\)</span>, es decir, el
+valor de <span class="math inline">\(\hat{\theta}_P\)</span>, y el valor de la desviación estándar de la
+estimación (comúnmente conocido como el error estándar). Por ejemplo,
+suponga que <span class="math inline">\(\hat{\theta}_P=0.5\)</span> con un error estándar de 0.1, entonces
+podemos encontrar los valores de <span class="math inline">\(\alpha\)</span> y <span class="math inline">\(\beta\)</span> de las expresiones
+<span class="math inline">\(\frac{\alpha}{\alpha+\beta}=0.5\)</span> y
+<span class="math inline">\(\sqrt{\frac{\alpha\beta}{(\alpha+\beta)^2(\alpha+\beta+1)}}=0.1\)</span>, de
+donde se tiene que <span class="math inline">\(\alpha=12\)</span> y <span class="math inline">\(\beta=12\)</span>, y la distribución previa
+correspondiente <span class="math inline">\(Beta(12, 12)\)</span> tiene una esperanza de 0.05 y una
+desviación estándar de 0.1. Se puede ver que entre mayor sea la
+desviación estándar, menores resultan los valores de <span class="math inline">\(\alpha\)</span> y <span class="math inline">\(\beta\)</span>,
+que conducen a una distribución previa menos informativa.</p>
+<p>Ahora, se vio anteriomente que la distribución previa no informativa de
+Jeffreys corresponde a la distribución <span class="math inline">\(Beta(1/2, 1/2)\)</span>, la cual conduce
+a la distribución posterior <span class="math inline">\(Beta(s+1/2, n-s+1/2)\)</span>, que a su vez nos
+lleva al estimador</p>
+<p><span class="math display" id="eq:EstithetaJeffreys">\[\begin{equation}
+\tag{3.4}
+\hat{\theta}_B=\frac{s+1/2}{n+1}
+\end{equation}\]</span></p>
+<p>La anterior expresión es comparable con el estimador clásico
+<span class="math inline">\(\hat{\theta}_C=\frac{s}{n}\)</span>, en el sentido de que los dos son
+aplicables cuando no se dispone de ninguna información previa. Podemos
+observar que, aparte del alto grado de similitud que tienen los dos
+estimadores, es preferible usar el estimador <a href="3-2-modelo-binomial.html#eq:EstithetaJeffreys">(3.4)</a> en situaciones donde el valor teórico de <span class="math inline">\(\theta\)</span> es muy pequeño, y
+como consecuencia <span class="math inline">\(s=0\)</span> en la muestra. Por ejemplo, cuando <span class="math inline">\(\theta\)</span>
+representa el porcentaje de personas que están infectados con algún
+virus poco común. En estos casos, el estimador clásico
+<span class="math inline">\(\hat{\theta}_C=0\)</span> sugiriendo que ningún porcentaje de la población está
+infectado, conclusión que puede ser errónea. Por otro lado, el estimador
+bayesiano <span class="math inline">\(\hat{\theta}_B=\frac{0.5}{n+1}\)</span> tiende a un porcentaje muy pequeño a medida que aumente el tamaño muestral <span class="math inline">\(n\)</span>,
+pero nunca llega a ser nulo.</p>
+<p>En el siguiente resultado, se encuentra la distribución predictiva
+previa para una variable binomial <span class="math inline">\(S\)</span>.</p>
+
+<div class="proposition">
+<p><span id="prp:unnamed-chunk-13" class="proposition"><strong>Resultado 2.7  </strong></span>La distribución predictiva previa para la observación particular de la suma de variables aleatorias Bernoulli, <span class="math inline">\(s\)</span>, está dada por una distribución Beta-Binomial</p>
+<span class="math display">\[\begin{equation}
+p(S)=\binom{n}{s}\frac{Beta(s+\alpha,\beta-s+n)}{Beta(\alpha,\beta)}I_{\{0,1,\ldots,n\}}(s)
+\end{equation}\]</span>
+</div>
+<p><br></p>
+
+<div class="proof">
+<p> <span class="proof"><em>Prueba. </em></span> De la definición de función de distribución predictiva previa se tiene que</p>
+<span class="math display">\[\begin{align*}
+p(S)
+&amp;=\int p(S \mid \theta)p(\theta \mid \alpha,\beta)\ d\theta\\
+&amp;=\int_0^1\binom{n}{s}\theta^s(1-\theta)^{n-s}I_{\{0,1,\ldots,n\}}(s)
+\frac{1}{Beta(\alpha,\beta)}\theta^{\alpha-1}(1-\theta)^{\beta-1}\ d\theta\\
+&amp;=\binom{n}{s}\frac{Beta(s+\alpha,\beta-s+n)}{Beta(\alpha,\beta)}I_{\{0,1,\ldots,n\}}(s)\\
+&amp;\hspace{2cm}\times\int_0^1\frac{\theta^{s+\alpha-1}(1-\theta)^{\beta-s+n-1}}{Beta(s+\alpha,\beta-s+n)}\ d\theta\\
+&amp;=\binom{n}{s}\frac{Beta(s+\alpha,\beta-s+n)}{Beta(\alpha,\beta)}I_{\{0,1,\ldots,n\}}(s)
+\end{align*}\]</span>
+</div>
+<p><br></p>
+<p>Una vez observados los valores muestrales, podemos encontrar la
+distribución predictiva posterior para una nueva variable binomial
+<span class="math inline">\(\tilde{S}\)</span> en una muestra de tamaño <span class="math inline">\(\tilde{n}\)</span>. Esta distribución se
+encuentra en el siguiente resultado.</p>
+
+<div class="proposition">
+<p><span id="prp:ResPredBinom" class="proposition"><strong>Resultado 3.2  </strong></span>Después de la recolección de los datos <span class="math inline">\(y_1\)</span>, <span class="math inline">\(\cdots\)</span>, <span class="math inline">\(y_n\)</span>, la distribución predictiva posterior para una nueva variable <span class="math inline">\(\tilde{S}\)</span> en una muestra del tamaño <span class="math inline">\(\tilde{n}\)</span> está dada por</p>
+<span class="math display" id="eq:Binompredict">\[\begin{equation}
+\tag{3.5}
+p(\tilde{s} \mid S)=\binom{\tilde{n}}{\tilde{s}}\frac{Beta(\tilde{s}+s+\alpha,\beta-\tilde{s}-s+n+\tilde{n})}{Beta(s+\alpha,\beta-s+n)}I_{\{0,1,\ldots,\tilde{n}\}}(\tilde{s}),
+\end{equation}\]</span>
+</div>
+<p><br></p>
+
+<div class="proof">
+<p> <span class="proof"><em>Prueba. </em></span> De la definición de función de distribución predictiva se tiene que</p>
+<span class="math display">\[\begin{align*}
+p(\tilde{s} \mid S)&amp;=\int p(\tilde{s} \mid \theta)p(\theta \mid S)\ d\theta\\
+&amp;=\int_0^1 \binom{\tilde{n}}{\tilde{s}} \theta^{\tilde{s}}(1-\theta)^{\tilde{n}-\tilde{s}}I_{\{0,1,\ldots,\tilde{n}\}}(\tilde{s})
+\frac{\theta^{s+\alpha-1}(1-\theta)^{\beta-s+n-1}}{Beta(s+\alpha,\beta-s+n)}\ d\theta\\
+&amp;=\binom{\tilde{n}}{\tilde{s}}\frac{Beta(\tilde{s}+s+\alpha,\beta-\tilde{s}-s+n+\tilde{n})}{Beta(s+\alpha,\beta-s+n)}I_{\{0,1,\ldots,\tilde{n}\}}(\tilde{s})\\
+&amp; \hspace{2cm}\times
+\int_0^1\frac{\theta^{\tilde{s}+s+\alpha-1}(1-\theta)^{\beta-\tilde{s}-s+n+\tilde{n}-1}}
+{Beta(\tilde{s}+s+\alpha,\beta-\tilde{s}-s+n+\tilde{n})}\ d\theta\\
+&amp;=\binom{\tilde{n}}{\tilde{s}}\frac{Beta(\tilde{s}+s+\alpha,\beta-\tilde{s}-s+n+\tilde{n})}{Beta(s+\alpha,\beta-s+n)}I_{\{0,1,\ldots,\tilde{n}\}}(\tilde{s})
+\end{align*}\]</span>
+</div>
+<p><br></p>
+<p>En la anterior distribución predictiva, se necesita calcular funciones
+Beta. Cuando los tamaños muestrales <span class="math inline">\(n\)</span>, <span class="math inline">\(\tilde{n}\)</span> y/o los
+parámetros de la distribución previa <span class="math inline">\(\alpha\)</span> y <span class="math inline">\(\beta\)</span> son muy grandes,
+<code>R</code> puede presentar problemas numéricos al momento de calcular directamente estas funciones. Por ejemplo, supongamos que <span class="math inline">\(n=1000\)</span>, <span class="math inline">\(s=650\)</span>, <span class="math inline">\(\alpha=200\)</span>, <span class="math inline">\(\beta=300\)</span> y <span class="math inline">\(\tilde{n}=800\)</span>, de esta forma, los posibles
+valores para <span class="math inline">\(\tilde{s}\)</span> son <span class="math inline">\(0,1,\cdots,800\)</span>, y se tiene que la
+probabilidad de que <span class="math inline">\(\tilde{s}\)</span> tome el valor 500 está dada por</p>
+<p><span class="math display" id="eq:Ejebinom">\[\begin{equation}
+\tag{3.6}
+Pr(\tilde{s}=500|S)=
+\binom{800}{500}\frac{Beta(1350,950)}{Beta(850,650)}
+\end{equation}\]</span></p>
+<p>y desafortunadamente, en  se presenta error al intentar
+ejecutar  o .</p>
+<div class="sourceCode" id="cb8"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb8-1"><a href="3-2-modelo-binomial.html#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="fu">beta</span>(<span class="dv">1350</span>, <span class="dv">950</span>)</span></code></pre></div>
+<pre><code>## [1] 0</code></pre>
+<div class="sourceCode" id="cb10"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb10-1"><a href="3-2-modelo-binomial.html#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="fu">beta</span>(<span class="dv">850</span>, <span class="dv">650</span>)</span></code></pre></div>
+<pre><code>## [1] 0</code></pre>
+<p>Por ende, es posible plantear la
+siguiente solución numérica cuando se quiere calcular la función
+predictiva <a href="3-2-modelo-binomial.html#eq:Binompredict">(3.5)</a> en muestras grandes. El problema
+central es el cómputo de <span class="math inline">\(\frac{Beta(a,b)}{Beta(c,d)}\)</span> con <span class="math inline">\(a \geq c\)</span> y
+<span class="math inline">\(b \geq d\)</span>, valores enteros. Podemos ver que</p>
+<p><span class="math display">\[\begin{align*}
+&amp;\ \ \ \ \frac{Beta(a,b)}{Beta(c,d)}\\
+&amp;=\frac{(a-1)!(b-1)!(c+d-1)!}{(c-1)!(d-1)!(a+b-1)!}\\
+&amp;=\frac{(a-1)(a-2)\cdots(a-(a-c))(b-1)(b-2)\cdots(b-(b-d))}{(a+b-1)(a+b-2)\cdots(a+b-(a+b-c-d))}\\
+&amp;=\frac{a^{a-c}(1-\frac{1}{a})(1-\frac{2}{a})\cdots(1-\frac{a-c}{a})b^{b-d}(1-\frac{1}{b})(1-\frac{2}{b})\cdots(1-\frac{b-d}{b})}{(a+b)^{a+b-c-d}(1-\frac{1}{a+b})(1-\frac{2}{a+b})\cdots(1-\frac{a+b-c-d}{a+b})}\\
+&amp;=\underbrace{\left(\frac{a}{a+b}\right)^{a-c}}_{t_1}\underbrace{\left(\frac{b}{a+b}\right)^{b-d}}_{t_2}\underbrace{(1-\frac{1}{a})(1-\frac{2}{a})\cdots(1-\frac{a-c}{a})}_{t_3}\\
+&amp;\ \ \ \ \ \ \underbrace{(1-\frac{1}{b})(1-\frac{2}{b})\cdots(1-\frac{b-d}{b})}_{t_4}\underbrace{(1-\frac{1}{a+b})(1-\frac{2}{a+b})\cdots(1-\frac{a+b-c-d}{a+b})}_{t_5}
+\end{align*}\]</span></p>
+<p>Calculando separadamente los términos <span class="math inline">\(t_1\)</span>, <span class="math inline">\(t_2\)</span>, <span class="math inline">\(t_3\)</span>, <span class="math inline">\(t_4\)</span> y <span class="math inline">\(t_5\)</span>
+podemos calcular <span class="math inline">\(\frac{Beta(a,b)}{Beta(c,d)}\)</span> para valores grandes de
+<span class="math inline">\(a\)</span>, <span class="math inline">\(b\)</span>, <span class="math inline">\(c\)</span> y <span class="math inline">\(d\)</span>. La siguiente función <code>prob</code> calcula la
+densidad <a href="3-2-modelo-binomial.html#eq:Binompredict">(3.5)</a> para un valor particular de <span class="math inline">\(\tilde{s}\)</span>
+usando la anterior técnica.</p>
+<div class="sourceCode" id="cb12"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb12-1"><a href="3-2-modelo-binomial.html#cb12-1" aria-hidden="true" tabindex="-1"></a>prob <span class="ot">&lt;-</span> <span class="cf">function</span>(s.mono, n.mono, s, n, alfa, beta){</span>
+<span id="cb12-2"><a href="3-2-modelo-binomial.html#cb12-2" aria-hidden="true" tabindex="-1"></a>  a <span class="ot">&lt;-</span> s.mono <span class="sc">+</span> s <span class="sc">+</span> alfa</span>
+<span id="cb12-3"><a href="3-2-modelo-binomial.html#cb12-3" aria-hidden="true" tabindex="-1"></a>  b <span class="ot">&lt;-</span> n.mono <span class="sc">-</span> s.mono <span class="sc">+</span> n <span class="sc">-</span> s <span class="sc">+</span> beta </span>
+<span id="cb12-4"><a href="3-2-modelo-binomial.html#cb12-4" aria-hidden="true" tabindex="-1"></a>  c <span class="ot">&lt;-</span> s <span class="sc">+</span> alfa</span>
+<span id="cb12-5"><a href="3-2-modelo-binomial.html#cb12-5" aria-hidden="true" tabindex="-1"></a>  d <span class="ot">&lt;-</span> n <span class="sc">-</span> s <span class="sc">+</span> beta</span>
+<span id="cb12-6"><a href="3-2-modelo-binomial.html#cb12-6" aria-hidden="true" tabindex="-1"></a>  t1 <span class="ot">&lt;-</span> (a<span class="sc">/</span>(a <span class="sc">+</span> b))<span class="sc">^</span>(a <span class="sc">-</span> c)</span>
+<span id="cb12-7"><a href="3-2-modelo-binomial.html#cb12-7" aria-hidden="true" tabindex="-1"></a>  t2 <span class="ot">&lt;-</span> (b<span class="sc">/</span>(a <span class="sc">+</span> b))<span class="sc">^</span>(b <span class="sc">-</span> d) </span>
+<span id="cb12-8"><a href="3-2-modelo-binomial.html#cb12-8" aria-hidden="true" tabindex="-1"></a>  t3 <span class="ot">&lt;-</span> <span class="fu">prod</span>(<span class="dv">1</span> <span class="sc">-</span> <span class="fu">c</span>(<span class="dv">1</span><span class="sc">:</span>(a <span class="sc">-</span> c))<span class="sc">/</span>a)</span>
+<span id="cb12-9"><a href="3-2-modelo-binomial.html#cb12-9" aria-hidden="true" tabindex="-1"></a>  t4 <span class="ot">&lt;-</span> <span class="fu">prod</span>(<span class="dv">1</span> <span class="sc">-</span> <span class="fu">c</span>(<span class="dv">1</span><span class="sc">:</span>(b <span class="sc">-</span> d))<span class="sc">/</span>b) </span>
+<span id="cb12-10"><a href="3-2-modelo-binomial.html#cb12-10" aria-hidden="true" tabindex="-1"></a>  t5 <span class="ot">&lt;-</span> <span class="fu">prod</span>(<span class="dv">1</span> <span class="sc">-</span> <span class="fu">c</span>(<span class="dv">1</span><span class="sc">:</span>(a <span class="sc">+</span> b <span class="sc">-</span> c <span class="sc">-</span> d))<span class="sc">/</span>(a <span class="sc">+</span> b))</span>
+<span id="cb12-11"><a href="3-2-modelo-binomial.html#cb12-11" aria-hidden="true" tabindex="-1"></a>  <span class="cf">if</span> (a<span class="sc">==</span>c) </span>
+<span id="cb12-12"><a href="3-2-modelo-binomial.html#cb12-12" aria-hidden="true" tabindex="-1"></a>    resul <span class="ot">&lt;-</span> t2 <span class="sc">*</span> t4<span class="sc">/</span>t5 </span>
+<span id="cb12-13"><a href="3-2-modelo-binomial.html#cb12-13" aria-hidden="true" tabindex="-1"></a>  <span class="cf">if</span> (b<span class="sc">==</span>d)</span>
+<span id="cb12-14"><a href="3-2-modelo-binomial.html#cb12-14" aria-hidden="true" tabindex="-1"></a>    resul <span class="ot">&lt;-</span> t1 <span class="sc">*</span> t3<span class="sc">/</span>t5</span>
+<span id="cb12-15"><a href="3-2-modelo-binomial.html#cb12-15" aria-hidden="true" tabindex="-1"></a>  <span class="cf">if</span> (a <span class="sc">&gt;</span> c <span class="sc">&amp;</span> b <span class="sc">&gt;</span> d)</span>
+<span id="cb12-16"><a href="3-2-modelo-binomial.html#cb12-16" aria-hidden="true" tabindex="-1"></a>    resul <span class="ot">&lt;-</span> <span class="fu">choose</span>(n.mono, s.mono) <span class="sc">*</span> t1 <span class="sc">*</span> t2 <span class="sc">*</span> t3 <span class="sc">*</span> t4<span class="sc">/</span>t5</span>
+<span id="cb12-17"><a href="3-2-modelo-binomial.html#cb12-17" aria-hidden="true" tabindex="-1"></a>  <span class="fu">return</span>(resul) </span>
+<span id="cb12-18"><a href="3-2-modelo-binomial.html#cb12-18" aria-hidden="true" tabindex="-1"></a>  }</span></code></pre></div>
+<p>Si queremos examinar la distribución predictiva para todos valores de la
+variable <span class="math inline">\(\tilde{S}\)</span>, podemos usar los siguientes códigos</p>
+<div class="sourceCode" id="cb13"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb13-1"><a href="3-2-modelo-binomial.html#cb13-1" aria-hidden="true" tabindex="-1"></a>n <span class="ot">&lt;-</span> <span class="dv">1000</span></span>
+<span id="cb13-2"><a href="3-2-modelo-binomial.html#cb13-2" aria-hidden="true" tabindex="-1"></a>s <span class="ot">&lt;-</span> <span class="dv">650</span> </span>
+<span id="cb13-3"><a href="3-2-modelo-binomial.html#cb13-3" aria-hidden="true" tabindex="-1"></a>alfa <span class="ot">&lt;-</span> <span class="dv">200</span></span>
+<span id="cb13-4"><a href="3-2-modelo-binomial.html#cb13-4" aria-hidden="true" tabindex="-1"></a>beta <span class="ot">&lt;-</span> <span class="dv">300</span> </span>
+<span id="cb13-5"><a href="3-2-modelo-binomial.html#cb13-5" aria-hidden="true" tabindex="-1"></a>n.mono <span class="ot">&lt;-</span><span class="dv">800</span></span>
+<span id="cb13-6"><a href="3-2-modelo-binomial.html#cb13-6" aria-hidden="true" tabindex="-1"></a>res <span class="ot">&lt;-</span> <span class="fu">rep</span>(<span class="cn">NA</span>, (<span class="dv">1</span> <span class="sc">+</span> n.mono)) </span>
+<span id="cb13-7"><a href="3-2-modelo-binomial.html#cb13-7" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span>(i <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span><span class="fu">length</span>(res)){</span>
+<span id="cb13-8"><a href="3-2-modelo-binomial.html#cb13-8" aria-hidden="true" tabindex="-1"></a>  res[i] <span class="ot">&lt;-</span> <span class="fu">prob</span>(i <span class="sc">-</span> <span class="dv">1</span>, n.mono, s, n, alfa, beta)</span>
+<span id="cb13-9"><a href="3-2-modelo-binomial.html#cb13-9" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div>
+<p>Y como resultado, el objeto <code>res</code> contiene las 801 probabilidades asociadas a todos los posibles valores de <span class="math inline">\(\tilde{s}\)</span>. Los resultados obtenidos con la anterior técnica son equivalentes a lo
+obtenido usando la función <code>lbeta</code> que computa el logaritmo natural
+de la función beta. Así, para calcular la probabilidad en
+<a href="3-2-modelo-binomial.html#eq:Ejebinom">(3.6)</a>, simplemente usamos el siguiente código</p>
+<div class="sourceCode" id="cb14"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb14-1"><a href="3-2-modelo-binomial.html#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="fu">choose</span>(<span class="dv">800</span>, <span class="dv">500</span>) <span class="sc">*</span> <span class="fu">exp</span>(<span class="fu">lbeta</span>(<span class="dv">1350</span>, <span class="dv">950</span>) <span class="sc">-</span> <span class="fu">lbeta</span>(<span class="dv">850</span>, <span class="dv">650</span>)) </span></code></pre></div>
+<pre><code>## [1] 0.0005969157</code></pre>
+<p>Nótese que esta probabilidad es la misma contenida en la posición 501 del objeto <code>res</code> igual a 5.969157^{-4}. Finalmente, se observa que la distribución predictiva <a href="3-2-modelo-binomial.html#eq:Binompredict">(3.5)</a> corresponde a una distribución
+Beta-binomial con parámetros <span class="math inline">\(s+\alpha\)</span> y <span class="math inline">\(\beta-s+n\)</span>. El paquete
+<code>VGAM</code> <span class="citation">(<a href="#ref-VGAM" role="doc-biblioref">Yee 2012</a>)</span> en <code>R</code> contiene funciones que calculan la
+función de densidad, función de distribución, percentiles, además de
+generar números aleatorios para la distribución Beta-binomial. Las
+probabilidades puntuales de <span class="math inline">\(\tilde{s}\)</span> se puede calcular con la función
+<code>dbetabinom</code>, teniendo en cuenta que los parámetros utilizados son
+<span class="math inline">\(\mu=(s+\alpha)/(n+\alpha+\beta)\)</span> y <span class="math inline">\(\rho=1/(1+n+\alpha+\beta)\)</span>. Con el
+siguiente código, podemos calcular las probabilidades para todos los
+posibles valores de <span class="math inline">\(\tilde{s}\)</span>.</p>
+<div class="sourceCode" id="cb16"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb16-1"><a href="3-2-modelo-binomial.html#cb16-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(VGAM) </span>
+<span id="cb16-2"><a href="3-2-modelo-binomial.html#cb16-2" aria-hidden="true" tabindex="-1"></a>mu <span class="ot">&lt;-</span> (s <span class="sc">+</span> alfa)<span class="sc">/</span>(n <span class="sc">+</span> alfa <span class="sc">+</span> beta)</span>
+<span id="cb16-3"><a href="3-2-modelo-binomial.html#cb16-3" aria-hidden="true" tabindex="-1"></a>rho <span class="ot">&lt;-</span> <span class="dv">1</span><span class="sc">/</span>(<span class="dv">1</span> <span class="sc">+</span> n <span class="sc">+</span> alfa <span class="sc">+</span> beta) </span>
+<span id="cb16-4"><a href="3-2-modelo-binomial.html#cb16-4" aria-hidden="true" tabindex="-1"></a>res2 <span class="ot">&lt;-</span> <span class="fu">rep</span>(<span class="cn">NA</span>, (<span class="dv">1</span> <span class="sc">+</span> n.mono)) </span>
+<span id="cb16-5"><a href="3-2-modelo-binomial.html#cb16-5" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span>(i <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span><span class="fu">length</span>(res2)){</span>
+<span id="cb16-6"><a href="3-2-modelo-binomial.html#cb16-6" aria-hidden="true" tabindex="-1"></a>  res2[i] <span class="ot">&lt;-</span> <span class="fu">dbetabinom</span>(i <span class="sc">-</span> <span class="dv">1</span>,</span>
+<span id="cb16-7"><a href="3-2-modelo-binomial.html#cb16-7" aria-hidden="true" tabindex="-1"></a>                        <span class="at">size =</span> n.mono,</span>
+<span id="cb16-8"><a href="3-2-modelo-binomial.html#cb16-8" aria-hidden="true" tabindex="-1"></a>                        <span class="at">prob =</span> mu,</span>
+<span id="cb16-9"><a href="3-2-modelo-binomial.html#cb16-9" aria-hidden="true" tabindex="-1"></a>                        <span class="at">rho =</span> rho)</span>
+<span id="cb16-10"><a href="3-2-modelo-binomial.html#cb16-10" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div>
+<p>Podemos observar que la posición 501 del objeto <code>res2</code> es igual a 5.969157^{-4}, el cual es idéntico a lo obtenido en <code>res</code>. Adicionalmente, al escribir la distribución predictiva de
+<a href="3-2-modelo-binomial.html#eq:Binompredict">(3.5)</a> como la función de densidad de una distribución
+Beta-binomial, se puede encontrar la esperanza de esta distribución, la
+cual está dada por</p>
+<p><span class="math display">\[\begin{equation*}
+E(\tilde{S}|S)=\tilde{n}\frac{s+\alpha}{n+\alpha+\beta}
+\end{equation*}\]</span></p>
+<p>Nótese que la esperanza en la anterior expresión corresponde simplemente
+al tamaño <span class="math inline">\(\tilde{n}\)</span> de la nueva muestra multiplicado por la
+estimación bayesiana del parámetro <span class="math inline">\(\theta\)</span>. Adicionalmente, la
+esperanza de <span class="math inline">\(\tilde{S}\)</span> también se puede obtener multiplicando todos los
+posibles valores de <span class="math inline">\(\tilde{S}\)</span> con su respectiva probabilidad, y sumando
+al final, como se muestra a continuación.</p>
+<div class="sourceCode" id="cb17"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb17-1"><a href="3-2-modelo-binomial.html#cb17-1" aria-hidden="true" tabindex="-1"></a><span class="fu">sum</span>(res <span class="sc">*</span> <span class="fu">c</span>(<span class="dv">0</span><span class="sc">:</span>n.mono)) </span></code></pre></div>
+<pre><code>## [1] 453.3333</code></pre>
+<div class="sourceCode" id="cb19"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb19-1"><a href="3-2-modelo-binomial.html#cb19-1" aria-hidden="true" tabindex="-1"></a>n.mono <span class="sc">*</span> (s <span class="sc">+</span> alfa)<span class="sc">/</span>(n <span class="sc">+</span> alfa <span class="sc">+</span> beta)</span></code></pre></div>
+<pre><code>## [1] 453.3333</code></pre>
+<p>Retomando el ejemplo <a href="3-1-modelo-bernoulli.html#exm:bernoelectoral">3.1</a>, suponga que la encuesta de opinión electoral
+se lleva a cabo en diferentes ciudades de un determinado país, en este
+caso, para cada ciudad se tiene una muestra de variables con
+distribución Bernoulli o equivalentemente una variable binomial; de esta
+forma, se dispone de una muestra de variables con distribución Binomial.
+La distribución posterior del parámetro <span class="math inline">\(\theta\)</span> para estos casos se
+encuentra en el siguiente resultado.</p>
+
+<div class="proposition">
+<p><span id="prp:postbinom" class="proposition"><strong>Resultado 3.3  </strong></span>Cuando se tiene una sucesión de variables aleatorias <span class="math inline">\(S_1,\ldots,S_i, \ldots,S_k\)</span> independientes y con distribución <span class="math inline">\(Binomial(n_i,\theta)\)</span> para <span class="math inline">\(i=1,\ldots,k\)</span>, entonces la distribución posterior del parámetro de interés <span class="math inline">\(\theta\)</span> es</p>
+<span class="math display">\[\begin{equation*}
+\theta \mid S_1,\ldots,S_k \sim Beta\left(\sum_{i=1}^ks_i+\alpha,\beta+\sum_{i=1}^k n_i-\sum_{i=1}^k s_i\right)
+\end{equation*}\]</span>
+</div>
+<p><br></p>
+
+<div class="proof">
+<p> <span class="proof"><em>Prueba. </em></span> <span class="math display">\[\begin{align*}
+p(\theta \mid S_1,\ldots,S_k)&amp;\propto \prod_{i=1}^kp(S_i \mid \theta)p(\theta \mid \alpha,\beta)\\
+&amp;\propto \prod_{i=1}^k\theta^{\sum_{i=1}s_i}\theta^{\alpha-1}(1-\theta)^{\beta-1}
+(1-\theta)^{\sum_{i=1}^kn_i-\sum_{i=1}^ks_i}I_{[0,1]}(\theta)\\
+&amp;= \theta^{\sum_{i=1}^ks_i+\alpha-1}(1-\theta)^{\sum_{i=1}^kn_i-\sum_{i=1}^ks_i+\beta}I_{[0,1]}(\theta)
+\end{align*}\]</span></p>
+Por lo tanto, factorizando convenientemente, se encuentra una expresión idéntica a la función de densidad de la distribución <span class="math inline">\(Beta\left(\sum_{i=1}^ks_i+\alpha,\beta+\sum_{i=1}^k n_i-\sum_{i=1}^n s_i\right)\)</span>.
+</div>
+<p><br></p>
+
+<div class="example">
+<span id="exm:unnamed-chunk-23" class="example"><strong>Ejemplo 3.2  </strong></span>El siguiente conjunto de datos fue estudiado inicialmente por <span class="citation"><a href="#ref-Efron75" role="doc-biblioref">Efron y Morris</a> (<a href="#ref-Efron75" role="doc-biblioref">1975</a>)</span> y se ha convertido en uno de los ejemplos prácticos más citados en la historia de la estadística moderna. Se trata de los porcentajes de bateo en una muestra de 18 jugadores profesionales en la temporada regular de béisbol en Estados Unidos en el año 1970. <span class="citation"><a href="#ref-wikiBat" role="doc-biblioref">Wikipedia</a> (<a href="#ref-wikiBat" role="doc-biblioref">2011</a>)</span> establece que, en términos generales, este valor representa la razón entre la cantidad de <em>hits</em> y el número de turnos al bate<a href="#fn6" class="footnote-ref" id="fnref6"><sup>6</sup></a>. La fórmula para calcular esta estadística es <span class="math inline">\(s/n\)</span>, donde <span class="math inline">\(s\)</span> es el número de <em>hits</em> y <span class="math inline">\(n\)</span> es el total de turnos. Este conjunto de datos está disponible en el paquete <code>pscl</code> de <code>R</code> y se puede cargar mediante el siguiente código computacional.
+</div>
+<div class="sourceCode" id="cb21"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb21-1"><a href="3-2-modelo-binomial.html#cb21-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(pscl)</span>
+<span id="cb21-2"><a href="3-2-modelo-binomial.html#cb21-2" aria-hidden="true" tabindex="-1"></a><span class="fu">data</span>(EfronMorris)</span>
+<span id="cb21-3"><a href="3-2-modelo-binomial.html#cb21-3" aria-hidden="true" tabindex="-1"></a>EfronMorris</span></code></pre></div>
+<pre><code>##                name  team league  r     y   n     p
+## 1  Roberto Clemente Pitts     NL 18 0.400 367 0.346
+## 2    Frank Robinson  Balt     AL 17 0.378 426 0.298
+## 3      Frank Howard  Wash     AL 16 0.356 521 0.276
+## 4     Jay Johnstone   Cal     AL 15 0.333 275 0.222
+## 5         Ken Berry   Chi     AL 14 0.311 418 0.273
+## 6       Jim Spencer   Cal     AL 14 0.311 466 0.270
+## 7     Don Kessinger   Chi     NL 13 0.289 586 0.263
+## 8     Luis Alvarado   Bos     AL 12 0.267 138 0.210
+## 9         Ron Santo   Chi     NL 11 0.244 510 0.269
+## 10      Ron Swoboda    NY     NL 11 0.244 200 0.230
+## 11        Del Unser  Wash     AL 10 0.222 277 0.264
+## 12   Billy Williams   Chi     AL 10 0.222 270 0.256
+## 13     George Scott   Bos     AL 10 0.222 435 0.303
+## 14  Rico Petrocelli   Bos     AL 10 0.222 538 0.264
+## 15  Ellie Rodriguez    KC     AL 10 0.222 186 0.226
+## 16  Bert Campaneris   Oak     AL  9 0.200 558 0.285
+## 17   Thurman Munson    NY     AL  8 0.178 408 0.316
+## 18        Max Alvis   Mil     NL  7 0.156  70 0.200</code></pre>
+<p>En la primera columna se tiene el número del jugador, la segunda columna proporciona el nombre del jugador, la cuarta columna representan el número de <em>hits</em> en los primeros 45 turnos al bate. La sexta columna representa el número de turnos al bate al final de la temporada regular y la última columna representa el promedio de bateo en la temporada.</p>
+<p>Suponga que, partiendo de la muestra de los 18 jugadores, el objetivo es estimar el porcentaje de bateo, notado como <span class="math inline">\(\theta\)</span>, en toda la liga en el año de 1970. En primera instancia es plausible considerar que cada uno de los jugadores se comporta de manera independiente y que el porcentaje de bateo es común a todos, puesto que pertenecen a la misma liga profesional. Por lo tanto, es posible establecer que el número de <em>hits</em> <span class="math inline">\(s_i\)</span> (<span class="math inline">\(i=1,\ldots,18\)</span>) para cada jugador tiene la siguiente distribución</p>
+<p><span class="math display">\[\begin{equation*}
+S_i\sim Binomial (n_i,\theta) \ \ \ \ \ \ \ \ \ i=1,\ldots,18.
+\end{equation*}\]</span></p>
+<p>Utilizando un enfoque bayesiano, es posible sacar provecho de la información recolectada al principio de la temporada, constituida por la tercera y cuarta columna del archivo de datos. En esta instancia, se tuvieron <span class="math inline">\(18+17+\cdots+8+7=215\)</span> hits para un total de <span class="math inline">\(45\times 18= 810\)</span> turnos al bate. Con esta información, se define la caracterización estructural de la distribución previa que, siguiendo las recomendaciones anteriores, está dada por una <span class="math inline">\(Beta(\alpha=215, \beta=810-215)=Beta(\alpha=215, \beta=595)\)</span>. Del resultado <a href="3-2-modelo-binomial.html#prp:postbinom">3.3</a>, y teniendo en cuenta que al final de la temporada se obtuvieron <span class="math inline">\(\sum S_i = 1825\)</span> <em>hits</em> para un total de <span class="math inline">\(\sum n_i =6649\)</span> turnos al bate, se tiene que la distribución posterior para este ejemplo es una <span class="math inline">\(Beta(1825+215,6649-1825+595)=Beta(2040, 5419)\)</span>. Por lo tanto, utilizando la distribución posterior, se estima que el porcentaje de bateo en la liga profesional en el año de 1970 es de <span class="math inline">\(\frac{2040}{2040+5419}=\frac{2040}{7459}=0.273\)</span>. Este valor corresponde a la media de la distribución posterior.</p>
+<p>Nótese que los mismos resultados se encuentran cuando se analiza este conjunto de datos en <code>STAN</code>, mediante el siguiente código computacional.</p>
+<div class="sourceCode" id="cb23"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb23-1"><a href="3-2-modelo-binomial.html#cb23-1" aria-hidden="true" tabindex="-1"></a>Binomial <span class="ot">&lt;-</span> <span class="st">&#39;data {</span></span>
+<span id="cb23-2"><a href="3-2-modelo-binomial.html#cb23-2" aria-hidden="true" tabindex="-1"></a><span class="st">  int&lt;lower=0&gt; n;</span></span>
+<span id="cb23-3"><a href="3-2-modelo-binomial.html#cb23-3" aria-hidden="true" tabindex="-1"></a><span class="st">  int&lt;lower=0&gt; m[n];</span></span>
+<span id="cb23-4"><a href="3-2-modelo-binomial.html#cb23-4" aria-hidden="true" tabindex="-1"></a><span class="st">  int&lt;lower=0&gt; s[n];</span></span>
+<span id="cb23-5"><a href="3-2-modelo-binomial.html#cb23-5" aria-hidden="true" tabindex="-1"></a><span class="st">}</span></span>
+<span id="cb23-6"><a href="3-2-modelo-binomial.html#cb23-6" aria-hidden="true" tabindex="-1"></a><span class="st">parameters {</span></span>
+<span id="cb23-7"><a href="3-2-modelo-binomial.html#cb23-7" aria-hidden="true" tabindex="-1"></a><span class="st">  real&lt;lower=0, upper=1&gt; theta;</span></span>
+<span id="cb23-8"><a href="3-2-modelo-binomial.html#cb23-8" aria-hidden="true" tabindex="-1"></a><span class="st">}</span></span>
+<span id="cb23-9"><a href="3-2-modelo-binomial.html#cb23-9" aria-hidden="true" tabindex="-1"></a><span class="st">model {</span></span>
+<span id="cb23-10"><a href="3-2-modelo-binomial.html#cb23-10" aria-hidden="true" tabindex="-1"></a><span class="st">  for(i in 1:n) {</span></span>
+<span id="cb23-11"><a href="3-2-modelo-binomial.html#cb23-11" aria-hidden="true" tabindex="-1"></a><span class="st">  s[i] ~ binomial(m[i], theta);</span></span>
+<span id="cb23-12"><a href="3-2-modelo-binomial.html#cb23-12" aria-hidden="true" tabindex="-1"></a><span class="st">  }</span></span>
+<span id="cb23-13"><a href="3-2-modelo-binomial.html#cb23-13" aria-hidden="true" tabindex="-1"></a><span class="st">  theta ~ beta(215, 595);</span></span>
+<span id="cb23-14"><a href="3-2-modelo-binomial.html#cb23-14" aria-hidden="true" tabindex="-1"></a><span class="st">}</span></span>
+<span id="cb23-15"><a href="3-2-modelo-binomial.html#cb23-15" aria-hidden="true" tabindex="-1"></a><span class="st">&#39;</span></span>
+<span id="cb23-16"><a href="3-2-modelo-binomial.html#cb23-16" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-17"><a href="3-2-modelo-binomial.html#cb23-17" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(rstan)</span>
+<span id="cb23-18"><a href="3-2-modelo-binomial.html#cb23-18" aria-hidden="true" tabindex="-1"></a><span class="fu">options</span>(<span class="at">mc.cores =</span> parallel<span class="sc">::</span><span class="fu">detectCores</span>())</span>
+<span id="cb23-19"><a href="3-2-modelo-binomial.html#cb23-19" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-20"><a href="3-2-modelo-binomial.html#cb23-20" aria-hidden="true" tabindex="-1"></a>s <span class="ot">&lt;-</span> <span class="fu">round</span>(EfronMorris<span class="sc">$</span>n <span class="sc">*</span> EfronMorris<span class="sc">$</span>p)</span>
+<span id="cb23-21"><a href="3-2-modelo-binomial.html#cb23-21" aria-hidden="true" tabindex="-1"></a>sample_data <span class="ot">&lt;-</span> <span class="fu">list</span>(<span class="at">s =</span> s, </span>
+<span id="cb23-22"><a href="3-2-modelo-binomial.html#cb23-22" aria-hidden="true" tabindex="-1"></a>                    <span class="at">n =</span> <span class="fu">nrow</span>(EfronMorris),</span>
+<span id="cb23-23"><a href="3-2-modelo-binomial.html#cb23-23" aria-hidden="true" tabindex="-1"></a>                    <span class="at">m =</span> EfronMorris<span class="sc">$</span>n)</span>
+<span id="cb23-24"><a href="3-2-modelo-binomial.html#cb23-24" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-25"><a href="3-2-modelo-binomial.html#cb23-25" aria-hidden="true" tabindex="-1"></a>Binfit <span class="ot">&lt;-</span> <span class="fu">stan</span>(<span class="at">model_code =</span> Binomial, </span>
+<span id="cb23-26"><a href="3-2-modelo-binomial.html#cb23-26" aria-hidden="true" tabindex="-1"></a>               <span class="at">data =</span> sample_data, <span class="at">verbose =</span> <span class="cn">FALSE</span>)</span></code></pre></div>
+<p>La siguiente salida de <code>STAN</code> permite conocer la estimación bayesiana posterior y los límites del intervalo de credibilidad al 95%.</p>
+<div class="sourceCode" id="cb24"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb24-1"><a href="3-2-modelo-binomial.html#cb24-1" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(Binfit, <span class="at">pars =</span> <span class="st">&quot;theta&quot;</span>, </span>
+<span id="cb24-2"><a href="3-2-modelo-binomial.html#cb24-2" aria-hidden="true" tabindex="-1"></a>      <span class="at">digits =</span> <span class="dv">4</span>, <span class="at">probs =</span> <span class="fu">c</span>(<span class="fl">0.025</span>, <span class="fl">0.975</span>))</span></code></pre></div>
+<pre><code>## Inference for Stan model: b5a37600d5b0f80332bf311eb740e4c6.
+## 4 chains, each with iter=2000; warmup=1000; thin=1; 
+## post-warmup draws per chain=1000, total post-warmup draws=4000.
+## 
+##         mean se_mean     sd   2.5%  97.5% n_eff   Rhat
+## theta 0.2734   1e-04 0.0051 0.2634 0.2831  1777 1.0016
+## 
+## Samples were drawn using NUTS(diag_e) at Fri Jun  4 23:07:11 2021.
+## For each parameter, n_eff is a crude measure of effective sample size,
+## and Rhat is the potential scale reduction factor on split chains (at 
+## convergence, Rhat=1).</code></pre>
+<p>Por otro lado, el mismo intervalo de credibilidad del 95% correspondiente se puede hallar mediante el siguiente código computacional de <code>R</code>.</p>
+<div class="sourceCode" id="cb26"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb26-1"><a href="3-2-modelo-binomial.html#cb26-1" aria-hidden="true" tabindex="-1"></a><span class="fu">qbeta</span>(<span class="fu">c</span>(<span class="fl">0.025</span>, <span class="fl">0.975</span>), <span class="dv">2040</span>, <span class="dv">5419</span>)</span></code></pre></div>
+<pre><code>## [1] 0.2634379 0.2836674</code></pre>
+<p>La figura <a href="3-2-modelo-binomial.html#fig:BinomEj1">3.5</a> muestra el comportamiento de las distribuciones previa y posterior para este ejemplo. Nótese que, con un análisis frecuentista, se hubiese llegado a una estimación cercana de <span class="math inline">\(\frac{1825}{6649}=0.274\)</span>.</p>
+<div class="sourceCode" id="cb28"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb28-1"><a href="3-2-modelo-binomial.html#cb28-1" aria-hidden="true" tabindex="-1"></a>p <span class="ot">&lt;-</span> <span class="fu">ggplot</span>(<span class="at">data =</span> <span class="fu">data.frame</span>(<span class="at">x =</span> <span class="dv">0</span>), </span>
+<span id="cb28-2"><a href="3-2-modelo-binomial.html#cb28-2" aria-hidden="true" tabindex="-1"></a>            <span class="at">mapping =</span> <span class="fu">aes</span>(<span class="at">x =</span> x)) <span class="sc">+</span> </span>
+<span id="cb28-3"><a href="3-2-modelo-binomial.html#cb28-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ylab</span>(<span class="st">&quot;&quot;</span>) <span class="sc">+</span> <span class="fu">xlab</span>(<span class="fu">expression</span>(theta))</span>
+<span id="cb28-4"><a href="3-2-modelo-binomial.html#cb28-4" aria-hidden="true" tabindex="-1"></a>previa <span class="ot">&lt;-</span> <span class="cf">function</span>(x) <span class="fu">dbeta</span>(x, <span class="dv">215</span>, <span class="dv">595</span>)</span>
+<span id="cb28-5"><a href="3-2-modelo-binomial.html#cb28-5" aria-hidden="true" tabindex="-1"></a>posterior <span class="ot">&lt;-</span> <span class="cf">function</span>(x) <span class="fu">dbeta</span>(x, <span class="dv">2040</span>, <span class="dv">5419</span>)</span>
+<span id="cb28-6"><a href="3-2-modelo-binomial.html#cb28-6" aria-hidden="true" tabindex="-1"></a>p <span class="sc">+</span> </span>
+<span id="cb28-7"><a href="3-2-modelo-binomial.html#cb28-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">stat_function</span>(<span class="at">stat=</span><span class="st">&quot;function&quot;</span>, <span class="at">fun =</span> previa,</span>
+<span id="cb28-8"><a href="3-2-modelo-binomial.html#cb28-8" aria-hidden="true" tabindex="-1"></a>                <span class="at">mapping =</span> <span class="fu">aes</span>(<span class="at">linetype=</span><span class="st">&quot;solid&quot;</span>)) <span class="sc">+</span></span>
+<span id="cb28-9"><a href="3-2-modelo-binomial.html#cb28-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">stat_function</span>(<span class="at">stat=</span><span class="st">&quot;function&quot;</span>, <span class="at">fun =</span> posterior, </span>
+<span id="cb28-10"><a href="3-2-modelo-binomial.html#cb28-10" aria-hidden="true" tabindex="-1"></a>                <span class="at">mapping =</span> <span class="fu">aes</span>(<span class="at">linetype=</span><span class="st">&quot;dashed&quot;</span>)) <span class="sc">+</span></span>
+<span id="cb28-11"><a href="3-2-modelo-binomial.html#cb28-11" aria-hidden="true" tabindex="-1"></a>    <span class="fu">xlim</span>(<span class="fl">0.2</span>,<span class="fl">0.35</span>) <span class="sc">+</span></span>
+<span id="cb28-12"><a href="3-2-modelo-binomial.html#cb28-12" aria-hidden="true" tabindex="-1"></a>    <span class="fu">scale_linetype_manual</span>(<span class="at">name=</span><span class="st">&quot;&quot;</span>, <span class="at">values=</span><span class="fu">c</span>(<span class="st">&quot;solid&quot;</span>, <span class="st">&quot;dashed&quot;</span>),</span>
+<span id="cb28-13"><a href="3-2-modelo-binomial.html#cb28-13" aria-hidden="true" tabindex="-1"></a>        <span class="at">label=</span><span class="fu">c</span>(<span class="st">&quot;Posterior&quot;</span>,<span class="st">&quot;Previa&quot;</span>)) </span></code></pre></div>
+<div class="figure"><span id="fig:BinomEj1"></span>
+<img src="3Uniparametricos_files/figure-html/BinomEj1-1.png" alt="Función de densidad previa y función de densidad posterior para el ejemplo de bateo." width="672" />
+<p class="caption">
+Figura 3.5: Función de densidad previa y función de densidad posterior para el ejemplo de bateo.
+</p>
+</div>
+<p>Es posible analizar este conjunto de datos desde otra perspectiva al suponer que los jugadores no constituyen una muestra aleatoria y cada uno de ellos tiene un promedio de bateo diferente. Sin embargo, este análisis se deja como ejercicio en un capítulo posterior.</p>
+
+<div class="example">
+<p><span id="exm:unnamed-chunk-28" class="example"><strong>Ejemplo 3.3  </strong></span>Continuando con el conjunto de datos de Efron y Morris, suponga que el entrenador de un equipo de las ligas inferiores está interesado en adquirir los servicios de Max Alvis. Este jugador no tuvo un buen promedio de bateo en la temporada y no tuvo muchos turnos al bate. El entrenador quiere conocer cuál será el número más probable de <em>hits</em> que anotará en la siguiente temporada. Teniendo en cuenta que es un jugador que viene de la liga profesional, lo más conveniente es que tenga muchos turnos al bate, digamos 400.</p>
+Para resolver este cuestionamiento, es conveniente recurrir a la función predictiva posterior, dada en el resultado <a href="3-2-modelo-binomial.html#prp:ResPredBinom">3.2</a>. Para este análisis, se define la caracterización estructural de la distribución previa del jugador que está dada por una <span class="math inline">\(Beta(\alpha=7, \beta=38)\)</span>. La siguiente función en <code>R</code> permite obtener la distribución predictiva para este jugador, que se muestra en la figura <a href="3-2-modelo-binomial.html#fig:PredBinom">3.6</a>.
+</div>
+<div class="sourceCode" id="cb29"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb29-1"><a href="3-2-modelo-binomial.html#cb29-1" aria-hidden="true" tabindex="-1"></a>n <span class="ot">&lt;-</span> <span class="dv">70</span></span>
+<span id="cb29-2"><a href="3-2-modelo-binomial.html#cb29-2" aria-hidden="true" tabindex="-1"></a>s <span class="ot">&lt;-</span> <span class="dv">14</span></span>
+<span id="cb29-3"><a href="3-2-modelo-binomial.html#cb29-3" aria-hidden="true" tabindex="-1"></a>alp <span class="ot">&lt;-</span><span class="dv">7</span></span>
+<span id="cb29-4"><a href="3-2-modelo-binomial.html#cb29-4" aria-hidden="true" tabindex="-1"></a>bet <span class="ot">&lt;-</span> <span class="dv">38</span></span>
+<span id="cb29-5"><a href="3-2-modelo-binomial.html#cb29-5" aria-hidden="true" tabindex="-1"></a>n.ast <span class="ot">&lt;-</span> <span class="dv">400</span></span>
+<span id="cb29-6"><a href="3-2-modelo-binomial.html#cb29-6" aria-hidden="true" tabindex="-1"></a>predictiva <span class="ot">&lt;-</span> <span class="fu">rep</span>(<span class="cn">NA</span>, n.ast <span class="sc">+</span> <span class="dv">1</span>)</span>
+<span id="cb29-7"><a href="3-2-modelo-binomial.html#cb29-7" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span>(k <span class="cf">in</span> <span class="dv">0</span><span class="sc">:</span>n.ast){</span>
+<span id="cb29-8"><a href="3-2-modelo-binomial.html#cb29-8" aria-hidden="true" tabindex="-1"></a>  predictiva[k <span class="sc">+</span> <span class="dv">1</span>] <span class="ot">&lt;-</span></span>
+<span id="cb29-9"><a href="3-2-modelo-binomial.html#cb29-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">choose</span>(n.ast,k) <span class="sc">*</span></span>
+<span id="cb29-10"><a href="3-2-modelo-binomial.html#cb29-10" aria-hidden="true" tabindex="-1"></a>    <span class="fu">beta</span>(k<span class="sc">+</span>s<span class="sc">+</span>alp,bet<span class="sc">-</span>k<span class="sc">-</span>s<span class="sc">+</span>n.ast<span class="sc">+</span>n)<span class="sc">/</span><span class="fu">beta</span>(s<span class="sc">+</span>alp,bet<span class="sc">-</span>s<span class="sc">+</span>n)</span>
+<span id="cb29-11"><a href="3-2-modelo-binomial.html#cb29-11" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb29-12"><a href="3-2-modelo-binomial.html#cb29-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb29-13"><a href="3-2-modelo-binomial.html#cb29-13" aria-hidden="true" tabindex="-1"></a><span class="fu">sum</span>(predictiva)</span></code></pre></div>
+<pre><code>## [1] 1</code></pre>
+<div class="sourceCode" id="cb31"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb31-1"><a href="3-2-modelo-binomial.html#cb31-1" aria-hidden="true" tabindex="-1"></a><span class="fu">which</span>(predictiva<span class="sc">==</span><span class="fu">max</span>(predictiva))</span></code></pre></div>
+<pre><code>## [1] 71</code></pre>
+<p>La última línea del código computacional permite concluir que lo más probable es que el jugador realice 71 hits en 400 turnos al bate, cifra que no convence al entrenador para adquirir los servicios del jugador.</p>
+<div class="sourceCode" id="cb33"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb33-1"><a href="3-2-modelo-binomial.html#cb33-1" aria-hidden="true" tabindex="-1"></a>predic <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(<span class="at">time =</span> <span class="fu">c</span>(<span class="dv">1</span><span class="sc">:</span>(n.ast <span class="sc">+</span> <span class="dv">1</span>)), </span>
+<span id="cb33-2"><a href="3-2-modelo-binomial.html#cb33-2" aria-hidden="true" tabindex="-1"></a>                     <span class="at">y =</span> predictiva)</span>
+<span id="cb33-3"><a href="3-2-modelo-binomial.html#cb33-3" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(predic, <span class="fu">aes</span>(time, y)) <span class="sc">+</span> </span>
+<span id="cb33-4"><a href="3-2-modelo-binomial.html#cb33-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_line</span>() <span class="sc">+</span> </span>
+<span id="cb33-5"><a href="3-2-modelo-binomial.html#cb33-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">xlab</span>(<span class="fu">expression</span>(<span class="fu">tilde</span>(y))) <span class="sc">+</span> </span>
+<span id="cb33-6"><a href="3-2-modelo-binomial.html#cb33-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ylab</span>(<span class="st">&quot;Distribución posterior predictiva&quot;</span>)</span></code></pre></div>
+<div class="figure"><span id="fig:PredBinom"></span>
+<img src="3Uniparametricos_files/figure-html/PredBinom-1.png" alt="Función de densidad predictiva posterior para el jugador Max Alvis." width="672" />
+<p class="caption">
+Figura 3.6: Función de densidad predictiva posterior para el jugador Max Alvis.
+</p>
+</div>
+
+</div>
+<!-- </div> -->
+
+
+
+<h3>Referencias</h3>
+<div id="refs" class="references csl-bib-body hanging-indent">
+<div id="ref-Efron75" class="csl-entry">
+Efron, B., y C. Morris. 1975. <span>«Data Analysis Using Stein’s Estimator and Its Generalizations»</span>. <em>Journal of the American Statistical Association</em> 70: 311-19.
+</div>
+<div id="ref-wikiBat" class="csl-entry">
+Wikipedia. 2011. <span>«<span>Porcentaje de bateo. Wikipedia</span>»</span>.
+</div>
+<div id="ref-VGAM" class="csl-entry">
+Yee, Thomas W. 2012. <em>VGAM: Vector Generalized Linear and Additive Models.</em> URL http://CRAN.R-project.org/package=VGAM.
+</div>
+</div>
+<div class="footnotes">
+<hr />
+<ol start="5">
+<li id="fn5"><p>La función de verosimilitud es una función del parámetro
+y sólo se puede graficar una vez se hayan observado las realizaciones de
+la variable aleatoria.<a href="3-2-modelo-binomial.html#fnref5" class="footnote-back">↩︎</a></p></li>
+<li id="fn6"><p>Un <em>hit</em> es la conexión efectuada por el bateador que coloca la pelota dentro del terreno de juego, permitiéndole alcanzar al menos una base, sin que se produzca un error de defensa del equipo contrario. Para lograr un hit, el bateador debe llegar a primera base antes de que ningún jugador defensivo lo toque con la bola en el trayecto del home a la inicial, o que el jugador de la defensa que tenga la bola pise la primera base antes que el bateador llegue a la misma.<a href="3-2-modelo-binomial.html#fnref6" class="footnote-back">↩︎</a></p></li>
+</ol>
+</div>
+<p style="text-align: center;">
+<a href="3-1-modelo-bernoulli.html"><button class="btn btn-default">Previous</button></a>
+<a href="A-elementos-de-probabilidad.html"><button class="btn btn-default">Next</button></a>
+</p>
+</div>
+</div>
+
+
+</div>
+
+<script>
+
+// add bootstrap table styles to pandoc tables
+$(document).ready(function () {
+  $('tr.header').parent('thead').parent('table').addClass('table table-condensed');
+});
+
+</script>
+
+</body>
+</html>

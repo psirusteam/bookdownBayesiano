@@ -3,3 +3,7 @@ ggplot2
 patchwork
 StanHeaders
 rstan
+VGAM
+pscl
+printr
+knitr

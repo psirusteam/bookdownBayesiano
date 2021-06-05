@@ -1,0 +1,9 @@
+base
+StanHeaders
+ggplot2
+rstan
+printr
+knitr
+patchwork
+VGAM
+pscl
