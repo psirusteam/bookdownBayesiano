@@ -798,3 +798,242 @@ ggplot(predic, aes(time, y)) +
   ylab("Distribución posterior predictiva")
 ```
 
+## Modelo Binomial negativo
+
+La distribución binomial negativa describe el número de ensayos necesarios para alcanzar un número determinado y fijo de éxitos $k$ en una secuencia independiente de experimentos tipo Bernoulli. Esta distribución es particularmente útil cuando el parámetro $\theta$ que se quiere estimar es muy pequeño, como la proporción de una población que padece de alguna enfermedad rara. La razón por la que no se utiliza la distribución binomial es que al fijar el número de ensayos $n$, con un aprobabilidad $\theta$ muy pequeña, es muy probable que en en la muestra de tamaño $n$ no se encuetre ningún paciente con la enfermedad; mientras que al utilizar la distribución binomial negativa, de antemano se garantiza que se obtendrá $k$ pacientes con la enfermedad en la muestra.
+
+Suponga que $Y$ es una variable aleatoria cuya distribución es Binomial negativa, y que representa el número de ensayos necesarios $y$ para alcanzar un número determinado y fijo de éxitos $k$ en un experimento. La forma funcional de esta distribución es la siguiente
+\begin{equation}
+p(Y \mid \theta)=\binom{y-1}{k-1}\theta^k(1-\theta)^{y-k}I_{\{k,k+1,\ldots,\}}(y),
+\end{equation}
+
+Así como en la distribución Bernoulli y Binomial, el parámetro $\theta$ está restringido al espacio $\Theta=[0,1]$. Luego, es admisible proponer que $\theta$ siga una distribución Beta. Por tanto, la distribución previa del parámetro $\theta$ está dada por la expresión \@ref(eq:betadistribution). Bajo este marco de referencia se tienen los siguientes resultados
+
+```{proposition}
+La distribución posterior del parámetro $\theta$ sigue una distribución
+\begin{equation*}
+\theta \mid Y \sim Beta(\alpha+k,\beta+y-k)
+\end{equation*}
+``` 
+<br>
+
+```{proof}
+\begin{align*}
+p(\theta \mid Y)&\propto p(Y \mid \theta)p(\theta \mid \alpha,\beta)\\
+&\propto \theta^{\alpha+k-1} (1-\theta)^{y+\beta-k-1}I_{[0,1]}(\theta)
+\end{align*}
+Por lo tanto, factorizando convenientemente, se llega a una expresión idéntica a la función de distribución de una variable aleatoria con distribución $Beta(\alpha+k,\beta+y-k)$.
+``` 
+<br>
+
+En algunas situaciones se puede encontrar una muestra de variables con distribución binomial negativa. Por ejemplo, la entrevista de pacientes para encontrar cierta enfermedad puede llevarse a cabo en diferentes puntos de atención médica o en diferentes ciudades del país. Así en cada punto de atención, se tendrá el dato correspondiente a una variable con distribución binomial negativa. El procedimiento inferencial bayesiano para estas situaciones se describe a continuación:
+
+```{proposition}
+Cuando se tiene una sucesión de variables aleatorias $Y_1,\ldots, Y_n$ independientes y con distribución $BinomialNegativa(k_i,\theta)$ $(i=1,\ldots,n)$, entonces la distribución posterior del parámetro de interés es
+\begin{equation}
+\theta \mid Y_1,\ldots, Y_n \sim Beta(\alpha+\sum_{i=1}^n k_i,\beta+\sum_{i=1}^n y_i-\sum_{i=1}^n k_i)
+\end{equation}
+``` 
+<br>
+
+```{example}
+Una franquicia de investigación farmacéutica ha desarrollado un nuevo tratamiento farmacológico sobre pacientes diabéticos que padezcan, a su vez, de enfermedades cardíacas o cardiopatías (angina de pecho, infarto de miocardio,  insuficiencia mitral, estenosis mitral, entre otras). Para evaluar el nuevo tratamiento, es necesario seleccionar una muestra, mediante el diseño de un experimento clínico, de pacientes que tienen estas características.
+
+Por otro lado, se sabe que la proporción de personas que padecen de diabetes y que además tienen algún tipo de condición cardiaca es muy baja y es necesario obtener una estimación precisa de la proporción de personas con estas condiciones. Con base en lo anteriormente expuesto, se puede pensar en seleccionar una muestra grande de personas y utilizar un acercamiento binomial para estimar esta proporción. Sin embargo, dado que la prevalencia de esta condición es bastante baja, es posible que el número de personas en la muestra que presenten estas enfermedades sea nulo; por consiguiente, la estimación binomial no será, de ninguna forma, precisa.
+
+Por lo tanto, el diseño clínico está supeditado al uso de la distribución Binomial Negativa, en donde se entrevistarán pacientes, de una base de datos de un hospital de la ciudad asociado con la franquicia, hasta conseguir una muestra de cinco pacientes que padezcan de estas condiciones. Después de varios meses de entrevistas, se encontró el quinto paciente en la entrevista número 1106.
+
+Mediante el análisis bayesiano, suponiendo una distribución previa $Beta(0.5, 0.5)$, se llega a que la distribución posterior del parámetros $\theta$ es $Beta(0.5+5, 0.5+1106-5)=Beta(5.5, 1101.5)$. Por lo tanto, la estimación puntual del parámetro de interés, que corresponde a la media de la distribución posterior, es 0.0049, que equivale una proporción de 0.49% de personas con estas enfermedades.
+
+El siguiente código computacional muestra cómo se puede llegar a las mismas conclusiones con `STAN`, haciendo la salvedad de que `STAN` define esta distribución en términos del número de fracasos $m = y - k$ necesarios para obtener $k$ éxitos.
+```
+
+```{r, results='hide'}
+BinNegativa <- 'data {
+  int<lower=0> k;
+  int<lower=0> y;
+}
+transformed data {
+  int<lower=0> m;
+  m = y - k;
+}
+parameters {
+  real<lower=0> beta;
+}
+transformed parameters {
+  real<lower=0> theta;
+  theta = beta/(beta + 1);
+}
+model {
+  m ~ neg_binomial(k, beta);
+  theta ~ beta(0.5, 0.5);
+}
+'
+
+y <- 1106
+k <- 5
+sample_data <- list(k = k, y = y)
+
+BNfit <- stan(model_code = BinNegativa,
+              data = sample_data, verbose = FALSE)
+```
+
+La siguiente salida de `STAN` permite conocer la estimación bayesiana posterior y los límites del intervalo de credibilidad al 95%.
+
+```{r}
+print(BNfit, pars = "theta", 
+      digits = 4, probs = c(0.025, 0.975))
+```
+
+Después de las iteraciones necesarias, la salida del anterior código muestra la estimación puntual dada por 0.00498 y un intervalo de credibilidad al 95\%, dado por $(0.00174, 0.01013)$.
+
+```{example, binnegex}
+Continuando con la temática del ejemplo anterior, suponga que la franquicia llevó a cabo la misma investigación en las 31 ciudades con mayor densidad poblacional de país. En total, se tuvieron 29620 entrevistas para un total de éxitos de 152, tal como se muestra a continuación.
+
+| Ciudad          | y    | k |
+|-----------------|------|---|
+| BOGOTA          | 1001 | 4 |
+| MEDELLIN        | 978  | 6 |
+| CALI            | 999  | 5 |
+| BARRANQUILLA    | 860  | 4 |
+| CARTAGENA       | 1155 | 4 |
+| CUCUTA          | 585  | 6 |
+| BUCARAMANGA     | 1030 | 3 |
+| IBAGUE          | 960  | 5 |
+| SOLEDAD         | 1002 | 6 |
+| SANTA MARTA     | 763  | 7 |
+| SOACHA          | 1036 | 5 |
+| PASTO           | 779  | 5 |
+| MONTERIA        | 1158 | 4 |
+| VILLAVICENCIO   | 1017 | 5 |
+| BELLO           | 888  | 6 |
+| MANIZALES       | 977  | 4 |
+| VALLEDUPAR      | 1256 | 6 |
+| BUENAVENTURA    | 1349 | 6 |
+| NEIVA           | 1047 | 5 |
+| PALMIRA         | 1088 | 5 |
+| ARMENIA         | 649  | 3 |
+| POPAYAN         | 765  | 4 |
+| FLORIDABLANCA   | 699  | 5 |
+| SINCELEJO       | 1042 | 4 |
+| ITAGUI          | 1212 | 5 |
+| BARRANCABERMEJA | 660  | 5 |
+| TULUA           | 671  | 5 |
+| ENVIGADO        | 835  | 6 |
+| DOSQUEBRADAS    | 997  | 5 |
+| RIOHACHA        | 1146 | 4 |
+| SINCELEJO       | 1016 | 5 |
+  
+Mediante el análisis bayesiano, suponiendo una distribución previa^[Nótese que es posible también asignar una previa informativa $Beta(5.5, 1101.5)$, que da cuenta de la información del estudio del ejemplo anterior.] no informativa $Beta(0.5, 0.5)$, se llega a que la distribución posterior del parámetros $\theta$ es $Beta(0.5+152, 0.5+29620-152)=Beta(152.5, 29468.5)$. Por lo tanto, la estimación puntual del parámetro de interés, que corresponde a la media de la distribución posterior, es 0.0051, que equivale a una proporción de 0.51% de personas con estas enfermedades. El siguiente código computacional muestra cómo se puede llegar a las mismas conclusiones con `STAN`
+```
+
+```{r, results='hide'}
+BinNegativa2 <- 'data {
+  int<lower=0> n;
+  int<lower=0> k[n];
+  int<lower=0> y[n];
+}
+transformed data {
+  int<lower=0> m[n];
+  for(i in 1:n){
+    m[i] = y[i] - k[i];
+  }
+}
+parameters {
+  real<lower=0> b;
+}
+transformed parameters {
+  real<lower=0> theta;
+  theta = b/(b + 1);
+}
+model {
+  for(i in 1:n){
+    m[i] ~ neg_binomial(k[i], b);
+  }
+  theta ~ beta(0.5, 0.5);
+}
+'
+
+y <- c(1001, 978, 999, 860, 1155, 585, 1030, 
+       960, 1002, 763, 1036, 779, 1158, 1017, 
+       888, 977, 1256, 1349, 1047, 1088, 649, 
+       765, 699, 1042, 1212, 660, 671, 835, 
+       997, 1146, 1016)
+k <- c(4, 6, 5, 4, 4, 6, 3, 5, 6, 7, 5, 5, 4, 
+       5, 6, 4, 6, 6, 5, 5, 3, 4, 5, 4, 5, 5, 
+       5, 6, 5, 4, 5)
+sample_data <- list(k = k, y = y, n = length(y))
+
+BNfit2 <- stan(model_code = BinNegativa2,
+               data = sample_data, verbose = FALSE)
+```
+
+Después de cinco mil iteraciones, la salida del anterior código muestra la estimación puntual dada por 0.00515 y un intervalo de credibilidad al 95%, dado por $(0.00439, 0.00603)$, mucho más estrecho que el intervalo de credibilidad del anterior ejemplo
+
+```{r}
+print(BNfit2, pars = "theta", 
+      digits = 4, probs = c(0.025, 0.975))
+```
+
+Una vez observados los datos actuales y encontrada la distribución posterior, se puede encontrar la distribución predictiva posterior de una nueva variable con distribución binomial negativa. Es decir, se puede definir el mecanismo probabilístico para el número de ensayos necesarios para encontrar $\tilde{k}$ éxitos.
+
+```{proposition}
+Después de la recolección de datos, la distribución predictiva posterior para una nueva variable $\tilde{Y}$ está dada por
+
+\begin{equation*}
+p(\tilde{Y}|Y_1,\cdots,Y_n)=\binom{\tilde{y}-1}{\tilde{k}-1}\frac{Beta(\alpha+\tilde{k}+\sum k_i,\beta+\tilde{y}-\tilde{k}+\sum y_i-\sum k_i)}{Beta(\alpha+\sum k_i,\beta+\sum y_i-\sum k_i)}I_{\{\tilde{k},\tilde{k}+1,\cdots\}}(\tilde{y})
+\end{equation*}
+``` 
+<br>
+
+```{proof}
+\begin{align*}
+&\ \ \ p(\tilde{Y}|Y_1,\cdots,Y_n)\\
+&=\int p(\tilde{Y}|\theta)p(\theta|Y_1,\cdots,Y_n)d\theta\\
+&=\int_{0}^1\binom{\tilde{y}-1}{\tilde{k}-1}\theta^{\alpha+\tilde{k}}(1-\theta)^{\beta+\tilde{y}-\tilde{k}}I_{\{\tilde{k},\tilde{k}+1,\cdots\}}(\tilde{y})\frac{\theta^{\sum k_i-1}(1-\theta)^{\sum y_i-\sum k_i-1}}{Beta(\alpha+\sum k_i,\beta+\sum y_i-\sum k_i)}d\theta\\
+&=\binom{\tilde{y}-1}{\tilde{k}-1}\frac{I_{\{\tilde{k},\tilde{k}+1,\cdots\}}(\tilde{y})}{Beta(\alpha+\sum k_i,\beta+\sum y_i-\sum k_i)}\int_{0}^1\theta^{\alpha+\tilde{k}+\sum k_i-1}(1-\theta)^{\beta+\tilde{y}-\tilde{k}+\sum y_i-\sum k_i-1}d\theta\\
+&=\binom{\tilde{y}-1}{\tilde{k}-1}\frac{Beta(\alpha+\tilde{k}+\sum k_i,\beta+\tilde{y}-\tilde{k}+\sum y_i-\sum k_i)}{Beta(\alpha+\sum k_i,\beta+\sum y_i-\sum k_i)}I_{\{\tilde{k},\tilde{k}+1,\cdots\}}(\tilde{y})
+\end{align*}
+``` 
+<br>
+
+```{example}
+Siguiendo con los datos del ejemplo \@ref(exm:binnegex), suponga que se quiere recolectar información de tres pacientes con cardiopatía en cierta ciudad, y se quiere conocer acerca del número de entrevistas necesarias para . Utilizando la distribución previa $Beta(0.5,0.5)$ y los datos de las 31 ciudades del ejemplo, se tiene que la distribución predictiva para el número de entrevistas necesarias para encontrar 3 pacientes está dada por
+
+\begin{align*}
+&\ \ \ \ p(\tilde{Y}|Y_1,\cdots,Y_n)\\
+&=\binom{\tilde{y}-1}{4}\frac{Beta(0.5+5+152,0.5+\tilde{y}-5+29620-152)}{Beta(0.5+152,0.5+29620-152)}I_{\{5,6,\cdots\}}(\tilde{y})\\
+&=\binom{\tilde{y}-1}{4}\frac{Beta(157.5,\tilde{y}+29463.5)}{Beta(152.5,29468.5)}I_{\{5,6,\cdots\}}(\tilde{y})
+\end{align*}
+
+Con los siguientes códigos se puede calcular la anterior función predictiva.
+```
+
+```{r}
+BNpred <- function(y, alfa, beta, s, n, k){
+  choose(y - 1, k - 1) *
+    exp(lbeta(alfa + k + s, beta + y - k + n - s) -
+          lbeta(alfa+s,beta+n-s))
+}
+
+alfa <- beta <- 0.5
+s <- sum(k)
+n <- sum(y)
+k <- 5
+
+fun <- rep(NA)
+for(y in 5:5000){
+  fun[y - 4] <- BNpred(y, alfa, beta, s, n, k)
+}
+
+sum(fun)
+```
+```{r, jefber, echo = FALSE, fig.cap="Distribución predictiva posterior para el número de entrevistas necesarias para encontrar 5 pacientes."}
+func <- data.frame(time = 5:5000, y = fun)
+ ggplot(func, aes(time, y)) + 
+   geom_line() + 
+   xlab(expression(tilde(y))) + 
+   ylab("Densidad predictiva possterior")
+```
+
+Se puede ver que el número de entrevistas que tiene mayor probabilidad asociadas es el valor `r which(fun == max(fun))`, usando el comando `which(fun == max(fun))`. También, se puede observar que la probabilidad de que en menos de 500 entrevistas se encuentren los 5 pacientes es de solo el `r sum(fun[1:(500 - 4)])` usando el comando `sum(fun[1:(500 - 4)])`

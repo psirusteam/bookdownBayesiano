@@ -43,19 +43,23 @@ p(\theta \mid \alpha,\beta)=
 
 Bajo este marco de referencia se tienen los siguientes resultados
 
-\BeginKnitrBlock{proposition}<div class="proposition"><span class="proposition" id="prp:unnamed-chunk-1"><strong>(\#prp:unnamed-chunk-1) </strong></span>La distribución posterior del parámetro $\theta$ sigue una distribución
+\BeginKnitrBlock{proposition}
+<span class="proposition" id="prp:unnamed-chunk-1"><strong>(\#prp:unnamed-chunk-1) </strong></span>La distribución posterior del parámetro $\theta$ sigue una distribución
 \begin{equation*}
 \theta \mid Y \sim Beta(y+\alpha,\beta-y+1)
-\end{equation*}</div>\EndKnitrBlock{proposition}
+\end{equation*}
+\EndKnitrBlock{proposition}
 
-\BeginKnitrBlock{proof}<div class="proof">\iffalse{} <span class="proof"><em>Prueba. </em></span>  \fi{}\begin{align*}
+\BeginKnitrBlock{proof}
+\iffalse{} <span class="proof"><em>Prueba. </em></span>  \fi{}\begin{align*}
 p(\theta \mid Y)&\propto 
 p(Y \mid \theta)p(\theta \mid \alpha,\beta)\\
 &=\frac{I_{\{0,1\}}(y)}{Beta(\alpha,\beta)}\theta^y\theta^{\alpha-1}(1-\theta)^{\beta-1}(1-\theta)^{1-y}I_{[0,1]}(\theta)\\
 &\propto \theta^{y+\alpha-1}(1-\theta)^{\beta-y+1-1}I_{[0,1]}(\theta)
 \end{align*}
     
-Por lo tanto, factorizando convenientemente, se encuentra una expresión idéntica a la función de distribución de una variable aleatoria con distribución $Beta(y+\alpha,\beta-y+1)$.</div>\EndKnitrBlock{proof}
+Por lo tanto, factorizando convenientemente, se encuentra una expresión idéntica a la función de distribución de una variable aleatoria con distribución $Beta(y+\alpha,\beta-y+1)$.
+\EndKnitrBlock{proof}
 <br>
 
 Del anterior resultado, podemos ver que la familia de distribuciones
@@ -88,21 +92,21 @@ a los valores extremos del parámetro de interés y su característica de
 ser no informativa se representa en la simetría de la función alrededor
 del valor 0.5.
 
-<div class="figure">
-<img src="3Uniparametricos_files/figure-html/jefber1-1.png" alt="Distribución previa no informativa de Jeffreys para el parámetro de una distribución Bernoulli" width="672" />
-<p class="caption">(\#fig:jefber1)Distribución previa no informativa de Jeffreys para el parámetro de una distribución Bernoulli</p>
-</div>
+![(\#fig:jefber1)Distribución previa no informativa de Jeffreys para el parámetro de una distribución Bernoulli](3Uniparametricos_files/figure-latex/jefber1-1.pdf) 
 
-\BeginKnitrBlock{proposition}<div class="proposition"><span class="proposition" id="prp:unnamed-chunk-3"><strong>(\#prp:unnamed-chunk-3) </strong></span>La distribución predictiva previa para una observación $y$ está dada por
+\BeginKnitrBlock{proposition}
+<span class="proposition" id="prp:unnamed-chunk-3"><strong>(\#prp:unnamed-chunk-3) </strong></span>La distribución predictiva previa para una observación $y$ está dada por
 \begin{equation}
 (\#eq:Predipreviabernou)
 p(Y)=
 \frac{Beta(y+\alpha,\beta-y+1)}{Beta(\alpha,\beta)}I_{\{0,1\}}(y)
 \end{equation}
-La cual define una auténtica función de densidad de probabilidad continua.</div>\EndKnitrBlock{proposition}
+La cual define una auténtica función de densidad de probabilidad continua.
+\EndKnitrBlock{proposition}
 <br>
 
-\BeginKnitrBlock{proof}<div class="proof">\iffalse{} <span class="proof"><em>Prueba. </em></span>  \fi{}De la definición de función de distribución predictiva se tiene que
+\BeginKnitrBlock{proof}
+\iffalse{} <span class="proof"><em>Prueba. </em></span>  \fi{}De la definición de función de distribución predictiva se tiene que
 
 \begin{align*}
 p(Y)&=\int p(Y \mid \theta)p(\theta \mid \alpha,\beta)\ d\theta\\
@@ -122,7 +126,8 @@ Nótese que en la anterior expresión, la integral al lado derecho de la tercera
 =1
 \end{equation*}
 
-Lo cual se verifica fácilmente teniendo en cuenta las propiedades de la función matemática Beta y de la función matemática Gamma.</div>\EndKnitrBlock{proof}
+Lo cual se verifica fácilmente teniendo en cuenta las propiedades de la función matemática Beta y de la función matemática Gamma.
+\EndKnitrBlock{proof}
 <br>
 
 La distribución predictiva dada en \@ref(eq:Predipreviabernou) está
@@ -132,15 +137,18 @@ distribución predictiva basando la inferencia en la distribución
 posterior del parámetro; esta distribución se da en el siguiente
 resultado.
 
-\BeginKnitrBlock{proposition}<div class="proposition"><span class="proposition" id="prp:unnamed-chunk-5"><strong>(\#prp:unnamed-chunk-5) </strong></span>Después de la recolección de los datos, la distribución predictiva posterior para una nueva observación $\tilde{y}$ está dada por
+\BeginKnitrBlock{proposition}
+<span class="proposition" id="prp:unnamed-chunk-5"><strong>(\#prp:unnamed-chunk-5) </strong></span>Después de la recolección de los datos, la distribución predictiva posterior para una nueva observación $\tilde{y}$ está dada por
 
 \begin{equation}
 p(\tilde{y} \mid Y)=
   \frac{Beta(\tilde{y}+y+\alpha,\beta-\tilde{y}-y+2)}{Beta(y+\alpha,\beta-y+1)}I_{\{0,1\}}(\tilde{y}),
-\end{equation}</div>\EndKnitrBlock{proposition}
+\end{equation}
+\EndKnitrBlock{proposition}
 <br>
 
-\BeginKnitrBlock{proof}<div class="proof">\iffalse{} <span class="proof"><em>Prueba. </em></span>  \fi{}De la definición de función de distribución predictiva se tiene que
+\BeginKnitrBlock{proof}
+\iffalse{} <span class="proof"><em>Prueba. </em></span>  \fi{}De la definición de función de distribución predictiva se tiene que
 
 \begin{align*}
 p(\tilde{y} \mid Y)&=\int p(\tilde{y} \mid \theta)p(\theta \mid Y)\ d\theta\\
@@ -148,7 +156,8 @@ p(\tilde{y} \mid Y)&=\int p(\tilde{y} \mid \theta)p(\theta \mid Y)\ d\theta\\
 &=\frac{Beta(\tilde{y}+y+\alpha,\beta-\tilde{y}-y+2)}{Beta(y+\alpha,\beta-y+1)}I_{\{0,1\}}(\tilde{y})\\
 &\hspace{2cm}\times \int_0^1\frac{\theta^{\tilde{y}+y+\alpha-1}(1-\theta)^{\beta-\tilde{y}-y+2-1}}{Beta(\tilde{y}+y+\alpha,\beta-\tilde{y}-y+2)}\ d\theta\\
 &=\frac{Beta(\tilde{y}+y+\alpha,\beta-\tilde{y}-y+2)}{Beta(y+\alpha,\beta-y+1)}I_{\{0,1\}}(\tilde{y})
-\end{align*}</div>\EndKnitrBlock{proof}
+\end{align*}
+\EndKnitrBlock{proof}
 <br>
 
 En la práctica rara vez se observa la realización de una única variable
@@ -156,13 +165,16 @@ aleatoria Bernoulli $Y$, sino una muestra de variables aleatorias $Y_1$,
 $\cdots$, $Y_n$. En este caso, la distribución posterior del parámetro
 $\theta$ está dada en el siguiente resultado.
 
-\BeginKnitrBlock{proposition}<div class="proposition"><span class="proposition" id="prp:unnamed-chunk-7"><strong>(\#prp:unnamed-chunk-7) </strong></span>Cuando se tiene una muestra aleatoria $Y_1,\ldots,Y_n$ de variables con distribución Bernoulli de parámetro $\theta$, entonces la distribución posterior del parámetro de interés es
+\BeginKnitrBlock{proposition}
+<span class="proposition" id="prp:unnamed-chunk-7"><strong>(\#prp:unnamed-chunk-7) </strong></span>Cuando se tiene una muestra aleatoria $Y_1,\ldots,Y_n$ de variables con distribución Bernoulli de parámetro $\theta$, entonces la distribución posterior del parámetro de interés es
 
 \begin{equation*}
 \theta \mid Y_1,\ldots,Y_n \sim Beta\left(\sum_{i=1}^ny_i+\alpha,\beta-\sum_{i=1}^ny_i+n\right)
-\end{equation*}</div>\EndKnitrBlock{proposition}
+\end{equation*}
+\EndKnitrBlock{proposition}
 
-\BeginKnitrBlock{example}<div class="example"><span class="example" id="exm:bernoelectoral"><strong>(\#exm:bernoelectoral) </strong></span>Es común en muchos países del mundo que se presenten encuestas de opinión electoral unas semanas antes de las elecciones presidenciales. Dentro de este tipo de encuestas se acostumbra a indagar acerca del favoritismo de los candidatos involucrados en la contienda electoral. Suponga que el candidato presidencial A está interesado en conocer su intención de voto previa a las elecciones. Para esto, él contrata a una firma encuestadora para la realización de una encuesta entre la población votante. El resultado de este estudio puede hacer cambiar o afirmar las estrategias publicitarias y la redefinición de la campaña electoral. La firma encuestadora decide implementar una estrategia de muestreo con un tamaño de muestra de doce mil personas. A cada respondiente se le realiza la siguiente pregunta: 
+\BeginKnitrBlock{example}
+<span class="example" id="exm:bernoelectoral"><strong>(\#exm:bernoelectoral) </strong></span>Es común en muchos países del mundo que se presenten encuestas de opinión electoral unas semanas antes de las elecciones presidenciales. Dentro de este tipo de encuestas se acostumbra a indagar acerca del favoritismo de los candidatos involucrados en la contienda electoral. Suponga que el candidato presidencial A está interesado en conocer su intención de voto previa a las elecciones. Para esto, él contrata a una firma encuestadora para la realización de una encuesta entre la población votante. El resultado de este estudio puede hacer cambiar o afirmar las estrategias publicitarias y la redefinición de la campaña electoral. La firma encuestadora decide implementar una estrategia de muestreo con un tamaño de muestra de doce mil personas. A cada respondiente se le realiza la siguiente pregunta: 
   
   > Si las elecciones presidenciales fueran mañana. ¿Usted votaría por el candidato A?
     
@@ -174,12 +186,10 @@ El estadístico de la firma encuestadora decide utilizar una distribución previ
     
 Sin embargo, si no se tuviese información previa como la suministrada por el estudio de meses anteriores, el análisis bayesiano sugeriría trabajar con una distribución previa no informativa, que en este caso, correspondería a una $Beta(\alpha=0.5, \beta=0.5)$. siguiendo el mismo análisis, se tiene que la distribución posterior es $Beta(6360.5, 5640.5)$. Finalmente, se estimaría que la intención de voto por el candidato es de $\frac{6350.5}{12001}=0.529$. 
 
-La figuras \@ref(fig:BernoEj1) muestra el comportamiento de las distribuciones previas y posteriores en ambos escenarios. Nótese que la distribución no informativa influye muy poco en el comportamiento de la distribución posterior.</div>\EndKnitrBlock{example}
+La figuras \@ref(fig:BernoEj1) muestra el comportamiento de las distribuciones previas y posteriores en ambos escenarios. Nótese que la distribución no informativa influye muy poco en el comportamiento de la distribución posterior.
+\EndKnitrBlock{example}
 
-<div class="figure">
-<img src="3Uniparametricos_files/figure-html/BernoEj1-1.png" alt="Distribuciones previas (línea punteada) y posteriores (línea sólida) para el ejemplo de las encuestas electorales." width="672" />
-<p class="caption">(\#fig:BernoEj1)Distribuciones previas (línea punteada) y posteriores (línea sólida) para el ejemplo de las encuestas electorales.</p>
-</div>
+![(\#fig:BernoEj1)Distribuciones previas (línea punteada) y posteriores (línea sólida) para el ejemplo de las encuestas electorales.](3Uniparametricos_files/figure-latex/BernoEj1-1.pdf) 
 
 Utilizando el siguiente código en R, es posible conocer los intervalos
 de credibilidad para las dos distribuciones posteriores. Además, es
@@ -253,9 +263,9 @@ print(Berfit, pars = "theta",
 ## post-warmup draws per chain=1000, total post-warmup draws=4000.
 ## 
 ##         mean se_mean     sd   2.5% 97.5% n_eff   Rhat
-## theta 0.5156   1e-04 0.0043 0.5072 0.524  1584 1.0006
+## theta 0.5155   1e-04 0.0042 0.5071 0.524  1591 1.0009
 ## 
-## Samples were drawn using NUTS(diag_e) at Fri Jun  4 23:06:22 2021.
+## Samples were drawn using NUTS(diag_e) at Sat Jun  5 00:10:46 2021.
 ## For each parameter, n_eff is a crude measure of effective sample size,
 ## and Rhat is the potential scale reduction factor on split chains (at 
 ## convergence, Rhat=1).
@@ -287,21 +297,25 @@ $\theta$ está dada por la expresión \@ref(eq:betadistribution). Bajo
 este marco de referencia se tienen los siguientes resultados
 
 
-\BeginKnitrBlock{proposition}<div class="proposition"><span class="proposition" id="prp:unnamed-chunk-11"><strong>(\#prp:unnamed-chunk-11) </strong></span>La distribución posterior del parámetro $\theta$ sigue una distribución
+\BeginKnitrBlock{proposition}
+<span class="proposition" id="prp:unnamed-chunk-11"><strong>(\#prp:unnamed-chunk-11) </strong></span>La distribución posterior del parámetro $\theta$ sigue una distribución
 
 \begin{equation*}
 \theta \mid S \sim Beta(s+\alpha,\beta-s+n)
-\end{equation*}</div>\EndKnitrBlock{proposition}
+\end{equation*}
+\EndKnitrBlock{proposition}
 <br>
 
-\BeginKnitrBlock{proof}<div class="proof">\iffalse{} <span class="proof"><em>Prueba. </em></span>  \fi{}\begin{align*}
+\BeginKnitrBlock{proof}
+\iffalse{} <span class="proof"><em>Prueba. </em></span>  \fi{}\begin{align*}
 p(\theta \mid S)&\propto p(S \mid \theta)p(\theta \mid \alpha,\beta)\\
 &=\frac{\binom{n}{s}I_{\{0,1,\ldots,n\}}(s)}{Beta(\alpha,\beta)}
 \theta^s\theta^{\alpha-1} (1-\theta)^{\beta-1}(1-\theta)^{n-s}I_{[0,1]}(\theta)\\
 &\propto \theta^{s+\alpha-1} (1-\theta)^{\beta-s+n-1}I_{[0,1]}(\theta)
 \end{align*}
 
-Por lo tanto, factorizando convenientemente, se llega a una expresión idéntica a la función de distribución de una variable aleatoria con distribución $Beta(s+\alpha,\beta-s+n)$.</div>\EndKnitrBlock{proof}
+Por lo tanto, factorizando convenientemente, se llega a una expresión idéntica a la función de distribución de una variable aleatoria con distribución $Beta(s+\alpha,\beta-s+n)$.
+\EndKnitrBlock{proof}
 <br>
 
 Del resultado anterior podemos ver que el estimador bayesiano de
@@ -342,10 +356,7 @@ la variable aleatoria.] con máximo en $8/10$, entonces la distribución
 posterior estará centrada en $10/17$; es decir, la estimación bayesiana
 se encuentra situada entre la estimación previa y la estimación clásica.
 
-<div class="figure">
-<img src="3Uniparametricos_files/figure-html/beta3-1.png" alt="Funciones de verosimilitud, previa y posterior para $\alpha=2$, $\beta=5$, $s=8$ y $n=10$." width="672" />
-<p class="caption">(\#fig:beta3)Funciones de verosimilitud, previa y posterior para $\alpha=2$, $\beta=5$, $s=8$ y $n=10$.</p>
-</div>
+![(\#fig:beta3)Funciones de verosimilitud, previa y posterior para $\alpha=2$, $\beta=5$, $s=8$ y $n=10$.](3Uniparametricos_files/figure-latex/beta3-1.pdf) 
 
 Por otro lado, entre más grande sea el tamaño muestral $n$, más
 cercano estará $\hat{\theta}_{B}$ de $\hat{\theta}_{C}$ o
@@ -361,10 +372,7 @@ clásica. En la figura \@ref(fig:betan) se muestra la estimación posterior de
 $\theta$, es evidente que a medida que el tamaño muestral $n$ aumenta,
 la estimación posterior se acerca más a la estimación clásica.
 
-<div class="figure">
-<img src="3Uniparametricos_files/figure-html/betan-1.png" alt="Estimación posterior de $\theta$ para diferentes valores de $n$ y $s$ con $\alpha=\beta=5$." width="672" />
-<p class="caption">(\#fig:betan)Estimación posterior de $\theta$ para diferentes valores de $n$ y $s$ con $\alpha=\beta=5$.</p>
-</div>
+![(\#fig:betan)Estimación posterior de $\theta$ para diferentes valores de $n$ y $s$ con $\alpha=\beta=5$.](3Uniparametricos_files/figure-latex/betan-1.pdf) 
 
 Anteriormente, se comentó que se acostumbra a escoger los parámetros
 $\alpha$ y $\beta$ que correspondan al número de éxitos y fracasos en la
@@ -410,14 +418,17 @@ En el siguiente resultado, se encuentra la distribución predictiva
 previa para una variable binomial $S$.
 
 
-\BeginKnitrBlock{proposition}<div class="proposition"><span class="proposition" id="prp:unnamed-chunk-13"><strong>(\#prp:unnamed-chunk-13) </strong></span>La distribución predictiva previa para la observación particular de la suma de variables aleatorias Bernoulli, $s$, está dada por una distribución Beta-Binomial
+\BeginKnitrBlock{proposition}
+<span class="proposition" id="prp:unnamed-chunk-13"><strong>(\#prp:unnamed-chunk-13) </strong></span>La distribución predictiva previa para la observación particular de la suma de variables aleatorias Bernoulli, $s$, está dada por una distribución Beta-Binomial
 
 \begin{equation}
 p(S)=\binom{n}{s}\frac{Beta(s+\alpha,\beta-s+n)}{Beta(\alpha,\beta)}I_{\{0,1,\ldots,n\}}(s)
-\end{equation}</div>\EndKnitrBlock{proposition}
+\end{equation}
+\EndKnitrBlock{proposition}
 <br>
 
-\BeginKnitrBlock{proof}<div class="proof">\iffalse{} <span class="proof"><em>Prueba. </em></span>  \fi{}De la definición de función de distribución predictiva previa se tiene que
+\BeginKnitrBlock{proof}
+\iffalse{} <span class="proof"><em>Prueba. </em></span>  \fi{}De la definición de función de distribución predictiva previa se tiene que
 
 \begin{align*}
 p(S)
@@ -427,7 +438,8 @@ p(S)
 &=\binom{n}{s}\frac{Beta(s+\alpha,\beta-s+n)}{Beta(\alpha,\beta)}I_{\{0,1,\ldots,n\}}(s)\\
 &\hspace{2cm}\times\int_0^1\frac{\theta^{s+\alpha-1}(1-\theta)^{\beta-s+n-1}}{Beta(s+\alpha,\beta-s+n)}\ d\theta\\
 &=\binom{n}{s}\frac{Beta(s+\alpha,\beta-s+n)}{Beta(\alpha,\beta)}I_{\{0,1,\ldots,n\}}(s)
-\end{align*}</div>\EndKnitrBlock{proof}
+\end{align*}
+\EndKnitrBlock{proof}
 <br>
 
 Una vez observados los valores muestrales, podemos encontrar la
@@ -435,15 +447,18 @@ distribución predictiva posterior para una nueva variable binomial
 $\tilde{S}$ en una muestra de tamaño $\tilde{n}$. Esta distribución se
 encuentra en el siguiente resultado.
 
-\BeginKnitrBlock{proposition}<div class="proposition"><span class="proposition" id="prp:ResPredBinom"><strong>(\#prp:ResPredBinom) </strong></span>Después de la recolección de los datos $y_1$, $\cdots$, $y_n$, la distribución predictiva posterior para una nueva variable $\tilde{S}$ en una muestra del tamaño $\tilde{n}$ está dada por
+\BeginKnitrBlock{proposition}
+<span class="proposition" id="prp:ResPredBinom"><strong>(\#prp:ResPredBinom) </strong></span>Después de la recolección de los datos $y_1$, $\cdots$, $y_n$, la distribución predictiva posterior para una nueva variable $\tilde{S}$ en una muestra del tamaño $\tilde{n}$ está dada por
 
 \begin{equation}
 (\#eq:Binompredict)
 p(\tilde{s} \mid S)=\binom{\tilde{n}}{\tilde{s}}\frac{Beta(\tilde{s}+s+\alpha,\beta-\tilde{s}-s+n+\tilde{n})}{Beta(s+\alpha,\beta-s+n)}I_{\{0,1,\ldots,\tilde{n}\}}(\tilde{s}),
-\end{equation}</div>\EndKnitrBlock{proposition}
+\end{equation}
+\EndKnitrBlock{proposition}
 <br>
 
-\BeginKnitrBlock{proof}<div class="proof">\iffalse{} <span class="proof"><em>Prueba. </em></span>  \fi{}De la definición de función de distribución predictiva se tiene que
+\BeginKnitrBlock{proof}
+\iffalse{} <span class="proof"><em>Prueba. </em></span>  \fi{}De la definición de función de distribución predictiva se tiene que
 
 \begin{align*}
 p(\tilde{s} \mid S)&=\int p(\tilde{s} \mid \theta)p(\theta \mid S)\ d\theta\\
@@ -454,7 +469,8 @@ p(\tilde{s} \mid S)&=\int p(\tilde{s} \mid \theta)p(\theta \mid S)\ d\theta\\
 \int_0^1\frac{\theta^{\tilde{s}+s+\alpha-1}(1-\theta)^{\beta-\tilde{s}-s+n+\tilde{n}-1}}
 {Beta(\tilde{s}+s+\alpha,\beta-\tilde{s}-s+n+\tilde{n})}\ d\theta\\
 &=\binom{\tilde{n}}{\tilde{s}}\frac{Beta(\tilde{s}+s+\alpha,\beta-\tilde{s}-s+n+\tilde{n})}{Beta(s+\alpha,\beta-s+n)}I_{\{0,1,\ldots,\tilde{n}\}}(\tilde{s})
-\end{align*}</div>\EndKnitrBlock{proof}
+\end{align*}
+\EndKnitrBlock{proof}
 <br>
 
 En la anterior distribución predictiva, se necesita calcular funciones
@@ -563,7 +579,7 @@ choose(800, 500) * exp(lbeta(1350, 950) - lbeta(850, 650))
 ## [1] 0.0005969157
 ```
 
-Nótese que esta probabilidad es la misma contenida en la posición 501 del objeto `res` igual a 5.969157\times 10^{-4}. Finalmente, se observa que la distribución predictiva \@ref(eq:Binompredict) corresponde a una distribución
+Nótese que esta probabilidad es la misma contenida en la posición 501 del objeto `res` igual a \ensuremath{5.969157\times 10^{-4}}. Finalmente, se observa que la distribución predictiva \@ref(eq:Binompredict) corresponde a una distribución
 Beta-binomial con parámetros $s+\alpha$ y $\beta-s+n$. El paquete
 `VGAM` [@VGAM] en `R`  contiene funciones que calculan la
 función de densidad, función de distribución, percentiles, además de
@@ -588,7 +604,7 @@ for(i in 1:length(res2)){
 }
 ```
 
-Podemos observar que la posición 501 del objeto `res2` es igual a 5.969157\times 10^{-4}, el cual es idéntico a lo obtenido en `res`. Adicionalmente, al escribir la distribución predictiva de
+Podemos observar que la posición 501 del objeto `res2` es igual a \ensuremath{5.969157\times 10^{-4}}, el cual es idéntico a lo obtenido en `res`. Adicionalmente, al escribir la distribución predictiva de
 \@ref(eq:Binompredict) como la función de densidad de una distribución
 Beta-binomial, se puede encontrar la esperanza de esta distribución, la
 cual está dada por
@@ -629,24 +645,30 @@ forma, se dispone de una muestra de variables con distribución Binomial.
 La distribución posterior del parámetro $\theta$ para estos casos se
 encuentra en el siguiente resultado.
 
-\BeginKnitrBlock{proposition}<div class="proposition"><span class="proposition" id="prp:postbinom"><strong>(\#prp:postbinom) </strong></span>Cuando se tiene una sucesión de variables aleatorias $S_1,\ldots,S_i, \ldots,S_k$ independientes y con distribución $Binomial(n_i,\theta)$ para $i=1,\ldots,k$, entonces la distribución posterior del parámetro de interés $\theta$ es
+\BeginKnitrBlock{proposition}
+<span class="proposition" id="prp:postbinom"><strong>(\#prp:postbinom) </strong></span>Cuando se tiene una sucesión de variables aleatorias $S_1,\ldots,S_i, \ldots,S_k$ independientes y con distribución $Binomial(n_i,\theta)$ para $i=1,\ldots,k$, entonces la distribución posterior del parámetro de interés $\theta$ es
 
 \begin{equation*}
 \theta \mid S_1,\ldots,S_k \sim Beta\left(\sum_{i=1}^ks_i+\alpha,\beta+\sum_{i=1}^k n_i-\sum_{i=1}^k s_i\right)
-\end{equation*}</div>\EndKnitrBlock{proposition}
+\end{equation*}
+\EndKnitrBlock{proposition}
 <br>
 
-\BeginKnitrBlock{proof}<div class="proof">\iffalse{} <span class="proof"><em>Prueba. </em></span>  \fi{}\begin{align*}
+\BeginKnitrBlock{proof}
+\iffalse{} <span class="proof"><em>Prueba. </em></span>  \fi{}\begin{align*}
 p(\theta \mid S_1,\ldots,S_k)&\propto \prod_{i=1}^kp(S_i \mid \theta)p(\theta \mid \alpha,\beta)\\
 &\propto \prod_{i=1}^k\theta^{\sum_{i=1}s_i}\theta^{\alpha-1}(1-\theta)^{\beta-1}
 (1-\theta)^{\sum_{i=1}^kn_i-\sum_{i=1}^ks_i}I_{[0,1]}(\theta)\\
 &= \theta^{\sum_{i=1}^ks_i+\alpha-1}(1-\theta)^{\sum_{i=1}^kn_i-\sum_{i=1}^ks_i+\beta}I_{[0,1]}(\theta)
 \end{align*}
 
-Por lo tanto, factorizando convenientemente, se encuentra una expresión idéntica a la función de densidad de la distribución $Beta\left(\sum_{i=1}^ks_i+\alpha,\beta+\sum_{i=1}^k n_i-\sum_{i=1}^n s_i\right)$.</div>\EndKnitrBlock{proof}
+Por lo tanto, factorizando convenientemente, se encuentra una expresión idéntica a la función de densidad de la distribución $Beta\left(\sum_{i=1}^ks_i+\alpha,\beta+\sum_{i=1}^k n_i-\sum_{i=1}^n s_i\right)$.
+\EndKnitrBlock{proof}
 <br>
 
-\BeginKnitrBlock{example}<div class="example"><span class="example" id="exm:unnamed-chunk-23"><strong>(\#exm:unnamed-chunk-23) </strong></span>El siguiente conjunto de datos fue estudiado inicialmente por @Efron75 y se ha convertido en uno de los ejemplos prácticos más citados en la historia de la estadística moderna. Se trata de los porcentajes de bateo en una muestra de 18 jugadores profesionales en la temporada regular de béisbol en Estados Unidos en el año 1970. @wikiBat establece que, en términos generales, este valor representa la razón entre la cantidad de *hits* y el número de turnos al bate^[Un *hit* es la conexión efectuada por el bateador que coloca la pelota dentro del terreno de juego, permitiéndole alcanzar al menos una base, sin que se produzca un error de defensa del equipo contrario. Para lograr un hit, el bateador debe llegar a primera base antes de que ningún jugador defensivo lo toque con la bola en el trayecto del home a la inicial, o que el jugador de la defensa que tenga la bola pise la primera base antes que el bateador llegue a la misma.]. La fórmula para calcular esta estadística es $s/n$, donde $s$ es el número de *hits* y $n$ es el total de turnos. Este conjunto de datos está disponible en el paquete `pscl` de `R` y se puede cargar mediante el siguiente código computacional.</div>\EndKnitrBlock{example}
+\BeginKnitrBlock{example}
+<span class="example" id="exm:unnamed-chunk-23"><strong>(\#exm:unnamed-chunk-23) </strong></span>El siguiente conjunto de datos fue estudiado inicialmente por @Efron75 y se ha convertido en uno de los ejemplos prácticos más citados en la historia de la estadística moderna. Se trata de los porcentajes de bateo en una muestra de 18 jugadores profesionales en la temporada regular de béisbol en Estados Unidos en el año 1970. @wikiBat establece que, en términos generales, este valor representa la razón entre la cantidad de *hits* y el número de turnos al bate^[Un *hit* es la conexión efectuada por el bateador que coloca la pelota dentro del terreno de juego, permitiéndole alcanzar al menos una base, sin que se produzca un error de defensa del equipo contrario. Para lograr un hit, el bateador debe llegar a primera base antes de que ningún jugador defensivo lo toque con la bola en el trayecto del home a la inicial, o que el jugador de la defensa que tenga la bola pise la primera base antes que el bateador llegue a la misma.]. La fórmula para calcular esta estadística es $s/n$, donde $s$ es el número de *hits* y $n$ es el total de turnos. Este conjunto de datos está disponible en el paquete `pscl` de `R` y se puede cargar mediante el siguiente código computacional.
+\EndKnitrBlock{example}
 
 
 
@@ -656,26 +678,47 @@ data(EfronMorris)
 ```
 
 
-|name             |team  |league |  r|     y|   n|     p|
-|:----------------|:-----|:------|--:|-----:|---:|-----:|
-|Roberto Clemente |Pitts |NL     | 18| 0.400| 367| 0.346|
-|Frank Robinson   |Balt  |AL     | 17| 0.378| 426| 0.298|
-|Frank Howard     |Wash  |AL     | 16| 0.356| 521| 0.276|
-|Jay Johnstone    |Cal   |AL     | 15| 0.333| 275| 0.222|
-|Ken Berry        |Chi   |AL     | 14| 0.311| 418| 0.273|
-|Jim Spencer      |Cal   |AL     | 14| 0.311| 466| 0.270|
-|Don Kessinger    |Chi   |NL     | 13| 0.289| 586| 0.263|
-|Luis Alvarado    |Bos   |AL     | 12| 0.267| 138| 0.210|
-|Ron Santo        |Chi   |NL     | 11| 0.244| 510| 0.269|
-|Ron Swoboda      |NY    |NL     | 11| 0.244| 200| 0.230|
-|Del Unser        |Wash  |AL     | 10| 0.222| 277| 0.264|
-|Billy Williams   |Chi   |AL     | 10| 0.222| 270| 0.256|
-|George Scott     |Bos   |AL     | 10| 0.222| 435| 0.303|
-|Rico Petrocelli  |Bos   |AL     | 10| 0.222| 538| 0.264|
-|Ellie Rodriguez  |KC    |AL     | 10| 0.222| 186| 0.226|
-|Bert Campaneris  |Oak   |AL     |  9| 0.200| 558| 0.285|
-|Thurman Munson   |NY    |AL     |  8| 0.178| 408| 0.316|
-|Max Alvis        |Mil   |NL     |  7| 0.156|  70| 0.200|
+\begin{tabular}{l|l|l|r|r|r|r}
+\hline
+name & team & league & r & y & n & p\\
+\hline
+Roberto Clemente & Pitts & NL & 18 & 0.400 & 367 & 0.346\\
+\hline
+Frank Robinson & Balt & AL & 17 & 0.378 & 426 & 0.298\\
+\hline
+Frank Howard & Wash & AL & 16 & 0.356 & 521 & 0.276\\
+\hline
+Jay Johnstone & Cal & AL & 15 & 0.333 & 275 & 0.222\\
+\hline
+Ken Berry & Chi & AL & 14 & 0.311 & 418 & 0.273\\
+\hline
+Jim Spencer & Cal & AL & 14 & 0.311 & 466 & 0.270\\
+\hline
+Don Kessinger & Chi & NL & 13 & 0.289 & 586 & 0.263\\
+\hline
+Luis Alvarado & Bos & AL & 12 & 0.267 & 138 & 0.210\\
+\hline
+Ron Santo & Chi & NL & 11 & 0.244 & 510 & 0.269\\
+\hline
+Ron Swoboda & NY & NL & 11 & 0.244 & 200 & 0.230\\
+\hline
+Del Unser & Wash & AL & 10 & 0.222 & 277 & 0.264\\
+\hline
+Billy Williams & Chi & AL & 10 & 0.222 & 270 & 0.256\\
+\hline
+George Scott & Bos & AL & 10 & 0.222 & 435 & 0.303\\
+\hline
+Rico Petrocelli & Bos & AL & 10 & 0.222 & 538 & 0.264\\
+\hline
+Ellie Rodriguez & KC & AL & 10 & 0.222 & 186 & 0.226\\
+\hline
+Bert Campaneris & Oak & AL & 9 & 0.200 & 558 & 0.285\\
+\hline
+Thurman Munson & NY & AL & 8 & 0.178 & 408 & 0.316\\
+\hline
+Max Alvis & Mil & NL & 7 & 0.156 & 70 & 0.200\\
+\hline
+\end{tabular}
 
 En la primera columna se tiene el número del jugador, la segunda columna proporciona el nombre del jugador, la cuarta columna representan el número de *hits* en los primeros 45 turnos al bate. La sexta columna representa el número de turnos al bate al final de la temporada regular y la última columna representa el promedio de bateo en la temporada.
 
@@ -732,10 +775,10 @@ print(Binfit, pars = "theta",
 ## 4 chains, each with iter=2000; warmup=1000; thin=1; 
 ## post-warmup draws per chain=1000, total post-warmup draws=4000.
 ## 
-##         mean se_mean     sd   2.5%  97.5% n_eff   Rhat
-## theta 0.2735   1e-04 0.0053 0.2633 0.2841  1552 1.0039
+##         mean se_mean     sd  2.5%  97.5% n_eff  Rhat
+## theta 0.2736   1e-04 0.0051 0.264 0.2838  1311 1.003
 ## 
-## Samples were drawn using NUTS(diag_e) at Sat Jun  5 00:09:01 2021.
+## Samples were drawn using NUTS(diag_e) at Sat Jun  5 00:11:22 2021.
 ## For each parameter, n_eff is a crude measure of effective sample size,
 ## and Rhat is the potential scale reduction factor on split chains (at 
 ## convergence, Rhat=1).
@@ -755,17 +798,16 @@ qbeta(c(0.025, 0.975), 2040, 5419)
 La figura \@ref(fig:BinomEj1) muestra el comportamiento de las distribuciones previa y posterior para este ejemplo. Nótese que, con un análisis frecuentista, se hubiese llegado a una estimación cercana de $\frac{1825}{6649}=0.274$. 
 
 
-<div class="figure">
-<img src="3Uniparametricos_files/figure-html/BinomEj1-1.png" alt="Función de densidad previa y función de densidad posterior para el ejemplo de bateo." width="672" />
-<p class="caption">(\#fig:BinomEj1)Función de densidad previa y función de densidad posterior para el ejemplo de bateo.</p>
-</div>
+![(\#fig:BinomEj1)Función de densidad previa y función de densidad posterior para el ejemplo de bateo.](3Uniparametricos_files/figure-latex/BinomEj1-1.pdf) 
 
 Es posible analizar este conjunto de datos desde otra perspectiva al suponer que los jugadores no constituyen una muestra aleatoria y cada uno de ellos tiene un promedio de bateo diferente. Sin embargo, este análisis se deja como ejercicio en un capítulo posterior.
 
 
-\BeginKnitrBlock{example}<div class="example"><span class="example" id="exm:unnamed-chunk-29"><strong>(\#exm:unnamed-chunk-29) </strong></span>Continuando con el conjunto de datos de Efron y Morris, suponga que el entrenador de un equipo de las ligas inferiores está interesado en adquirir los servicios de Max Alvis. Este jugador no tuvo un buen promedio de bateo en la temporada y no tuvo muchos turnos al bate. El entrenador quiere conocer cuál será el número más probable de *hits* que anotará en la siguiente temporada. Teniendo en cuenta que es un jugador que viene de la liga profesional, lo más conveniente es que tenga muchos turnos al bate, digamos 400.
+\BeginKnitrBlock{example}
+<span class="example" id="exm:unnamed-chunk-29"><strong>(\#exm:unnamed-chunk-29) </strong></span>Continuando con el conjunto de datos de Efron y Morris, suponga que el entrenador de un equipo de las ligas inferiores está interesado en adquirir los servicios de Max Alvis. Este jugador no tuvo un buen promedio de bateo en la temporada y no tuvo muchos turnos al bate. El entrenador quiere conocer cuál será el número más probable de *hits* que anotará en la siguiente temporada. Teniendo en cuenta que es un jugador que viene de la liga profesional, lo más conveniente es que tenga muchos turnos al bate, digamos 400.
 
-Para resolver este cuestionamiento, es conveniente recurrir a la función predictiva posterior, dada en el resultado \@ref(prp:ResPredBinom). Para este análisis, se define la caracterización estructural de la distribución previa del jugador que está dada por una $Beta(\alpha=7, \beta=38)$. La siguiente función en `R` permite obtener la distribución predictiva para este jugador, que se muestra en la figura \@ref(fig:PredBinom).</div>\EndKnitrBlock{example}
+Para resolver este cuestionamiento, es conveniente recurrir a la función predictiva posterior, dada en el resultado \@ref(prp:ResPredBinom). Para este análisis, se define la caracterización estructural de la distribución previa del jugador que está dada por una $Beta(\alpha=7, \beta=38)$. La siguiente función en `R` permite obtener la distribución predictiva para este jugador, que se muestra en la figura \@ref(fig:PredBinom).
+\EndKnitrBlock{example}
 
 
 ```r
@@ -798,8 +840,275 @@ which(predictiva==max(predictiva))
 
 La última línea del código computacional permite concluir que lo más probable es que el jugador realice 71 hits en 400 turnos al bate, cifra que no convence al entrenador para adquirir los servicios del jugador.
 
-<div class="figure">
-<img src="3Uniparametricos_files/figure-html/PredBinom-1.png" alt="Función de densidad predictiva posterior para el jugador Max Alvis." width="672" />
-<p class="caption">(\#fig:PredBinom)Función de densidad predictiva posterior para el jugador Max Alvis.</p>
-</div>
+![(\#fig:PredBinom)Función de densidad predictiva posterior para el jugador Max Alvis.](3Uniparametricos_files/figure-latex/PredBinom-1.pdf) 
 
+## Modelo Binomial negativo
+
+La distribución binomial negativa describe el número de ensayos necesarios para alcanzar un número determinado y fijo de éxitos $k$ en una secuencia independiente de experimentos tipo Bernoulli. Esta distribución es particularmente útil cuando el parámetro $\theta$ que se quiere estimar es muy pequeño, como la proporción de una población que padece de alguna enfermedad rara. La razón por la que no se utiliza la distribución binomial es que al fijar el número de ensayos $n$, con un aprobabilidad $\theta$ muy pequeña, es muy probable que en en la muestra de tamaño $n$ no se encuetre ningún paciente con la enfermedad; mientras que al utilizar la distribución binomial negativa, de antemano se garantiza que se obtendrá $k$ pacientes con la enfermedad en la muestra.
+
+Suponga que $Y$ es una variable aleatoria cuya distribución es Binomial negativa, y que representa el número de ensayos necesarios $y$ para alcanzar un número determinado y fijo de éxitos $k$ en un experimento. La forma funcional de esta distribución es la siguiente
+\begin{equation}
+p(Y \mid \theta)=\binom{y-1}{k-1}\theta^k(1-\theta)^{y-k}I_{\{k,k+1,\ldots,\}}(y),
+\end{equation}
+
+Así como en la distribución Bernoulli y Binomial, el parámetro $\theta$ está restringido al espacio $\Theta=[0,1]$. Luego, es admisible proponer que $\theta$ siga una distribución Beta. Por tanto, la distribución previa del parámetro $\theta$ está dada por la expresión \@ref(eq:betadistribution). Bajo este marco de referencia se tienen los siguientes resultados
+
+\BeginKnitrBlock{proposition}
+<span class="proposition" id="prp:unnamed-chunk-31"><strong>(\#prp:unnamed-chunk-31) </strong></span>La distribución posterior del parámetro $\theta$ sigue una distribución
+\begin{equation*}
+\theta \mid Y \sim Beta(\alpha+k,\beta+y-k)
+\end{equation*}
+\EndKnitrBlock{proposition}
+<br>
+
+\BeginKnitrBlock{proof}
+\iffalse{} <span class="proof"><em>Prueba. </em></span>  \fi{}\begin{align*}
+p(\theta \mid Y)&\propto p(Y \mid \theta)p(\theta \mid \alpha,\beta)\\
+&\propto \theta^{\alpha+k-1} (1-\theta)^{y+\beta-k-1}I_{[0,1]}(\theta)
+\end{align*}
+Por lo tanto, factorizando convenientemente, se llega a una expresión idéntica a la función de distribución de una variable aleatoria con distribución $Beta(\alpha+k,\beta+y-k)$.
+\EndKnitrBlock{proof}
+<br>
+
+En algunas situaciones se puede encontrar una muestra de variables con distribución binomial negativa. Por ejemplo, la entrevista de pacientes para encontrar cierta enfermedad puede llevarse a cabo en diferentes puntos de atención médica o en diferentes ciudades del país. Así en cada punto de atención, se tendrá el dato correspondiente a una variable con distribución binomial negativa. El procedimiento inferencial bayesiano para estas situaciones se describe a continuación:
+
+\BeginKnitrBlock{proposition}
+<span class="proposition" id="prp:unnamed-chunk-33"><strong>(\#prp:unnamed-chunk-33) </strong></span>Cuando se tiene una sucesión de variables aleatorias $Y_1,\ldots, Y_n$ independientes y con distribución $BinomialNegativa(k_i,\theta)$ $(i=1,\ldots,n)$, entonces la distribución posterior del parámetro de interés es
+\begin{equation}
+\theta \mid Y_1,\ldots, Y_n \sim Beta(\alpha+\sum_{i=1}^n k_i,\beta+\sum_{i=1}^n y_i-\sum_{i=1}^n k_i)
+\end{equation}
+\EndKnitrBlock{proposition}
+<br>
+
+\BeginKnitrBlock{example}
+<span class="example" id="exm:unnamed-chunk-34"><strong>(\#exm:unnamed-chunk-34) </strong></span>Una franquicia de investigación farmacéutica ha desarrollado un nuevo tratamiento farmacológico sobre pacientes diabéticos que padezcan, a su vez, de enfermedades cardíacas o cardiopatías (angina de pecho, infarto de miocardio,  insuficiencia mitral, estenosis mitral, entre otras). Para evaluar el nuevo tratamiento, es necesario seleccionar una muestra, mediante el diseño de un experimento clínico, de pacientes que tienen estas características.
+
+Por otro lado, se sabe que la proporción de personas que padecen de diabetes y que además tienen algún tipo de condición cardiaca es muy baja y es necesario obtener una estimación precisa de la proporción de personas con estas condiciones. Con base en lo anteriormente expuesto, se puede pensar en seleccionar una muestra grande de personas y utilizar un acercamiento binomial para estimar esta proporción. Sin embargo, dado que la prevalencia de esta condición es bastante baja, es posible que el número de personas en la muestra que presenten estas enfermedades sea nulo; por consiguiente, la estimación binomial no será, de ninguna forma, precisa.
+
+Por lo tanto, el diseño clínico está supeditado al uso de la distribución Binomial Negativa, en donde se entrevistarán pacientes, de una base de datos de un hospital de la ciudad asociado con la franquicia, hasta conseguir una muestra de cinco pacientes que padezcan de estas condiciones. Después de varios meses de entrevistas, se encontró el quinto paciente en la entrevista número 1106.
+
+Mediante el análisis bayesiano, suponiendo una distribución previa $Beta(0.5, 0.5)$, se llega a que la distribución posterior del parámetros $\theta$ es $Beta(0.5+5, 0.5+1106-5)=Beta(5.5, 1101.5)$. Por lo tanto, la estimación puntual del parámetro de interés, que corresponde a la media de la distribución posterior, es 0.0049, que equivale una proporción de 0.49% de personas con estas enfermedades.
+
+El siguiente código computacional muestra cómo se puede llegar a las mismas conclusiones con `STAN`, haciendo la salvedad de que `STAN` define esta distribución en términos del número de fracasos $m = y - k$ necesarios para obtener $k$ éxitos.
+\EndKnitrBlock{example}
+
+
+```r
+BinNegativa <- 'data {
+  int<lower=0> k;
+  int<lower=0> y;
+}
+transformed data {
+  int<lower=0> m;
+  m = y - k;
+}
+parameters {
+  real<lower=0> beta;
+}
+transformed parameters {
+  real<lower=0> theta;
+  theta = beta/(beta + 1);
+}
+model {
+  m ~ neg_binomial(k, beta);
+  theta ~ beta(0.5, 0.5);
+}
+'
+
+y <- 1106
+k <- 5
+sample_data <- list(k = k, y = y)
+
+BNfit <- stan(model_code = BinNegativa,
+              data = sample_data, verbose = FALSE)
+```
+
+La siguiente salida de `STAN` permite conocer la estimación bayesiana posterior y los límites del intervalo de credibilidad al 95%.
+
+
+```r
+print(BNfit, pars = "theta", 
+      digits = 4, probs = c(0.025, 0.975))
+```
+
+```
+## Inference for Stan model: ca45da8b0e94b143378403f155105e09.
+## 4 chains, each with iter=2000; warmup=1000; thin=1; 
+## post-warmup draws per chain=1000, total post-warmup draws=4000.
+## 
+##         mean se_mean     sd   2.5% 97.5% n_eff   Rhat
+## theta 0.0051   1e-04 0.0021 0.0019  0.01  1720 1.0009
+## 
+## Samples were drawn using NUTS(diag_e) at Sat Jun  5 15:23:38 2021.
+## For each parameter, n_eff is a crude measure of effective sample size,
+## and Rhat is the potential scale reduction factor on split chains (at 
+## convergence, Rhat=1).
+```
+
+Después de las iteraciones necesarias, la salida del anterior código muestra la estimación puntual dada por 0.00498 y un intervalo de credibilidad al 95\%, dado por $(0.00174, 0.01013)$.
+
+\BeginKnitrBlock{example}
+<span class="example" id="exm:binnegex"><strong>(\#exm:binnegex) </strong></span>Continuando con la temática del ejemplo anterior, suponga que la franquicia llevó a cabo la misma investigación en las 31 ciudades con mayor densidad poblacional de país. En total, se tuvieron 29620 entrevistas para un total de éxitos de 152, tal como se muestra a continuación.
+
+| Ciudad          | y    | k |
+|-----------------|------|---|
+| BOGOTA          | 1001 | 4 |
+| MEDELLIN        | 978  | 6 |
+| CALI            | 999  | 5 |
+| BARRANQUILLA    | 860  | 4 |
+| CARTAGENA       | 1155 | 4 |
+| CUCUTA          | 585  | 6 |
+| BUCARAMANGA     | 1030 | 3 |
+| IBAGUE          | 960  | 5 |
+| SOLEDAD         | 1002 | 6 |
+| SANTA MARTA     | 763  | 7 |
+| SOACHA          | 1036 | 5 |
+| PASTO           | 779  | 5 |
+| MONTERIA        | 1158 | 4 |
+| VILLAVICENCIO   | 1017 | 5 |
+| BELLO           | 888  | 6 |
+| MANIZALES       | 977  | 4 |
+| VALLEDUPAR      | 1256 | 6 |
+| BUENAVENTURA    | 1349 | 6 |
+| NEIVA           | 1047 | 5 |
+| PALMIRA         | 1088 | 5 |
+| ARMENIA         | 649  | 3 |
+| POPAYAN         | 765  | 4 |
+| FLORIDABLANCA   | 699  | 5 |
+| SINCELEJO       | 1042 | 4 |
+| ITAGUI          | 1212 | 5 |
+| BARRANCABERMEJA | 660  | 5 |
+| TULUA           | 671  | 5 |
+| ENVIGADO        | 835  | 6 |
+| DOSQUEBRADAS    | 997  | 5 |
+| RIOHACHA        | 1146 | 4 |
+| SINCELEJO       | 1016 | 5 |
+  
+Mediante el análisis bayesiano, suponiendo una distribución previa^[Nótese que es posible también asignar una previa informativa $Beta(5.5, 1101.5)$, que da cuenta de la información del estudio del ejemplo anterior.] no informativa $Beta(0.5, 0.5)$, se llega a que la distribución posterior del parámetros $\theta$ es $Beta(0.5+152, 0.5+29620-152)=Beta(152.5, 29468.5)$. Por lo tanto, la estimación puntual del parámetro de interés, que corresponde a la media de la distribución posterior, es 0.0051, que equivale a una proporción de 0.51% de personas con estas enfermedades. El siguiente código computacional muestra cómo se puede llegar a las mismas conclusiones con `STAN`
+\EndKnitrBlock{example}
+
+
+```r
+BinNegativa2 <- 'data {
+  int<lower=0> n;
+  int<lower=0> k[n];
+  int<lower=0> y[n];
+}
+transformed data {
+  int<lower=0> m[n];
+  for(i in 1:n){
+    m[i] = y[i] - k[i];
+  }
+}
+parameters {
+  real<lower=0> b;
+}
+transformed parameters {
+  real<lower=0> theta;
+  theta = b/(b + 1);
+}
+model {
+  for(i in 1:n){
+    m[i] ~ neg_binomial(k[i], b);
+  }
+  theta ~ beta(0.5, 0.5);
+}
+'
+
+y <- c(1001, 978, 999, 860, 1155, 585, 1030, 
+       960, 1002, 763, 1036, 779, 1158, 1017, 
+       888, 977, 1256, 1349, 1047, 1088, 649, 
+       765, 699, 1042, 1212, 660, 671, 835, 
+       997, 1146, 1016)
+k <- c(4, 6, 5, 4, 4, 6, 3, 5, 6, 7, 5, 5, 4, 
+       5, 6, 4, 6, 6, 5, 5, 3, 4, 5, 4, 5, 5, 
+       5, 6, 5, 4, 5)
+sample_data <- list(k = k, y = y, n = length(y))
+
+BNfit2 <- stan(model_code = BinNegativa2,
+               data = sample_data, verbose = FALSE)
+```
+
+Después de cinco mil iteraciones, la salida del anterior código muestra la estimación puntual dada por 0.00515 y un intervalo de credibilidad al 95%, dado por $(0.00439, 0.00603)$, mucho más estrecho que el intervalo de credibilidad del anterior ejemplo
+
+
+```r
+print(BNfit2, pars = "theta", 
+      digits = 4, probs = c(0.025, 0.975))
+```
+
+```
+## Inference for Stan model: 756b8df22716f40c50aa8045790299a4.
+## 4 chains, each with iter=2000; warmup=1000; thin=1; 
+## post-warmup draws per chain=1000, total post-warmup draws=4000.
+## 
+##         mean se_mean    sd   2.5% 97.5% n_eff   Rhat
+## theta 0.0051       0 4e-04 0.0044 0.006  1325 1.0008
+## 
+## Samples were drawn using NUTS(diag_e) at Sat Jun  5 15:24:08 2021.
+## For each parameter, n_eff is a crude measure of effective sample size,
+## and Rhat is the potential scale reduction factor on split chains (at 
+## convergence, Rhat=1).
+```
+
+Una vez observados los datos actuales y encontrada la distribución posterior, se puede encontrar la distribución predictiva posterior de una nueva variable con distribución binomial negativa. Es decir, se puede definir el mecanismo probabilístico para el número de ensayos necesarios para encontrar $\tilde{k}$ éxitos.
+
+\BeginKnitrBlock{proposition}
+<span class="proposition" id="prp:unnamed-chunk-39"><strong>(\#prp:unnamed-chunk-39) </strong></span>Después de la recolección de datos, la distribución predictiva posterior para una nueva variable $\tilde{Y}$ está dada por
+
+\begin{equation*}
+p(\tilde{Y}|Y_1,\cdots,Y_n)=\binom{\tilde{y}-1}{\tilde{k}-1}\frac{Beta(\alpha+\tilde{k}+\sum k_i,\beta+\tilde{y}-\tilde{k}+\sum y_i-\sum k_i)}{Beta(\alpha+\sum k_i,\beta+\sum y_i-\sum k_i)}I_{\{\tilde{k},\tilde{k}+1,\cdots\}}(\tilde{y})
+\end{equation*}
+\EndKnitrBlock{proposition}
+<br>
+
+\BeginKnitrBlock{proof}
+\iffalse{} <span class="proof"><em>Prueba. </em></span>  \fi{}\begin{align*}
+&\ \ \ p(\tilde{Y}|Y_1,\cdots,Y_n)\\
+&=\int p(\tilde{Y}|\theta)p(\theta|Y_1,\cdots,Y_n)d\theta\\
+&=\int_{0}^1\binom{\tilde{y}-1}{\tilde{k}-1}\theta^{\alpha+\tilde{k}}(1-\theta)^{\beta+\tilde{y}-\tilde{k}}I_{\{\tilde{k},\tilde{k}+1,\cdots\}}(\tilde{y})\frac{\theta^{\sum k_i-1}(1-\theta)^{\sum y_i-\sum k_i-1}}{Beta(\alpha+\sum k_i,\beta+\sum y_i-\sum k_i)}d\theta\\
+&=\binom{\tilde{y}-1}{\tilde{k}-1}\frac{I_{\{\tilde{k},\tilde{k}+1,\cdots\}}(\tilde{y})}{Beta(\alpha+\sum k_i,\beta+\sum y_i-\sum k_i)}\int_{0}^1\theta^{\alpha+\tilde{k}+\sum k_i-1}(1-\theta)^{\beta+\tilde{y}-\tilde{k}+\sum y_i-\sum k_i-1}d\theta\\
+&=\binom{\tilde{y}-1}{\tilde{k}-1}\frac{Beta(\alpha+\tilde{k}+\sum k_i,\beta+\tilde{y}-\tilde{k}+\sum y_i-\sum k_i)}{Beta(\alpha+\sum k_i,\beta+\sum y_i-\sum k_i)}I_{\{\tilde{k},\tilde{k}+1,\cdots\}}(\tilde{y})
+\end{align*}
+\EndKnitrBlock{proof}
+<br>
+
+\BeginKnitrBlock{example}
+<span class="example" id="exm:unnamed-chunk-41"><strong>(\#exm:unnamed-chunk-41) </strong></span>Siguiendo con los datos del ejemplo \@ref(exm:binnegex), suponga que se quiere recolectar información de tres pacientes con cardiopatía en cierta ciudad, y se quiere conocer acerca del número de entrevistas necesarias para . Utilizando la distribución previa $Beta(0.5,0.5)$ y los datos de las 31 ciudades del ejemplo, se tiene que la distribución predictiva para el número de entrevistas necesarias para encontrar 3 pacientes está dada por
+
+\begin{align*}
+&\ \ \ \ p(\tilde{Y}|Y_1,\cdots,Y_n)\\
+&=\binom{\tilde{y}-1}{4}\frac{Beta(0.5+5+152,0.5+\tilde{y}-5+29620-152)}{Beta(0.5+152,0.5+29620-152)}I_{\{5,6,\cdots\}}(\tilde{y})\\
+&=\binom{\tilde{y}-1}{4}\frac{Beta(157.5,\tilde{y}+29463.5)}{Beta(152.5,29468.5)}I_{\{5,6,\cdots\}}(\tilde{y})
+\end{align*}
+
+Con los siguientes códigos se puede calcular la anterior función predictiva.
+\EndKnitrBlock{example}
+
+
+```r
+BNpred <- function(y, alfa, beta, s, n, k){
+  choose(y - 1, k - 1) *
+    exp(lbeta(alfa + k + s, beta + y - k + n - s) -
+          lbeta(alfa+s,beta+n-s))
+}
+
+alfa <- beta <- 0.5
+s <- sum(k)
+n <- sum(y)
+k <- 5
+
+fun <- rep(NA)
+for(y in 5:5000){
+  fun[y - 4] <- BNpred(y, alfa, beta, s, n, k)
+}
+
+sum(fun)
+```
+
+```
+## [1] 0.9999994
+```
+![(\#fig:jefber)Distribución predictiva posterior para el número de entrevistas necesarias para encontrar 5 pacientes.](3Uniparametricos_files/figure-latex/jefber-1.pdf) 
+
+Se puede ver que el número de entrevistas que tiene mayor probabilidad asociadas es el valor 768, usando el comando `which(fun == max(fun))`. También, se puede observar que la probabilidad de que en menos de 500 entrevistas se encuentren los 5 pacientes es de solo el 0.1200985 usando el comando `sum(fun[1:(500 - 4)])`

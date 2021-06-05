@@ -194,6 +194,7 @@ div.csl-indent {
 <ul>
 <li class="chapter" data-level="3.1" data-path="modelo-bernoulli.html"><a href="modelo-bernoulli.html"><i class="fa fa-check"></i><b>3.1</b> Modelo Bernoulli</a></li>
 <li class="chapter" data-level="3.2" data-path="modelo-binomial.html"><a href="modelo-binomial.html"><i class="fa fa-check"></i><b>3.2</b> Modelo Binomial</a></li>
+<li class="chapter" data-level="3.3" data-path="modelo-binomial-negativo.html"><a href="modelo-binomial-negativo.html"><i class="fa fa-check"></i><b>3.3</b> Modelo Binomial negativo</a></li>
 </ul></li>
 <li class="appendix"><span><b>Apéndice</b></span></li>
 <li class="chapter" data-level="A" data-path="elementos-de-probabilidad.html"><a href="elementos-de-probabilidad.html"><i class="fa fa-check"></i><b>A</b> Elementos de probabilidad</a>
@@ -415,7 +416,7 @@ donde <span class="math inline">\(Beta(\alpha,\beta)=\dfrac{\gamma(\alpha)\gamma
 <p>La distribución Beta tiene dos parámetros: <span class="math inline">\(\alpha\)</span> y <span class="math inline">\(\beta\)</span>; en este caso, el vector de parámetros es <span class="math inline">\(\boldsymbol \theta=(\alpha,\beta)&#39;\)</span> donde el espacio paramétrico está dado por <span class="math inline">\(\Theta=(0,\infty)\times(0,\infty)\)</span>. Pero cuando uno de los dos parámetros es fijo, por ejemplo <span class="math inline">\(\theta\)</span>, entonces la distribución tendría un sólo parámetro: <span class="math inline">\(k\)</span>.</p>
 
 <div class="proposition">
-<p><span id="prp:unnamed-chunk-31" class="proposition"><strong>Resultado A.17  </strong></span>Si <span class="math inline">\(Y\)</span> es una variable aleatoria con distribución Gamma con parámetro de forma <span class="math inline">\(k\)</span> y parámetro de escala <span class="math inline">\(\theta\)</span>, entonces</p>
+<p><span id="prp:unnamed-chunk-31" class="proposition"><strong>Resultado 3.4  </strong></span>Si <span class="math inline">\(Y\)</span> es una variable aleatoria con distribución Gamma con parámetro de forma <span class="math inline">\(k\)</span> y parámetro de escala <span class="math inline">\(\theta\)</span>, entonces</p>
 <ul>
 <li><span class="math inline">\(E(Y)=\frac{\alpha}{\alpha + \beta}\)</span>.</li>
 <li><span class="math inline">\(Var(Y)=\frac{\alpha\beta}{(\alpha+\beta)^2(\alpha+\beta+1)}\)</span>
@@ -437,7 +438,7 @@ donde <span class="math inline">\(\sigma&gt;0\)</span> y se nota como <span clas
 <p>La distribución normal tiene dos parámetros, representado como <span class="math inline">\(\boldsymbol \theta=(\mu,\sigma^2)\)</span>, mientras que su espacio paramétrico es <span class="math inline">\(\Theta=\mathbb{R}\times(0,\infty)\)</span>.</p>
 
 <div class="proposition">
-<p><span id="prp:unnamed-chunk-33" class="proposition"><strong>Resultado A.18  </strong></span>Si <span class="math inline">\(Y\)</span> es una variable aleatoria con distribución normal con parámetros <span class="math inline">\(\mu\)</span> y <span class="math inline">\(\sigma^2\)</span>, entonces</p>
+<p><span id="prp:unnamed-chunk-33" class="proposition"><strong>Resultado 3.5  </strong></span>Si <span class="math inline">\(Y\)</span> es una variable aleatoria con distribución normal con parámetros <span class="math inline">\(\mu\)</span> y <span class="math inline">\(\sigma^2\)</span>, entonces</p>
 <ul>
 <li><span class="math inline">\(E(Y)=\mu\)</span>.</li>
 <li><span class="math inline">\(Var(Y)=\sigma^2\)</span>.</li>
@@ -447,7 +448,7 @@ donde <span class="math inline">\(\sigma&gt;0\)</span> y se nota como <span clas
 <p>Cuando <span class="math inline">\(\mu=0\)</span> y <span class="math inline">\(\sigma=1\)</span>, se dice que <span class="math inline">\(Y\)</span> tiene distribución normal estándar y usualmente se denota por <span class="math inline">\(Z\)</span>.</p>
 
 <div class="proposition">
-<span id="prp:unnamed-chunk-34" class="proposition"><strong>Resultado A.19  </strong></span>Si <span class="math inline">\(Y\sim N(\mu,\sigma^2)\)</span>, y <span class="math inline">\(\alpha\)</span>, <span class="math inline">\(\beta\)</span> son constantes, entonces la variable <span class="math inline">\(\alpha Y+\beta\)</span> tiene distribución <span class="math inline">\(N(\alpha\mu+\beta,\alpha^2\sigma^2)\)</span>.
+<span id="prp:unnamed-chunk-34" class="proposition"><strong>Resultado A.17  </strong></span>Si <span class="math inline">\(Y\sim N(\mu,\sigma^2)\)</span>, y <span class="math inline">\(\alpha\)</span>, <span class="math inline">\(\beta\)</span> son constantes, entonces la variable <span class="math inline">\(\alpha Y+\beta\)</span> tiene distribución <span class="math inline">\(N(\alpha\mu+\beta,\alpha^2\sigma^2)\)</span>.
 </div>
 <p><br></p>
 
@@ -466,7 +467,7 @@ la cual es la función generadora de momentos de una distribución <span class="
 <p>Como consecuencia inmediata del anterior resultado, se define la estandarización, que es fundamental en la teoría relacionada con las distribuciones normales. Si <span class="math inline">\(Y\sim N(\mu,\sigma^2)\)</span>, entonces la variable <span class="math inline">\(Z=\frac{Y-\mu}{\sigma}\)</span> tiene distribución normal estándar, y la anterior transformación se conoce como la normal estandarizada.</p>
 
 <div class="proposition">
-<span id="prp:unnamed-chunk-36" class="proposition"><strong>Resultado A.20  </strong></span>Sea <span class="math inline">\(Y_1\)</span>, <span class="math inline">\(\cdots\)</span>, <span class="math inline">\(Y_n\)</span> variables aleatorias independientes, donde <span class="math inline">\(Y_i\sim N(\mu_i,\sigma^2_i)\)</span> con <span class="math inline">\(i=1,\cdots,n\)</span>, entonces la variable <span class="math inline">\(\sum_{i=1}^nY_i\)</span> tiene distribución <span class="math inline">\(N(\sum_{i=1}^n\mu_i,\sum_{i=1}^n\sigma_i^2)\)</span>.
+<span id="prp:unnamed-chunk-36" class="proposition"><strong>Resultado A.18  </strong></span>Sea <span class="math inline">\(Y_1\)</span>, <span class="math inline">\(\cdots\)</span>, <span class="math inline">\(Y_n\)</span> variables aleatorias independientes, donde <span class="math inline">\(Y_i\sim N(\mu_i,\sigma^2_i)\)</span> con <span class="math inline">\(i=1,\cdots,n\)</span>, entonces la variable <span class="math inline">\(\sum_{i=1}^nY_i\)</span> tiene distribución <span class="math inline">\(N(\sum_{i=1}^n\mu_i,\sum_{i=1}^n\sigma_i^2)\)</span>.
 </div>
 </div>
 <div id="distribución-log-normal" class="section level3" number="4.2.9">
@@ -481,7 +482,7 @@ Nótese que si <span class="math inline">\(\mu\)</span> y <span class="math inli
 </div>
 
 <div class="proposition">
-<p><span id="prp:unnamed-chunk-38" class="proposition"><strong>Resultado A.21  </strong></span>Si <span class="math inline">\(Y\)</span> es una variable aleatoria con distribución log-normal, entonces</p>
+<p><span id="prp:unnamed-chunk-38" class="proposition"><strong>Resultado A.19  </strong></span>Si <span class="math inline">\(Y\)</span> es una variable aleatoria con distribución log-normal, entonces</p>
 <ul>
 <li><span class="math inline">\(E(Y)=\exp(\mu+\sigma^2/2)\)</span>.</li>
 <li><span class="math inline">\(Var(Y)=(\exp(\sigma^2-1)) \exp(2\mu+\sigma^2)\)</span>.</li>
@@ -506,7 +507,7 @@ y se nota como <span class="math inline">\(Y\sim\chi^2_n\)</span>.
 </div>
 
 <div class="proposition">
-<p><span id="prp:unnamed-chunk-41" class="proposition"><strong>Resultado A.22  </strong></span>Si <span class="math inline">\(Y\)</span> es una variable aleatoria con distribución Ji-cuadro con <span class="math inline">\(n\)</span> grados de libertad, entonces</p>
+<p><span id="prp:unnamed-chunk-41" class="proposition"><strong>Resultado A.20  </strong></span>Si <span class="math inline">\(Y\)</span> es una variable aleatoria con distribución Ji-cuadro con <span class="math inline">\(n\)</span> grados de libertad, entonces</p>
 <ul>
 <li><span class="math inline">\(E(Y)=n\)</span>.</li>
 <li><span class="math inline">\(Var(Y)=2n\)</span>.</li>
@@ -515,7 +516,7 @@ y se nota como <span class="math inline">\(Y\sim\chi^2_n\)</span>.
 </div>
 
 <div class="proposition">
-<span id="prp:unnamed-chunk-42" class="proposition"><strong>Resultado A.23  </strong></span>Sea <span class="math inline">\(Z_1\)</span>, <span class="math inline">\(\cdots\)</span>, <span class="math inline">\(Z_m\)</span> variables aleatorias independientes con distribución <span class="math inline">\(\chi^2_{n_i}\)</span> para <span class="math inline">\(i=1,\cdots,m\)</span>, entonces la variable <span class="math inline">\(\sum_{i=1}^mZ_i\)</span> tiene distribución Ji-cuadrado con <span class="math inline">\(\sum_{i=1}^mn_i\)</span> grados de libertad.
+<span id="prp:unnamed-chunk-42" class="proposition"><strong>Resultado A.21  </strong></span>Sea <span class="math inline">\(Z_1\)</span>, <span class="math inline">\(\cdots\)</span>, <span class="math inline">\(Z_m\)</span> variables aleatorias independientes con distribución <span class="math inline">\(\chi^2_{n_i}\)</span> para <span class="math inline">\(i=1,\cdots,m\)</span>, entonces la variable <span class="math inline">\(\sum_{i=1}^mZ_i\)</span> tiene distribución Ji-cuadrado con <span class="math inline">\(\sum_{i=1}^mn_i\)</span> grados de libertad.
 </div>
 </div>
 <div id="distribución-t-student" class="section level3" number="4.2.11">
@@ -539,7 +540,7 @@ donde <span class="math inline">\(n&gt;0\)</span> y se nota como <span class="ma
 <p>La función de densidad de la distribución t-student es muy parecida a la de distribución normal estándar, entre más grande sea el grado de libertad, más se parece a la distribución normal estándar.</p>
 
 <div class="proposition">
-<p><span id="prp:unnamed-chunk-45" class="proposition"><strong>Resultado A.24  </strong></span>Si <span class="math inline">\(Y\)</span> es una variable aleatoria con distribución t-student con <span class="math inline">\(n\)</span> grados de libertad, entonces</p>
+<p><span id="prp:unnamed-chunk-45" class="proposition"><strong>Resultado A.22  </strong></span>Si <span class="math inline">\(Y\)</span> es una variable aleatoria con distribución t-student con <span class="math inline">\(n\)</span> grados de libertad, entonces</p>
 <ul>
 <li><span class="math inline">\(E(Y)=0\)</span> para <span class="math inline">\(n&gt;1\)</span>.</li>
 <li><span class="math inline">\(Var(Y)=\frac{n}{n-2}\)</span> para <span class="math inline">\(n&gt;2\)</span>.</li>
@@ -560,7 +561,7 @@ donde <span class="math inline">\(n&gt;0\)</span> y se nota como <span class="ma
 </div>
 
 <div class="proposition">
-<p><span id="prp:unnamed-chunk-47" class="proposition"><strong>Resultado A.25  </strong></span>Si <span class="math inline">\(Y\)</span> es una variable aleatoria con distribución t-student generalizada, entonces</p>
+<p><span id="prp:unnamed-chunk-47" class="proposition"><strong>Resultado A.23  </strong></span>Si <span class="math inline">\(Y\)</span> es una variable aleatoria con distribución t-student generalizada, entonces</p>
 <ul>
 <li><span class="math inline">\(E(Y)=\theta\)</span> para <span class="math inline">\(n&gt;1\)</span>.</li>
 <li><span class="math inline">\(Var(Y)=\frac{n}{n-2}\sigma^2\)</span> para <span class="math inline">\(n&gt;2\)</span>.</li>
@@ -586,7 +587,7 @@ y se nota como <span class="math inline">\(Y\sim F^m_n\)</span>.
 </div>
 
 <div class="proposition">
-<p><span id="prp:unnamed-chunk-50" class="proposition"><strong>Resultado A.26  </strong></span>Si <span class="math inline">\(Y\)</span> es una variable aleatoria con distribución F con <span class="math inline">\(m\)</span> grados de libertad en el numerador y <span class="math inline">\(n\)</span> grados de libertado en el denominador, entonces</p>
+<p><span id="prp:unnamed-chunk-50" class="proposition"><strong>Resultado A.24  </strong></span>Si <span class="math inline">\(Y\)</span> es una variable aleatoria con distribución F con <span class="math inline">\(m\)</span> grados de libertad en el numerador y <span class="math inline">\(n\)</span> grados de libertado en el denominador, entonces</p>
 <ul>
 <li><span class="math inline">\(E(Y)=\frac{n}{n-2}\)</span> para <span class="math inline">\(n&gt;2\)</span>.</li>
 <li><span class="math inline">\(Var(Y)=\frac{2n^2(m+n-2)}{m(n-2)^2(n-4)}\)</span> para <span class="math inline">\(n&gt;4\)</span>.</li>

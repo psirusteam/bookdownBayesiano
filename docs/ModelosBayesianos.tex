@@ -2392,24 +2392,6 @@ Por otro lado, el mismo intervalo de credibilidad del 95\% correspondiente se pu
 
 La figura \ref{fig:BinomEj1} muestra el comportamiento de las distribuciones previa y posterior para este ejemplo. Nótese que, con un análisis frecuentista, se hubiese llegado a una estimación cercana de \(\frac{1825}{6649}=0.274\).
 
-\begin{Shaded}
-\begin{Highlighting}[]
-\NormalTok{p }\OtherTok{\textless{}{-}} \FunctionTok{ggplot}\NormalTok{(}\AttributeTok{data =} \FunctionTok{data.frame}\NormalTok{(}\AttributeTok{x =} \DecValTok{0}\NormalTok{), }
-            \AttributeTok{mapping =} \FunctionTok{aes}\NormalTok{(}\AttributeTok{x =}\NormalTok{ x)) }\SpecialCharTok{+} 
-  \FunctionTok{ylab}\NormalTok{(}\StringTok{""}\NormalTok{) }\SpecialCharTok{+} \FunctionTok{xlab}\NormalTok{(}\FunctionTok{expression}\NormalTok{(theta))}
-\NormalTok{previa }\OtherTok{\textless{}{-}} \ControlFlowTok{function}\NormalTok{(x) }\FunctionTok{dbeta}\NormalTok{(x, }\DecValTok{215}\NormalTok{, }\DecValTok{595}\NormalTok{)}
-\NormalTok{posterior }\OtherTok{\textless{}{-}} \ControlFlowTok{function}\NormalTok{(x) }\FunctionTok{dbeta}\NormalTok{(x, }\DecValTok{2040}\NormalTok{, }\DecValTok{5419}\NormalTok{)}
-\NormalTok{p }\SpecialCharTok{+} 
-  \FunctionTok{stat\_function}\NormalTok{(}\AttributeTok{stat=}\StringTok{"function"}\NormalTok{, }\AttributeTok{fun =}\NormalTok{ previa,}
-                \AttributeTok{mapping =} \FunctionTok{aes}\NormalTok{(}\AttributeTok{linetype=}\StringTok{"solid"}\NormalTok{)) }\SpecialCharTok{+}
-  \FunctionTok{stat\_function}\NormalTok{(}\AttributeTok{stat=}\StringTok{"function"}\NormalTok{, }\AttributeTok{fun =}\NormalTok{ posterior, }
-                \AttributeTok{mapping =} \FunctionTok{aes}\NormalTok{(}\AttributeTok{linetype=}\StringTok{"dashed"}\NormalTok{)) }\SpecialCharTok{+}
-    \FunctionTok{xlim}\NormalTok{(}\FloatTok{0.2}\NormalTok{,}\FloatTok{0.35}\NormalTok{) }\SpecialCharTok{+}
-    \FunctionTok{scale\_linetype\_manual}\NormalTok{(}\AttributeTok{name=}\StringTok{""}\NormalTok{, }\AttributeTok{values=}\FunctionTok{c}\NormalTok{(}\StringTok{"solid"}\NormalTok{, }\StringTok{"dashed"}\NormalTok{),}
-        \AttributeTok{label=}\FunctionTok{c}\NormalTok{(}\StringTok{"Posterior"}\NormalTok{,}\StringTok{"Previa"}\NormalTok{)) }
-\end{Highlighting}
-\end{Shaded}
-
 \begin{figure}
 \centering
 \includegraphics{3Uniparametricos_files/figure-latex/BinomEj1-1.pdf}
@@ -2458,22 +2440,293 @@ Para resolver este cuestionamiento, es conveniente recurrir a la función predic
 
 La última línea del código computacional permite concluir que lo más probable es que el jugador realice 71 hits en 400 turnos al bate, cifra que no convence al entrenador para adquirir los servicios del jugador.
 
-\begin{Shaded}
-\begin{Highlighting}[]
-\NormalTok{predic }\OtherTok{\textless{}{-}} \FunctionTok{data.frame}\NormalTok{(}\AttributeTok{time =} \FunctionTok{c}\NormalTok{(}\DecValTok{1}\SpecialCharTok{:}\NormalTok{(n.ast }\SpecialCharTok{+} \DecValTok{1}\NormalTok{)), }
-                     \AttributeTok{y =}\NormalTok{ predictiva)}
-\FunctionTok{ggplot}\NormalTok{(predic, }\FunctionTok{aes}\NormalTok{(time, y)) }\SpecialCharTok{+} 
-  \FunctionTok{geom\_line}\NormalTok{() }\SpecialCharTok{+} 
-  \FunctionTok{xlab}\NormalTok{(}\FunctionTok{expression}\NormalTok{(}\FunctionTok{tilde}\NormalTok{(y))) }\SpecialCharTok{+} 
-  \FunctionTok{ylab}\NormalTok{(}\StringTok{"Distribución posterior predictiva"}\NormalTok{)}
-\end{Highlighting}
-\end{Shaded}
-
 \begin{figure}
 \centering
 \includegraphics{3Uniparametricos_files/figure-latex/PredBinom-1.pdf}
 \caption{\label{fig:PredBinom}Función de densidad predictiva posterior para el jugador Max Alvis.}
 \end{figure}
+
+\hypertarget{modelo-binomial-negativo}{%
+\section{Modelo Binomial negativo}\label{modelo-binomial-negativo}}
+
+La distribución binomial negativa describe el número de ensayos necesarios para alcanzar un número determinado y fijo de éxitos \(k\) en una secuencia independiente de experimentos tipo Bernoulli. Esta distribución es particularmente útil cuando el parámetro \(\theta\) que se quiere estimar es muy pequeño, como la proporción de una población que padece de alguna enfermedad rara. La razón por la que no se utiliza la distribución binomial es que al fijar el número de ensayos \(n\), con un aprobabilidad \(\theta\) muy pequeña, es muy probable que en en la muestra de tamaño \(n\) no se encuetre ningún paciente con la enfermedad; mientras que al utilizar la distribución binomial negativa, de antemano se garantiza que se obtendrá \(k\) pacientes con la enfermedad en la muestra.
+
+Suponga que \(Y\) es una variable aleatoria cuya distribución es Binomial negativa, y que representa el número de ensayos necesarios \(y\) para alcanzar un número determinado y fijo de éxitos \(k\) en un experimento. La forma funcional de esta distribución es la siguiente
+\begin{equation}
+p(Y \mid \theta)=\binom{y-1}{k-1}\theta^k(1-\theta)^{y-k}I_{\{k,k+1,\ldots,\}}(y),
+\end{equation}
+
+Así como en la distribución Bernoulli y Binomial, el parámetro \(\theta\) está restringido al espacio \(\Theta=[0,1]\). Luego, es admisible proponer que \(\theta\) siga una distribución Beta. Por tanto, la distribución previa del parámetro \(\theta\) está dada por la expresión \eqref{eq:betadistribution}. Bajo este marco de referencia se tienen los siguientes resultados
+
+\begin{proposition}
+\protect\hypertarget{prp:unnamed-chunk-31}{}{\label{prp:unnamed-chunk-31} }La distribución posterior del parámetro \(\theta\) sigue una distribución
+\begin{equation*}
+\theta \mid Y \sim Beta(\alpha+k,\beta+y-k)
+\end{equation*}
+\end{proposition}
+
+\begin{proof}
+\iffalse{} {Prueba. } \fi{}\begin{align*}
+p(\theta \mid Y)&\propto p(Y \mid \theta)p(\theta \mid \alpha,\beta)\\
+&\propto \theta^{\alpha+k-1} (1-\theta)^{y+\beta-k-1}I_{[0,1]}(\theta)
+\end{align*}
+Por lo tanto, factorizando convenientemente, se llega a una expresión idéntica a la función de distribución de una variable aleatoria con distribución \(Beta(\alpha+k,\beta+y-k)\).
+\end{proof}
+
+En algunas situaciones se puede encontrar una muestra de variables con distribución binomial negativa. Por ejemplo, la entrevista de pacientes para encontrar cierta enfermedad puede llevarse a cabo en diferentes puntos de atención médica o en diferentes ciudades del país. Así en cada punto de atención, se tendrá el dato correspondiente a una variable con distribución binomial negativa. El procedimiento inferencial bayesiano para estas situaciones se describe a continuación:
+
+\begin{proposition}
+\protect\hypertarget{prp:unnamed-chunk-33}{}{\label{prp:unnamed-chunk-33} }Cuando se tiene una sucesión de variables aleatorias \(Y_1,\ldots, Y_n\) independientes y con distribución \(BinomialNegativa(k_i,\theta)\) \((i=1,\ldots,n)\), entonces la distribución posterior del parámetro de interés es
+\begin{equation}
+\theta \mid Y_1,\ldots, Y_n \sim Beta(\alpha+\sum_{i=1}^n k_i,\beta+\sum_{i=1}^n y_i-\sum_{i=1}^n k_i)
+\end{equation}
+\end{proposition}
+
+\begin{example}
+\protect\hypertarget{exm:unnamed-chunk-34}{}{\label{exm:unnamed-chunk-34} }Una franquicia de investigación farmacéutica ha desarrollado un nuevo tratamiento farmacológico sobre pacientes diabéticos que padezcan, a su vez, de enfermedades cardíacas o cardiopatías (angina de pecho, infarto de miocardio, insuficiencia mitral, estenosis mitral, entre otras). Para evaluar el nuevo tratamiento, es necesario seleccionar una muestra, mediante el diseño de un experimento clínico, de pacientes que tienen estas características.
+
+Por otro lado, se sabe que la proporción de personas que padecen de diabetes y que además tienen algún tipo de condición cardiaca es muy baja y es necesario obtener una estimación precisa de la proporción de personas con estas condiciones. Con base en lo anteriormente expuesto, se puede pensar en seleccionar una muestra grande de personas y utilizar un acercamiento binomial para estimar esta proporción. Sin embargo, dado que la prevalencia de esta condición es bastante baja, es posible que el número de personas en la muestra que presenten estas enfermedades sea nulo; por consiguiente, la estimación binomial no será, de ninguna forma, precisa.
+
+Por lo tanto, el diseño clínico está supeditado al uso de la distribución Binomial Negativa, en donde se entrevistarán pacientes, de una base de datos de un hospital de la ciudad asociado con la franquicia, hasta conseguir una muestra de cinco pacientes que padezcan de estas condiciones. Después de varios meses de entrevistas, se encontró el quinto paciente en la entrevista número 1106.
+
+Mediante el análisis bayesiano, suponiendo una distribución previa \(Beta(0.5, 0.5)\), se llega a que la distribución posterior del parámetros \(\theta\) es \(Beta(0.5+5, 0.5+1106-5)=Beta(5.5, 1101.5)\). Por lo tanto, la estimación puntual del parámetro de interés, que corresponde a la media de la distribución posterior, es 0.0049, que equivale una proporción de 0.49\% de personas con estas enfermedades.
+
+El siguiente código computacional muestra cómo se puede llegar a las mismas conclusiones con \texttt{STAN}, haciendo la salvedad de que \texttt{STAN} define esta distribución en términos del número de fracasos \(m = y - k\) necesarios para obtener \(k\) éxitos.
+\end{example}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{BinNegativa }\OtherTok{\textless{}{-}} \StringTok{\textquotesingle{}data \{}
+\StringTok{  int\textless{}lower=0\textgreater{} k;}
+\StringTok{  int\textless{}lower=0\textgreater{} y;}
+\StringTok{\}}
+\StringTok{transformed data \{}
+\StringTok{  int\textless{}lower=0\textgreater{} m;}
+\StringTok{  m = y {-} k;}
+\StringTok{\}}
+\StringTok{parameters \{}
+\StringTok{  real\textless{}lower=0\textgreater{} beta;}
+\StringTok{\}}
+\StringTok{transformed parameters \{}
+\StringTok{  real\textless{}lower=0\textgreater{} theta;}
+\StringTok{  theta = beta/(beta + 1);}
+\StringTok{\}}
+\StringTok{model \{}
+\StringTok{  m \textasciitilde{} neg\_binomial(k, beta);}
+\StringTok{  theta \textasciitilde{} beta(0.5, 0.5);}
+\StringTok{\}}
+\StringTok{\textquotesingle{}}
+
+\NormalTok{y }\OtherTok{\textless{}{-}} \DecValTok{1106}
+\NormalTok{k }\OtherTok{\textless{}{-}} \DecValTok{5}
+\NormalTok{sample\_data }\OtherTok{\textless{}{-}} \FunctionTok{list}\NormalTok{(}\AttributeTok{k =}\NormalTok{ k, }\AttributeTok{y =}\NormalTok{ y)}
+
+\NormalTok{BNfit }\OtherTok{\textless{}{-}} \FunctionTok{stan}\NormalTok{(}\AttributeTok{model\_code =}\NormalTok{ BinNegativa,}
+              \AttributeTok{data =}\NormalTok{ sample\_data, }\AttributeTok{verbose =} \ConstantTok{FALSE}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+La siguiente salida de \texttt{STAN} permite conocer la estimación bayesiana posterior y los límites del intervalo de credibilidad al 95\%.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{print}\NormalTok{(BNfit, }\AttributeTok{pars =} \StringTok{"theta"}\NormalTok{, }
+      \AttributeTok{digits =} \DecValTok{4}\NormalTok{, }\AttributeTok{probs =} \FunctionTok{c}\NormalTok{(}\FloatTok{0.025}\NormalTok{, }\FloatTok{0.975}\NormalTok{))}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## Inference for Stan model: ca45da8b0e94b143378403f155105e09.
+## 4 chains, each with iter=2000; warmup=1000; thin=1; 
+## post-warmup draws per chain=1000, total post-warmup draws=4000.
+## 
+##         mean se_mean     sd   2.5% 97.5% n_eff   Rhat
+## theta 0.0051   1e-04 0.0021 0.0019  0.01  1720 1.0009
+## 
+## Samples were drawn using NUTS(diag_e) at Sat Jun  5 15:23:38 2021.
+## For each parameter, n_eff is a crude measure of effective sample size,
+## and Rhat is the potential scale reduction factor on split chains (at 
+## convergence, Rhat=1).
+\end{verbatim}
+
+Después de las iteraciones necesarias, la salida del anterior código muestra la estimación puntual dada por 0.00498 y un intervalo de credibilidad al 95\%, dado por \((0.00174, 0.01013)\).
+
+\begin{example}
+\protect\hypertarget{exm:binnegex}{}{\label{exm:binnegex} }Continuando con la temática del ejemplo anterior, suponga que la franquicia llevó a cabo la misma investigación en las 31 ciudades con mayor densidad poblacional de país. En total, se tuvieron 29620 entrevistas para un total de éxitos de 152, tal como se muestra a continuación.
+
+\begin{longtable}[]{@{}lll@{}}
+\toprule
+Ciudad & y & k \\
+\midrule
+\endhead
+BOGOTA & 1001 & 4 \\
+MEDELLIN & 978 & 6 \\
+CALI & 999 & 5 \\
+BARRANQUILLA & 860 & 4 \\
+CARTAGENA & 1155 & 4 \\
+CUCUTA & 585 & 6 \\
+BUCARAMANGA & 1030 & 3 \\
+IBAGUE & 960 & 5 \\
+SOLEDAD & 1002 & 6 \\
+SANTA MARTA & 763 & 7 \\
+SOACHA & 1036 & 5 \\
+PASTO & 779 & 5 \\
+MONTERIA & 1158 & 4 \\
+VILLAVICENCIO & 1017 & 5 \\
+BELLO & 888 & 6 \\
+MANIZALES & 977 & 4 \\
+VALLEDUPAR & 1256 & 6 \\
+BUENAVENTURA & 1349 & 6 \\
+NEIVA & 1047 & 5 \\
+PALMIRA & 1088 & 5 \\
+ARMENIA & 649 & 3 \\
+POPAYAN & 765 & 4 \\
+FLORIDABLANCA & 699 & 5 \\
+SINCELEJO & 1042 & 4 \\
+ITAGUI & 1212 & 5 \\
+BARRANCABERMEJA & 660 & 5 \\
+TULUA & 671 & 5 \\
+ENVIGADO & 835 & 6 \\
+DOSQUEBRADAS & 997 & 5 \\
+RIOHACHA & 1146 & 4 \\
+SINCELEJO & 1016 & 5 \\
+\bottomrule
+\end{longtable}
+
+Mediante el análisis bayesiano, suponiendo una distribución previa\footnote{Nótese que es posible también asignar una previa informativa \(Beta(5.5, 1101.5)\), que da cuenta de la información del estudio del ejemplo anterior.} no informativa \(Beta(0.5, 0.5)\), se llega a que la distribución posterior del parámetros \(\theta\) es \(Beta(0.5+152, 0.5+29620-152)=Beta(152.5, 29468.5)\). Por lo tanto, la estimación puntual del parámetro de interés, que corresponde a la media de la distribución posterior, es 0.0051, que equivale a una proporción de 0.51\% de personas con estas enfermedades. El siguiente código computacional muestra cómo se puede llegar a las mismas conclusiones con \texttt{STAN}
+\end{example}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{BinNegativa2 }\OtherTok{\textless{}{-}} \StringTok{\textquotesingle{}data \{}
+\StringTok{  int\textless{}lower=0\textgreater{} n;}
+\StringTok{  int\textless{}lower=0\textgreater{} k[n];}
+\StringTok{  int\textless{}lower=0\textgreater{} y[n];}
+\StringTok{\}}
+\StringTok{transformed data \{}
+\StringTok{  int\textless{}lower=0\textgreater{} m[n];}
+\StringTok{  for(i in 1:n)\{}
+\StringTok{    m[i] = y[i] {-} k[i];}
+\StringTok{  \}}
+\StringTok{\}}
+\StringTok{parameters \{}
+\StringTok{  real\textless{}lower=0\textgreater{} b;}
+\StringTok{\}}
+\StringTok{transformed parameters \{}
+\StringTok{  real\textless{}lower=0\textgreater{} theta;}
+\StringTok{  theta = b/(b + 1);}
+\StringTok{\}}
+\StringTok{model \{}
+\StringTok{  for(i in 1:n)\{}
+\StringTok{    m[i] \textasciitilde{} neg\_binomial(k[i], b);}
+\StringTok{  \}}
+\StringTok{  theta \textasciitilde{} beta(0.5, 0.5);}
+\StringTok{\}}
+\StringTok{\textquotesingle{}}
+
+\NormalTok{y }\OtherTok{\textless{}{-}} \FunctionTok{c}\NormalTok{(}\DecValTok{1001}\NormalTok{, }\DecValTok{978}\NormalTok{, }\DecValTok{999}\NormalTok{, }\DecValTok{860}\NormalTok{, }\DecValTok{1155}\NormalTok{, }\DecValTok{585}\NormalTok{, }\DecValTok{1030}\NormalTok{, }
+       \DecValTok{960}\NormalTok{, }\DecValTok{1002}\NormalTok{, }\DecValTok{763}\NormalTok{, }\DecValTok{1036}\NormalTok{, }\DecValTok{779}\NormalTok{, }\DecValTok{1158}\NormalTok{, }\DecValTok{1017}\NormalTok{, }
+       \DecValTok{888}\NormalTok{, }\DecValTok{977}\NormalTok{, }\DecValTok{1256}\NormalTok{, }\DecValTok{1349}\NormalTok{, }\DecValTok{1047}\NormalTok{, }\DecValTok{1088}\NormalTok{, }\DecValTok{649}\NormalTok{, }
+       \DecValTok{765}\NormalTok{, }\DecValTok{699}\NormalTok{, }\DecValTok{1042}\NormalTok{, }\DecValTok{1212}\NormalTok{, }\DecValTok{660}\NormalTok{, }\DecValTok{671}\NormalTok{, }\DecValTok{835}\NormalTok{, }
+       \DecValTok{997}\NormalTok{, }\DecValTok{1146}\NormalTok{, }\DecValTok{1016}\NormalTok{)}
+\NormalTok{k }\OtherTok{\textless{}{-}} \FunctionTok{c}\NormalTok{(}\DecValTok{4}\NormalTok{, }\DecValTok{6}\NormalTok{, }\DecValTok{5}\NormalTok{, }\DecValTok{4}\NormalTok{, }\DecValTok{4}\NormalTok{, }\DecValTok{6}\NormalTok{, }\DecValTok{3}\NormalTok{, }\DecValTok{5}\NormalTok{, }\DecValTok{6}\NormalTok{, }\DecValTok{7}\NormalTok{, }\DecValTok{5}\NormalTok{, }\DecValTok{5}\NormalTok{, }\DecValTok{4}\NormalTok{, }
+       \DecValTok{5}\NormalTok{, }\DecValTok{6}\NormalTok{, }\DecValTok{4}\NormalTok{, }\DecValTok{6}\NormalTok{, }\DecValTok{6}\NormalTok{, }\DecValTok{5}\NormalTok{, }\DecValTok{5}\NormalTok{, }\DecValTok{3}\NormalTok{, }\DecValTok{4}\NormalTok{, }\DecValTok{5}\NormalTok{, }\DecValTok{4}\NormalTok{, }\DecValTok{5}\NormalTok{, }\DecValTok{5}\NormalTok{, }
+       \DecValTok{5}\NormalTok{, }\DecValTok{6}\NormalTok{, }\DecValTok{5}\NormalTok{, }\DecValTok{4}\NormalTok{, }\DecValTok{5}\NormalTok{)}
+\NormalTok{sample\_data }\OtherTok{\textless{}{-}} \FunctionTok{list}\NormalTok{(}\AttributeTok{k =}\NormalTok{ k, }\AttributeTok{y =}\NormalTok{ y, }\AttributeTok{n =} \FunctionTok{length}\NormalTok{(y))}
+
+\NormalTok{BNfit2 }\OtherTok{\textless{}{-}} \FunctionTok{stan}\NormalTok{(}\AttributeTok{model\_code =}\NormalTok{ BinNegativa2,}
+               \AttributeTok{data =}\NormalTok{ sample\_data, }\AttributeTok{verbose =} \ConstantTok{FALSE}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+Después de cinco mil iteraciones, la salida del anterior código muestra la estimación puntual dada por 0.00515 y un intervalo de credibilidad al 95\%, dado por \((0.00439, 0.00603)\), mucho más estrecho que el intervalo de credibilidad del anterior ejemplo
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{print}\NormalTok{(BNfit2, }\AttributeTok{pars =} \StringTok{"theta"}\NormalTok{, }
+      \AttributeTok{digits =} \DecValTok{4}\NormalTok{, }\AttributeTok{probs =} \FunctionTok{c}\NormalTok{(}\FloatTok{0.025}\NormalTok{, }\FloatTok{0.975}\NormalTok{))}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## Inference for Stan model: 756b8df22716f40c50aa8045790299a4.
+## 4 chains, each with iter=2000; warmup=1000; thin=1; 
+## post-warmup draws per chain=1000, total post-warmup draws=4000.
+## 
+##         mean se_mean    sd   2.5% 97.5% n_eff   Rhat
+## theta 0.0051       0 4e-04 0.0044 0.006  1325 1.0008
+## 
+## Samples were drawn using NUTS(diag_e) at Sat Jun  5 15:24:08 2021.
+## For each parameter, n_eff is a crude measure of effective sample size,
+## and Rhat is the potential scale reduction factor on split chains (at 
+## convergence, Rhat=1).
+\end{verbatim}
+
+Una vez observados los datos actuales y encontrada la distribución posterior, se puede encontrar la distribución predictiva posterior de una nueva variable con distribución binomial negativa. Es decir, se puede definir el mecanismo probabilístico para el número de ensayos necesarios para encontrar \(\tilde{k}\) éxitos.
+
+\begin{proposition}
+\protect\hypertarget{prp:unnamed-chunk-39}{}{\label{prp:unnamed-chunk-39} }Después de la recolección de datos, la distribución predictiva posterior para una nueva variable \(\tilde{Y}\) está dada por
+
+\begin{equation*}
+p(\tilde{Y}|Y_1,\cdots,Y_n)=\binom{\tilde{y}-1}{\tilde{k}-1}\frac{Beta(\alpha+\tilde{k}+\sum k_i,\beta+\tilde{y}-\tilde{k}+\sum y_i-\sum k_i)}{Beta(\alpha+\sum k_i,\beta+\sum y_i-\sum k_i)}I_{\{\tilde{k},\tilde{k}+1,\cdots\}}(\tilde{y})
+\end{equation*}
+\end{proposition}
+
+\begin{proof}
+\iffalse{} {Prueba. } \fi{}\begin{align*}
+&\ \ \ p(\tilde{Y}|Y_1,\cdots,Y_n)\\
+&=\int p(\tilde{Y}|\theta)p(\theta|Y_1,\cdots,Y_n)d\theta\\
+&=\int_{0}^1\binom{\tilde{y}-1}{\tilde{k}-1}\theta^{\alpha+\tilde{k}}(1-\theta)^{\beta+\tilde{y}-\tilde{k}}I_{\{\tilde{k},\tilde{k}+1,\cdots\}}(\tilde{y})\frac{\theta^{\sum k_i-1}(1-\theta)^{\sum y_i-\sum k_i-1}}{Beta(\alpha+\sum k_i,\beta+\sum y_i-\sum k_i)}d\theta\\
+&=\binom{\tilde{y}-1}{\tilde{k}-1}\frac{I_{\{\tilde{k},\tilde{k}+1,\cdots\}}(\tilde{y})}{Beta(\alpha+\sum k_i,\beta+\sum y_i-\sum k_i)}\int_{0}^1\theta^{\alpha+\tilde{k}+\sum k_i-1}(1-\theta)^{\beta+\tilde{y}-\tilde{k}+\sum y_i-\sum k_i-1}d\theta\\
+&=\binom{\tilde{y}-1}{\tilde{k}-1}\frac{Beta(\alpha+\tilde{k}+\sum k_i,\beta+\tilde{y}-\tilde{k}+\sum y_i-\sum k_i)}{Beta(\alpha+\sum k_i,\beta+\sum y_i-\sum k_i)}I_{\{\tilde{k},\tilde{k}+1,\cdots\}}(\tilde{y})
+\end{align*}
+\end{proof}
+
+\begin{example}
+\protect\hypertarget{exm:unnamed-chunk-41}{}{\label{exm:unnamed-chunk-41} }Siguiendo con los datos del ejemplo \ref{exm:binnegex}, suponga que se quiere recolectar información de tres pacientes con cardiopatía en cierta ciudad, y se quiere conocer acerca del número de entrevistas necesarias para . Utilizando la distribución previa \(Beta(0.5,0.5)\) y los datos de las 31 ciudades del ejemplo, se tiene que la distribución predictiva para el número de entrevistas necesarias para encontrar 3 pacientes está dada por
+
+\begin{align*}
+&\ \ \ \ p(\tilde{Y}|Y_1,\cdots,Y_n)\\
+&=\binom{\tilde{y}-1}{4}\frac{Beta(0.5+5+152,0.5+\tilde{y}-5+29620-152)}{Beta(0.5+152,0.5+29620-152)}I_{\{5,6,\cdots\}}(\tilde{y})\\
+&=\binom{\tilde{y}-1}{4}\frac{Beta(157.5,\tilde{y}+29463.5)}{Beta(152.5,29468.5)}I_{\{5,6,\cdots\}}(\tilde{y})
+\end{align*}
+
+Con los siguientes códigos se puede calcular la anterior función predictiva.
+\end{example}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{BNpred }\OtherTok{\textless{}{-}} \ControlFlowTok{function}\NormalTok{(y, alfa, beta, s, n, k)\{}
+  \FunctionTok{choose}\NormalTok{(y }\SpecialCharTok{{-}} \DecValTok{1}\NormalTok{, k }\SpecialCharTok{{-}} \DecValTok{1}\NormalTok{) }\SpecialCharTok{*}
+    \FunctionTok{exp}\NormalTok{(}\FunctionTok{lbeta}\NormalTok{(alfa }\SpecialCharTok{+}\NormalTok{ k }\SpecialCharTok{+}\NormalTok{ s, beta }\SpecialCharTok{+}\NormalTok{ y }\SpecialCharTok{{-}}\NormalTok{ k }\SpecialCharTok{+}\NormalTok{ n }\SpecialCharTok{{-}}\NormalTok{ s) }\SpecialCharTok{{-}}
+          \FunctionTok{lbeta}\NormalTok{(alfa}\SpecialCharTok{+}\NormalTok{s,beta}\SpecialCharTok{+}\NormalTok{n}\SpecialCharTok{{-}}\NormalTok{s))}
+\NormalTok{\}}
+
+\NormalTok{alfa }\OtherTok{\textless{}{-}}\NormalTok{ beta }\OtherTok{\textless{}{-}} \FloatTok{0.5}
+\NormalTok{s }\OtherTok{\textless{}{-}} \FunctionTok{sum}\NormalTok{(k)}
+\NormalTok{n }\OtherTok{\textless{}{-}} \FunctionTok{sum}\NormalTok{(y)}
+\NormalTok{k }\OtherTok{\textless{}{-}} \DecValTok{5}
+
+\NormalTok{fun }\OtherTok{\textless{}{-}} \FunctionTok{rep}\NormalTok{(}\ConstantTok{NA}\NormalTok{)}
+\ControlFlowTok{for}\NormalTok{(y }\ControlFlowTok{in} \DecValTok{5}\SpecialCharTok{:}\DecValTok{5000}\NormalTok{)\{}
+\NormalTok{  fun[y }\SpecialCharTok{{-}} \DecValTok{4}\NormalTok{] }\OtherTok{\textless{}{-}} \FunctionTok{BNpred}\NormalTok{(y, alfa, beta, s, n, k)}
+\NormalTok{\}}
+
+\FunctionTok{sum}\NormalTok{(fun)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## [1] 0.9999994
+\end{verbatim}
+
+\begin{figure}
+\centering
+\includegraphics{3Uniparametricos_files/figure-latex/jefber-1.pdf}
+\caption{\label{fig:jefber}Distribución predictiva posterior para el número de entrevistas necesarias para encontrar 5 pacientes.}
+\end{figure}
+
+Se puede ver que el número de entrevistas que tiene mayor probabilidad asociadas es el valor 768, usando el comando \texttt{which(fun\ ==\ max(fun))}. También, se puede observar que la probabilidad de que en menos de 500 entrevistas se encuentren los 5 pacientes es de solo el 0.1200985 usando el comando \texttt{sum(fun{[}1:(500\ -\ 4){]})}
 
 \hypertarget{appendix-apuxe9ndice}{%
 \appendix}
