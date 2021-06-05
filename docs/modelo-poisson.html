@@ -1,0 +1,631 @@
+<!DOCTYPE html>
+<html lang="es" xml:lang="es">
+<head>
+
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <title>3.4 Modelo Poisson | Modelos Bayesianos con R y STAN</title>
+  <meta name="description" content="Este es el repositorio del libro Modelos Bayesianos con R y STAN." />
+  <meta name="generator" content="bookdown 0.22 and GitBook 2.6.7" />
+
+  <meta property="og:title" content="3.4 Modelo Poisson | Modelos Bayesianos con R y STAN" />
+  <meta property="og:type" content="book" />
+  
+  
+  <meta property="og:description" content="Este es el repositorio del libro Modelos Bayesianos con R y STAN." />
+  <meta name="github-repo" content="psirusteam/bookdownBayesiano" />
+
+  <meta name="twitter:card" content="summary" />
+  <meta name="twitter:title" content="3.4 Modelo Poisson | Modelos Bayesianos con R y STAN" />
+  
+  <meta name="twitter:description" content="Este es el repositorio del libro Modelos Bayesianos con R y STAN." />
+  
+
+<meta name="author" content="Andrés Gutiérrez - Hanwen Zhang" />
+
+
+<meta name="date" content="2021-06-05" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black" />
+  
+  
+<link rel="prev" href="modelo-binomial-negativo.html"/>
+<link rel="next" href="elementos-de-probabilidad.html"/>
+<script src="libs/header-attrs-2.8/header-attrs.js"></script>
+<script src="libs/jquery-2.2.3/jquery.min.js"></script>
+<link href="libs/gitbook-2.6.7/css/style.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-table.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-bookdown.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-highlight.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-search.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-fontsettings.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-clipboard.css" rel="stylesheet" />
+
+
+
+
+
+
+
+
+
+<link href="libs/anchor-sections-1.0.1/anchor-sections.css" rel="stylesheet" />
+<script src="libs/anchor-sections-1.0.1/anchor-sections.js"></script>
+
+
+<style type="text/css">
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+    color: #aaaaaa;
+  }
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code span.at { color: #7d9029; } /* Attribute */
+code span.bn { color: #40a070; } /* BaseN */
+code span.bu { } /* BuiltIn */
+code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code span.ch { color: #4070a0; } /* Char */
+code span.cn { color: #880000; } /* Constant */
+code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code span.dt { color: #902000; } /* DataType */
+code span.dv { color: #40a070; } /* DecVal */
+code span.er { color: #ff0000; font-weight: bold; } /* Error */
+code span.ex { } /* Extension */
+code span.fl { color: #40a070; } /* Float */
+code span.fu { color: #06287e; } /* Function */
+code span.im { } /* Import */
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code span.op { color: #666666; } /* Operator */
+code span.ot { color: #007020; } /* Other */
+code span.pp { color: #bc7a00; } /* Preprocessor */
+code span.sc { color: #4070a0; } /* SpecialChar */
+code span.ss { color: #bb6688; } /* SpecialString */
+code span.st { color: #4070a0; } /* String */
+code span.va { color: #19177c; } /* Variable */
+code span.vs { color: #4070a0; } /* VerbatimString */
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+</style>
+
+<style type="text/css">
+/* Used with Pandoc 2.11+ new --citeproc when CSL is used */
+div.csl-bib-body { }
+div.csl-entry {
+  clear: both;
+}
+.hanging div.csl-entry {
+  margin-left:2em;
+  text-indent:-2em;
+}
+div.csl-left-margin {
+  min-width:2em;
+  float:left;
+}
+div.csl-right-inline {
+  margin-left:2em;
+  padding-left:1em;
+}
+div.csl-indent {
+  margin-left: 2em;
+}
+</style>
+
+<link rel="stylesheet" href="style.css" type="text/css" />
+</head>
+
+<body>
+
+
+
+  <div class="book without-animation with-summary font-size-2 font-family-1" data-basepath=".">
+
+    <div class="book-summary">
+      <nav role="navigation">
+
+<ul class="summary">
+<li><a href="./">Modelos Bayesianos con R y STAN</a></li>
+
+<li class="divider"></li>
+<li class="chapter" data-level="" data-path="index.html"><a href="index.html"><i class="fa fa-check"></i>Prefacio</a></li>
+<li class="chapter" data-level="" data-path="antes-de-comenzar.html"><a href="antes-de-comenzar.html"><i class="fa fa-check"></i>Antes de comenzar</a>
+<ul>
+<li class="chapter" data-level="" data-path="cuestionamientos-sobre-el-enfoque-bayesiano.html"><a href="cuestionamientos-sobre-el-enfoque-bayesiano.html"><i class="fa fa-check"></i>Cuestionamientos sobre el enfoque bayesiano</a></li>
+<li class="chapter" data-level="" data-path="acerca-de-la-notación.html"><a href="acerca-de-la-notación.html"><i class="fa fa-check"></i>Acerca de la notación</a></li>
+</ul></li>
+<li class="chapter" data-level="1" data-path="tópicos-básicos.html"><a href="tópicos-básicos.html"><i class="fa fa-check"></i><b>1</b> Tópicos básicos</a>
+<ul>
+<li class="chapter" data-level="1.1" data-path="teoría-de-la-decisión.html"><a href="teoría-de-la-decisión.html"><i class="fa fa-check"></i><b>1.1</b> Teoría de la decisión</a></li>
+<li class="chapter" data-level="1.2" data-path="algunos-resultados-de-probabilidad.html"><a href="algunos-resultados-de-probabilidad.html"><i class="fa fa-check"></i><b>1.2</b> Algunos resultados de probabilidad</a></li>
+<li class="chapter" data-level="1.3" data-path="teorema-de-bayes.html"><a href="teorema-de-bayes.html"><i class="fa fa-check"></i><b>1.3</b> Teorema de Bayes</a></li>
+</ul></li>
+<li class="chapter" data-level="2" data-path="inferencia-bayesiana.html"><a href="inferencia-bayesiana.html"><i class="fa fa-check"></i><b>2</b> Inferencia bayesiana</a>
+<ul>
+<li class="chapter" data-level="2.1" data-path="la-distribución-previa.html"><a href="la-distribución-previa.html"><i class="fa fa-check"></i><b>2.1</b> La distribución previa</a>
+<ul>
+<li class="chapter" data-level="2.1.1" data-path="la-distribución-previa.html"><a href="la-distribución-previa.html#distribuciones-conjugadas"><i class="fa fa-check"></i><b>2.1.1</b> Distribuciones conjugadas</a></li>
+<li class="chapter" data-level="2.1.2" data-path="la-distribución-previa.html"><a href="la-distribución-previa.html#familia-exponencial"><i class="fa fa-check"></i><b>2.1.2</b> Familia exponencial</a></li>
+<li class="chapter" data-level="2.1.3" data-path="la-distribución-previa.html"><a href="la-distribución-previa.html#distribuciones-previas-no-informativas"><i class="fa fa-check"></i><b>2.1.3</b> Distribuciones previas no informativas</a></li>
+</ul></li>
+<li class="chapter" data-level="2.2" data-path="pruebas-de-hipótesis.html"><a href="pruebas-de-hipótesis.html"><i class="fa fa-check"></i><b>2.2</b> Pruebas de hipótesis</a>
+<ul>
+<li class="chapter" data-level="2.2.1" data-path="pruebas-de-hipótesis.html"><a href="pruebas-de-hipótesis.html#factor-de-bayes"><i class="fa fa-check"></i><b>2.2.1</b> Factor de Bayes</a></li>
+<li class="chapter" data-level="2.2.2" data-path="pruebas-de-hipótesis.html"><a href="pruebas-de-hipótesis.html#valor-p-bayesiano"><i class="fa fa-check"></i><b>2.2.2</b> Valor-<span class="math inline">\(p\)</span> Bayesiano</a></li>
+</ul></li>
+<li class="chapter" data-level="2.3" data-path="criterios-de-información.html"><a href="criterios-de-información.html"><i class="fa fa-check"></i><b>2.3</b> Criterios de información</a>
+<ul>
+<li class="chapter" data-level="2.3.1" data-path="criterios-de-información.html"><a href="criterios-de-información.html#criterio-dic"><i class="fa fa-check"></i><b>2.3.1</b> Criterio DIC</a></li>
+<li class="chapter" data-level="2.3.2" data-path="criterios-de-información.html"><a href="criterios-de-información.html#criterios-aic-y-bic"><i class="fa fa-check"></i><b>2.3.2</b> Criterios AIC y BIC</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="3" data-path="modelos-uniparamétricos.html"><a href="modelos-uniparamétricos.html"><i class="fa fa-check"></i><b>3</b> Modelos uniparamétricos</a>
+<ul>
+<li class="chapter" data-level="3.1" data-path="modelo-bernoulli.html"><a href="modelo-bernoulli.html"><i class="fa fa-check"></i><b>3.1</b> Modelo Bernoulli</a></li>
+<li class="chapter" data-level="3.2" data-path="modelo-binomial.html"><a href="modelo-binomial.html"><i class="fa fa-check"></i><b>3.2</b> Modelo Binomial</a></li>
+<li class="chapter" data-level="3.3" data-path="modelo-binomial-negativo.html"><a href="modelo-binomial-negativo.html"><i class="fa fa-check"></i><b>3.3</b> Modelo Binomial negativo</a></li>
+<li class="chapter" data-level="3.4" data-path="modelo-poisson.html"><a href="modelo-poisson.html"><i class="fa fa-check"></i><b>3.4</b> Modelo Poisson</a></li>
+</ul></li>
+<li class="appendix"><span><b>Apéndice</b></span></li>
+<li class="chapter" data-level="A" data-path="elementos-de-probabilidad.html"><a href="elementos-de-probabilidad.html"><i class="fa fa-check"></i><b>A</b> Elementos de probabilidad</a>
+<ul>
+<li class="chapter" data-level="A.1" data-path="distribuciones-discretas.html"><a href="distribuciones-discretas.html"><i class="fa fa-check"></i><b>A.1</b> Distribuciones discretas</a>
+<ul>
+<li class="chapter" data-level="A.1.1" data-path="distribuciones-discretas.html"><a href="distribuciones-discretas.html#distribución-uniforme-discreta"><i class="fa fa-check"></i><b>A.1.1</b> Distribución uniforme discreta</a></li>
+<li class="chapter" data-level="A.1.2" data-path="distribuciones-discretas.html"><a href="distribuciones-discretas.html#distribución-hipergeométrica"><i class="fa fa-check"></i><b>A.1.2</b> Distribución hipergeométrica</a></li>
+<li class="chapter" data-level="A.1.3" data-path="distribuciones-discretas.html"><a href="distribuciones-discretas.html#distribución-bernoulli"><i class="fa fa-check"></i><b>A.1.3</b> Distribución Bernoulli</a></li>
+<li class="chapter" data-level="A.1.4" data-path="distribuciones-discretas.html"><a href="distribuciones-discretas.html#distribución-binomial"><i class="fa fa-check"></i><b>A.1.4</b> Distribución binomial</a></li>
+<li class="chapter" data-level="A.1.5" data-path="distribuciones-discretas.html"><a href="distribuciones-discretas.html#distribución-binomial-negativa"><i class="fa fa-check"></i><b>A.1.5</b> Distribución Binomial negativa</a></li>
+<li class="chapter" data-level="A.1.6" data-path="distribuciones-discretas.html"><a href="distribuciones-discretas.html#distribución-de-poisson"><i class="fa fa-check"></i><b>A.1.6</b> Distribución de Poisson</a></li>
+</ul></li>
+<li class="chapter" data-level="A.2" data-path="distribuciones-continuas.html"><a href="distribuciones-continuas.html"><i class="fa fa-check"></i><b>A.2</b> Distribuciones continuas</a>
+<ul>
+<li class="chapter" data-level="A.2.1" data-path="distribuciones-continuas.html"><a href="distribuciones-continuas.html#distribución-uniforme-continua"><i class="fa fa-check"></i><b>A.2.1</b> Distribución Uniforme Continua</a></li>
+<li class="chapter" data-level="A.2.2" data-path="distribuciones-continuas.html"><a href="distribuciones-continuas.html#distribución-weibull"><i class="fa fa-check"></i><b>A.2.2</b> Distribución Weibull</a></li>
+<li class="chapter" data-level="A.2.3" data-path="distribuciones-continuas.html"><a href="distribuciones-continuas.html#distribución-valor-extremo"><i class="fa fa-check"></i><b>A.2.3</b> Distribución valor-extremo</a></li>
+<li class="chapter" data-level="A.2.4" data-path="distribuciones-continuas.html"><a href="distribuciones-continuas.html#distribución-gamma"><i class="fa fa-check"></i><b>A.2.4</b> Distribución Gamma</a></li>
+<li class="chapter" data-level="A.2.5" data-path="distribuciones-continuas.html"><a href="distribuciones-continuas.html#distribución-gamma-inversa"><i class="fa fa-check"></i><b>A.2.5</b> Distribución Gamma-inversa</a></li>
+<li class="chapter" data-level="A.2.6" data-path="distribuciones-continuas.html"><a href="distribuciones-continuas.html#distribución-exponencial"><i class="fa fa-check"></i><b>A.2.6</b> Distribución exponencial</a></li>
+<li class="chapter" data-level="A.2.7" data-path="distribuciones-continuas.html"><a href="distribuciones-continuas.html#distribución-beta"><i class="fa fa-check"></i><b>A.2.7</b> Distribución Beta</a></li>
+<li class="chapter" data-level="A.2.8" data-path="distribuciones-continuas.html"><a href="distribuciones-continuas.html#distribución-normal"><i class="fa fa-check"></i><b>A.2.8</b> Distribución normal</a></li>
+<li class="chapter" data-level="A.2.9" data-path="distribuciones-continuas.html"><a href="distribuciones-continuas.html#distribución-log-normal"><i class="fa fa-check"></i><b>A.2.9</b> Distribución log-normal</a></li>
+<li class="chapter" data-level="A.2.10" data-path="distribuciones-continuas.html"><a href="distribuciones-continuas.html#distribución-ji-cuadrado"><i class="fa fa-check"></i><b>A.2.10</b> Distribución Ji-cuadrado</a></li>
+<li class="chapter" data-level="A.2.11" data-path="distribuciones-continuas.html"><a href="distribuciones-continuas.html#distribución-t-student"><i class="fa fa-check"></i><b>A.2.11</b> Distribución t-student</a></li>
+<li class="chapter" data-level="A.2.12" data-path="distribuciones-continuas.html"><a href="distribuciones-continuas.html#distribución-t-student-generalizada"><i class="fa fa-check"></i><b>A.2.12</b> Distribución t-student generalizada</a></li>
+<li class="chapter" data-level="A.2.13" data-path="distribuciones-continuas.html"><a href="distribuciones-continuas.html#distribución-f"><i class="fa fa-check"></i><b>A.2.13</b> Distribución F</a></li>
+</ul></li>
+<li class="chapter" data-level="A.3" data-path="distribuciones-multivariadas.html"><a href="distribuciones-multivariadas.html"><i class="fa fa-check"></i><b>A.3</b> Distribuciones multivariadas</a>
+<ul>
+<li class="chapter" data-level="A.3.1" data-path="distribuciones-multivariadas.html"><a href="distribuciones-multivariadas.html#distribución-multinomial"><i class="fa fa-check"></i><b>A.3.1</b> Distribución Multinomial</a></li>
+<li class="chapter" data-level="A.3.2" data-path="distribuciones-multivariadas.html"><a href="distribuciones-multivariadas.html#distribución-dirichelt"><i class="fa fa-check"></i><b>A.3.2</b> Distribución Dirichelt</a></li>
+<li class="chapter" data-level="A.3.3" data-path="distribuciones-multivariadas.html"><a href="distribuciones-multivariadas.html#distribución-normal-multivariante"><i class="fa fa-check"></i><b>A.3.3</b> Distribución Normal Multivariante</a></li>
+<li class="chapter" data-level="A.3.4" data-path="distribuciones-multivariadas.html"><a href="distribuciones-multivariadas.html#distribución-wishart"><i class="fa fa-check"></i><b>A.3.4</b> Distribución Wishart</a></li>
+<li class="chapter" data-level="A.3.5" data-path="distribuciones-multivariadas.html"><a href="distribuciones-multivariadas.html#distribución-inversa-wishart"><i class="fa fa-check"></i><b>A.3.5</b> Distribución inversa-Wishart</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="B" data-path="matriz-de-información.html"><a href="matriz-de-información.html"><i class="fa fa-check"></i><b>B</b> Matriz de información</a></li>
+<li class="chapter" data-level="C" data-path="elementos-de-simulación-estadística.html"><a href="elementos-de-simulación-estadística.html"><i class="fa fa-check"></i><b>C</b> Elementos de simulación estadística</a>
+<ul>
+<li class="chapter" data-level="C.1" data-path="métodos-directos.html"><a href="métodos-directos.html"><i class="fa fa-check"></i><b>C.1</b> Métodos directos</a>
+<ul>
+<li class="chapter" data-level="C.1.1" data-path="métodos-directos.html"><a href="métodos-directos.html#método-de-la-transformación-uniforme"><i class="fa fa-check"></i><b>C.1.1</b> Método de la transformación uniforme</a></li>
+<li class="chapter" data-level="C.1.2" data-path="métodos-directos.html"><a href="métodos-directos.html#método-de-la-grilla"><i class="fa fa-check"></i><b>C.1.2</b> Método de la grilla</a></li>
+</ul></li>
+<li class="chapter" data-level="C.2" data-path="métodos-de-monte-carlo-vía-cadenas-de-markov.html"><a href="métodos-de-monte-carlo-vía-cadenas-de-markov.html"><i class="fa fa-check"></i><b>C.2</b> Métodos de Monte Carlo vía cadenas de Markov</a>
+<ul>
+<li class="chapter" data-level="C.2.1" data-path="métodos-de-monte-carlo-vía-cadenas-de-markov.html"><a href="métodos-de-monte-carlo-vía-cadenas-de-markov.html#el-muestreador-de-gibbs"><i class="fa fa-check"></i><b>C.2.1</b> El muestreador de Gibbs</a></li>
+<li class="chapter" data-level="C.2.2" data-path="métodos-de-monte-carlo-vía-cadenas-de-markov.html"><a href="métodos-de-monte-carlo-vía-cadenas-de-markov.html#el-algoritmo-de-metrópolis-hastings"><i class="fa fa-check"></i><b>C.2.2</b> El algoritmo de Metrópolis-Hastings</a></li>
+<li class="chapter" data-level="C.2.3" data-path="métodos-de-monte-carlo-vía-cadenas-de-markov.html"><a href="métodos-de-monte-carlo-vía-cadenas-de-markov.html#buenas-prácticas-en-la-aplicación-de-métodos-mcmc"><i class="fa fa-check"></i><b>C.2.3</b> Buenas prácticas en la aplicación de métodos MCMC</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="referencias.html"><a href="referencias.html"><i class="fa fa-check"></i>Referencias</a></li>
+<li class="divider"></li>
+<li><a Modelos Bayesianos con R y STAN</a></li>
+
+</ul>
+
+      </nav>
+    </div>
+
+    <div class="book-body">
+      <div class="body-inner">
+        <div class="book-header" role="navigation">
+          <h1>
+            <i class="fa fa-circle-o-notch fa-spin"></i><a href="./">Modelos Bayesianos con R y STAN</a>
+          </h1>
+        </div>
+
+        <div class="page-wrapper" tabindex="-1" role="main">
+          <div class="page-inner">
+
+            <section class="normal" id="section-">
+<div id="modelo-poisson" class="section level2" number="3.4">
+<h2><span class="header-section-number">3.4</span> Modelo Poisson</h2>
+<p>Suponga que <span class="math inline">\(\mathbf{Y}=\{Y_1,\ldots,Y_n\}\)</span> es una muestra aleatoria de variables con distribución Poisson con parámetro <span class="math inline">\(\theta\)</span>, la función de distribución conjunta o la función de verosimilitud está dada por</p>
+<p><span class="math display">\[\begin{align*}
+p(\mathbf{Y} \mid \theta)&amp;=\prod_{i=1}^n\frac{e^{-\theta}\theta^{y_i}}{y_i!}I_{\{0,1,\ldots\}}(y_i)\\
+&amp;=\frac{e^{-n\theta}\theta^{\sum_{i=1}^ny_i}}{\prod_{i=1}^ny_i!}I_{\{0,1,\ldots\}^n}(y_1,\ldots,y_n)
+\end{align*}\]</span></p>
+<p>donde <span class="math inline">\(\{0,1\ldots\}^n\)</span> denota el producto cartesiano <span class="math inline">\(n\)</span> veces sobre el conjunto <span class="math inline">\(\{0,1\ldots\}\)</span>. Por otro lado, como el parámetro <span class="math inline">\(\theta\)</span> está restringido al espacio <span class="math inline">\(\Theta=(0,\infty)\)</span>, entonces es posible formular varias opciones para la distribución previa del parámetro. Algunas de estas se encuentran considerando la distribución exponencial, la distribución Ji-cuadrado o la distribución Gamma. Nótese que las dos primeras son casos particulares de la última. Por lo tanto, la distribución previa del parámetro <span class="math inline">\(\theta\)</span> está dada por</p>
+<p><span class="math display">\[\begin{equation}
+p(\theta \mid \alpha,\beta)=\frac{\beta^\alpha}{\Gamma(\alpha)}\theta^{\alpha-1} e^{-\beta\theta}I_{(0,\infty)}(\theta).
+\end{equation}\]</span></p>
+<p>Bajo este marco de referencia se tienen el siguiente resultado con respecto a la distribución posterior del parámetro de interés <span class="math inline">\(\theta\)</span>.</p>
+
+<div class="proposition">
+<p><span id="prp:ResPoissonPost" class="proposition"><strong>Resultado 3.7  </strong></span>La distribución posterior del parámetro <span class="math inline">\(\theta\)</span> está dada por</p>
+<span class="math display">\[\begin{equation*}
+\theta \mid \mathbf{Y} \sim Gamma\left(\sum_{i=1}^ny_i+\alpha,n+\beta\right)
+\end{equation*}\]</span>
+</div>
+<p><br></p>
+
+<div class="proof">
+<p> <span class="proof"><em>Prueba. </em></span> <span class="math display">\[\begin{align*}
+p(\theta \mid \mathbf{Y})&amp;\propto p(\mathbf{Y} \mid \theta)p(\theta \mid \alpha,\beta)\\
+&amp;=\frac{I_{\{0,1,\ldots\}^n}(y_1,\ldots,y_n)}{\prod_{i=1}^ny_i!}\frac{\beta^\alpha}{\Gamma(\alpha)}
+\theta^{\alpha-1}\theta^{\sum_{i=1}^ny_i}e^{-\beta\theta}e^{-n\theta}I_{(0,\infty)}(\theta)\\
+&amp;\propto \theta^{\sum_{i=1}^ny_i+\alpha-1}e^{-(\beta+n)\theta}I_{(0,\infty)}(\theta)
+\end{align*}\]</span></p>
+Por lo tanto, factorizando convenientemente, se encuentra una expresión idéntica a la función de distribución de una variable aleatoria con distribución <span class="math inline">\(Gamma(\sum_{i=1}^ny_i+\alpha,n+\beta)\)</span>.
+</div>
+<p><br></p>
+<p>Utilizando el resultado anterior, se tiene que la estimación Bayesiana del parámetro <span class="math inline">\(\theta\)</span> está dada por
+<span class="math display">\[\begin{equation*}
+\hat{\theta}=\frac{\sum_{i=1}^ny_i+\alpha}{n+\beta}.
+\end{equation*}\]</span></p>
+<p>La anterior expresión sugiere tomar los parámetros de la distribución previa <span class="math inline">\(\alpha\)</span> y <span class="math inline">\(\beta\)</span> de la siguiente manera: <span class="math inline">\(\beta\)</span> representa el número de observaciones en la información previa, mientras que <span class="math inline">\(\alpha\)</span> representa la suma de los datos de la información previa. De esta forma, <span class="math inline">\(\alpha/\beta\)</span> representa la estimación previa del parámetro <span class="math inline">\(\theta\)</span>. Y la estimación Bayesiana de <span class="math inline">\(\theta\)</span> se puede escribir como</p>
+<p><span class="math display">\[\begin{align*}
+\hat{\theta}&amp;=\frac{\sum_{i=1}^ny_i+\alpha}{\beta+n}\\
+&amp;=\frac{n}{n+\beta}*\frac{\sum y_i}{n}+\frac{\beta}{n+\beta}*\frac{\alpha}{\beta}\\
+&amp;=\frac{n}{n+\beta}*\hat{\theta}_C+\frac{\beta}{n+\beta}*\hat{\theta}_P
+\end{align*}\]</span></p>
+<p>Es decir, la estimación Bayesiana de <span class="math inline">\(\theta\)</span> es un promedio ponderado entre la estimación clásica y la estimación previa del parámetro <span class="math inline">\(\theta\)</span>, donde los pesos dependen directamente del tamaño muestral de la información actual y de la información previa.</p>
+<p>A continuación estudiamos las distribuciones predictivas previa y posterior para una nueva observación</p>
+
+<div class="proposition">
+<p><span id="prp:unnamed-chunk-44" class="proposition"><strong>Resultado 3.8  </strong></span>La distribución predictiva previa para una observación <span class="math inline">\(\mathbf{y}=\{y_1,\ldots,y_n\}\)</span> de la muestra aleatoria está dada por</p>
+<p><span class="math display" id="eq:PrePriorPoisson">\[\begin{equation}
+\tag{3.7}
+p(\mathbf{Y})=\frac{\Gamma(\sum_{i=1}^ny_i+\alpha)}{\Gamma(\alpha)}\frac{\beta^\alpha}{(n+\beta)^{\sum_{i=1}^ny_i+\alpha}}
+\frac{I_{\{0,1,\ldots\}^n}(y_1,\ldots,y_n)}{\prod_{i=1}^ny_i!}
+\end{equation}\]</span></p>
+y define una auténtica función de densidad de probabilidad continua.
+</div>
+<p><br></p>
+
+<div class="proof">
+<p> <span class="proof"><em>Prueba. </em></span> De la definición de función de distribución predictiva se tiene que</p>
+<span class="math display">\[\begin{align*}
+p(\mathbf{Y})&amp;=\int p(\mathbf{Y} \mid \theta)p(\theta \mid \alpha,\beta)\ d\theta\\
+&amp;=\int_0^{\infty} \frac{e^{-n\theta}\theta^{\sum_{i=1}^ny_i}}{\prod_{i=1}^ny_i!}I_{\{0,1,\ldots\}^n}(y_1,\ldots,y_n)
+\frac{\beta^\alpha \theta^{\alpha-1} e^{-\beta\theta}}{\Gamma(\alpha)}\ d\theta\\
+&amp;=\frac{\Gamma(\sum_{i=1}^ny_i+\alpha)}{\Gamma(\alpha)}\frac{\beta^\alpha}{(n+\beta)^{\sum_{i=1}^ny_i+\alpha}}
+\frac{I_{\{0,1,\ldots\}^n}(y_1,\ldots,y_n)}{\prod_{i=1}^ny_i!}\\
+&amp;\hspace{2cm}\times
+\int_0^{\infty} \frac{(n+\beta)^{\sum_{i=1}^ny_i+\alpha}}{\Gamma(\sum_{i=1}^ny_i+\alpha)}
+\theta^{\sum_{i=1}^ny_i+\alpha-1}e^{-(\beta+n)\theta} \ d\theta\\
+&amp;=\frac{\Gamma(\sum_{i=1}^ny_i+\alpha)}{\Gamma(\alpha)}\frac{\beta^\alpha}{(n+\beta)^{\sum_{i=1}^ny_i+\alpha}}
+\frac{I_{\{0,1,\ldots\}^n}(y_1,\ldots,y_n)}{\prod_{i=1}^ny_i!}
+\end{align*}\]</span>
+</div>
+<p><br></p>
+<p>En el caso en el que la muestra aleatoria estuviera constituida por una sola variable aleatoria, entonces <span class="math inline">\(n=1\)</span> y si, en particular, los hiper-parámetros de la distribución previa fuesen <span class="math inline">\(\alpha=\beta=1\)</span>, entonces no es difícil ver, utilizando la definición de la función matemática Gamma, que la función de distribución predictiva <a href="modelo-poisson.html#eq:PrePriorPoisson">(3.7)</a> estaría dada por</p>
+<p><span class="math display" id="eq:PrePriorPoisson1">\[\begin{align}
+\tag{3.8}
+p(Y)&amp;=\frac{\Gamma(y+1)}{\Gamma(1)}\frac{1}{2^{y+1}}\frac{I_{\{0,1,\ldots\}}(y)}{y!} \notag\\
+&amp;=\frac{1}{2^{y+1}}I_{\{0,1,\ldots\}}(y)
+\end{align}\]</span></p>
+<p>Para chequear la convergencia de la anterior distribución es necesario recurrir a los resultados del análisis matemático <span class="citation"><a href="#ref-Apostol" role="doc-biblioref">Apostol</a> (<a href="#ref-Apostol" role="doc-biblioref">1957</a>pág. 361)</span>. Dado que el espacio de muestreo de la variable aleatoria <span class="math inline">\(Y\)</span> es <span class="math inline">\(\{0,1,\ldots\}\)</span>, entonces la suma infinita converge a uno, lo que conlleva a que en este caso particular <span class="math inline">\(P(Y)\)</span> sea una auténtica función de densidad de probabilidad.</p>
+<p><span class="math display">\[\begin{align*}
+\sum_{y=0}^{\infty}p(Y=y)=\sum_{y=0}^{\infty}\left(\frac{1}{2}\right)^{y+1}=\frac{1}{2}\sum_{y=0}^{\infty}\left(\frac{1}{2}\right)^{y}
+=\frac{1}{2}\frac{1}{1-1/2}=1
+\end{align*}\]</span></p>
+<p>Podemos afirmar que la expresion <a href="modelo-poisson.html#eq:PrePriorPoisson1">(3.8)</a> sí representa una función de densidad de una variable discreta. Ahora, consideramos la distribución predictiva poseterior de una muestra aleatoria, esta distribución se presenta en el siguiente resultado.</p>
+
+<div class="proposition">
+<p><span id="prp:ResPoissonPred" class="proposition"><strong>Resultado 3.9  </strong></span>Después de la recolección de los datos, la distribución predictiva posterior para una nueva posible observación <span class="math inline">\(\tilde{\mathbf{y}}=\{\tilde{y}_1,\ldots,\tilde{y}_{n^*}\}\)</span>, de tamaño <span class="math inline">\(n^*\)</span>, está dada por</p>
+<span class="math display">\[\begin{align}
+p(\tilde{\mathbf{y}} \mid \mathbf{Y})&amp;=\frac{\Gamma(\sum_{i=1}^{n^*}\tilde{y}_i+\sum_{i=1}^ny_i+\alpha)}{\Gamma(\sum_{i=1}^ny_i+\alpha)}
+\frac{(\beta+n)^{\sum_{i=1}^ny_i+\alpha}}{({n^*}+\beta+n)^{\sum_{i=1}^{n^*}\tilde{y}_i+\sum_{i=1}^ny_i+\alpha}}\notag\\
+&amp;\hspace{5cm}\times
+\frac{I_{\{0,1,\ldots\}^{n^*}}(\tilde{y}_1,\ldots,\tilde{y}_{n^*})}{\prod_{i=1}^{n^*}\tilde{y}_i!}
+\end{align}\]</span>
+</div>
+<p><br></p>
+<p>La anterior distribución corresponde a una distribucion multivariada que nos permite calcular probabilidades predictivas para cualesquiera valores de <span class="math inline">\(\tilde{y}_1\)</span>, <span class="math inline">\(\cdots\)</span>, <span class="math inline">\(\tilde{y}_{n^*}\)</span>; sin embargo, en algunas situaciones, como por ejemplo cuando <span class="math inline">\(\theta\)</span> representa el número promedio de algún suceso en una región geográfica, al momento de la predicción, podemos estar interesados en predecir el número total o el número promedio de sucesos en la nueva muestra aleatoria de regiones geográficas. Es decir, podemos estar más interesados en la distribución de <span class="math inline">\(\sum_{y=1}^{n^*} \tilde{y}_i\)</span> o de <span class="math inline">\(\sum_{y=1}^{n^*} \tilde{y}_i/n^*\)</span> en vez de la distribución conjunta de <span class="math inline">\(\tilde{y}_1\)</span>, <span class="math inline">\(\cdots\)</span>, <span class="math inline">\(\tilde{y}_{n^*}\)</span>. La distribución predictiva de <span class="math inline">\(\sum_{y=1}^{n^*} \tilde{y}_i\)</span> se presenta en el siguiente resultado, y con esta se pueden obtener fácilmente probabilidades predictivas para <span class="math inline">\(\sum_{y=1}^{n^*} \tilde{y}_i/n^*\)</span>.</p>
+
+<div class="proposition">
+<p><span id="prp:unnamed-chunk-46" class="proposition"><strong>Resultado 3.10  </strong></span>Después de la recolección de los datos, la distribución predictiva posterior para la suma de un vector de observaciones nuevas <span class="math inline">\(\left(\tilde{y}_1,\ldots,\tilde{y}_{n^*}\right)\)</span>, <span class="math inline">\(\tilde{s} = \sum_{y=1}^{n^*} \tilde{y}_i\)</span>, está dada por:</p>
+<span class="math display" id="eq:PrePosPoissonSum">\[\begin{align}
+\tag{3.9}
+p(\tilde{\mathbf{s}} \mid \mathbf{Y})&amp;=\frac{\Gamma(\tilde{s}+\sum_{i=1}^ny_i+\alpha)}{\Gamma(\sum_{i=1}^ny_i+\alpha)}
+\frac{(n+\beta)^{\sum_{i=1}^ny_i+\alpha}}{({n^*}+n+\beta)^{\tilde{s}+\sum_{i=1}^ny_i+\alpha}}\frac{(n^*)^{\tilde{s}}I_{\{0,1,\ldots\}}(\tilde{s})}{\tilde{s}!}
+\end{align}\]</span>
+</div>
+<p><br></p>
+
+<div class="proof">
+<p> <span class="proof"><em>Prueba. </em></span> Usando el hecho de que <span class="math inline">\(\theta|\mathbf{Y}\sim Gamma(\sum_{i=1}^{n}y_i+\alpha,n+\beta)\)</span> y <span class="math inline">\(\tilde{s}|\theta\sim Poisson(n^*\theta)\)</span> se procede a calcular <span class="math inline">\(\tilde{s}/p(\mathbf{y})\)</span>,
+así:</p>
+<p><span class="math display">\[\begin{align*}
+&amp;\ \ \ \ p(\tilde{s}|\mathbf{y}) \\
+&amp;= \int_{\Omega} p(\tilde{s}|\theta)p(\theta|\mathbf{y})d\theta\\
+&amp; = \int_{\Omega} \frac{(n^{*}\theta)^{\tilde{s}}e^{-n^*\theta}}{\tilde{s}!} I_{\{0,1,\ldots\}}(\tilde{s}) (\beta+n)^{\sum_{i=1}^{n}y_i+\alpha}\frac{\theta^{\tilde{s}+\sum_{i=1}^{n}y_i+\alpha-1}}{\Gamma(\sum_{i=1}^{n}y_i+\alpha)}e^{-(\beta+n)\theta}I_{(0,\infty)}(\theta) d\theta\\
+&amp;= \frac{(n^*)^{\tilde{s}}(\beta+n)^{\sum_{i=1}^{n}y_i+\alpha}}{\tilde{s}!\Gamma(\sum_{i=1}^{n}y_i+\alpha)}I_{\{0,1,\ldots\}}(\tilde{s})\int_{0}^{\infty}\theta^{\sum_{i=1}^{n}y_i+\alpha-1}e^{-(n^*+\beta+n)\theta}d\theta
+\end{align*}\]</span></p>
+Agrupando las constantes para obtener la integral de una distribución gamma con <span class="math inline">\(\alpha=\tilde{s}+\sum_{i=1}^{n}y_i+\alpha\)</span> y <span class="math inline">\(\beta=n^*+n+\beta\)</span> se obtiene el resultado.
+</div>
+<p><br></p>
+<p>En la práctica, evaluar directamente la expresión <a href="modelo-poisson.html#eq:PrePosPoissonSum">(3.9)</a> puede ocasionar problemas numéricas, por la presencia de la función Gamma y las potencias. Para evitar dicha dificultad, podemos usar la siguiente expresión equivalente cuando <span class="math inline">\(\tilde{s}=1,2,\cdots\)</span>:</p>
+<p><span class="math display">\[\begin{equation*}
+p(\tilde{\mathbf{s}} \mid \mathbf{Y})=\frac{\Gamma(\tilde{s})}{Beta(\tilde{s},\sum_{i=1}^ny_i+\alpha)}
+\left(\frac{n+\beta}{n^*+n+\beta}\right)^{\sum_{i=1}^ny_i+\alpha}\frac{(n^*)^{\tilde{s}}}{(n^*+n+\beta)^{\tilde{s}}}\tilde{s}!
+\end{equation*}\]</span></p>
+<p>Cuando <span class="math inline">\(\tilde{s}=0\)</span>, la distribución predictiva es simplemente:</p>
+<p><span class="math display">\[\begin{equation*}
+p(\tilde{\mathbf{s}} \mid \mathbf{Y})=
+\left(\frac{n+\beta}{n^*+n+\beta}\right)^{\sum_{i=1}^ny_i+\alpha}
+\end{equation*}\]</span></p>
+<p>Ahora, debido a la complejidad de la expresión en <a href="modelo-poisson.html#eq:PrePosPoissonSum">(3.9)</a>, es prácticamente imposible comprobar analíticamente <span class="math inline">\(\sum_{i=0}^\infty p(\tilde{s}=i)=1\)</span>, y también muy difícil encontrar una expresión matemática cerrada de la esperanza de la variable <span class="math inline">\(\mathbf{\tilde{s}}\)</span>. Sin embargo, en situaciones prácticas, se puede usar aproximaciones numéricas tal como se verá en el ejemplo al final de esta sección.</p>
+<p>Anteriormente en el ejemplo <a href="la-distribución-previa.html#exm:EjemPoisson">2.3</a> se consideró la situación en la cual no se tenía ninguna consideración para formular una distribución previa y se consluyó que la distribución previa no informativa de Jeffreys para este caso es
+<span class="math display">\[\begin{equation*}
+p(\theta)\propto\theta^{-1/2},
+\end{equation*}\]</span></p>
+<p>Esta es una distribución previa impropia, puesto que <span class="math inline">\(\int_{0}^\infty \theta^{-1/2}=\infty\)</span>. Sin embargo, este hecho no afecta que la inferencia posterior se pueda llevar a cabo, puesto que la distribución posterior está dada por</p>
+<p><span class="math display">\[\begin{equation*}
+\theta|\mathbf{Y}\sim Gamma(\sum y_i+1/2,n)
+\end{equation*}\]</span></p>
+<p>Por consiguiente, la estimación Bayesiana del parámetro <span class="math inline">\(\theta\)</span> viene dada por</p>
+<p><span class="math display">\[\begin{equation*}
+\hat{\theta}=\frac{\sum y_i+1/2}{n}.
+\end{equation*}\]</span></p>
+<p>la cual es muy similar a la estimación clásica de <span class="math inline">\(\theta\)</span> dada por <span class="math inline">\(\bar{Y}\)</span>. Cuando se utiliza la distribución previa no informativa de Jeffreys, la distribución predictiva para nuevas observaciones <span class="math inline">\(\tilde{y}={\tilde{y}_1,\cdots,\tilde{y}_{n^*}}\)</span> y <span class="math inline">\(\tilde{s}=\sum_{i=1}^{n^*}\tilde{y_i}\)</span> están dadas por</p>
+<p><span class="math display" id="eq:PredPoissonJeffreys">\[\begin{equation}
+\tag{3.10}
+p(\tilde{\mathbf{y}} \mid \mathbf{Y})=\frac{\Gamma(\sum_{i=1}^{n^*}\tilde{y}_i+\sum_{i=1}^ny_i+0.5)}{\Gamma(\sum_{i=1}^ny_i+0.5)}
+\frac{n^{\sum_{i=1}^ny_i+0.5}}{({n^*}+n)^{\sum_{i=1}^n\tilde{y}_i+\sum_{i=1}^ny_i+0.5}}
+\frac{I_{\{0,1,\ldots\}^{n^*}}(\tilde{y}_1,\ldots,\tilde{y}_{n^*})}{\prod_{i=1}^{n^*}\tilde{y}_i!}
+\end{equation}\]</span></p>
+<p>y</p>
+<p><span class="math display" id="eq:Pred1PoissonJeffreys">\[\begin{equation}
+\tag{3.11}
+p(\tilde{\mathbf{s}} \mid \mathbf{Y})=\frac{\Gamma(\tilde{s}+\sum_{i=1}^ny_i+0.5)}{\Gamma(\sum_{i=1}^ny_i+0.5)}
+\frac{n^{\sum_{i=1}^ny_i+0.5}}{({n^*}+n)^{\tilde{s}+\sum_{i=1}^ny_i+0.5}}\frac{I_{\{0,1,\ldots\}}(\tilde{s})}{\tilde{s}!}
+\end{equation}\]</span></p>
+
+<div class="example">
+<p><span id="exm:unnamed-chunk-48" class="example"><strong>Ejemplo 3.7  </strong></span>Por políticas gubernamentales, las autoridades municipales están obligados a realizar un seguimiento exhaustivo al comportamiento de la accidentalidad en las vías urbanas y medirlo en términos del número de accidentes de tránsito. Lo anterior es necesario para evaluar la gestión de la administración pública y evaluar las políticas que el gobierno de la ciudad ha implementado para disminuir esta cifra.</p>
+<p>Suponga que en una ciudad se quiere implementar una estrategia educativa para disminuir el número de accidentes de tránsito generados por manejar en estado de embriaguez. Para esto, se registraron durante diez días 30 días el número de accidentes de tránsito por ebriedad del conductor. Los datos para cada uno de los días son 22, 9, 9, 20, 10, 14, 11, 14, 11, 11, 19, 12, 8, 9, 16, 8, 13, 8, 14, 12, 14, 11, 14, 13, 11, 14, 13, 11, 7, 12.</p>
+Es posible modelar la variable aleatoria número de accidentes de tránsito en un día mediante una distribución de Poisson puesto que el promedio muestral y la varianza muestral de los datos son semejantes. Para este conjunto de datos, el promedio equivale a 12.33, mientras que la varianza es de 12.51. El histograma de los valores observados se puede ver en la figura <a href="modelo-poisson.html#fig:EjemPoisson1">3.11</a>.
+</div>
+<div class="figure"><span id="fig:EjemPoisson1"></span>
+<img src="3Uniparametricos_files/figure-html/EjemPoisson1-1.png" alt="Histograma para los datos de accidentes de tránsito." width="672" />
+<p class="caption">
+Figura 3.11: Histograma para los datos de accidentes de tránsito.
+</p>
+</div>
+<p>En primera instancia, es posible realizar un análisis no informativo, al formular una distribución previa de Jeffreys proporcional a <span class="math inline">\(\theta^{-1/2}\)</span>, para lo cual la distribución posterior será <span class="math inline">\(Gamma(\sum_{i=1}^n y_i+1/2, n)=Gamma(370.5, 30)\)</span>. Por lo tanto, un estimador de <span class="math inline">\(\theta\)</span> está dado por la media de la distribución posterior que es <span class="math inline">\(370.5/30=12.35\)</span>, muy cercano al valor del estimador de máxima verosimilitud correspondiente al promedio muestral. La figura <a href="modelo-poisson.html#fig:EjemPoisson2">3.12</a> (lado izquierdo) muestra el comportamiento de las distribuciones de Jeffreys y posterior para este ejemplo.</p>
+<p>Por otro lado, basándose en datos históricos, la alcaldía observó que, en el mismo periodo del año anterior, ocurrieron 37 accidentes en 9 días de observación. Luego, una distribución previa informativa<a href="#fn8" class="footnote-ref" id="fnref8"><sup>8</sup></a> está dada por <span class="math inline">\(Gamma(\alpha=38,\beta=9)\)</span>. Luego, apelando al resultado <a href="modelo-poisson.html#prp:ResPoissonPost">3.7</a>, la distribución posterior corresponde a una <span class="math inline">\(Gamma(370+38, 30+9)=Gamma(408, 39)\)</span>. Para este caso, un estimador de <span class="math inline">\(\theta\)</span> está dado por la media de la distribución posterior que es <span class="math inline">\(480/39=12.31\)</span>. La figura <a href="modelo-poisson.html#fig:EjemPoisson2">3.12</a> (lado derecho) muestra el comportamiento de las distribuciones previa (informativa) y posterior para este ejemplo.</p>
+<div class="figure"><span id="fig:EjemPoisson2"></span>
+<img src="3Uniparametricos_files/figure-html/EjemPoisson2-1.png" alt="Distribución previa y distribución posterior para el ejemplo del tránsito con dos distribuciones previas diferentes (el lado izquierdo representa el caso cuando se usa la previa no informativa, el lado derecho la previa informativa)." width="672" />
+<p class="caption">
+Figura 3.12: Distribución previa y distribución posterior para el ejemplo del tránsito con dos distribuciones previas diferentes (el lado izquierdo representa el caso cuando se usa la previa no informativa, el lado derecho la previa informativa).
+</p>
+</div>
+<p>A continuación se examina la distribución predictiva. En la figura <a href="modelo-poisson.html#fig:PredPostPoisson">3.13</a> se grafica la distribución predictiva para una nueva observación cuando se usa la previa no informativa y la previa informativa. Los códigos para el cálculo cuando se usan ambas distribuciones previas es como sigue:</p>
+<div class="sourceCode" id="cb42"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb42-1"><a href="modelo-poisson.html#cb42-1" aria-hidden="true" tabindex="-1"></a>n <span class="ot">&lt;-</span> <span class="fu">length</span>(Trans)</span>
+<span id="cb42-2"><a href="modelo-poisson.html#cb42-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb42-3"><a href="modelo-poisson.html#cb42-3" aria-hidden="true" tabindex="-1"></a>pre.Transito.NoInf <span class="ot">&lt;-</span> <span class="cf">function</span>(s){</span>
+<span id="cb42-4"><a href="modelo-poisson.html#cb42-4" aria-hidden="true" tabindex="-1"></a>  <span class="cf">if</span>(s <span class="sc">&gt;</span> <span class="dv">0</span>){</span>
+<span id="cb42-5"><a href="modelo-poisson.html#cb42-5" aria-hidden="true" tabindex="-1"></a>    val <span class="ot">&lt;-</span> <span class="fu">gamma</span>(s) <span class="sc">*</span> </span>
+<span id="cb42-6"><a href="modelo-poisson.html#cb42-6" aria-hidden="true" tabindex="-1"></a>      (n<span class="sc">/</span>(n <span class="sc">+</span> <span class="dv">1</span>)) <span class="sc">^</span> (<span class="fu">sum</span>(Trans) <span class="sc">+</span> <span class="fl">0.5</span>)<span class="sc">/</span></span>
+<span id="cb42-7"><a href="modelo-poisson.html#cb42-7" aria-hidden="true" tabindex="-1"></a>      (<span class="fu">beta</span>(s, <span class="fu">sum</span>(Trans) <span class="sc">+</span> <span class="fl">0.5</span>) <span class="sc">*</span> </span>
+<span id="cb42-8"><a href="modelo-poisson.html#cb42-8" aria-hidden="true" tabindex="-1"></a>         <span class="fu">prod</span>(<span class="dv">1</span><span class="sc">:</span>s) <span class="sc">*</span> (n <span class="sc">+</span> <span class="dv">1</span>) <span class="sc">^</span> s)</span>
+<span id="cb42-9"><a href="modelo-poisson.html#cb42-9" aria-hidden="true" tabindex="-1"></a>  }</span>
+<span id="cb42-10"><a href="modelo-poisson.html#cb42-10" aria-hidden="true" tabindex="-1"></a>  <span class="cf">if</span>( s <span class="sc">==</span> <span class="dv">0</span>){</span>
+<span id="cb42-11"><a href="modelo-poisson.html#cb42-11" aria-hidden="true" tabindex="-1"></a>    val <span class="ot">&lt;-</span> (n<span class="sc">/</span>(n <span class="sc">+</span> <span class="dv">1</span>)) <span class="sc">^</span> (<span class="fu">sum</span>(Trans) <span class="sc">+</span> <span class="fl">0.5</span>)</span>
+<span id="cb42-12"><a href="modelo-poisson.html#cb42-12" aria-hidden="true" tabindex="-1"></a>  }</span>
+<span id="cb42-13"><a href="modelo-poisson.html#cb42-13" aria-hidden="true" tabindex="-1"></a>  <span class="fu">return</span>(val)</span>
+<span id="cb42-14"><a href="modelo-poisson.html#cb42-14" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb42-15"><a href="modelo-poisson.html#cb42-15" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb42-16"><a href="modelo-poisson.html#cb42-16" aria-hidden="true" tabindex="-1"></a>pre.Transito <span class="ot">&lt;-</span> <span class="cf">function</span>(s){</span>
+<span id="cb42-17"><a href="modelo-poisson.html#cb42-17" aria-hidden="true" tabindex="-1"></a>  <span class="cf">if</span>(s <span class="sc">&gt;</span> <span class="dv">0</span>){</span>
+<span id="cb42-18"><a href="modelo-poisson.html#cb42-18" aria-hidden="true" tabindex="-1"></a>    val <span class="ot">&lt;-</span> <span class="fu">gamma</span>(s) <span class="sc">*</span> </span>
+<span id="cb42-19"><a href="modelo-poisson.html#cb42-19" aria-hidden="true" tabindex="-1"></a>      ((n <span class="sc">+</span> beta)<span class="sc">/</span>(n <span class="sc">+</span> beta <span class="sc">+</span> <span class="dv">1</span>))<span class="sc">^</span>(<span class="fu">sum</span>(Trans) <span class="sc">+</span> alfa)<span class="sc">/</span></span>
+<span id="cb42-20"><a href="modelo-poisson.html#cb42-20" aria-hidden="true" tabindex="-1"></a>      (<span class="fu">beta</span>(s, <span class="fu">sum</span>(Trans) <span class="sc">+</span> alfa) <span class="sc">*</span> (<span class="dv">1</span><span class="sc">+</span>n<span class="sc">+</span>beta) <span class="sc">^</span> s <span class="sc">*</span> </span>
+<span id="cb42-21"><a href="modelo-poisson.html#cb42-21" aria-hidden="true" tabindex="-1"></a>         <span class="fu">prod</span>(<span class="dv">1</span><span class="sc">:</span>s))</span>
+<span id="cb42-22"><a href="modelo-poisson.html#cb42-22" aria-hidden="true" tabindex="-1"></a>  }</span>
+<span id="cb42-23"><a href="modelo-poisson.html#cb42-23" aria-hidden="true" tabindex="-1"></a>  <span class="cf">if</span>(s <span class="sc">==</span> <span class="dv">0</span>){</span>
+<span id="cb42-24"><a href="modelo-poisson.html#cb42-24" aria-hidden="true" tabindex="-1"></a>    val <span class="ot">&lt;-</span> ((n <span class="sc">+</span> beta)<span class="sc">/</span>(n <span class="sc">+</span> beta <span class="sc">+</span> <span class="dv">1</span>)) <span class="sc">^</span> (<span class="fu">sum</span>(Trans) <span class="sc">+</span> alfa)</span>
+<span id="cb42-25"><a href="modelo-poisson.html#cb42-25" aria-hidden="true" tabindex="-1"></a>    }</span>
+<span id="cb42-26"><a href="modelo-poisson.html#cb42-26" aria-hidden="true" tabindex="-1"></a>  <span class="fu">return</span>(val)</span>
+<span id="cb42-27"><a href="modelo-poisson.html#cb42-27" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb42-28"><a href="modelo-poisson.html#cb42-28" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb42-29"><a href="modelo-poisson.html#cb42-29" aria-hidden="true" tabindex="-1"></a>s.max <span class="ot">&lt;-</span> <span class="dv">40</span> </span>
+<span id="cb42-30"><a href="modelo-poisson.html#cb42-30" aria-hidden="true" tabindex="-1"></a>s.val <span class="ot">&lt;-</span> <span class="dv">0</span><span class="sc">:</span>s.max</span>
+<span id="cb42-31"><a href="modelo-poisson.html#cb42-31" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb42-32"><a href="modelo-poisson.html#cb42-32" aria-hidden="true" tabindex="-1"></a>pre.NoInf.val <span class="ot">&lt;-</span> pre.Inf.val <span class="ot">&lt;-</span> <span class="fu">c</span>()</span>
+<span id="cb42-33"><a href="modelo-poisson.html#cb42-33" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span>(i <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span><span class="fu">length</span>(s.val)){</span>
+<span id="cb42-34"><a href="modelo-poisson.html#cb42-34" aria-hidden="true" tabindex="-1"></a>  pre.NoInf.val[i] <span class="ot">&lt;-</span> <span class="fu">pre.Transito.NoInf</span>(s.val[i])</span>
+<span id="cb42-35"><a href="modelo-poisson.html#cb42-35" aria-hidden="true" tabindex="-1"></a>  pre.Inf.val[i] <span class="ot">&lt;-</span> <span class="fu">pre.Transito</span>(s.val[i])</span>
+<span id="cb42-36"><a href="modelo-poisson.html#cb42-36" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb42-37"><a href="modelo-poisson.html#cb42-37" aria-hidden="true" tabindex="-1"></a><span class="fu">sum</span>(pre.NoInf.val)</span></code></pre></div>
+<pre><code>## [1] 1</code></pre>
+<div class="sourceCode" id="cb44"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb44-1"><a href="modelo-poisson.html#cb44-1" aria-hidden="true" tabindex="-1"></a><span class="fu">sum</span>(pre.Inf.val)</span></code></pre></div>
+<pre><code>## [1] 1</code></pre>
+<p>Nótese que en los anteriores códigos se usó como valor máximo 40 para la variable <span class="math inline">\(\mathbf{\tilde{s}}\)</span>, a pesar de que esta toma valores infinitos; pero al ver que la suma de las probabilidades desde el valor 0 hasta el 40 es igual a 1, podemos concluir que la probabilidad de que <span class="math inline">\(\mathbf{\tilde{s}} &gt; 40\)</span> es prácticamente nula.</p>
+<p>Finalmente, podemos tener una aproximación de la esperanza de la variable <span class="math inline">\(\mathbf{\tilde{s}}\)</span> como</p>
+<div class="sourceCode" id="cb46"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb46-1"><a href="modelo-poisson.html#cb46-1" aria-hidden="true" tabindex="-1"></a><span class="fu">sum</span>(pre.NoInf.val <span class="sc">*</span> s.val)</span></code></pre></div>
+<pre><code>## [1] 12.35</code></pre>
+<div class="figure"><span id="fig:PredPostPoisson"></span>
+<img src="3Uniparametricos_files/figure-html/PredPostPoisson-1.png" alt="Distribución predictiva posterior para $n^*=1$ para el ejemplo del tránsito." width="672" />
+<p class="caption">
+Figura 3.13: Distribución predictiva posterior para <span class="math inline">\(n^*=1\)</span> para el ejemplo del tránsito.
+</p>
+</div>
+<p>A continuación se presenta el código computacional para realizar la inferencia bayesiana en <code>STAN</code> utilizando la distribución previa predictiva.</p>
+<div class="sourceCode" id="cb48"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb48-1"><a href="modelo-poisson.html#cb48-1" aria-hidden="true" tabindex="-1"></a>Poisson <span class="ot">&lt;-</span> <span class="st">&#39;</span></span>
+<span id="cb48-2"><a href="modelo-poisson.html#cb48-2" aria-hidden="true" tabindex="-1"></a><span class="st">data {</span></span>
+<span id="cb48-3"><a href="modelo-poisson.html#cb48-3" aria-hidden="true" tabindex="-1"></a><span class="st">  int&lt;lower=0&gt; n;</span></span>
+<span id="cb48-4"><a href="modelo-poisson.html#cb48-4" aria-hidden="true" tabindex="-1"></a><span class="st">  int&lt;lower=0&gt; y[n];</span></span>
+<span id="cb48-5"><a href="modelo-poisson.html#cb48-5" aria-hidden="true" tabindex="-1"></a><span class="st">}</span></span>
+<span id="cb48-6"><a href="modelo-poisson.html#cb48-6" aria-hidden="true" tabindex="-1"></a><span class="st">parameters {</span></span>
+<span id="cb48-7"><a href="modelo-poisson.html#cb48-7" aria-hidden="true" tabindex="-1"></a><span class="st">  real&lt;lower=0&gt; theta;</span></span>
+<span id="cb48-8"><a href="modelo-poisson.html#cb48-8" aria-hidden="true" tabindex="-1"></a><span class="st">}</span></span>
+<span id="cb48-9"><a href="modelo-poisson.html#cb48-9" aria-hidden="true" tabindex="-1"></a><span class="st">model {</span></span>
+<span id="cb48-10"><a href="modelo-poisson.html#cb48-10" aria-hidden="true" tabindex="-1"></a><span class="st">  for(i in 1:n) {</span></span>
+<span id="cb48-11"><a href="modelo-poisson.html#cb48-11" aria-hidden="true" tabindex="-1"></a><span class="st">  y ~ poisson(theta);</span></span>
+<span id="cb48-12"><a href="modelo-poisson.html#cb48-12" aria-hidden="true" tabindex="-1"></a><span class="st">  }</span></span>
+<span id="cb48-13"><a href="modelo-poisson.html#cb48-13" aria-hidden="true" tabindex="-1"></a><span class="st">  theta ~ gamma(38, 9);</span></span>
+<span id="cb48-14"><a href="modelo-poisson.html#cb48-14" aria-hidden="true" tabindex="-1"></a><span class="st">}</span></span>
+<span id="cb48-15"><a href="modelo-poisson.html#cb48-15" aria-hidden="true" tabindex="-1"></a><span class="st">&#39;</span></span>
+<span id="cb48-16"><a href="modelo-poisson.html#cb48-16" aria-hidden="true" tabindex="-1"></a>sample_data <span class="ot">&lt;-</span> <span class="fu">list</span>(<span class="at">y =</span> Trans, <span class="at">n =</span> <span class="fu">length</span>(Trans))</span>
+<span id="cb48-17"><a href="modelo-poisson.html#cb48-17" aria-hidden="true" tabindex="-1"></a>Poissonfit <span class="ot">&lt;-</span> <span class="fu">stan</span>(<span class="at">model_code =</span> Poisson,</span>
+<span id="cb48-18"><a href="modelo-poisson.html#cb48-18" aria-hidden="true" tabindex="-1"></a>               <span class="at">data =</span> sample_data, <span class="at">verbose =</span> <span class="cn">FALSE</span>)</span></code></pre></div>
+<p>Después de converger, la salida del anterior código muestra que a estimación puntual dada por 12.2545 y un intervalo de credibilidad al 95%, dado por <span class="math inline">\((12.026, 12.4875)\)</span>, mucho más estrecho que el intervalo de credibilidad del anterior ejemplo</p>
+<div class="sourceCode" id="cb49"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb49-1"><a href="modelo-poisson.html#cb49-1" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(Poissonfit, <span class="at">pars =</span> <span class="st">&quot;theta&quot;</span>, </span>
+<span id="cb49-2"><a href="modelo-poisson.html#cb49-2" aria-hidden="true" tabindex="-1"></a>      <span class="at">digits =</span> <span class="dv">4</span>, <span class="at">probs =</span> <span class="fu">c</span>(<span class="fl">0.025</span>, <span class="fl">0.975</span>))</span></code></pre></div>
+<pre><code>## Inference for Stan model: 358b0f218a279f070c49ab235fd030cc.
+## 4 chains, each with iter=2000; warmup=1000; thin=1; 
+## post-warmup draws per chain=1000, total post-warmup draws=4000.
+## 
+##          mean se_mean     sd    2.5%   97.5% n_eff   Rhat
+## theta 12.2585  0.0029 0.1146 12.0344 12.4862  1596 1.0004
+## 
+## Samples were drawn using NUTS(diag_e) at Sat Jun  5 19:22:14 2021.
+## For each parameter, n_eff is a crude measure of effective sample size,
+## and Rhat is the potential scale reduction factor on split chains (at 
+## convergence, Rhat=1).</code></pre>
+<p>La figura <a href="modelo-poisson.html#fig:posPoissonStan">3.14</a> muestra la distribución posterior para este ejemplo, junto con la estimación puntual, correspondiente a la media.</p>
+<div class="sourceCode" id="cb51"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb51-1"><a href="modelo-poisson.html#cb51-1" aria-hidden="true" tabindex="-1"></a>bayesplot<span class="sc">::</span><span class="fu">mcmc_areas</span>(Poissonfit, <span class="at">pars =</span> <span class="st">&quot;theta&quot;</span>, </span>
+<span id="cb51-2"><a href="modelo-poisson.html#cb51-2" aria-hidden="true" tabindex="-1"></a>                      <span class="at">prob =</span> <span class="fl">0.95</span>)</span></code></pre></div>
+<div class="figure"><span id="fig:posPoissonStan"></span>
+<img src="3Uniparametricos_files/figure-html/posPoissonStan-1.png" alt="Distribución posterior." width="672" />
+<p class="caption">
+Figura 3.14: Distribución posterior.
+</p>
+</div>
+
+</div>
+<!-- </div> -->
+
+
+
+<h3>Referencias</h3>
+<div id="refs" class="references csl-bib-body hanging-indent">
+<div id="ref-Apostol" class="csl-entry">
+Apostol, T. M. 1957. <em>Mathematical Analysis</em>. McGraw - Hill.
+</div>
+</div>
+<div class="footnotes">
+<hr />
+<ol start="8">
+<li id="fn8"><p>En la práctica, se recomienda que los valores de los hiperparámetros <span class="math inline">\(\alpha\)</span> y <span class="math inline">\(\beta\)</span> correspondan a la suma del número de eventos más uno y número de observaciones, respectivamente.<a href="modelo-poisson.html#fnref8" class="footnote-back">↩︎</a></p></li>
+</ol>
+</div>
+            </section>
+
+          </div>
+        </div>
+      </div>
+<a href="modelo-binomial-negativo.html" class="navigation navigation-prev " aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
+<a href="elementos-de-probabilidad.html" class="navigation navigation-next " aria-label="Next page"><i class="fa fa-angle-right"></i></a>
+    </div>
+  </div>
+<script src="libs/gitbook-2.6.7/js/app.min.js"></script>
+<script src="libs/gitbook-2.6.7/js/lunr.js"></script>
+<script src="libs/gitbook-2.6.7/js/clipboard.min.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-search.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-sharing.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-fontsettings.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-bookdown.js"></script>
+<script src="libs/gitbook-2.6.7/js/jquery.highlight.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-clipboard.js"></script>
+<script>
+gitbook.require(["gitbook"], function(gitbook) {
+gitbook.start({
+"sharing": {
+"github": false,
+"facebook": true,
+"twitter": true,
+"linkedin": false,
+"weibo": false,
+"instapaper": false,
+"vk": false,
+"whatsapp": false,
+"all": ["facebook", "twitter", "linkedin", "weibo", "instapaper"]
+},
+"fontsettings": {
+"theme": "white",
+"family": "sans",
+"size": 2
+},
+"edit": {
+"link": null,
+"text": null
+},
+"history": {
+"link": null,
+"text": null
+},
+"view": {
+"link": null,
+"text": null
+},
+"download": ["ModelosBayesianos.pdf", "ModelosBayesianos.epub"],
+"toc": {
+"collapse": "section"
+}
+});
+});
+</script>
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    var src = "true";
+    if (src === "" || src === "true") src = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-MML-AM_CHTML";
+    if (location.protocol !== "file:")
+      if (/^https?:/.test(src))
+        src = src.replace(/^https?:/, '');
+    script.src = src;
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+</body>
+
+</html>

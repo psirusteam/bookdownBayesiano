@@ -32,7 +32,7 @@
   
   
 <link rel="prev" href="modelo-binomial.html"/>
-<link rel="next" href="elementos-de-probabilidad.html"/>
+<link rel="next" href="modelo-poisson.html"/>
 <script src="libs/header-attrs-2.8/header-attrs.js"></script>
 <script src="libs/jquery-2.2.3/jquery.min.js"></script>
 <link href="libs/gitbook-2.6.7/css/style.css" rel="stylesheet" />
@@ -195,6 +195,7 @@ div.csl-indent {
 <li class="chapter" data-level="3.1" data-path="modelo-bernoulli.html"><a href="modelo-bernoulli.html"><i class="fa fa-check"></i><b>3.1</b> Modelo Bernoulli</a></li>
 <li class="chapter" data-level="3.2" data-path="modelo-binomial.html"><a href="modelo-binomial.html"><i class="fa fa-check"></i><b>3.2</b> Modelo Binomial</a></li>
 <li class="chapter" data-level="3.3" data-path="modelo-binomial-negativo.html"><a href="modelo-binomial-negativo.html"><i class="fa fa-check"></i><b>3.3</b> Modelo Binomial negativo</a></li>
+<li class="chapter" data-level="3.4" data-path="modelo-poisson.html"><a href="modelo-poisson.html"><i class="fa fa-check"></i><b>3.4</b> Modelo Poisson</a></li>
 </ul></li>
 <li class="appendix"><span><b>Apéndice</b></span></li>
 <li class="chapter" data-level="A" data-path="elementos-de-probabilidad.html"><a href="elementos-de-probabilidad.html"><i class="fa fa-check"></i><b>A</b> Elementos de probabilidad</a>
@@ -311,36 +312,36 @@ Por lo tanto, factorizando convenientemente, se llega a una expresión idéntica
 <p>Mediante el análisis bayesiano, suponiendo una distribución previa <span class="math inline">\(Beta(0.5, 0.5)\)</span>, se llega a que la distribución posterior del parámetros <span class="math inline">\(\theta\)</span> es <span class="math inline">\(Beta(0.5+5, 0.5+1106-5)=Beta(5.5, 1101.5)\)</span>. Por lo tanto, la estimación puntual del parámetro de interés, que corresponde a la media de la distribución posterior, es 0.0049, que equivale una proporción de 0.49% de personas con estas enfermedades.</p>
 El siguiente código computacional muestra cómo se puede llegar a las mismas conclusiones con <code>STAN</code>, haciendo la salvedad de que <code>STAN</code> define esta distribución en términos del número de fracasos <span class="math inline">\(m = y - k\)</span> necesarios para obtener <span class="math inline">\(k\)</span> éxitos.
 </div>
-<div class="sourceCode" id="cb31"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb31-1"><a href="modelo-binomial-negativo.html#cb31-1" aria-hidden="true" tabindex="-1"></a>BinNegativa <span class="ot">&lt;-</span> <span class="st">&#39;data {</span></span>
-<span id="cb31-2"><a href="modelo-binomial-negativo.html#cb31-2" aria-hidden="true" tabindex="-1"></a><span class="st">  int&lt;lower=0&gt; k;</span></span>
-<span id="cb31-3"><a href="modelo-binomial-negativo.html#cb31-3" aria-hidden="true" tabindex="-1"></a><span class="st">  int&lt;lower=0&gt; y;</span></span>
-<span id="cb31-4"><a href="modelo-binomial-negativo.html#cb31-4" aria-hidden="true" tabindex="-1"></a><span class="st">}</span></span>
-<span id="cb31-5"><a href="modelo-binomial-negativo.html#cb31-5" aria-hidden="true" tabindex="-1"></a><span class="st">transformed data {</span></span>
-<span id="cb31-6"><a href="modelo-binomial-negativo.html#cb31-6" aria-hidden="true" tabindex="-1"></a><span class="st">  int&lt;lower=0&gt; m;</span></span>
-<span id="cb31-7"><a href="modelo-binomial-negativo.html#cb31-7" aria-hidden="true" tabindex="-1"></a><span class="st">  m = y - k;</span></span>
-<span id="cb31-8"><a href="modelo-binomial-negativo.html#cb31-8" aria-hidden="true" tabindex="-1"></a><span class="st">}</span></span>
-<span id="cb31-9"><a href="modelo-binomial-negativo.html#cb31-9" aria-hidden="true" tabindex="-1"></a><span class="st">parameters {</span></span>
-<span id="cb31-10"><a href="modelo-binomial-negativo.html#cb31-10" aria-hidden="true" tabindex="-1"></a><span class="st">  real&lt;lower=0&gt; beta;</span></span>
-<span id="cb31-11"><a href="modelo-binomial-negativo.html#cb31-11" aria-hidden="true" tabindex="-1"></a><span class="st">}</span></span>
-<span id="cb31-12"><a href="modelo-binomial-negativo.html#cb31-12" aria-hidden="true" tabindex="-1"></a><span class="st">transformed parameters {</span></span>
-<span id="cb31-13"><a href="modelo-binomial-negativo.html#cb31-13" aria-hidden="true" tabindex="-1"></a><span class="st">  real&lt;lower=0&gt; theta;</span></span>
-<span id="cb31-14"><a href="modelo-binomial-negativo.html#cb31-14" aria-hidden="true" tabindex="-1"></a><span class="st">  theta = beta/(beta + 1);</span></span>
-<span id="cb31-15"><a href="modelo-binomial-negativo.html#cb31-15" aria-hidden="true" tabindex="-1"></a><span class="st">}</span></span>
-<span id="cb31-16"><a href="modelo-binomial-negativo.html#cb31-16" aria-hidden="true" tabindex="-1"></a><span class="st">model {</span></span>
-<span id="cb31-17"><a href="modelo-binomial-negativo.html#cb31-17" aria-hidden="true" tabindex="-1"></a><span class="st">  m ~ neg_binomial(k, beta);</span></span>
-<span id="cb31-18"><a href="modelo-binomial-negativo.html#cb31-18" aria-hidden="true" tabindex="-1"></a><span class="st">  theta ~ beta(0.5, 0.5);</span></span>
-<span id="cb31-19"><a href="modelo-binomial-negativo.html#cb31-19" aria-hidden="true" tabindex="-1"></a><span class="st">}</span></span>
-<span id="cb31-20"><a href="modelo-binomial-negativo.html#cb31-20" aria-hidden="true" tabindex="-1"></a><span class="st">&#39;</span></span>
-<span id="cb31-21"><a href="modelo-binomial-negativo.html#cb31-21" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb31-22"><a href="modelo-binomial-negativo.html#cb31-22" aria-hidden="true" tabindex="-1"></a>y <span class="ot">&lt;-</span> <span class="dv">1106</span></span>
-<span id="cb31-23"><a href="modelo-binomial-negativo.html#cb31-23" aria-hidden="true" tabindex="-1"></a>k <span class="ot">&lt;-</span> <span class="dv">5</span></span>
-<span id="cb31-24"><a href="modelo-binomial-negativo.html#cb31-24" aria-hidden="true" tabindex="-1"></a>sample_data <span class="ot">&lt;-</span> <span class="fu">list</span>(<span class="at">k =</span> k, <span class="at">y =</span> y)</span>
-<span id="cb31-25"><a href="modelo-binomial-negativo.html#cb31-25" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb31-26"><a href="modelo-binomial-negativo.html#cb31-26" aria-hidden="true" tabindex="-1"></a>BNfit <span class="ot">&lt;-</span> <span class="fu">stan</span>(<span class="at">model_code =</span> BinNegativa,</span>
-<span id="cb31-27"><a href="modelo-binomial-negativo.html#cb31-27" aria-hidden="true" tabindex="-1"></a>              <span class="at">data =</span> sample_data, <span class="at">verbose =</span> <span class="cn">FALSE</span>)</span></code></pre></div>
+<div class="sourceCode" id="cb33"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb33-1"><a href="modelo-binomial-negativo.html#cb33-1" aria-hidden="true" tabindex="-1"></a>BinNegativa <span class="ot">&lt;-</span> <span class="st">&#39;data {</span></span>
+<span id="cb33-2"><a href="modelo-binomial-negativo.html#cb33-2" aria-hidden="true" tabindex="-1"></a><span class="st">  int&lt;lower=0&gt; k;</span></span>
+<span id="cb33-3"><a href="modelo-binomial-negativo.html#cb33-3" aria-hidden="true" tabindex="-1"></a><span class="st">  int&lt;lower=0&gt; y;</span></span>
+<span id="cb33-4"><a href="modelo-binomial-negativo.html#cb33-4" aria-hidden="true" tabindex="-1"></a><span class="st">}</span></span>
+<span id="cb33-5"><a href="modelo-binomial-negativo.html#cb33-5" aria-hidden="true" tabindex="-1"></a><span class="st">transformed data {</span></span>
+<span id="cb33-6"><a href="modelo-binomial-negativo.html#cb33-6" aria-hidden="true" tabindex="-1"></a><span class="st">  int&lt;lower=0&gt; m;</span></span>
+<span id="cb33-7"><a href="modelo-binomial-negativo.html#cb33-7" aria-hidden="true" tabindex="-1"></a><span class="st">  m = y - k;</span></span>
+<span id="cb33-8"><a href="modelo-binomial-negativo.html#cb33-8" aria-hidden="true" tabindex="-1"></a><span class="st">}</span></span>
+<span id="cb33-9"><a href="modelo-binomial-negativo.html#cb33-9" aria-hidden="true" tabindex="-1"></a><span class="st">parameters {</span></span>
+<span id="cb33-10"><a href="modelo-binomial-negativo.html#cb33-10" aria-hidden="true" tabindex="-1"></a><span class="st">  real&lt;lower=0&gt; beta;</span></span>
+<span id="cb33-11"><a href="modelo-binomial-negativo.html#cb33-11" aria-hidden="true" tabindex="-1"></a><span class="st">}</span></span>
+<span id="cb33-12"><a href="modelo-binomial-negativo.html#cb33-12" aria-hidden="true" tabindex="-1"></a><span class="st">transformed parameters {</span></span>
+<span id="cb33-13"><a href="modelo-binomial-negativo.html#cb33-13" aria-hidden="true" tabindex="-1"></a><span class="st">  real&lt;lower=0&gt; theta;</span></span>
+<span id="cb33-14"><a href="modelo-binomial-negativo.html#cb33-14" aria-hidden="true" tabindex="-1"></a><span class="st">  theta = beta/(beta + 1);</span></span>
+<span id="cb33-15"><a href="modelo-binomial-negativo.html#cb33-15" aria-hidden="true" tabindex="-1"></a><span class="st">}</span></span>
+<span id="cb33-16"><a href="modelo-binomial-negativo.html#cb33-16" aria-hidden="true" tabindex="-1"></a><span class="st">model {</span></span>
+<span id="cb33-17"><a href="modelo-binomial-negativo.html#cb33-17" aria-hidden="true" tabindex="-1"></a><span class="st">  m ~ neg_binomial(k, beta);</span></span>
+<span id="cb33-18"><a href="modelo-binomial-negativo.html#cb33-18" aria-hidden="true" tabindex="-1"></a><span class="st">  theta ~ beta(0.5, 0.5);</span></span>
+<span id="cb33-19"><a href="modelo-binomial-negativo.html#cb33-19" aria-hidden="true" tabindex="-1"></a><span class="st">}</span></span>
+<span id="cb33-20"><a href="modelo-binomial-negativo.html#cb33-20" aria-hidden="true" tabindex="-1"></a><span class="st">&#39;</span></span>
+<span id="cb33-21"><a href="modelo-binomial-negativo.html#cb33-21" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb33-22"><a href="modelo-binomial-negativo.html#cb33-22" aria-hidden="true" tabindex="-1"></a>y <span class="ot">&lt;-</span> <span class="dv">1106</span></span>
+<span id="cb33-23"><a href="modelo-binomial-negativo.html#cb33-23" aria-hidden="true" tabindex="-1"></a>k <span class="ot">&lt;-</span> <span class="dv">5</span></span>
+<span id="cb33-24"><a href="modelo-binomial-negativo.html#cb33-24" aria-hidden="true" tabindex="-1"></a>sample_data <span class="ot">&lt;-</span> <span class="fu">list</span>(<span class="at">k =</span> k, <span class="at">y =</span> y)</span>
+<span id="cb33-25"><a href="modelo-binomial-negativo.html#cb33-25" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb33-26"><a href="modelo-binomial-negativo.html#cb33-26" aria-hidden="true" tabindex="-1"></a>BNfit <span class="ot">&lt;-</span> <span class="fu">stan</span>(<span class="at">model_code =</span> BinNegativa,</span>
+<span id="cb33-27"><a href="modelo-binomial-negativo.html#cb33-27" aria-hidden="true" tabindex="-1"></a>              <span class="at">data =</span> sample_data, <span class="at">verbose =</span> <span class="cn">FALSE</span>)</span></code></pre></div>
 <p>La siguiente salida de <code>STAN</code> permite conocer la estimación bayesiana posterior y los límites del intervalo de credibilidad al 95%.</p>
-<div class="sourceCode" id="cb32"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb32-1"><a href="modelo-binomial-negativo.html#cb32-1" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(BNfit, <span class="at">pars =</span> <span class="st">&quot;theta&quot;</span>, </span>
-<span id="cb32-2"><a href="modelo-binomial-negativo.html#cb32-2" aria-hidden="true" tabindex="-1"></a>      <span class="at">digits =</span> <span class="dv">4</span>, <span class="at">probs =</span> <span class="fu">c</span>(<span class="fl">0.025</span>, <span class="fl">0.975</span>))</span></code></pre></div>
+<div class="sourceCode" id="cb34"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb34-1"><a href="modelo-binomial-negativo.html#cb34-1" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(BNfit, <span class="at">pars =</span> <span class="st">&quot;theta&quot;</span>, </span>
+<span id="cb34-2"><a href="modelo-binomial-negativo.html#cb34-2" aria-hidden="true" tabindex="-1"></a>      <span class="at">digits =</span> <span class="dv">4</span>, <span class="at">probs =</span> <span class="fu">c</span>(<span class="fl">0.025</span>, <span class="fl">0.975</span>))</span></code></pre></div>
 <pre><code>## Inference for Stan model: ca45da8b0e94b143378403f155105e09.
 ## 4 chains, each with iter=2000; warmup=1000; thin=1; 
 ## post-warmup draws per chain=1000, total post-warmup draws=4000.
@@ -524,47 +525,47 @@ El siguiente código computacional muestra cómo se puede llegar a las mismas co
 </table>
 Mediante el análisis bayesiano, suponiendo una distribución previa<a href="#fn7" class="footnote-ref" id="fnref7"><sup>7</sup></a> no informativa <span class="math inline">\(Beta(0.5, 0.5)\)</span>, se llega a que la distribución posterior del parámetros <span class="math inline">\(\theta\)</span> es <span class="math inline">\(Beta(0.5+152, 0.5+29620-152)=Beta(152.5, 29468.5)\)</span>. Por lo tanto, la estimación puntual del parámetro de interés, que corresponde a la media de la distribución posterior, es 0.0051, que equivale a una proporción de 0.51% de personas con estas enfermedades. El siguiente código computacional muestra cómo se puede llegar a las mismas conclusiones con <code>STAN</code>
 </div>
-<div class="sourceCode" id="cb34"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb34-1"><a href="modelo-binomial-negativo.html#cb34-1" aria-hidden="true" tabindex="-1"></a>BinNegativa2 <span class="ot">&lt;-</span> <span class="st">&#39;data {</span></span>
-<span id="cb34-2"><a href="modelo-binomial-negativo.html#cb34-2" aria-hidden="true" tabindex="-1"></a><span class="st">  int&lt;lower=0&gt; n;</span></span>
-<span id="cb34-3"><a href="modelo-binomial-negativo.html#cb34-3" aria-hidden="true" tabindex="-1"></a><span class="st">  int&lt;lower=0&gt; k[n];</span></span>
-<span id="cb34-4"><a href="modelo-binomial-negativo.html#cb34-4" aria-hidden="true" tabindex="-1"></a><span class="st">  int&lt;lower=0&gt; y[n];</span></span>
-<span id="cb34-5"><a href="modelo-binomial-negativo.html#cb34-5" aria-hidden="true" tabindex="-1"></a><span class="st">}</span></span>
-<span id="cb34-6"><a href="modelo-binomial-negativo.html#cb34-6" aria-hidden="true" tabindex="-1"></a><span class="st">transformed data {</span></span>
-<span id="cb34-7"><a href="modelo-binomial-negativo.html#cb34-7" aria-hidden="true" tabindex="-1"></a><span class="st">  int&lt;lower=0&gt; m[n];</span></span>
-<span id="cb34-8"><a href="modelo-binomial-negativo.html#cb34-8" aria-hidden="true" tabindex="-1"></a><span class="st">  for(i in 1:n){</span></span>
-<span id="cb34-9"><a href="modelo-binomial-negativo.html#cb34-9" aria-hidden="true" tabindex="-1"></a><span class="st">    m[i] = y[i] - k[i];</span></span>
-<span id="cb34-10"><a href="modelo-binomial-negativo.html#cb34-10" aria-hidden="true" tabindex="-1"></a><span class="st">  }</span></span>
-<span id="cb34-11"><a href="modelo-binomial-negativo.html#cb34-11" aria-hidden="true" tabindex="-1"></a><span class="st">}</span></span>
-<span id="cb34-12"><a href="modelo-binomial-negativo.html#cb34-12" aria-hidden="true" tabindex="-1"></a><span class="st">parameters {</span></span>
-<span id="cb34-13"><a href="modelo-binomial-negativo.html#cb34-13" aria-hidden="true" tabindex="-1"></a><span class="st">  real&lt;lower=0&gt; b;</span></span>
-<span id="cb34-14"><a href="modelo-binomial-negativo.html#cb34-14" aria-hidden="true" tabindex="-1"></a><span class="st">}</span></span>
-<span id="cb34-15"><a href="modelo-binomial-negativo.html#cb34-15" aria-hidden="true" tabindex="-1"></a><span class="st">transformed parameters {</span></span>
-<span id="cb34-16"><a href="modelo-binomial-negativo.html#cb34-16" aria-hidden="true" tabindex="-1"></a><span class="st">  real&lt;lower=0&gt; theta;</span></span>
-<span id="cb34-17"><a href="modelo-binomial-negativo.html#cb34-17" aria-hidden="true" tabindex="-1"></a><span class="st">  theta = b/(b + 1);</span></span>
-<span id="cb34-18"><a href="modelo-binomial-negativo.html#cb34-18" aria-hidden="true" tabindex="-1"></a><span class="st">}</span></span>
-<span id="cb34-19"><a href="modelo-binomial-negativo.html#cb34-19" aria-hidden="true" tabindex="-1"></a><span class="st">model {</span></span>
-<span id="cb34-20"><a href="modelo-binomial-negativo.html#cb34-20" aria-hidden="true" tabindex="-1"></a><span class="st">  for(i in 1:n){</span></span>
-<span id="cb34-21"><a href="modelo-binomial-negativo.html#cb34-21" aria-hidden="true" tabindex="-1"></a><span class="st">    m[i] ~ neg_binomial(k[i], b);</span></span>
-<span id="cb34-22"><a href="modelo-binomial-negativo.html#cb34-22" aria-hidden="true" tabindex="-1"></a><span class="st">  }</span></span>
-<span id="cb34-23"><a href="modelo-binomial-negativo.html#cb34-23" aria-hidden="true" tabindex="-1"></a><span class="st">  theta ~ beta(0.5, 0.5);</span></span>
-<span id="cb34-24"><a href="modelo-binomial-negativo.html#cb34-24" aria-hidden="true" tabindex="-1"></a><span class="st">}</span></span>
-<span id="cb34-25"><a href="modelo-binomial-negativo.html#cb34-25" aria-hidden="true" tabindex="-1"></a><span class="st">&#39;</span></span>
-<span id="cb34-26"><a href="modelo-binomial-negativo.html#cb34-26" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb34-27"><a href="modelo-binomial-negativo.html#cb34-27" aria-hidden="true" tabindex="-1"></a>y <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="dv">1001</span>, <span class="dv">978</span>, <span class="dv">999</span>, <span class="dv">860</span>, <span class="dv">1155</span>, <span class="dv">585</span>, <span class="dv">1030</span>, </span>
-<span id="cb34-28"><a href="modelo-binomial-negativo.html#cb34-28" aria-hidden="true" tabindex="-1"></a>       <span class="dv">960</span>, <span class="dv">1002</span>, <span class="dv">763</span>, <span class="dv">1036</span>, <span class="dv">779</span>, <span class="dv">1158</span>, <span class="dv">1017</span>, </span>
-<span id="cb34-29"><a href="modelo-binomial-negativo.html#cb34-29" aria-hidden="true" tabindex="-1"></a>       <span class="dv">888</span>, <span class="dv">977</span>, <span class="dv">1256</span>, <span class="dv">1349</span>, <span class="dv">1047</span>, <span class="dv">1088</span>, <span class="dv">649</span>, </span>
-<span id="cb34-30"><a href="modelo-binomial-negativo.html#cb34-30" aria-hidden="true" tabindex="-1"></a>       <span class="dv">765</span>, <span class="dv">699</span>, <span class="dv">1042</span>, <span class="dv">1212</span>, <span class="dv">660</span>, <span class="dv">671</span>, <span class="dv">835</span>, </span>
-<span id="cb34-31"><a href="modelo-binomial-negativo.html#cb34-31" aria-hidden="true" tabindex="-1"></a>       <span class="dv">997</span>, <span class="dv">1146</span>, <span class="dv">1016</span>)</span>
-<span id="cb34-32"><a href="modelo-binomial-negativo.html#cb34-32" aria-hidden="true" tabindex="-1"></a>k <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="dv">4</span>, <span class="dv">6</span>, <span class="dv">5</span>, <span class="dv">4</span>, <span class="dv">4</span>, <span class="dv">6</span>, <span class="dv">3</span>, <span class="dv">5</span>, <span class="dv">6</span>, <span class="dv">7</span>, <span class="dv">5</span>, <span class="dv">5</span>, <span class="dv">4</span>, </span>
-<span id="cb34-33"><a href="modelo-binomial-negativo.html#cb34-33" aria-hidden="true" tabindex="-1"></a>       <span class="dv">5</span>, <span class="dv">6</span>, <span class="dv">4</span>, <span class="dv">6</span>, <span class="dv">6</span>, <span class="dv">5</span>, <span class="dv">5</span>, <span class="dv">3</span>, <span class="dv">4</span>, <span class="dv">5</span>, <span class="dv">4</span>, <span class="dv">5</span>, <span class="dv">5</span>, </span>
-<span id="cb34-34"><a href="modelo-binomial-negativo.html#cb34-34" aria-hidden="true" tabindex="-1"></a>       <span class="dv">5</span>, <span class="dv">6</span>, <span class="dv">5</span>, <span class="dv">4</span>, <span class="dv">5</span>)</span>
-<span id="cb34-35"><a href="modelo-binomial-negativo.html#cb34-35" aria-hidden="true" tabindex="-1"></a>sample_data <span class="ot">&lt;-</span> <span class="fu">list</span>(<span class="at">k =</span> k, <span class="at">y =</span> y, <span class="at">n =</span> <span class="fu">length</span>(y))</span>
-<span id="cb34-36"><a href="modelo-binomial-negativo.html#cb34-36" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb34-37"><a href="modelo-binomial-negativo.html#cb34-37" aria-hidden="true" tabindex="-1"></a>BNfit2 <span class="ot">&lt;-</span> <span class="fu">stan</span>(<span class="at">model_code =</span> BinNegativa2,</span>
-<span id="cb34-38"><a href="modelo-binomial-negativo.html#cb34-38" aria-hidden="true" tabindex="-1"></a>               <span class="at">data =</span> sample_data, <span class="at">verbose =</span> <span class="cn">FALSE</span>)</span></code></pre></div>
+<div class="sourceCode" id="cb36"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb36-1"><a href="modelo-binomial-negativo.html#cb36-1" aria-hidden="true" tabindex="-1"></a>BinNegativa2 <span class="ot">&lt;-</span> <span class="st">&#39;data {</span></span>
+<span id="cb36-2"><a href="modelo-binomial-negativo.html#cb36-2" aria-hidden="true" tabindex="-1"></a><span class="st">  int&lt;lower=0&gt; n;</span></span>
+<span id="cb36-3"><a href="modelo-binomial-negativo.html#cb36-3" aria-hidden="true" tabindex="-1"></a><span class="st">  int&lt;lower=0&gt; k[n];</span></span>
+<span id="cb36-4"><a href="modelo-binomial-negativo.html#cb36-4" aria-hidden="true" tabindex="-1"></a><span class="st">  int&lt;lower=0&gt; y[n];</span></span>
+<span id="cb36-5"><a href="modelo-binomial-negativo.html#cb36-5" aria-hidden="true" tabindex="-1"></a><span class="st">}</span></span>
+<span id="cb36-6"><a href="modelo-binomial-negativo.html#cb36-6" aria-hidden="true" tabindex="-1"></a><span class="st">transformed data {</span></span>
+<span id="cb36-7"><a href="modelo-binomial-negativo.html#cb36-7" aria-hidden="true" tabindex="-1"></a><span class="st">  int&lt;lower=0&gt; m[n];</span></span>
+<span id="cb36-8"><a href="modelo-binomial-negativo.html#cb36-8" aria-hidden="true" tabindex="-1"></a><span class="st">  for(i in 1:n){</span></span>
+<span id="cb36-9"><a href="modelo-binomial-negativo.html#cb36-9" aria-hidden="true" tabindex="-1"></a><span class="st">    m[i] = y[i] - k[i];</span></span>
+<span id="cb36-10"><a href="modelo-binomial-negativo.html#cb36-10" aria-hidden="true" tabindex="-1"></a><span class="st">  }</span></span>
+<span id="cb36-11"><a href="modelo-binomial-negativo.html#cb36-11" aria-hidden="true" tabindex="-1"></a><span class="st">}</span></span>
+<span id="cb36-12"><a href="modelo-binomial-negativo.html#cb36-12" aria-hidden="true" tabindex="-1"></a><span class="st">parameters {</span></span>
+<span id="cb36-13"><a href="modelo-binomial-negativo.html#cb36-13" aria-hidden="true" tabindex="-1"></a><span class="st">  real&lt;lower=0&gt; b;</span></span>
+<span id="cb36-14"><a href="modelo-binomial-negativo.html#cb36-14" aria-hidden="true" tabindex="-1"></a><span class="st">}</span></span>
+<span id="cb36-15"><a href="modelo-binomial-negativo.html#cb36-15" aria-hidden="true" tabindex="-1"></a><span class="st">transformed parameters {</span></span>
+<span id="cb36-16"><a href="modelo-binomial-negativo.html#cb36-16" aria-hidden="true" tabindex="-1"></a><span class="st">  real&lt;lower=0&gt; theta;</span></span>
+<span id="cb36-17"><a href="modelo-binomial-negativo.html#cb36-17" aria-hidden="true" tabindex="-1"></a><span class="st">  theta = b/(b + 1);</span></span>
+<span id="cb36-18"><a href="modelo-binomial-negativo.html#cb36-18" aria-hidden="true" tabindex="-1"></a><span class="st">}</span></span>
+<span id="cb36-19"><a href="modelo-binomial-negativo.html#cb36-19" aria-hidden="true" tabindex="-1"></a><span class="st">model {</span></span>
+<span id="cb36-20"><a href="modelo-binomial-negativo.html#cb36-20" aria-hidden="true" tabindex="-1"></a><span class="st">  for(i in 1:n){</span></span>
+<span id="cb36-21"><a href="modelo-binomial-negativo.html#cb36-21" aria-hidden="true" tabindex="-1"></a><span class="st">    m[i] ~ neg_binomial(k[i], b);</span></span>
+<span id="cb36-22"><a href="modelo-binomial-negativo.html#cb36-22" aria-hidden="true" tabindex="-1"></a><span class="st">  }</span></span>
+<span id="cb36-23"><a href="modelo-binomial-negativo.html#cb36-23" aria-hidden="true" tabindex="-1"></a><span class="st">  theta ~ beta(0.5, 0.5);</span></span>
+<span id="cb36-24"><a href="modelo-binomial-negativo.html#cb36-24" aria-hidden="true" tabindex="-1"></a><span class="st">}</span></span>
+<span id="cb36-25"><a href="modelo-binomial-negativo.html#cb36-25" aria-hidden="true" tabindex="-1"></a><span class="st">&#39;</span></span>
+<span id="cb36-26"><a href="modelo-binomial-negativo.html#cb36-26" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb36-27"><a href="modelo-binomial-negativo.html#cb36-27" aria-hidden="true" tabindex="-1"></a>y <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="dv">1001</span>, <span class="dv">978</span>, <span class="dv">999</span>, <span class="dv">860</span>, <span class="dv">1155</span>, <span class="dv">585</span>, <span class="dv">1030</span>, </span>
+<span id="cb36-28"><a href="modelo-binomial-negativo.html#cb36-28" aria-hidden="true" tabindex="-1"></a>       <span class="dv">960</span>, <span class="dv">1002</span>, <span class="dv">763</span>, <span class="dv">1036</span>, <span class="dv">779</span>, <span class="dv">1158</span>, <span class="dv">1017</span>, </span>
+<span id="cb36-29"><a href="modelo-binomial-negativo.html#cb36-29" aria-hidden="true" tabindex="-1"></a>       <span class="dv">888</span>, <span class="dv">977</span>, <span class="dv">1256</span>, <span class="dv">1349</span>, <span class="dv">1047</span>, <span class="dv">1088</span>, <span class="dv">649</span>, </span>
+<span id="cb36-30"><a href="modelo-binomial-negativo.html#cb36-30" aria-hidden="true" tabindex="-1"></a>       <span class="dv">765</span>, <span class="dv">699</span>, <span class="dv">1042</span>, <span class="dv">1212</span>, <span class="dv">660</span>, <span class="dv">671</span>, <span class="dv">835</span>, </span>
+<span id="cb36-31"><a href="modelo-binomial-negativo.html#cb36-31" aria-hidden="true" tabindex="-1"></a>       <span class="dv">997</span>, <span class="dv">1146</span>, <span class="dv">1016</span>)</span>
+<span id="cb36-32"><a href="modelo-binomial-negativo.html#cb36-32" aria-hidden="true" tabindex="-1"></a>k <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="dv">4</span>, <span class="dv">6</span>, <span class="dv">5</span>, <span class="dv">4</span>, <span class="dv">4</span>, <span class="dv">6</span>, <span class="dv">3</span>, <span class="dv">5</span>, <span class="dv">6</span>, <span class="dv">7</span>, <span class="dv">5</span>, <span class="dv">5</span>, <span class="dv">4</span>, </span>
+<span id="cb36-33"><a href="modelo-binomial-negativo.html#cb36-33" aria-hidden="true" tabindex="-1"></a>       <span class="dv">5</span>, <span class="dv">6</span>, <span class="dv">4</span>, <span class="dv">6</span>, <span class="dv">6</span>, <span class="dv">5</span>, <span class="dv">5</span>, <span class="dv">3</span>, <span class="dv">4</span>, <span class="dv">5</span>, <span class="dv">4</span>, <span class="dv">5</span>, <span class="dv">5</span>, </span>
+<span id="cb36-34"><a href="modelo-binomial-negativo.html#cb36-34" aria-hidden="true" tabindex="-1"></a>       <span class="dv">5</span>, <span class="dv">6</span>, <span class="dv">5</span>, <span class="dv">4</span>, <span class="dv">5</span>)</span>
+<span id="cb36-35"><a href="modelo-binomial-negativo.html#cb36-35" aria-hidden="true" tabindex="-1"></a>sample_data <span class="ot">&lt;-</span> <span class="fu">list</span>(<span class="at">k =</span> k, <span class="at">y =</span> y, <span class="at">n =</span> <span class="fu">length</span>(y))</span>
+<span id="cb36-36"><a href="modelo-binomial-negativo.html#cb36-36" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb36-37"><a href="modelo-binomial-negativo.html#cb36-37" aria-hidden="true" tabindex="-1"></a>BNfit2 <span class="ot">&lt;-</span> <span class="fu">stan</span>(<span class="at">model_code =</span> BinNegativa2,</span>
+<span id="cb36-38"><a href="modelo-binomial-negativo.html#cb36-38" aria-hidden="true" tabindex="-1"></a>               <span class="at">data =</span> sample_data, <span class="at">verbose =</span> <span class="cn">FALSE</span>)</span></code></pre></div>
 <p>Después de cinco mil iteraciones, la salida del anterior código muestra la estimación puntual dada por 0.00515 y un intervalo de credibilidad al 95%, dado por <span class="math inline">\((0.00439, 0.00603)\)</span>, mucho más estrecho que el intervalo de credibilidad del anterior ejemplo</p>
-<div class="sourceCode" id="cb35"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb35-1"><a href="modelo-binomial-negativo.html#cb35-1" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(BNfit2, <span class="at">pars =</span> <span class="st">&quot;theta&quot;</span>, </span>
-<span id="cb35-2"><a href="modelo-binomial-negativo.html#cb35-2" aria-hidden="true" tabindex="-1"></a>      <span class="at">digits =</span> <span class="dv">4</span>, <span class="at">probs =</span> <span class="fu">c</span>(<span class="fl">0.025</span>, <span class="fl">0.975</span>))</span></code></pre></div>
+<div class="sourceCode" id="cb37"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb37-1"><a href="modelo-binomial-negativo.html#cb37-1" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(BNfit2, <span class="at">pars =</span> <span class="st">&quot;theta&quot;</span>, </span>
+<span id="cb37-2"><a href="modelo-binomial-negativo.html#cb37-2" aria-hidden="true" tabindex="-1"></a>      <span class="at">digits =</span> <span class="dv">4</span>, <span class="at">probs =</span> <span class="fu">c</span>(<span class="fl">0.025</span>, <span class="fl">0.975</span>))</span></code></pre></div>
 <pre><code>## Inference for Stan model: 756b8df22716f40c50aa8045790299a4.
 ## 4 chains, each with iter=2000; warmup=1000; thin=1; 
 ## post-warmup draws per chain=1000, total post-warmup draws=4000.
@@ -576,6 +577,15 @@ Mediante el análisis bayesiano, suponiendo una distribución previa<a href="#fn
 ## For each parameter, n_eff is a crude measure of effective sample size,
 ## and Rhat is the potential scale reduction factor on split chains (at 
 ## convergence, Rhat=1).</code></pre>
+<p>La figura <a href="modelo-binomial-negativo.html#fig:posBNStan">3.9</a> muestra la distribución posterior para este ejemplo, junto con la estimación puntual, correspondiente a la media.</p>
+<div class="sourceCode" id="cb39"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb39-1"><a href="modelo-binomial-negativo.html#cb39-1" aria-hidden="true" tabindex="-1"></a>bayesplot<span class="sc">::</span><span class="fu">mcmc_areas</span>(BNfit2, <span class="at">pars =</span> <span class="st">&quot;theta&quot;</span>, </span>
+<span id="cb39-2"><a href="modelo-binomial-negativo.html#cb39-2" aria-hidden="true" tabindex="-1"></a>                      <span class="at">prob =</span> <span class="fl">0.95</span>)</span></code></pre></div>
+<div class="figure"><span id="fig:posBNStan"></span>
+<img src="3Uniparametricos_files/figure-html/posBNStan-1.png" alt="Distribución posterior." width="672" />
+<p class="caption">
+Figura 3.9: Distribución posterior.
+</p>
+</div>
 <p>Una vez observados los datos actuales y encontrada la distribución posterior, se puede encontrar la distribución predictiva posterior de una nueva variable con distribución binomial negativa. Es decir, se puede definir el mecanismo probabilístico para el número de ensayos necesarios para encontrar <span class="math inline">\(\tilde{k}\)</span> éxitos.</p>
 
 <div class="proposition">
@@ -606,37 +616,32 @@ p(\tilde{Y}|Y_1,\cdots,Y_n)=\binom{\tilde{y}-1}{\tilde{k}-1}\frac{Beta(\alpha+\t
 \end{align*}\]</span></p>
 Con los siguientes códigos se puede calcular la anterior función predictiva.
 </div>
-<div class="sourceCode" id="cb37"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb37-1"><a href="modelo-binomial-negativo.html#cb37-1" aria-hidden="true" tabindex="-1"></a>BNpred <span class="ot">&lt;-</span> <span class="cf">function</span>(y, alfa, beta, s, n, k){</span>
-<span id="cb37-2"><a href="modelo-binomial-negativo.html#cb37-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">choose</span>(y <span class="sc">-</span> <span class="dv">1</span>, k <span class="sc">-</span> <span class="dv">1</span>) <span class="sc">*</span></span>
-<span id="cb37-3"><a href="modelo-binomial-negativo.html#cb37-3" aria-hidden="true" tabindex="-1"></a>    <span class="fu">exp</span>(<span class="fu">lbeta</span>(alfa <span class="sc">+</span> k <span class="sc">+</span> s, beta <span class="sc">+</span> y <span class="sc">-</span> k <span class="sc">+</span> n <span class="sc">-</span> s) <span class="sc">-</span></span>
-<span id="cb37-4"><a href="modelo-binomial-negativo.html#cb37-4" aria-hidden="true" tabindex="-1"></a>          <span class="fu">lbeta</span>(alfa<span class="sc">+</span>s,beta<span class="sc">+</span>n<span class="sc">-</span>s))</span>
-<span id="cb37-5"><a href="modelo-binomial-negativo.html#cb37-5" aria-hidden="true" tabindex="-1"></a>}</span>
-<span id="cb37-6"><a href="modelo-binomial-negativo.html#cb37-6" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb37-7"><a href="modelo-binomial-negativo.html#cb37-7" aria-hidden="true" tabindex="-1"></a>alfa <span class="ot">&lt;-</span> beta <span class="ot">&lt;-</span> <span class="fl">0.5</span></span>
-<span id="cb37-8"><a href="modelo-binomial-negativo.html#cb37-8" aria-hidden="true" tabindex="-1"></a>s <span class="ot">&lt;-</span> <span class="fu">sum</span>(k)</span>
-<span id="cb37-9"><a href="modelo-binomial-negativo.html#cb37-9" aria-hidden="true" tabindex="-1"></a>n <span class="ot">&lt;-</span> <span class="fu">sum</span>(y)</span>
-<span id="cb37-10"><a href="modelo-binomial-negativo.html#cb37-10" aria-hidden="true" tabindex="-1"></a>k <span class="ot">&lt;-</span> <span class="dv">5</span></span>
-<span id="cb37-11"><a href="modelo-binomial-negativo.html#cb37-11" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb37-12"><a href="modelo-binomial-negativo.html#cb37-12" aria-hidden="true" tabindex="-1"></a>fun <span class="ot">&lt;-</span> <span class="fu">rep</span>(<span class="cn">NA</span>)</span>
-<span id="cb37-13"><a href="modelo-binomial-negativo.html#cb37-13" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span>(y <span class="cf">in</span> <span class="dv">5</span><span class="sc">:</span><span class="dv">5000</span>){</span>
-<span id="cb37-14"><a href="modelo-binomial-negativo.html#cb37-14" aria-hidden="true" tabindex="-1"></a>  fun[y <span class="sc">-</span> <span class="dv">4</span>] <span class="ot">&lt;-</span> <span class="fu">BNpred</span>(y, alfa, beta, s, n, k)</span>
-<span id="cb37-15"><a href="modelo-binomial-negativo.html#cb37-15" aria-hidden="true" tabindex="-1"></a>}</span>
-<span id="cb37-16"><a href="modelo-binomial-negativo.html#cb37-16" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb37-17"><a href="modelo-binomial-negativo.html#cb37-17" aria-hidden="true" tabindex="-1"></a><span class="fu">sum</span>(fun)</span></code></pre></div>
+<div class="sourceCode" id="cb40"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb40-1"><a href="modelo-binomial-negativo.html#cb40-1" aria-hidden="true" tabindex="-1"></a>BNpred <span class="ot">&lt;-</span> <span class="cf">function</span>(y, alfa, beta, s, n, k){</span>
+<span id="cb40-2"><a href="modelo-binomial-negativo.html#cb40-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">choose</span>(y <span class="sc">-</span> <span class="dv">1</span>, k <span class="sc">-</span> <span class="dv">1</span>) <span class="sc">*</span></span>
+<span id="cb40-3"><a href="modelo-binomial-negativo.html#cb40-3" aria-hidden="true" tabindex="-1"></a>    <span class="fu">exp</span>(<span class="fu">lbeta</span>(alfa <span class="sc">+</span> k <span class="sc">+</span> s, beta <span class="sc">+</span> y <span class="sc">-</span> k <span class="sc">+</span> n <span class="sc">-</span> s) <span class="sc">-</span></span>
+<span id="cb40-4"><a href="modelo-binomial-negativo.html#cb40-4" aria-hidden="true" tabindex="-1"></a>          <span class="fu">lbeta</span>(alfa<span class="sc">+</span>s,beta<span class="sc">+</span>n<span class="sc">-</span>s))</span>
+<span id="cb40-5"><a href="modelo-binomial-negativo.html#cb40-5" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb40-6"><a href="modelo-binomial-negativo.html#cb40-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb40-7"><a href="modelo-binomial-negativo.html#cb40-7" aria-hidden="true" tabindex="-1"></a>alfa <span class="ot">&lt;-</span> beta <span class="ot">&lt;-</span> <span class="fl">0.5</span></span>
+<span id="cb40-8"><a href="modelo-binomial-negativo.html#cb40-8" aria-hidden="true" tabindex="-1"></a>s <span class="ot">&lt;-</span> <span class="fu">sum</span>(k)</span>
+<span id="cb40-9"><a href="modelo-binomial-negativo.html#cb40-9" aria-hidden="true" tabindex="-1"></a>n <span class="ot">&lt;-</span> <span class="fu">sum</span>(y)</span>
+<span id="cb40-10"><a href="modelo-binomial-negativo.html#cb40-10" aria-hidden="true" tabindex="-1"></a>k <span class="ot">&lt;-</span> <span class="dv">5</span></span>
+<span id="cb40-11"><a href="modelo-binomial-negativo.html#cb40-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb40-12"><a href="modelo-binomial-negativo.html#cb40-12" aria-hidden="true" tabindex="-1"></a>fun <span class="ot">&lt;-</span> <span class="fu">rep</span>(<span class="cn">NA</span>)</span>
+<span id="cb40-13"><a href="modelo-binomial-negativo.html#cb40-13" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span>(y <span class="cf">in</span> <span class="dv">5</span><span class="sc">:</span><span class="dv">5000</span>){</span>
+<span id="cb40-14"><a href="modelo-binomial-negativo.html#cb40-14" aria-hidden="true" tabindex="-1"></a>  fun[y <span class="sc">-</span> <span class="dv">4</span>] <span class="ot">&lt;-</span> <span class="fu">BNpred</span>(y, alfa, beta, s, n, k)</span>
+<span id="cb40-15"><a href="modelo-binomial-negativo.html#cb40-15" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb40-16"><a href="modelo-binomial-negativo.html#cb40-16" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb40-17"><a href="modelo-binomial-negativo.html#cb40-17" aria-hidden="true" tabindex="-1"></a><span class="fu">sum</span>(fun)</span></code></pre></div>
 <pre><code>## [1] 0.9999994</code></pre>
 <div class="figure"><span id="fig:jefber"></span>
 <img src="3Uniparametricos_files/figure-html/jefber-1.png" alt="Distribución predictiva posterior para el número de entrevistas necesarias para encontrar 5 pacientes." width="672" />
 <p class="caption">
-Figura 3.7: Distribución predictiva posterior para el número de entrevistas necesarias para encontrar 5 pacientes.
+Figura 3.10: Distribución predictiva posterior para el número de entrevistas necesarias para encontrar 5 pacientes.
 </p>
 </div>
 <p>Se puede ver que el número de entrevistas que tiene mayor probabilidad asociadas es el valor 768, usando el comando <code>which(fun == max(fun))</code>. También, se puede observar que la probabilidad de que en menos de 500 entrevistas se encuentren los 5 pacientes es de solo el 0.1200985 usando el comando <code>sum(fun[1:(500 - 4)])</code></p>
-
 </div>
-<!-- </div> -->
-
-
-
 <div class="footnotes">
 <hr />
 <ol start="7">
@@ -649,7 +654,7 @@ Figura 3.7: Distribución predictiva posterior para el número de entrevistas ne
         </div>
       </div>
 <a href="modelo-binomial.html" class="navigation navigation-prev " aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
-<a href="elementos-de-probabilidad.html" class="navigation navigation-next " aria-label="Next page"><i class="fa fa-angle-right"></i></a>
+<a href="modelo-poisson.html" class="navigation navigation-next " aria-label="Next page"><i class="fa fa-angle-right"></i></a>
     </div>
   </div>
 <script src="libs/gitbook-2.6.7/js/app.min.js"></script>
