@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.14159265-2.6-1.40.18 (TeX Live 2017) (preloaded format=pdflatex 2017.5.23)  5 JUN 2021 15:24
+This is pdfTeX, Version 3.14159265-2.6-1.40.18 (TeX Live 2017) (preloaded format=pdflatex 2017.5.23)  5 JUN 2021 19:27
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -1268,7 +1268,7 @@ File: t1lmtt.fd 2009/10/30 v1.6 Font defs for Latin Modern
 ) [43
 
 ]
-<3Uniparametricos_files/figure-latex/jefber1-1.pdf, id=478, 459.7175pt x 313.17
+<3Uniparametricos_files/figure-latex/jefber1-1.pdf, id=480, 459.7175pt x 313.17
 pt>
 File: 3Uniparametricos_files/figure-latex/jefber1-1.pdf Graphic file (type pdf)
 
@@ -1306,7 +1306,7 @@ LaTeX Info: Redefining \% on input line 1743.
 LaTeX Info: Redefining \. on input line 1762.
 LaTeX Info: Redefining \% on input line 1762.
 [47]
-<3Uniparametricos_files/figure-latex/BernoEj1-1.pdf, id=517, 449.68pt x 302.128
+<3Uniparametricos_files/figure-latex/BernoEj1-1.pdf, id=519, 449.68pt x 302.128
 75pt>
 File: 3Uniparametricos_files/figure-latex/BernoEj1-1.pdf Graphic file (type pdf
 )
@@ -1342,49 +1342,57 @@ Overfull \hbox (27.74892pt too wide) in paragraph at lines 1856--1856
 chains (at[] 
  []
 
-pdfTeX warning (ext4): destination with the same identifier (name{prp:unnamed-c
-hunk-11}) has been already used, duplicate ignored
+
+<3Uniparametricos_files/figure-latex/posBernoulliStan-1.pdf, id=539, 458.71375p
+t x 312.16624pt>
+File: 3Uniparametricos_files/figure-latex/posBernoulliStan-1.pdf Graphic file (
+type pdf)
+<use 3Uniparametricos_files/figure-latex/posBernoulliStan-1.pdf>
+Package pdftex.def Info: 3Uniparametricos_files/figure-latex/posBernoulliStan-1
+.pdf used on input line 1869.
+(pdftex.def)             Requested size: 345.01439pt x 234.79095pt.
+LaTeX Info: Redefining \. on input line 1889.
+LaTeX Info: Redefining \% on input line 1889.
+[50 <./3Uniparametricos_files/figure-latex/posBernoulliStan-1.pdf>]pdfTeX warni
+ng (ext4): destination with the same identifier (name{prp:unnamed-chunk-11}) ha
+s been already used, duplicate ignored
 <to be read again> 
                    \relax 
-l.1885 ...tect\hypertarget{prp:unnamed-chunk-11}{}
+l.1900 ...tect\hypertarget{prp:unnamed-chunk-11}{}
                                                   {\label{prp:unnamed-chunk-...
-LaTeX Info: Redefining \. on input line 1910.
-LaTeX Info: Redefining \% on input line 1910.
-[50]
-<3Uniparametricos_files/figure-latex/beta3-1.pdf, id=547, 440.64626pt x 313.17p
+LaTeX Info: Redefining \. on input line 1943.
+LaTeX Info: Redefining \% on input line 1943.
+[51]
+<3Uniparametricos_files/figure-latex/beta3-1.pdf, id=565, 440.64626pt x 313.17p
 t>
 File: 3Uniparametricos_files/figure-latex/beta3-1.pdf Graphic file (type pdf)
 <use 3Uniparametricos_files/figure-latex/beta3-1.pdf>
 Package pdftex.def Info: 3Uniparametricos_files/figure-latex/beta3-1.pdf used o
-n input line 1943.
+n input line 1958.
 (pdftex.def)             Requested size: 345.01381pt x 245.20343pt.
-
-<3Uniparametricos_files/figure-latex/betan-1.pdf, id=549, 463.7325pt x 316.1812
+LaTeX Info: Redefining \. on input line 1969.
+LaTeX Info: Redefining \% on input line 1969.
+[52 <./3Uniparametricos_files/figure-latex/beta3-1.pdf>]
+<3Uniparametricos_files/figure-latex/betan-1.pdf, id=581, 463.7325pt x 316.1812
 4pt>
 File: 3Uniparametricos_files/figure-latex/betan-1.pdf Graphic file (type pdf)
 <use 3Uniparametricos_files/figure-latex/betan-1.pdf>
 Package pdftex.def Info: 3Uniparametricos_files/figure-latex/betan-1.pdf used o
-n input line 1963.
+n input line 1978.
 (pdftex.def)             Requested size: 345.0035pt x 235.22964pt.
-LaTeX Info: Redefining \. on input line 1983.
-LaTeX Info: Redefining \% on input line 1983.
-[51]
-LaTeX Info: Redefining \. on input line 1983.
-LaTeX Info: Redefining \% on input line 1983.
-[52 <./3Uniparametricos_files/figure-latex/beta3-1.pdf>]
-LaTeX Info: Redefining \. on input line 2006.
-LaTeX Info: Redefining \% on input line 2006.
+LaTeX Info: Redefining \. on input line 1999.
+LaTeX Info: Redefining \% on input line 1999.
 [53 <./3Uniparametricos_files/figure-latex/betan-1.pdf>]pdfTeX warning (ext4): 
 destination with the same identifier (name{prp:unnamed-chunk-13}) has been alre
 ady used, duplicate ignored
 <to be read again> 
                    \relax 
-l.2011 ...tect\hypertarget{prp:unnamed-chunk-13}{}
+l.2026 ...tect\hypertarget{prp:unnamed-chunk-13}{}
                                                   {\label{prp:unnamed-chunk-...
-LaTeX Info: Redefining \. on input line 2043.
-LaTeX Info: Redefining \% on input line 2043.
+LaTeX Info: Redefining \. on input line 2051.
+LaTeX Info: Redefining \% on input line 2051.
 [54]
-LaTeX Font Info:    Try loading font information for T1+lmss on input line 2074
+LaTeX Font Info:    Try loading font information for T1+lmss on input line 2089
 .
 (/usr/local/texlive/2017/texmf-dist/tex/latex/lm/t1lmss.fd
 File: t1lmss.fd 2009/10/30 v1.6 Font defs for Latin Modern
@@ -1394,354 +1402,466 @@ Package microtype Info: Loading generic settings for font family
 (microtype)             For optimal results, create family-specific settings.
 (microtype)             See the microtype manual for details.
 
-Underfull \hbox (badness 4872) in paragraph at lines 2074--2076
+Underfull \hbox (badness 4872) in paragraph at lines 2089--2091
 []\T1/lmr/m/n/10 (+20) y des-afor-tu-na-da-men-te, en \T1/lmss/m/n/10 (+20) R \
 T1/lmr/m/n/10 (+20) se pre-sen-ta error al in-ten-tar eje-cu-tar
  []
 
-
-Overfull \hbox (3.82878pt too wide) in paragraph at lines 2110--2110
+LaTeX Info: Redefining \. on input line 2102.
+LaTeX Info: Redefining \% on input line 2102.
+[55]
+Overfull \hbox (3.82878pt too wide) in paragraph at lines 2125--2125
 [] 
  []
 
-LaTeX Info: Redefining \. on input line 2110.
-LaTeX Info: Redefining \% on input line 2110.
-[55]
 LaTeX Font Info:    Font shape `T1/lmtt/bx/n' in size <10> not available
-(Font)              Font shape `T1/lmtt/b/n' tried instead on input line 2120.
-
-Underfull \vbox (badness 1910) has occurred while \output is active []
-
-LaTeX Info: Redefining \. on input line 2156.
-LaTeX Info: Redefining \% on input line 2156.
+(Font)              Font shape `T1/lmtt/b/n' tried instead on input line 2135.
+LaTeX Info: Redefining \. on input line 2154.
+LaTeX Info: Redefining \% on input line 2154.
 [56]
-Underfull \vbox (badness 2772) has occurred while \output is active []
-
-LaTeX Info: Redefining \. on input line 2206.
-LaTeX Info: Redefining \% on input line 2206.
+LaTeX Info: Redefining \. on input line 2218.
+LaTeX Info: Redefining \% on input line 2218.
 [57]
-Underfull \hbox (badness 1533) in paragraph at lines 2244--2245
+Underfull \hbox (badness 1533) in paragraph at lines 2259--2260
 [][]\T1/lmr/bx/n/10 Resultado 3.8. []\T1/lmr/m/it/10 (+20) Cuan-do se tie-ne un
 a su-ce-sión de va-ria-bles alea-to-rias
  []
 
 
-Underfull \hbox (badness 1360) in paragraph at lines 2244--2245
+Underfull \hbox (badness 1360) in paragraph at lines 2259--2260
 \OML/lmm/m/it/10 S[]; [] ; S[]; [] ; S[]$ \T1/lmr/m/it/10 (+20) in-de-pen-dien-
 tes y con dis-tri-bu-ción $\OML/lmm/m/it/10 Binomial\OT1/lmr/m/n/10 (+20) (\OML
 /lmm/m/it/10 n[]; ^^R\OT1/lmr/m/n/10 (+20) )$ \T1/lmr/m/it/10 (+20) pa-ra
  []
 
 
-Overfull \hbox (24.32054pt too wide) in paragraph at lines 2259--2260
+Overfull \hbox (24.32054pt too wide) in paragraph at lines 2274--2275
 \T1/lmr/m/n/10 (-20) a la fun-ción de den-si-dad de la dis-tri-bu-ción $\OML/lm
 m/m/it/10 Beta []$\T1/lmr/m/n/10 (-20) .
  []
 
-LaTeX Info: Redefining \. on input line 2264.
-LaTeX Info: Redefining \% on input line 2264.
+LaTeX Info: Redefining \. on input line 2275.
+LaTeX Info: Redefining \% on input line 2275.
 [58]
-LaTeX Info: Redefining \. on input line 2318.
-LaTeX Info: Redefining \% on input line 2318.
+LaTeX Info: Redefining \. on input line 2333.
+LaTeX Info: Redefining \% on input line 2333.
 [59]
-LaTeX Font Info:    Try loading font information for TS1+lmtt on input line 232
-9.
+LaTeX Font Info:    Try loading font information for TS1+lmtt on input line 234
+4.
 (/usr/local/texlive/2017/texmf-dist/tex/latex/lm/ts1lmtt.fd
 File: ts1lmtt.fd 2009/10/30 v1.6 Font defs for Latin Modern
 )
-LaTeX Info: Redefining \. on input line 2356.
-LaTeX Info: Redefining \% on input line 2356.
+LaTeX Info: Redefining \. on input line 2371.
+LaTeX Info: Redefining \% on input line 2371.
 [60]
-Overfull \hbox (1.499pt too wide) in paragraph at lines 2379--2379
+Overfull \hbox (1.499pt too wide) in paragraph at lines 2394--2394
 []\T1/lmtt/m/n/10 ## post-warmup draws per chain=1000, total post-warmup draws=
 4000.[] 
  []
 
 
-Overfull \hbox (17.24895pt too wide) in paragraph at lines 2379--2379
+Overfull \hbox (17.24895pt too wide) in paragraph at lines 2394--2394
 []\T1/lmtt/m/n/10 ## Samples were drawn using NUTS(diag_e) at Sat Jun  5 00:11:
 22 2021.[] 
  []
 
 
-Overfull \hbox (38.24889pt too wide) in paragraph at lines 2379--2379
+Overfull \hbox (38.24889pt too wide) in paragraph at lines 2394--2394
 []\T1/lmtt/m/n/10 ## For each parameter, n_eff is a crude measure of effective 
 sample size,[] 
  []
 
 
-Overfull \hbox (27.74892pt too wide) in paragraph at lines 2379--2379
+Overfull \hbox (27.74892pt too wide) in paragraph at lines 2394--2394
 []\T1/lmtt/m/n/10 ## and Rhat is the potential scale reduction factor on split 
 chains (at[] 
  []
 
 
-<3Uniparametricos_files/figure-latex/BinomEj1-1.pdf, id=644, 440.64626pt x 313.
+<3Uniparametricos_files/figure-latex/posBinomialStan-1.pdf, id=657, 458.71375pt
+ x 313.17pt>
+File: 3Uniparametricos_files/figure-latex/posBinomialStan-1.pdf Graphic file (t
+ype pdf)
+<use 3Uniparametricos_files/figure-latex/posBinomialStan-1.pdf>
+Package pdftex.def Info: 3Uniparametricos_files/figure-latex/posBinomialStan-1.
+pdf used on input line 2407.
+(pdftex.def)             Requested size: 345.01439pt x 235.54591pt.
+
+<3Uniparametricos_files/figure-latex/BinomEj1-1.pdf, id=659, 440.64626pt x 313.
 17pt>
 File: 3Uniparametricos_files/figure-latex/BinomEj1-1.pdf Graphic file (type pdf
 )
 <use 3Uniparametricos_files/figure-latex/BinomEj1-1.pdf>
 Package pdftex.def Info: 3Uniparametricos_files/figure-latex/BinomEj1-1.pdf use
-d on input line 2397.
+d on input line 2427.
 (pdftex.def)             Requested size: 345.01381pt x 245.20343pt.
-LaTeX Info: Redefining \. on input line 2409.
-LaTeX Info: Redefining \% on input line 2409.
+LaTeX Info: Redefining \. on input line 2435.
+LaTeX Info: Redefining \% on input line 2435.
 [61]
-LaTeX Info: Redefining \. on input line 2409.
-LaTeX Info: Redefining \% on input line 2409.
-[62 <./3Uniparametricos_files/figure-latex/BinomEj1-1.pdf>]
-<3Uniparametricos_files/figure-latex/PredBinom-1.pdf, id=669, 463.7325pt x 313.
+LaTeX Info: Redefining \. on input line 2435.
+LaTeX Info: Redefining \% on input line 2435.
+[62 <./3Uniparametricos_files/figure-latex/posBinomialStan-1.pdf> <./3Uniparame
+tricos_files/figure-latex/BinomEj1-1.pdf>]
+<3Uniparametricos_files/figure-latex/PredBinom-1.pdf, id=692, 463.7325pt x 313.
 17pt>
 File: 3Uniparametricos_files/figure-latex/PredBinom-1.pdf Graphic file (type pd
 f)
 <use 3Uniparametricos_files/figure-latex/PredBinom-1.pdf>
 Package pdftex.def Info: 3Uniparametricos_files/figure-latex/PredBinom-1.pdf us
-ed on input line 2445.
+ed on input line 2475.
 (pdftex.def)             Requested size: 345.0035pt x 232.98936pt.
-LaTeX Info: Redefining \. on input line 2453.
-LaTeX Info: Redefining \% on input line 2453.
-[63 <./3Uniparametricos_files/figure-latex/PredBinom-1.pdf>]
-Underfull \hbox (badness 10000) in paragraph at lines 2479--2480
+LaTeX Info: Redefining \. on input line 2484.
+LaTeX Info: Redefining \% on input line 2484.
+[63]
+LaTeX Info: Redefining \. on input line 2504.
+LaTeX Info: Redefining \% on input line 2504.
+[64 <./3Uniparametricos_files/figure-latex/PredBinom-1.pdf>]
+Underfull \hbox (badness 10000) in paragraph at lines 2509--2510
 \OML/lmm/m/it/10 Y[]; [] ; Y[]$ \T1/lmr/m/it/10 (+20) in-de-pen-dien-tes y con 
 dis-tri-bu-ción $\OML/lmm/m/it/10 BinomialNegativa\OT1/lmr/m/n/10 (+20) (\OML/l
 mm/m/it/10 k[]; ^^R\OT1/lmr/m/n/10 (+20) )$
  []
 
-LaTeX Info: Redefining \. on input line 2482.
-LaTeX Info: Redefining \% on input line 2482.
-[64]
-LaTeX Info: Redefining \. on input line 2527.
-LaTeX Info: Redefining \% on input line 2527.
+LaTeX Info: Redefining \. on input line 2525.
+LaTeX Info: Redefining \% on input line 2525.
 [65]
-Overfull \hbox (1.499pt too wide) in paragraph at lines 2550--2550
+Overfull \hbox (1.499pt too wide) in paragraph at lines 2580--2580
 []\T1/lmtt/m/n/10 ## post-warmup draws per chain=1000, total post-warmup draws=
 4000.[] 
  []
 
 
-Overfull \hbox (17.24895pt too wide) in paragraph at lines 2550--2550
+Overfull \hbox (17.24895pt too wide) in paragraph at lines 2580--2580
 []\T1/lmtt/m/n/10 ## Samples were drawn using NUTS(diag_e) at Sat Jun  5 15:23:
 38 2021.[] 
  []
 
 
-Overfull \hbox (38.24889pt too wide) in paragraph at lines 2550--2550
+Overfull \hbox (38.24889pt too wide) in paragraph at lines 2580--2580
 []\T1/lmtt/m/n/10 ## For each parameter, n_eff is a crude measure of effective 
 sample size,[] 
  []
 
 
-Overfull \hbox (27.74892pt too wide) in paragraph at lines 2550--2550
+Overfull \hbox (27.74892pt too wide) in paragraph at lines 2580--2580
 []\T1/lmtt/m/n/10 ## and Rhat is the potential scale reduction factor on split 
 chains (at[] 
  []
 
-LaTeX Info: Redefining \. on input line 2582.
-LaTeX Info: Redefining \% on input line 2582.
+LaTeX Info: Redefining \. on input line 2583.
+LaTeX Info: Redefining \% on input line 2583.
 [66]
-Underfull \vbox (badness 1708) has occurred while \output is active []
-
-LaTeX Info: Redefining \. on input line 2599.
-LaTeX Info: Redefining \% on input line 2599.
+LaTeX Info: Redefining \. on input line 2627.
+LaTeX Info: Redefining \% on input line 2627.
 [67]
-Overfull \vbox (0.33347pt too high) detected at line 2649
- []
+Underfull \vbox (badness 10000) has occurred while \output is active []
 
-LaTeX Info: Redefining \. on input line 2649.
-LaTeX Info: Redefining \% on input line 2649.
+LaTeX Info: Redefining \. on input line 2673.
+LaTeX Info: Redefining \% on input line 2673.
 [68]
-Overfull \hbox (1.499pt too wide) in paragraph at lines 2663--2663
+Overfull \hbox (1.499pt too wide) in paragraph at lines 2693--2693
 []\T1/lmtt/m/n/10 ## post-warmup draws per chain=1000, total post-warmup draws=
 4000.[] 
  []
 
 
-Overfull \hbox (17.24895pt too wide) in paragraph at lines 2663--2663
+Overfull \hbox (17.24895pt too wide) in paragraph at lines 2693--2693
 []\T1/lmtt/m/n/10 ## Samples were drawn using NUTS(diag_e) at Sat Jun  5 15:24:
 08 2021.[] 
  []
 
 
-Overfull \hbox (38.24889pt too wide) in paragraph at lines 2663--2663
+Overfull \hbox (38.24889pt too wide) in paragraph at lines 2693--2693
 []\T1/lmtt/m/n/10 ## For each parameter, n_eff is a crude measure of effective 
 sample size,[] 
  []
 
 
-Overfull \hbox (27.74892pt too wide) in paragraph at lines 2663--2663
+Overfull \hbox (27.74892pt too wide) in paragraph at lines 2693--2693
 []\T1/lmtt/m/n/10 ## and Rhat is the potential scale reduction factor on split 
 chains (at[] 
  []
 
 
-Overfull \hbox (33.66539pt too wide) detected at line 2672
+<3Uniparametricos_files/figure-latex/posBNStan-1.pdf, id=742, 463.7325pt x 312.
+16624pt>
+File: 3Uniparametricos_files/figure-latex/posBNStan-1.pdf Graphic file (type pd
+f)
+<use 3Uniparametricos_files/figure-latex/posBNStan-1.pdf>
+Package pdftex.def Info: 3Uniparametricos_files/figure-latex/posBNStan-1.pdf us
+ed on input line 2706.
+(pdftex.def)             Requested size: 345.0035pt x 232.24261pt.
+LaTeX Info: Redefining \. on input line 2711.
+LaTeX Info: Redefining \% on input line 2711.
+[69 <./3Uniparametricos_files/figure-latex/posBNStan-1.pdf>]
+Overfull \hbox (33.66539pt too wide) detected at line 2717
 \OML/lmm/m/it/10 p\OT1/lmr/m/n/10 ([]\OMS/lmsy/m/n/10 j\OML/lmm/m/it/10 Y[]; []
   ; Y[]\OT1/lmr/m/n/10 ) = [][]\OML/lmm/m/it/10 I[]\OT1/lmr/m/n/10 ([])
  []
 
 
-Overfull \hbox (55.84984pt too wide) in paragraph at lines 2682--2682
+Overfull \hbox (55.84984pt too wide) in paragraph at lines 2727--2727
 [] 
  []
 
-LaTeX Info: Redefining \. on input line 2692.
-LaTeX Info: Redefining \% on input line 2692.
-[69]
-<3Uniparametricos_files/figure-latex/jefber-1.pdf, id=726, 463.7325pt x 313.17p
+LaTeX Info: Redefining \. on input line 2762.
+LaTeX Info: Redefining \% on input line 2762.
+[70]
+<3Uniparametricos_files/figure-latex/jefber-1.pdf, id=765, 463.7325pt x 313.17p
 t>
 File: 3Uniparametricos_files/figure-latex/jefber-1.pdf Graphic file (type pdf)
 <use 3Uniparametricos_files/figure-latex/jefber-1.pdf>
 Package pdftex.def Info: 3Uniparametricos_files/figure-latex/jefber-1.pdf used 
-on input line 2725.
+on input line 2770.
 (pdftex.def)             Requested size: 345.0035pt x 232.98936pt.
-LaTeX Info: Redefining \. on input line 2736.
-LaTeX Info: Redefining \% on input line 2736.
-[70]
-LaTeX Info: Redefining \. on input line 2736.
-LaTeX Info: Redefining \% on input line 2736.
+LaTeX Info: Redefining \. on input line 2780.
+LaTeX Info: Redefining \% on input line 2780.
 [71 <./3Uniparametricos_files/figure-latex/jefber-1.pdf>]
-LaTeX Info: Redefining \. on input line 2736.
-LaTeX Info: Redefining \% on input line 2736.
-[72
+LaTeX Info: Redefining \. on input line 2816.
+LaTeX Info: Redefining \% on input line 2816.
+[72]
+Underfull \vbox (badness 2875) has occurred while \output is active []
 
-]
+LaTeX Info: Redefining \. on input line 2856.
+LaTeX Info: Redefining \% on input line 2856.
+[73]
+LaTeX Info: Redefining \. on input line 2884.
+LaTeX Info: Redefining \% on input line 2884.
+[74]
+Overfull \hbox (12.90186pt too wide) in paragraph at lines 2908--2908
+[] 
+ []
+
+LaTeX Info: Redefining \. on input line 2914.
+LaTeX Info: Redefining \% on input line 2914.
+[75]
+Overfull \hbox (47.96269pt too wide) detected at line 2953
+[]\OML/lmm/m/it/10 p\OT1/lmr/m/n/10 ([] \OMS/lmsy/m/n/10 j \OT1/lmr/bx/n/10 Y\O
+T1/lmr/m/n/10 ) = [][][]
+ []
+
+LaTeX Info: Redefining \. on input line 2957.
+LaTeX Info: Redefining \% on input line 2957.
+[76]
+<3Uniparametricos_files/figure-latex/EjemPoisson1-1.pdf, id=824, 445.665pt x 31
+3.17pt>
+File: 3Uniparametricos_files/figure-latex/EjemPoisson1-1.pdf Graphic file (type
+ pdf)
+<use 3Uniparametricos_files/figure-latex/EjemPoisson1-1.pdf>
+Package pdftex.def Info: 3Uniparametricos_files/figure-latex/EjemPoisson1-1.pdf
+ used on input line 2973.
+(pdftex.def)             Requested size: 344.99919pt x 242.43185pt.
+
+<3Uniparametricos_files/figure-latex/EjemPoisson2-1.pdf, id=829, 435.6275pt x 3
+00.12125pt>
+File: 3Uniparametricos_files/figure-latex/EjemPoisson2-1.pdf Graphic file (type
+ pdf)
+<use 3Uniparametricos_files/figure-latex/EjemPoisson2-1.pdf>
+Package pdftex.def Info: 3Uniparametricos_files/figure-latex/EjemPoisson2-1.pdf
+ used on input line 2983.
+(pdftex.def)             Requested size: 344.99944pt x 237.68393pt.
+LaTeX Info: Redefining \. on input line 2989.
+LaTeX Info: Redefining \% on input line 2989.
+[77]
+Underfull \vbox (badness 10000) detected at line 3029
+ []
+
+
+Underfull \vbox (badness 2495) has occurred while \output is active []
+
+LaTeX Info: Redefining \. on input line 3029.
+LaTeX Info: Redefining \% on input line 3029.
+[78 <./3Uniparametricos_files/figure-latex/EjemPoisson1-1.pdf>]
+LaTeX Info: Redefining \. on input line 3029.
+LaTeX Info: Redefining \% on input line 3029.
+[79 <./3Uniparametricos_files/figure-latex/EjemPoisson2-1.pdf>]
+<3Uniparametricos_files/figure-latex/PredPostPoisson-1.pdf, id=866, 463.7325pt 
+x 310.15875pt>
+File: 3Uniparametricos_files/figure-latex/PredPostPoisson-1.pdf Graphic file (t
+ype pdf)
+<use 3Uniparametricos_files/figure-latex/PredPostPoisson-1.pdf>
+Package pdftex.def Info: 3Uniparametricos_files/figure-latex/PredPostPoisson-1.
+pdf used on input line 3061.
+(pdftex.def)             Requested size: 345.0035pt x 230.7491pt.
+LaTeX Info: Redefining \. on input line 3088.
+LaTeX Info: Redefining \% on input line 3088.
+[80]
+Overfull \hbox (1.499pt too wide) in paragraph at lines 3111--3111
+[]\T1/lmtt/m/n/10 ## post-warmup draws per chain=1000, total post-warmup draws=
+4000.[] 
+ []
+
+LaTeX Info: Redefining \. on input line 3111.
+LaTeX Info: Redefining \% on input line 3111.
+[81 <./3Uniparametricos_files/figure-latex/PredPostPoisson-1.pdf>]
+Overfull \hbox (17.24895pt too wide) in paragraph at lines 3111--3111
+[]\T1/lmtt/m/n/10 ## Samples were drawn using NUTS(diag_e) at Sat Jun  5 19:26:
+50 2021.[] 
+ []
+
+
+Overfull \hbox (38.24889pt too wide) in paragraph at lines 3111--3111
+[]\T1/lmtt/m/n/10 ## For each parameter, n_eff is a crude measure of effective 
+sample size,[] 
+ []
+
+
+Overfull \hbox (27.74892pt too wide) in paragraph at lines 3111--3111
+[]\T1/lmtt/m/n/10 ## and Rhat is the potential scale reduction factor on split 
+chains (at[] 
+ []
+
+
+<3Uniparametricos_files/figure-latex/posPoissonStan-1.pdf, id=883, 458.71375pt 
+x 312.16624pt>
+File: 3Uniparametricos_files/figure-latex/posPoissonStan-1.pdf Graphic file (ty
+pe pdf)
+<use 3Uniparametricos_files/figure-latex/posPoissonStan-1.pdf>
+Package pdftex.def Info: 3Uniparametricos_files/figure-latex/posPoissonStan-1.p
+df used on input line 3124.
+(pdftex.def)             Requested size: 345.01439pt x 234.79095pt.
+LaTeX Info: Redefining \. on input line 3133.
+LaTeX Info: Redefining \% on input line 3133.
+[82 <./3Uniparametricos_files/figure-latex/posPoissonStan-1.pdf>]
 Ap\'{e}ndice A.
 pdfTeX warning (ext4): destination with the same identifier (name{def:unnamed-c
 hunk-1}) has been already used, duplicate ignored
 <to be read again> 
                    \relax 
-l.2747 \protect\hypertarget{def:unnamed-chunk-1}{}
+l.3144 \protect\hypertarget{def:unnamed-chunk-1}{}
                                                   {\label{def:unnamed-chunk-...
-[73]
-LaTeX Info: Redefining \. on input line 2837.
-LaTeX Info: Redefining \% on input line 2837.
-[74]pdfTeX warning (ext4): destination with the same identifier (name{prp:unnam
+[83
+
+]
+LaTeX Info: Redefining \. on input line 3234.
+LaTeX Info: Redefining \% on input line 3234.
+[84]pdfTeX warning (ext4): destination with the same identifier (name{prp:unnam
 ed-chunk-8}) has been already used, duplicate ignored
 <to be read again> 
                    \relax 
-l.2843 \protect\hypertarget{prp:unnamed-chunk-8}{}
+l.3240 \protect\hypertarget{prp:unnamed-chunk-8}{}
                                                   {\label{prp:unnamed-chunk-...
-LaTeX Info: Redefining \. on input line 2881.
-LaTeX Info: Redefining \% on input line 2881.
-[75]
-LaTeX Info: Redefining \. on input line 2917.
-LaTeX Info: Redefining \% on input line 2917.
-[76]
-LaTeX Info: Redefining \. on input line 2989.
-LaTeX Info: Redefining \% on input line 2989.
-[77]
-LaTeX Info: Redefining \. on input line 3056.
-LaTeX Info: Redefining \% on input line 3056.
-[78]
-LaTeX Info: Redefining \. on input line 3118.
-LaTeX Info: Redefining \% on input line 3118.
-[79]pdfTeX warning (ext4): destination with the same identifier (name{prp:unnam
+LaTeX Info: Redefining \. on input line 3278.
+LaTeX Info: Redefining \% on input line 3278.
+[85]
+LaTeX Info: Redefining \. on input line 3314.
+LaTeX Info: Redefining \% on input line 3314.
+[86]
+LaTeX Info: Redefining \. on input line 3386.
+LaTeX Info: Redefining \% on input line 3386.
+[87]
+LaTeX Info: Redefining \. on input line 3453.
+LaTeX Info: Redefining \% on input line 3453.
+[88]
+LaTeX Info: Redefining \. on input line 3515.
+LaTeX Info: Redefining \% on input line 3515.
+[89]pdfTeX warning (ext4): destination with the same identifier (name{prp:unnam
 ed-chunk-31}) has been already used, duplicate ignored
 <to be read again> 
                    \relax 
-l.3129 ...tect\hypertarget{prp:unnamed-chunk-31}{}
+l.3526 ...tect\hypertarget{prp:unnamed-chunk-31}{}
                                                   {\label{prp:unnamed-chunk-...
 pdfTeX warning (ext4): destination with the same identifier (name{prp:unnamed-c
 hunk-33}) has been already used, duplicate ignored
 <to be read again> 
                    \relax 
-l.3158 ...tect\hypertarget{prp:unnamed-chunk-33}{}
+l.3555 ...tect\hypertarget{prp:unnamed-chunk-33}{}
                                                   {\label{prp:unnamed-chunk-...
-LaTeX Info: Redefining \. on input line 3172.
-LaTeX Info: Redefining \% on input line 3172.
-[80]
-LaTeX Info: Redefining \. on input line 3227.
-LaTeX Info: Redefining \% on input line 3227.
-[81]
-LaTeX Info: Redefining \. on input line 3278.
-LaTeX Info: Redefining \% on input line 3278.
-[82]
-LaTeX Info: Redefining \. on input line 3335.
-LaTeX Info: Redefining \% on input line 3335.
-[83]
-LaTeX Info: Redefining \. on input line 3397.
-LaTeX Info: Redefining \% on input line 3397.
-[84]
-LaTeX Info: Redefining \. on input line 3445.
-LaTeX Info: Redefining \% on input line 3445.
-[85]
-LaTeX Info: Redefining \. on input line 3502.
-LaTeX Info: Redefining \% on input line 3502.
-[86]
-Overfull \hbox (8.56467pt too wide) in paragraph at lines 3513--3514
+LaTeX Info: Redefining \. on input line 3569.
+LaTeX Info: Redefining \% on input line 3569.
+[90]
+LaTeX Info: Redefining \. on input line 3624.
+LaTeX Info: Redefining \% on input line 3624.
+[91]
+LaTeX Info: Redefining \. on input line 3675.
+LaTeX Info: Redefining \% on input line 3675.
+[92]
+LaTeX Info: Redefining \. on input line 3732.
+LaTeX Info: Redefining \% on input line 3732.
+[93]
+LaTeX Info: Redefining \. on input line 3794.
+LaTeX Info: Redefining \% on input line 3794.
+[94]
+LaTeX Info: Redefining \. on input line 3842.
+LaTeX Info: Redefining \% on input line 3842.
+[95]
+LaTeX Info: Redefining \. on input line 3899.
+LaTeX Info: Redefining \% on input line 3899.
+[96]
+Overfull \hbox (8.56467pt too wide) in paragraph at lines 3910--3911
 []\T1/lmr/m/n/10 (-20) Si $\OT1/lmr/bx/n/10 A[]$ \T1/lmr/m/n/10 (-20) (i=1,...,
 n) son ma-tri-ces del mis-mo ta-ma-ño, en-ton-ces $[][] \OML/lmm/m/it/10 traza\
 OT1/lmr/m/n/10 (-20) (\OT1/lmr/bx/n/10 A[]\OT1/lmr/m/n/10 (-20) ) =
  []
 
-LaTeX Info: Redefining \. on input line 3552.
-LaTeX Info: Redefining \% on input line 3552.
-[87]
-LaTeX Info: Redefining \. on input line 3572.
-LaTeX Info: Redefining \% on input line 3572.
-[88]
+LaTeX Info: Redefining \. on input line 3949.
+LaTeX Info: Redefining \% on input line 3949.
+[97]
+LaTeX Info: Redefining \. on input line 3969.
+LaTeX Info: Redefining \% on input line 3969.
+[98]
 Ap\'{e}ndice B.
 pdfTeX warning (ext4): destination with the same identifier (name{def:unnamed-c
 hunk-1}) has been already used, duplicate ignored
 <to be read again> 
                    \relax 
-l.3575 \protect\hypertarget{def:unnamed-chunk-1}{}
+l.3972 \protect\hypertarget{def:unnamed-chunk-1}{}
                                                   {\label{def:unnamed-chunk-...
 pdfTeX warning (ext4): destination with the same identifier (name{prp:unnamed-c
 hunk-2}) has been already used, duplicate ignored
 <to be read again> 
                    \relax 
-l.3583 \protect\hypertarget{prp:unnamed-chunk-2}{}
+l.3980 \protect\hypertarget{prp:unnamed-chunk-2}{}
                                                   {\label{prp:unnamed-chunk-...
 pdfTeX warning (ext4): destination with the same identifier (name{def:unnamed-c
 hunk-3}) has been already used, duplicate ignored
 <to be read again> 
                    \relax 
-l.3593 \protect\hypertarget{def:unnamed-chunk-3}{}
+l.3990 \protect\hypertarget{def:unnamed-chunk-3}{}
                                                   {\label{def:unnamed-chunk-...
 pdfTeX warning (ext4): destination with the same identifier (name{prp:unnamed-c
 hunk-4}) has been already used, duplicate ignored
 <to be read again> 
                    \relax 
-l.3601 \protect\hypertarget{prp:unnamed-chunk-4}{}
+l.3998 \protect\hypertarget{prp:unnamed-chunk-4}{}
                                                   {\label{prp:unnamed-chunk-...
-[89
+[99
 
 ]
 Underfull \vbox (badness 5817) has occurred while \output is active []
 
-LaTeX Info: Redefining \. on input line 3627.
-LaTeX Info: Redefining \% on input line 3627.
-[90]pdfTeX warning (ext4): destination with the same identifier (name{def:unnam
-ed-chunk-7}) has been already used, duplicate ignored
+LaTeX Info: Redefining \. on input line 4024.
+LaTeX Info: Redefining \% on input line 4024.
+[100]pdfTeX warning (ext4): destination with the same identifier (name{def:unna
+med-chunk-7}) has been already used, duplicate ignored
 <to be read again> 
                    \relax 
-l.3635 \protect\hypertarget{def:unnamed-chunk-7}{}
+l.4032 \protect\hypertarget{def:unnamed-chunk-7}{}
                                                   {\label{def:unnamed-chunk-...
 
-Overfull \hbox (72.06693pt too wide) in paragraph at lines 3679--3679
+Overfull \hbox (72.06693pt too wide) in paragraph at lines 4076--4076
 [] 
  []
 
 
 Underfull \vbox (badness 6220) has occurred while \output is active []
 
-[91]
-Overfull \hbox (33.81186pt too wide) in paragraph at lines 3692--3692
+[101]
+Overfull \hbox (33.81186pt too wide) in paragraph at lines 4089--4089
 [] 
  []
 
 
-Overfull \hbox (7.57162pt too wide) in paragraph at lines 3714--3714
+Overfull \hbox (7.57162pt too wide) in paragraph at lines 4111--4111
 [] 
  []
 
-LaTeX Info: Redefining \. on input line 3714.
-LaTeX Info: Redefining \% on input line 3714.
-[92] [93]
-LaTeX Info: Redefining \. on input line 3726.
-LaTeX Info: Redefining \% on input line 3726.
-[94
+LaTeX Info: Redefining \. on input line 4111.
+LaTeX Info: Redefining \% on input line 4111.
+[102] [103]
+LaTeX Info: Redefining \. on input line 4123.
+LaTeX Info: Redefining \% on input line 4123.
+[104
 
 ]
 Ap\'{e}ndice C.
@@ -1749,231 +1869,234 @@ pdfTeX warning (ext4): destination with the same identifier (name{prp:unnamed-c
 hunk-1}) has been already used, duplicate ignored
 <to be read again> 
                    \relax 
-l.3742 \protect\hypertarget{prp:unnamed-chunk-1}{}
+l.4139 \protect\hypertarget{prp:unnamed-chunk-1}{}
                                                   {\label{prp:unnamed-chunk-...
-[95]pdfTeX warning (ext4): destination with the same identifier (name{exm:unnam
-ed-chunk-3}) has been already used, duplicate ignored
+[105]pdfTeX warning (ext4): destination with the same identifier (name{exm:unna
+med-chunk-3}) has been already used, duplicate ignored
 <to be read again> 
                    \relax 
-l.3756 \protect\hypertarget{exm:unnamed-chunk-3}{}
+l.4153 \protect\hypertarget{exm:unnamed-chunk-3}{}
                                                   {\label{exm:unnamed-chunk-...
 
-<A3Simulacion_files/figure-latex/unnamed-chunk-4-1.pdf, id=1079, 432.61626pt x 
+<A3Simulacion_files/figure-latex/unnamed-chunk-4-1.pdf, id=1229, 432.61626pt x 
 285.065pt>
 File: A3Simulacion_files/figure-latex/unnamed-chunk-4-1.pdf Graphic file (type 
 pdf)
 <use A3Simulacion_files/figure-latex/unnamed-chunk-4-1.pdf>
 Package pdftex.def Info: A3Simulacion_files/figure-latex/unnamed-chunk-4-1.pdf 
-used on input line 3793.
+used on input line 4190.
 (pdftex.def)             Requested size: 345.01088pt x 227.33894pt.
-LaTeX Info: Redefining \. on input line 3801.
-LaTeX Info: Redefining \% on input line 3801.
-[96]
+LaTeX Info: Redefining \. on input line 4198.
+LaTeX Info: Redefining \% on input line 4198.
+[106]
 Underfull \vbox (badness 10000) has occurred while \output is active []
 
-LaTeX Info: Redefining \. on input line 3827.
-LaTeX Info: Redefining \% on input line 3827.
-[97 <./A3Simulacion_files/figure-latex/unnamed-chunk-4-1.pdf>]
-<A3Simulacion_files/figure-latex/unnamed-chunk-6-1.pdf, id=1109, 429.605pt x 28
+LaTeX Info: Redefining \. on input line 4224.
+LaTeX Info: Redefining \% on input line 4224.
+[107 <./A3Simulacion_files/figure-latex/unnamed-chunk-4-1.pdf>]
+<A3Simulacion_files/figure-latex/unnamed-chunk-6-1.pdf, id=1259, 429.605pt x 28
 5.065pt>
 File: A3Simulacion_files/figure-latex/unnamed-chunk-6-1.pdf Graphic file (type 
 pdf)
 <use A3Simulacion_files/figure-latex/unnamed-chunk-6-1.pdf>
 Package pdftex.def Info: A3Simulacion_files/figure-latex/unnamed-chunk-6-1.pdf 
-used on input line 3868.
+used on input line 4265.
 (pdftex.def)             Requested size: 345.00206pt x 228.9266pt.
 
 Underfull \vbox (badness 10000) has occurred while \output is active []
 
-LaTeX Info: Redefining \. on input line 3870.
-LaTeX Info: Redefining \% on input line 3870.
-[98]
-LaTeX Info: Redefining \. on input line 3909.
-LaTeX Info: Redefining \% on input line 3909.
-[99 <./A3Simulacion_files/figure-latex/unnamed-chunk-6-1.pdf>]
-<A3Simulacion_files/figure-latex/unnamed-chunk-8-1.pdf, id=1134, 424.58624pt x 
+LaTeX Info: Redefining \. on input line 4267.
+LaTeX Info: Redefining \% on input line 4267.
+[108]
+LaTeX Info: Redefining \. on input line 4306.
+LaTeX Info: Redefining \% on input line 4306.
+[109 <./A3Simulacion_files/figure-latex/unnamed-chunk-6-1.pdf>]
+<A3Simulacion_files/figure-latex/unnamed-chunk-8-1.pdf, id=1284, 424.58624pt x 
 285.065pt>
 File: A3Simulacion_files/figure-latex/unnamed-chunk-8-1.pdf Graphic file (type 
 pdf)
 <use A3Simulacion_files/figure-latex/unnamed-chunk-8-1.pdf>
 Package pdftex.def Info: A3Simulacion_files/figure-latex/unnamed-chunk-8-1.pdf 
-used on input line 3927.
+used on input line 4324.
 (pdftex.def)             Requested size: 345.01434pt x 231.64084pt.
 pdfTeX warning (ext4): destination with the same identifier (name{exm:unnamed-c
 hunk-9}) has been already used, duplicate ignored
 <to be read again> 
                    \relax 
-l.3932 \protect\hypertarget{exm:unnamed-chunk-9}{}
+l.4329 \protect\hypertarget{exm:unnamed-chunk-9}{}
                                                   {\label{exm:unnamed-chunk-...
-LaTeX Info: Redefining \. on input line 3958.
-LaTeX Info: Redefining \% on input line 3958.
-[100 <./A3Simulacion_files/figure-latex/unnamed-chunk-8-1.pdf>]
-<A3Simulacion_files/figure-latex/unnamed-chunk-10-1.pdf, id=1149, 435.6275pt x 
+LaTeX Info: Redefining \. on input line 4355.
+LaTeX Info: Redefining \% on input line 4355.
+[110 <./A3Simulacion_files/figure-latex/unnamed-chunk-8-1.pdf>]
+<A3Simulacion_files/figure-latex/unnamed-chunk-10-1.pdf, id=1299, 435.6275pt x 
 285.065pt>
 File: A3Simulacion_files/figure-latex/unnamed-chunk-10-1.pdf Graphic file (type
  pdf)
 <use A3Simulacion_files/figure-latex/unnamed-chunk-10-1.pdf>
 Package pdftex.def Info: A3Simulacion_files/figure-latex/unnamed-chunk-10-1.pdf
- used on input line 3983.
+ used on input line 4380.
 (pdftex.def)             Requested size: 344.99944pt x 225.76pt.
 pdfTeX warning (ext4): destination with the same identifier (name{exm:unnamed-c
 hunk-11}) has been already used, duplicate ignored
 <to be read again> 
                    \relax 
-l.3988 ...tect\hypertarget{exm:unnamed-chunk-11}{}
+l.4385 ...tect\hypertarget{exm:unnamed-chunk-11}{}
                                                   {\label{exm:unnamed-chunk-...
 
 Underfull \vbox (badness 1337) has occurred while \output is active []
 
-LaTeX Info: Redefining \. on input line 3992.
-LaTeX Info: Redefining \% on input line 3992.
-[101 <./A3Simulacion_files/figure-latex/unnamed-chunk-10-1.pdf>]
-Overfull \vbox (0.33347pt too high) detected at line 4051
+LaTeX Info: Redefining \. on input line 4389.
+LaTeX Info: Redefining \% on input line 4389.
+[111 <./A3Simulacion_files/figure-latex/unnamed-chunk-10-1.pdf>]
+Overfull \vbox (0.33347pt too high) detected at line 4448
  []
 
-LaTeX Info: Redefining \. on input line 4051.
-LaTeX Info: Redefining \% on input line 4051.
-[102]
-<A3Simulacion_files/figure-latex/unnamed-chunk-12-1.pdf, id=1168, 435.6275pt x 
+LaTeX Info: Redefining \. on input line 4448.
+LaTeX Info: Redefining \% on input line 4448.
+[112]
+<A3Simulacion_files/figure-latex/unnamed-chunk-12-1.pdf, id=1318, 435.6275pt x 
 283.0575pt>
 File: A3Simulacion_files/figure-latex/unnamed-chunk-12-1.pdf Graphic file (type
  pdf)
 <use A3Simulacion_files/figure-latex/unnamed-chunk-12-1.pdf>
 Package pdftex.def Info: A3Simulacion_files/figure-latex/unnamed-chunk-12-1.pdf
- used on input line 4078.
+ used on input line 4475.
 (pdftex.def)             Requested size: 344.99944pt x 224.17012pt.
 
-<A3Simulacion_files/figure-latex/unnamed-chunk-12-2.pdf, id=1169, 435.6275pt x 
+<A3Simulacion_files/figure-latex/unnamed-chunk-12-2.pdf, id=1319, 435.6275pt x 
 285.065pt>
 File: A3Simulacion_files/figure-latex/unnamed-chunk-12-2.pdf Graphic file (type
  pdf)
 <use A3Simulacion_files/figure-latex/unnamed-chunk-12-2.pdf>
 Package pdftex.def Info: A3Simulacion_files/figure-latex/unnamed-chunk-12-2.pdf
- used on input line 4091.
+ used on input line 4488.
 (pdftex.def)             Requested size: 344.99944pt x 225.76pt.
 
 Underfull \vbox (badness 10000) has occurred while \output is active []
 
-LaTeX Info: Redefining \. on input line 4103.
-LaTeX Info: Redefining \% on input line 4103.
-[103 <./A3Simulacion_files/figure-latex/unnamed-chunk-12-1.pdf>]
-LaTeX Info: Redefining \. on input line 4119.
-LaTeX Info: Redefining \% on input line 4119.
-[104 <./A3Simulacion_files/figure-latex/unnamed-chunk-12-2.pdf>]
-LaTeX Info: Redefining \. on input line 4192.
-LaTeX Info: Redefining \% on input line 4192.
-[105]
-<A3Simulacion_files/figure-latex/unnamed-chunk-14-1.pdf, id=1213, 436.63126pt x
+LaTeX Info: Redefining \. on input line 4500.
+LaTeX Info: Redefining \% on input line 4500.
+[113 <./A3Simulacion_files/figure-latex/unnamed-chunk-12-1.pdf>]
+LaTeX Info: Redefining \. on input line 4516.
+LaTeX Info: Redefining \% on input line 4516.
+[114 <./A3Simulacion_files/figure-latex/unnamed-chunk-12-2.pdf>]
+LaTeX Info: Redefining \. on input line 4589.
+LaTeX Info: Redefining \% on input line 4589.
+[115]
+<A3Simulacion_files/figure-latex/unnamed-chunk-14-1.pdf, id=1363, 436.63126pt x
  248.93pt>
 File: A3Simulacion_files/figure-latex/unnamed-chunk-14-1.pdf Graphic file (type
  pdf)
 <use A3Simulacion_files/figure-latex/unnamed-chunk-14-1.pdf>
 Package pdftex.def Info: A3Simulacion_files/figure-latex/unnamed-chunk-14-1.pdf
- used on input line 4196.
+ used on input line 4593.
 (pdftex.def)             Requested size: 345.00154pt x 196.69052pt.
 pdfTeX warning (ext4): destination with the same identifier (name{exm:unnamed-c
 hunk-15}) has been already used, duplicate ignored
 <to be read again> 
                    \relax 
-l.4201 ...tect\hypertarget{exm:unnamed-chunk-15}{}
+l.4598 ...tect\hypertarget{exm:unnamed-chunk-15}{}
                                                   {\label{exm:unnamed-chunk-...
-LaTeX Info: Redefining \. on input line 4231.
-LaTeX Info: Redefining \% on input line 4231.
-[106 <./A3Simulacion_files/figure-latex/unnamed-chunk-14-1.pdf>]
-<A3Simulacion_files/figure-latex/unnamed-chunk-16-1.pdf, id=1227, 469.755pt x 2
+LaTeX Info: Redefining \. on input line 4628.
+LaTeX Info: Redefining \% on input line 4628.
+[116 <./A3Simulacion_files/figure-latex/unnamed-chunk-14-1.pdf>]
+<A3Simulacion_files/figure-latex/unnamed-chunk-16-1.pdf, id=1377, 469.755pt x 2
 84.06125pt>
 File: A3Simulacion_files/figure-latex/unnamed-chunk-16-1.pdf Graphic file (type
  pdf)
 <use A3Simulacion_files/figure-latex/unnamed-chunk-16-1.pdf>
 Package pdftex.def Info: A3Simulacion_files/figure-latex/unnamed-chunk-16-1.pdf
- used on input line 4235.
+ used on input line 4632.
 (pdftex.def)             Requested size: 344.997pt x 208.61995pt.
-LaTeX Info: Redefining \. on input line 4255.
-LaTeX Info: Redefining \% on input line 4255.
-[107 <./A3Simulacion_files/figure-latex/unnamed-chunk-16-1.pdf>]
-LaTeX Info: Redefining \. on input line 4326.
-LaTeX Info: Redefining \% on input line 4326.
-[108]
-<A3Simulacion_files/figure-latex/unnamed-chunk-18-1.pdf, id=1254, 434.62375pt x
+LaTeX Info: Redefining \. on input line 4652.
+LaTeX Info: Redefining \% on input line 4652.
+[117 <./A3Simulacion_files/figure-latex/unnamed-chunk-16-1.pdf>]
+LaTeX Info: Redefining \. on input line 4723.
+LaTeX Info: Redefining \% on input line 4723.
+[118]
+<A3Simulacion_files/figure-latex/unnamed-chunk-18-1.pdf, id=1404, 434.62375pt x
  248.93pt>
 File: A3Simulacion_files/figure-latex/unnamed-chunk-18-1.pdf Graphic file (type
  pdf)
 <use A3Simulacion_files/figure-latex/unnamed-chunk-18-1.pdf>
 Package pdftex.def Info: A3Simulacion_files/figure-latex/unnamed-chunk-18-1.pdf
- used on input line 4342.
+ used on input line 4739.
 (pdftex.def)             Requested size: 345.0202pt x 197.60973pt.
-LaTeX Info: Redefining \. on input line 4354.
-LaTeX Info: Redefining \% on input line 4354.
-[109 <./A3Simulacion_files/figure-latex/unnamed-chunk-18-1.pdf>]
-<A3Simulacion_files/figure-latex/unnamed-chunk-19-1.pdf, id=1268, 435.6275pt x 
+LaTeX Info: Redefining \. on input line 4751.
+LaTeX Info: Redefining \% on input line 4751.
+[119 <./A3Simulacion_files/figure-latex/unnamed-chunk-18-1.pdf>]
+<A3Simulacion_files/figure-latex/unnamed-chunk-19-1.pdf, id=1417, 435.6275pt x 
 248.93pt>
 File: A3Simulacion_files/figure-latex/unnamed-chunk-19-1.pdf Graphic file (type
  pdf)
 <use A3Simulacion_files/figure-latex/unnamed-chunk-19-1.pdf>
 Package pdftex.def Info: A3Simulacion_files/figure-latex/unnamed-chunk-19-1.pdf
- used on input line 4358.
+ used on input line 4755.
 (pdftex.def)             Requested size: 344.99944pt x 197.14252pt.
-LaTeX Info: Redefining \. on input line 4396.
-LaTeX Info: Redefining \% on input line 4396.
-[110 <./A3Simulacion_files/figure-latex/unnamed-chunk-19-1.pdf>]
-LaTeX Info: Redefining \. on input line 4456.
-LaTeX Info: Redefining \% on input line 4456.
-[111]
-<A3Simulacion_files/figure-latex/unnamed-chunk-22-1.pdf, id=1292, 443.6575pt x 
+LaTeX Info: Redefining \. on input line 4793.
+LaTeX Info: Redefining \% on input line 4793.
+[120 <./A3Simulacion_files/figure-latex/unnamed-chunk-19-1.pdf>]
+LaTeX Info: Redefining \. on input line 4853.
+LaTeX Info: Redefining \% on input line 4853.
+[121]
+<A3Simulacion_files/figure-latex/unnamed-chunk-22-1.pdf, id=1442, 443.6575pt x 
 296.10625pt>
 File: A3Simulacion_files/figure-latex/unnamed-chunk-22-1.pdf Graphic file (type
  pdf)
 <use A3Simulacion_files/figure-latex/unnamed-chunk-22-1.pdf>
 Package pdftex.def Info: A3Simulacion_files/figure-latex/unnamed-chunk-22-1.pdf
- used on input line 4474.
+ used on input line 4871.
 (pdftex.def)             Requested size: 344.99538pt x 230.2571pt.
 
-Underfull \hbox (badness 1072) in paragraph at lines 4479--4479
+Underfull \hbox (badness 1072) in paragraph at lines 4876--4876
 []\T1/lmr/bx/n/12 Buenas prác-ti-cas en la apli-ca-ción de mé-to-dos
  []
 
-LaTeX Info: Redefining \. on input line 4491.
-LaTeX Info: Redefining \% on input line 4491.
-[112]
-LaTeX Info: Redefining \. on input line 4507.
-LaTeX Info: Redefining \% on input line 4507.
-[113 <./A3Simulacion_files/figure-latex/unnamed-chunk-22-1.pdf>]
-LaTeX Info: Redefining \. on input line 4511.
-LaTeX Info: Redefining \% on input line 4511.
-[114] (./ModelosBayesianos.bbl [115
+LaTeX Info: Redefining \. on input line 4888.
+LaTeX Info: Redefining \% on input line 4888.
+[122]
+LaTeX Info: Redefining \. on input line 4904.
+LaTeX Info: Redefining \% on input line 4904.
+[123 <./A3Simulacion_files/figure-latex/unnamed-chunk-22-1.pdf>]
+LaTeX Info: Redefining \. on input line 4908.
+LaTeX Info: Redefining \% on input line 4908.
+[124] (./ModelosBayesianos.bbl [125
 
 ]
 LaTeX Info: Redefining \. on input line 1.
 LaTeX Info: Redefining \% on input line 1.
-[116
+[126
 
-] [117])
-Package atveryend Info: Empty hook `BeforeClearDocument' on input line 4516.
-LaTeX Info: Redefining \. on input line 4516.
-LaTeX Info: Redefining \% on input line 4516.
-[118]
-Package atveryend Info: Empty hook `AfterLastShipout' on input line 4516.
+] [127])
+Package atveryend Info: Empty hook `BeforeClearDocument' on input line 4913.
+LaTeX Info: Redefining \. on input line 4913.
+LaTeX Info: Redefining \% on input line 4913.
+[128]
+Package atveryend Info: Empty hook `AfterLastShipout' on input line 4913.
 (./ModelosBayesianos.aux
 LaTeX Info: Redefining \. on input line 25.
 LaTeX Info: Redefining \% on input line 25.
 )
-Package atveryend Info: Executing hook `AtVeryEndDocument' on input line 4516.
-Package atveryend Info: Empty hook `AtEndAfterFileList' on input line 4516.
+Package atveryend Info: Executing hook `AtVeryEndDocument' on input line 4913.
+Package atveryend Info: Empty hook `AtEndAfterFileList' on input line 4913.
 
 LaTeX Warning: There were multiply-defined labels.
 
-Package atveryend Info: Empty hook `AtVeryVeryEnd' on input line 4516.
+Package atveryend Info: Empty hook `AtVeryVeryEnd' on input line 4913.
  ) 
 Here is how much of TeX's memory you used:
- 16376 strings out of 492995
- 238451 string characters out of 6132704
- 368336 words of memory out of 5000000
- 18726 multiletter control sequences out of 15000+600000
+ 16471 strings out of 492995
+ 241165 string characters out of 6132704
+ 369446 words of memory out of 5000000
+ 18776 multiletter control sequences out of 15000+600000
  133061 words of font info for 225 fonts, out of 8000000 for 9000
  1141 hyphenation exceptions out of 8191
- 34i,21n,38p,1377b,537s stack positions out of 5000i,500n,10000p,200000b,80000s
-pdfTeX warning (dest): name{Hfootnote.7} has been referenced but does not exi
+ 34i,21n,38p,1377b,490s stack positions out of 5000i,500n,10000p,200000b,80000s
+pdfTeX warning (dest): name{Hfootnote.8} has been referenced but does not exi
 st, replaced by a fixed one
+
+pdfTeX warning (dest): name{Hfootnote.7} has been referenced but does not exist
+, replaced by a fixed one
 
 pdfTeX warning (dest): name{Hfootnote.6} has been referenced but does not exist
 , replaced by a fixed one
@@ -2026,10 +2149,10 @@ dist/fonts/type1/public/lm/lmtk10.pfb></usr/local/texlive/2017/texmf-dist/fonts
 /type1/public/lm/lmtt10.pfb></usr/local/texlive/2017/texmf-dist/fonts/type1/pub
 lic/amsfonts/symbols/msbm10.pfb></usr/local/texlive/2017/texmf-dist/fonts/type1
 /public/amsfonts/symbols/msbm7.pfb>
-Output written on ModelosBayesianos.pdf (118 pages, 1090401 bytes).
+Output written on ModelosBayesianos.pdf (128 pages, 1211627 bytes).
 PDF statistics:
- 1670 PDF objects out of 1728 (max. 8388607)
- 1450 compressed objects within 15 object streams
- 638 named destinations out of 1000 (max. 500000)
- 20771 words of extra memory for PDF output out of 24883 (max. 10000000)
+ 1831 PDF objects out of 2073 (max. 8388607)
+ 1579 compressed objects within 16 object streams
+ 676 named destinations out of 1000 (max. 500000)
+ 20814 words of extra memory for PDF output out of 24883 (max. 10000000)
 

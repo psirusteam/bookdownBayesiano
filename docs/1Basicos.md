@@ -19,7 +19,8 @@ R=E(L)=\int L(A, \theta)p(\theta|\mathbf{X})d\theta
 
 En cualquiera de los dos casos anteriores, se busca la estimación que minimice el riesgo $R$. Ilustramos los anteriores conceptos en los siguientes ejemplos tanto en la estadística clásica como en la estadística bayesiana.
 
-\BeginKnitrBlock{example}<div class="example"><span class="example" id="exm:unnamed-chunk-1"><strong>(\#exm:unnamed-chunk-1) </strong></span>Sea $X_i$ con $i=1,\cdots, n$ una muestra aleatoria con media $\theta$ y varianza $\sigma^2$, ambas fijas, y suponga que se desea encontrar el mejor estimador de $\theta$ bajo la función de pérdida cuadrática dada por
+\BeginKnitrBlock{example}
+<span class="example" id="exm:unnamed-chunk-1"><strong>(\#exm:unnamed-chunk-1) </strong></span>Sea $X_i$ con $i=1,\cdots, n$ una muestra aleatoria con media $\theta$ y varianza $\sigma^2$, ambas fijas, y suponga que se desea encontrar el mejor estimador de $\theta$ bajo la función de pérdida cuadrática dada por
 
 \begin{equation*}
 L(A,\theta)=(A-\theta)^2
@@ -33,17 +34,21 @@ R=E(A-\theta)^2&=Var(A)+(E(A)-\theta)^2\\
 
 Y al buscar los coeficientes $c_i$ que minimizan la anterior expresión, encontramos que $c_i=\theta^2/(\sigma^2+n\theta^2)$ para todo $i$. Como estos coeficientes conducen a un estimador que depende del parámetro desconocido, concluimos que no hay ningún estimador que minimiza el riesgo.
 
-Para encontrar una solución, es necesario restringir aún más el rango de estimadores; para eso, se impone la restricción de que $\sum_{i=1}^n c_i=1$. De esta forma, el riesgo está dado por $R=\sum c_i^2\sigma^2$. Dado que $\sigma^2$ es fijo, al minimizar $\sum c_i^2$ sujeto a la restricción, se tiene que la solución es $c_i=1/n$ para todo $i$, y así encontramos que el mejor estimador (en el sentido de minimizar el riesgo de la función de pérdida cuadrática) dentro de todas las formas lineales con $\sum c_i=1$ es la media muestral $\bar{X}$.</div>\EndKnitrBlock{example}
+Para encontrar una solución, es necesario restringir aún más el rango de estimadores; para eso, se impone la restricción de que $\sum_{i=1}^n c_i=1$. De esta forma, el riesgo está dado por $R=\sum c_i^2\sigma^2$. Dado que $\sigma^2$ es fijo, al minimizar $\sum c_i^2$ sujeto a la restricción, se tiene que la solución es $c_i=1/n$ para todo $i$, y así encontramos que el mejor estimador (en el sentido de minimizar el riesgo de la función de pérdida cuadrática) dentro de todas las formas lineales con $\sum c_i=1$ es la media muestral $\bar{X}$.
+\EndKnitrBlock{example}
 
-\BeginKnitrBlock{example}<div class="example"><span class="example" id="exm:unnamed-chunk-2"><strong>(\#exm:unnamed-chunk-2) </strong></span>Suponga que se desea estimar un parámetro de interés $\theta$ en el contexto de la estadística bayesiana y denotamos la función de densidad posterior de $\theta$ como $p(\theta|\mathbf{X})$, entonces si utilizamos la función de pérdida cuadrática, el riesgo asociado será
+\BeginKnitrBlock{example}
+<span class="example" id="exm:unnamed-chunk-2"><strong>(\#exm:unnamed-chunk-2) </strong></span>Suponga que se desea estimar un parámetro de interés $\theta$ en el contexto de la estadística bayesiana y denotamos la función de densidad posterior de $\theta$ como $p(\theta|\mathbf{X})$, entonces si utilizamos la función de pérdida cuadrática, el riesgo asociado será
 
 \begin{align*}
 R&=E(L(A,\theta))=E (A-\theta)^2=Var(\theta)+(E(\theta)-A)^2
 \end{align*}
 
-que es minimizado si $A=E(\theta)$. Es decir, la mejor acción para estimar $\theta$ es utilizar su tomada con respecto a la distribución posterior $p(\theta|\mathbf{X})$.</div>\EndKnitrBlock{example}
+que es minimizado si $A=E(\theta)$. Es decir, la mejor acción para estimar $\theta$ es utilizar su tomada con respecto a la distribución posterior $p(\theta|\mathbf{X})$.
+\EndKnitrBlock{example}
 
-\BeginKnitrBlock{example}<div class="example"><span class="example" id="exm:unnamed-chunk-3"><strong>(\#exm:unnamed-chunk-3) </strong></span>En el mismo contexto del ejemplo anterior, si cambiamos la función de pérdida a la siguiente
+\BeginKnitrBlock{example}
+<span class="example" id="exm:unnamed-chunk-3"><strong>(\#exm:unnamed-chunk-3) </strong></span>En el mismo contexto del ejemplo anterior, si cambiamos la función de pérdida a la siguiente
 \begin{equation*}
 L(A,\theta)=|A-\theta|=(A-\theta)I_{(A\geq\theta)}+(\theta-A)I_{(\theta>A)}
 \end{equation*}
@@ -65,7 +70,8 @@ Igualando a cero, tenemos que
 \int_{(A\geq\theta)}p(\theta|\mathbf{X})d\theta=\int_{(\theta>A)}p(\theta|\mathbf{X})d\theta=0.5
 \end{equation*}
 
-Y concluimos que la acción $A$ que induce menor riesgo corresponde al percentil 50% o la mediana de la distribución posterior de $\theta$.</div>\EndKnitrBlock{example}
+Y concluimos que la acción $A$ que induce menor riesgo corresponde al percentil 50% o la mediana de la distribución posterior de $\theta$.
+\EndKnitrBlock{example}
 <br>
 
 De los anteriores ejemplos se observa que, bajo un mismo contexto, cuando se utilizan diferentes funciones de pérdida, también se obtienen distintas estimaciones, y distintas acciones que optimizan el riesgo.
@@ -85,7 +91,8 @@ expresión de integral, $\int$, indicando la sumatoria, en el caso de las
 variables aleatorias discretas o la integral de Riemann-Stieltjes en el
 caso de las variables aleatorias continuas.
 
-\BeginKnitrBlock{definition}<div class="definition"><span class="definition" id="def:unnamed-chunk-4"><strong>(\#def:unnamed-chunk-4) </strong></span>Sean $\mathbf{X}=(X_1,\ldots,X_p)'$, $\mathbf{Y}=(Y_1,\ldots,Y_q)'$ dos vectores aleatorios definidos sobre los espacios de  muestreo $\mathcal{X}$, $\mathcal{Y}$, respectivamente. Suponga que la distribución conjunta de estos vectores aleatorios está dada por $p(\mathbf{X},\mathbf{Y})$. La distribución marginal de $\mathbf{X}$ está dada por
+\BeginKnitrBlock{definition}
+<span class="definition" id="def:unnamed-chunk-4"><strong>(\#def:unnamed-chunk-4) </strong></span>Sean $\mathbf{X}=(X_1,\ldots,X_p)'$, $\mathbf{Y}=(Y_1,\ldots,Y_q)'$ dos vectores aleatorios definidos sobre los espacios de  muestreo $\mathcal{X}$, $\mathcal{Y}$, respectivamente. Suponga que la distribución conjunta de estos vectores aleatorios está dada por $p(\mathbf{X},\mathbf{Y})$. La distribución marginal de $\mathbf{X}$ está dada por
 \begin{equation}
 p(\mathbf{X})=\int p(\mathbf{X},\mathbf{Y})\ d\mathbf{Y}
 \end{equation}
@@ -93,20 +100,24 @@ y la distribución condicional de $\mathbf{X}$ dado $\mathbf{Y}$ como
 \begin{equation}
 p(\mathbf{X} \mid \mathbf{Y})
 =\frac{p(\mathbf{X},\mathbf{Y})}{p(\mathbf{Y})}
-\end{equation}</div>\EndKnitrBlock{definition}
+\end{equation}
+\EndKnitrBlock{definition}
 
 
-\BeginKnitrBlock{proposition}<div class="proposition"><span class="proposition" id="prp:Res121"><strong>(\#prp:Res121) </strong></span>Suponga los vectores $\mathbf{X}$, $\mathbf{Y}$ y un tercer vector $\mathbf{Z}=(Z_1,\ldots,Z_r)'$ definido sobre el espacio de muestreo  $\mathcal{Z}$. Entonces se tiene que
+\BeginKnitrBlock{proposition}
+<span class="proposition" id="prp:Res121"><strong>(\#prp:Res121) </strong></span>Suponga los vectores $\mathbf{X}$, $\mathbf{Y}$ y un tercer vector $\mathbf{Z}=(Z_1,\ldots,Z_r)'$ definido sobre el espacio de muestreo  $\mathcal{Z}$. Entonces se tiene que
 \begin{equation}
 p(\mathbf{X} \mid \mathbf{Z})=\int p(\mathbf{X},\mathbf{Y} \mid \mathbf{Z})\ d\mathbf{Y}
 \end{equation}
 y
 \begin{equation}
 p(\mathbf{X} \mid \mathbf{Y},\mathbf{Z})=\frac{p(\mathbf{X},\mathbf{Y} \mid \mathbf{Z})}{p(\mathbf{Y} \mid \mathbf{Z})}
-\end{equation}</div>\EndKnitrBlock{proposition}
+\end{equation}
+\EndKnitrBlock{proposition}
 <br>
 
-\BeginKnitrBlock{proof}<div class="proof">\iffalse{} <span class="proof"><em>Prueba. </em></span>  \fi{}En primer lugar, nótese que
+\BeginKnitrBlock{proof}
+\iffalse{} <span class="proof"><em>Prueba. </em></span>  \fi{}En primer lugar, nótese que
 \begin{align*}
 \int p(\mathbf{X},\mathbf{Y} \mid \mathbf{Z})\ d\mathbf{Y}&=
 \int \frac{p(\mathbf{X},\mathbf{Y},\mathbf{Z})}{p(\mathbf{Z})}\ d\mathbf{Y}\\
@@ -121,34 +132,44 @@ Por otro lado,
 \frac{p(\mathbf{X},\mathbf{Y},\mathbf{Z})}{p(\mathbf{Z})} \diagup
 \frac{p(\mathbf{Y},\mathbf{Z})}{p(\mathbf{Z})}
 =\frac{p(\mathbf{X},\mathbf{Y},\mathbf{Z})}{p(\mathbf{Y},\mathbf{Z})}=p(\mathbf{X} \mid \mathbf{Y},\mathbf{Z})
-\end{align*}</div>\EndKnitrBlock{proof}
+\end{align*}
+\EndKnitrBlock{proof}
 <br>
 
-\BeginKnitrBlock{definition}<div class="definition"><span class="definition" id="def:unnamed-chunk-6"><strong>(\#def:unnamed-chunk-6) </strong></span>Sean $\mathbf{X}$, $\mathbf{Y}$, $\mathbf{Z}$ vectores aleatorios, se dice que $\mathbf{X}$ es condicionalmente independiente de $\mathbf{Y}$ con respecto a $\mathbf{Z}$ si satisfacen la siguiente expresión
+\BeginKnitrBlock{definition}
+<span class="definition" id="def:unnamed-chunk-6"><strong>(\#def:unnamed-chunk-6) </strong></span>Sean $\mathbf{X}$, $\mathbf{Y}$, $\mathbf{Z}$ vectores aleatorios, se dice que $\mathbf{X}$ es condicionalmente independiente de $\mathbf{Y}$ con respecto a $\mathbf{Z}$ si satisfacen la siguiente expresión
 \begin{equation}
 p(\mathbf{X},\mathbf{Y} \mid \mathbf{Z})=p(\mathbf{X} \mid \mathbf{Z})p(\mathbf{Y} \mid \mathbf{Z})
-\end{equation}</div>\EndKnitrBlock{definition}
+\end{equation}
+\EndKnitrBlock{definition}
 
 
-\BeginKnitrBlock{proposition}<div class="proposition"><span class="proposition" id="prp:Res122"><strong>(\#prp:Res122) </strong></span>Si $\mathbf{X}$ es condicionalmente independiente de $\mathbf{Y}$ con respecto a $\mathbf{Z}$, entonces se tiene que
+\BeginKnitrBlock{proposition}
+<span class="proposition" id="prp:Res122"><strong>(\#prp:Res122) </strong></span>Si $\mathbf{X}$ es condicionalmente independiente de $\mathbf{Y}$ con respecto a $\mathbf{Z}$, entonces se tiene que
 \begin{equation}
 p(\mathbf{X} \mid \mathbf{Y},\mathbf{Z})=p(\mathbf{X} \mid \mathbf{Z})
-\end{equation}</div>\EndKnitrBlock{proposition}
+\end{equation}
+\EndKnitrBlock{proposition}
 <br>
 
-\BeginKnitrBlock{proof}<div class="proof">\iffalse{} <span class="proof"><em>Prueba. </em></span>  \fi{}Como $p(\mathbf{X},\mathbf{Y} \mid \mathbf{Z})=\dfrac{p(\mathbf{X},\mathbf{Y},\mathbf{Z})}{p(\mathbf{Z})}$, entonces
+\BeginKnitrBlock{proof}
+\iffalse{} <span class="proof"><em>Prueba. </em></span>  \fi{}Como $p(\mathbf{X},\mathbf{Y} \mid \mathbf{Z})=\dfrac{p(\mathbf{X},\mathbf{Y},\mathbf{Z})}{p(\mathbf{Z})}$, entonces
 
 \begin{align*}
 p(\mathbf{X} \mid \mathbf{Y},\mathbf{Z})=\frac{p(\mathbf{X},\mathbf{Y},\mathbf{Z})}{p(\mathbf{Y},\mathbf{Z})}
 =\frac{p(\mathbf{X},\mathbf{Y} \mid \mathbf{Z})p(\mathbf{Z})}{p(\mathbf{Y},\mathbf{Z})}
 =\frac{p(\mathbf{X} \mid \mathbf{Z})p(\mathbf{Y} \mid \mathbf{Z})}{p(\mathbf{Y} \mid \mathbf{Z})}=p(\mathbf{X} \mid \mathbf{Z})
-\end{align*}</div>\EndKnitrBlock{proof}
+\end{align*}
+\EndKnitrBlock{proof}
 <br>
 
-\BeginKnitrBlock{proposition}<div class="proposition"><span class="proposition" id="prp:unnamed-chunk-8"><strong>(\#prp:unnamed-chunk-8) </strong></span>Si $\mathbf{X}$ es independiente de $\mathbf{Y}$, entonces $\mathbf{X}$ es condicionalmente independiente de $\mathbf{Y}$ dado cualquier otro vector $\mathbf{Z}$.</div>\EndKnitrBlock{proposition}
+\BeginKnitrBlock{proposition}
+<span class="proposition" id="prp:unnamed-chunk-8"><strong>(\#prp:unnamed-chunk-8) </strong></span>Si $\mathbf{X}$ es independiente de $\mathbf{Y}$, entonces $\mathbf{X}$ es condicionalmente independiente de $\mathbf{Y}$ dado cualquier otro vector $\mathbf{Z}$.
+\EndKnitrBlock{proposition}
 <br>
 
-\BeginKnitrBlock{proof}<div class="proof">\iffalse{} <span class="proof"><em>Prueba. </em></span>  \fi{}Nótese que
+\BeginKnitrBlock{proof}
+\iffalse{} <span class="proof"><em>Prueba. </em></span>  \fi{}Nótese que
 \begin{equation*}
 p(\mathbf{X},\mathbf{Y}\mid \mathbf{Z})=p(\mathbf{X} \mid \mathbf{Y},\mathbf{Z})p(\mathbf{Y} \mid \mathbf{Z})=p(\mathbf{X} \mid \mathbf{Z})p(\mathbf{Y} \mid \mathbf{Z})
 \end{equation*}
@@ -156,7 +177,8 @@ p(\mathbf{X},\mathbf{Y}\mid \mathbf{Z})=p(\mathbf{X} \mid \mathbf{Y},\mathbf{Z})
 puesto que, utilizando la hipótesis de independencia, se tiene que
 \begin{equation*}
 p(\mathbf{X} \mid \mathbf{Y})=p(\mathbf{X})
-\end{equation*}</div>\EndKnitrBlock{proof}
+\end{equation*}
+\EndKnitrBlock{proof}
 <br>
 
 ## Teorema de Bayes
@@ -234,13 +256,16 @@ distribución *posterior no-normalizada* y encierra el núcleo
 técnico de la inferencia bayesiana. La constante $p(\mathbf{Y})$
 faltante en la expresión \@ref(eq:Bayes1) se da a continuación.
 
-\BeginKnitrBlock{proposition}<div class="proposition"><span class="proposition" id="prp:Res131"><strong>(\#prp:Res131) </strong></span>La expresión $p(\mathbf{Y})$ corresponde a una constante $k$ tal que
+\BeginKnitrBlock{proposition}
+<span class="proposition" id="prp:Res131"><strong>(\#prp:Res131) </strong></span>La expresión $p(\mathbf{Y})$ corresponde a una constante $k$ tal que
 \begin{equation*}
 k=p(\mathbf{Y})=E_{\btheta}[p(Y \mid \btheta)]
-\end{equation*}</div>\EndKnitrBlock{proposition}
+\end{equation*}
+\EndKnitrBlock{proposition}
 <br>
 
-\BeginKnitrBlock{proof}<div class="proof">\iffalse{} <span class="proof"><em>Prueba. </em></span>  \fi{}Nótese que
+\BeginKnitrBlock{proof}
+\iffalse{} <span class="proof"><em>Prueba. </em></span>  \fi{}Nótese que
 \begin{equation*}
 k=p(\mathbf{Y})=\int p(\mathbf{Y},\btheta)\ d\btheta=\int p(\btheta)p(\mathbf{Y} \mid \btheta)\ d\btheta.
 \end{equation*}
@@ -248,7 +273,8 @@ entonces
 \begin{align*}
 k&=\int p(\mathbf{Y} \mid \btheta)p(\btheta)\ d\btheta\\
 &=E_{\btheta}[p(Y \mid \btheta)]
-\end{align*}</div>\EndKnitrBlock{proof}
+\end{align*}
+\EndKnitrBlock{proof}
 <br>
 
 Curiosamente, el reverendo Thomas Bayes nunca publicó este resultado,
@@ -262,7 +288,8 @@ seguro que él mismo no sospechaba del gran impacto de su resultado. De hecho, a
 A continuación se presenta un ejemplo simple de este sencillo pero
 poderoso teorema.
 
-\BeginKnitrBlock{example}<div class="example"><span class="example" id="exm:unnamed-chunk-11"><strong>(\#exm:unnamed-chunk-11) </strong></span>Suponga que una fábrica del sector industrial produce bolígrafos y que la producción está a cargo de tres máquinas. La primera máquina produce el 50% del total de bolígrafos en el año, la segunda máquina produce el 30% y la última maquina produce el restante 20%. Por supuesto, esta producción esta sujeta al error y por tanto, basados en la experiencia, es posible reconocer que, de los artículos producidos por la primera máquina, el 5% resultan defectuosos; de los artículos producidos por la segunda máquina, el 2% resultan defectuosos y, de los artículos producidos por la última máquina, el 6% resultan defectuosos.
+\BeginKnitrBlock{example}
+<span class="example" id="exm:unnamed-chunk-11"><strong>(\#exm:unnamed-chunk-11) </strong></span>Suponga que una fábrica del sector industrial produce bolígrafos y que la producción está a cargo de tres máquinas. La primera máquina produce el 50% del total de bolígrafos en el año, la segunda máquina produce el 30% y la última maquina produce el restante 20%. Por supuesto, esta producción esta sujeta al error y por tanto, basados en la experiencia, es posible reconocer que, de los artículos producidos por la primera máquina, el 5% resultan defectuosos; de los artículos producidos por la segunda máquina, el 2% resultan defectuosos y, de los artículos producidos por la última máquina, el 6% resultan defectuosos.
 
 Una pregunta natural que surge es acerca de la probabilidad de selección de un artículo defectuoso y para responder a esta pregunta con rigurosidad de probabilística es necesario enfocar la atención en los tópicos básicos que dejamos atrás. En primer lugar, el experimento en cuestión es la selección de un bolígrafo. Para este experimento, una terna $(\Omega, \mathfrak{F}, P)$ ^[$\Omega$ denota el conjunto de todos lo posibles resultados del experimento, $\mathfrak{F}$ denota una $\sigma$-álgebra y $P$ hace referencia ana medida de probabilidad propiamente definida.], llamada comúnmente espacio de medida o espacio de probabilidad, está dada por
 
@@ -300,13 +327,15 @@ Sin embargo, también es posible plantearse otro tipo de preguntas que sirven pa
 
 La anterior función de probabilidad se conoce con el nombre de regla de probabilidad de Bayes y, aparte de ser el baluarte de la mayoría de investigaciones estadísticas que se plantean hoy en día, ha sido la piedra de tropiezo de muchos investigadores radicales que trataron de estigmatizar este enfoque tildando a sus seguidores de mediocres matemáticos y pobres probabilistas afirmando que la regla de probabilidad de Bayes es sólo un artilugio diseñado para divertirse en el tablero.
 
-Pues bien, la interpretación de la regla de bayes se puede realizar en el sentido de actualización de la estructura probabilística que gobierna el experimento. Y esta actualización tiene mucho sentido práctico cuando se cae en la cuenta de que la vida real está llena de calibradores y que las situaciones generadas son consecuencia de algún cambio estructural. De esta forma, el conocimiento de la probabilidad de que el artículo sea producido por la primera máquina se actualiza al conocer que este artículo particular es defectuoso y de esta manera calibra la estructura aleatoria que existe detrás del contexto de la fábrica de bolígrafos. Aparte de servir para resolver problemas como el anteriormente mencionado, la regla de bayes ha marcado el comienzo de un nuevo enfoque de análisis de datos, no solamente porque hace explícitas las relaciones causales entre los procesos aleatorios, sino también porque facilita la inferencia estadística y la interpretación de los resultados.</div>\EndKnitrBlock{example}
+Pues bien, la interpretación de la regla de bayes se puede realizar en el sentido de actualización de la estructura probabilística que gobierna el experimento. Y esta actualización tiene mucho sentido práctico cuando se cae en la cuenta de que la vida real está llena de calibradores y que las situaciones generadas son consecuencia de algún cambio estructural. De esta forma, el conocimiento de la probabilidad de que el artículo sea producido por la primera máquina se actualiza al conocer que este artículo particular es defectuoso y de esta manera calibra la estructura aleatoria que existe detrás del contexto de la fábrica de bolígrafos. Aparte de servir para resolver problemas como el anteriormente mencionado, la regla de bayes ha marcado el comienzo de un nuevo enfoque de análisis de datos, no solamente porque hace explícitas las relaciones causales entre los procesos aleatorios, sino también porque facilita la inferencia estadística y la interpretación de los resultados.
+\EndKnitrBlock{example}
 <br>
 
 En el campo de la medicina, también se ha visto un gran número de la
 aplicación del teorema de Bayes. A continuación se enuncia uno de ellos:
 
-\BeginKnitrBlock{example}<div class="example"><span class="example" id="exm:unnamed-chunk-12"><strong>(\#exm:unnamed-chunk-12) </strong></span>El Grupo de Trabajo de Servicios Preventivos de los Estados Unidos (USPSTF) hizo unas nuevas y controversiales recomendaciones [recomendaciones](https://www.uspreventiveservicestaskforce.org/uspstf/recommendation/breast-cancer-screening) sobre la detección del cáncer de mama dentro de los cuales no recomienda el examen de la mamografía en mujeres entre 40 y 49 años de edad, afirmando que la práctica bienal de este examen debe ser una decisión individual según el contexto particular de la paciente. Por otro lado, la USPSTF sí recomienda tal práctica de forma bienal en grupos de mujeres de entre 50 y 74 años de edad, puesto que no encontró suficiente evidencia de beneficio o daño adicional en realizar este examen en mujeres mayores a los 74 años. Además, también recomendó *no* realizar auto exámanes de senos, contrario a las recomendaciones y consejos que da la mayoría de los profesionales y organizaciones de la salud, incluyendo la *Amerian Cancer Society*. Como información adicional, se sabe que:
+\BeginKnitrBlock{example}
+<span class="example" id="exm:unnamed-chunk-12"><strong>(\#exm:unnamed-chunk-12) </strong></span>El Grupo de Trabajo de Servicios Preventivos de los Estados Unidos (USPSTF) hizo unas nuevas y controversiales recomendaciones [recomendaciones](https://www.uspreventiveservicestaskforce.org/uspstf/recommendation/breast-cancer-screening) sobre la detección del cáncer de mama dentro de los cuales no recomienda el examen de la mamografía en mujeres entre 40 y 49 años de edad, afirmando que la práctica bienal de este examen debe ser una decisión individual según el contexto particular de la paciente. Por otro lado, la USPSTF sí recomienda tal práctica de forma bienal en grupos de mujeres de entre 50 y 74 años de edad, puesto que no encontró suficiente evidencia de beneficio o daño adicional en realizar este examen en mujeres mayores a los 74 años. Además, también recomendó *no* realizar auto exámanes de senos, contrario a las recomendaciones y consejos que da la mayoría de los profesionales y organizaciones de la salud, incluyendo la *Amerian Cancer Society*. Como información adicional, se sabe que:
   
 * Los expertos estiman que un 12.3% de las mujeres desarrollan formas invasivas del cáncer de mama durante la vida.
 * La probabilidad de que una mujer desarrolle el cáncer de mama entre los 40 y los 49 años de edad es 1 en 69, y esta probabilidad aumenta a medida que envejezca, de tal forma que llega a ser de 1 en 38 en mujeres de entre 50 y 59 años.
@@ -346,5 +375,6 @@ Similarmente, se puede calcular estas dos probabilidades para las mujeres de 50 
 | Cáncer $\mid$ Negativo    | 0.0000163    | 0.0000326    |
 | No cáncer $\mid$ Negativo | 0.9999837    | 0.9999674    |
 
-Los anteriores resultados muestran cómo cambia la probabilidad de tener cáncer al condicionar en los resultados de la pruebe. Entre estos valores se puede ver que, con un resultado positivo en el examen, la probabilidad de tener efectivamente el cáncer es aproximadamente diez puntos porcentuales más bajo en mujeres de edad de 40 y 49 años, de donde se puede sustentar la recomendación de no efectuar este examen en mujeres de este rango de edad.</div>\EndKnitrBlock{example}
+Los anteriores resultados muestran cómo cambia la probabilidad de tener cáncer al condicionar en los resultados de la pruebe. Entre estos valores se puede ver que, con un resultado positivo en el examen, la probabilidad de tener efectivamente el cáncer es aproximadamente diez puntos porcentuales más bajo en mujeres de edad de 40 y 49 años, de donde se puede sustentar la recomendación de no efectuar este examen en mujeres de este rango de edad.
+\EndKnitrBlock{example}
 <br>

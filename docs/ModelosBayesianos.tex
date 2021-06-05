@@ -1855,6 +1855,21 @@ La siguiente salida de \texttt{STAN} permite conocer la estimación bayesiana po
 ## convergence, Rhat=1).
 \end{verbatim}
 
+La figura \ref{fig:posBernoulliStan} muestra la distribución posterior para este ejemplo, junto con la estimación puntual, correspondiente a la media.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{bayesplot}\SpecialCharTok{::}\FunctionTok{mcmc\_areas}\NormalTok{(Berfit, }\AttributeTok{pars =} \StringTok{"theta"}\NormalTok{, }
+                      \AttributeTok{prob =} \FloatTok{0.95}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{figure}
+\centering
+\includegraphics{3Uniparametricos_files/figure-latex/posBernoulliStan-1.pdf}
+\caption{\label{fig:posBernoulliStan}Distribución posterior.}
+\end{figure}
+
 \hypertarget{modelo-binomial}{%
 \section{Modelo Binomial}\label{modelo-binomial}}
 
@@ -2378,6 +2393,21 @@ La siguiente salida de \texttt{STAN} permite conocer la estimación bayesiana po
 ## convergence, Rhat=1).
 \end{verbatim}
 
+La figura \ref{fig:posBinomialStan} muestra la distribución posterior para este ejemplo, junto con la estimación puntual, correspondiente a la media.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{bayesplot}\SpecialCharTok{::}\FunctionTok{mcmc\_areas}\NormalTok{(Binfit, }\AttributeTok{pars =} \StringTok{"theta"}\NormalTok{, }
+                      \AttributeTok{prob =} \FloatTok{0.95}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{figure}
+\centering
+\includegraphics{3Uniparametricos_files/figure-latex/posBinomialStan-1.pdf}
+\caption{\label{fig:posBinomialStan}Distribución posterior.}
+\end{figure}
+
 Por otro lado, el mismo intervalo de credibilidad del 95\% correspondiente se puede hallar mediante el siguiente código computacional de \texttt{R}.
 
 \begin{Shaded}
@@ -2662,6 +2692,21 @@ Después de cinco mil iteraciones, la salida del anterior código muestra la est
 ## convergence, Rhat=1).
 \end{verbatim}
 
+La figura \ref{fig:posBNStan} muestra la distribución posterior para este ejemplo, junto con la estimación puntual, correspondiente a la media.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{bayesplot}\SpecialCharTok{::}\FunctionTok{mcmc\_areas}\NormalTok{(BNfit2, }\AttributeTok{pars =} \StringTok{"theta"}\NormalTok{, }
+                      \AttributeTok{prob =} \FloatTok{0.95}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{figure}
+\centering
+\includegraphics{3Uniparametricos_files/figure-latex/posBNStan-1.pdf}
+\caption{\label{fig:posBNStan}Distribución posterior.}
+\end{figure}
+
 Una vez observados los datos actuales y encontrada la distribución posterior, se puede encontrar la distribución predictiva posterior de una nueva variable con distribución binomial negativa. Es decir, se puede definir el mecanismo probabilístico para el número de ensayos necesarios para encontrar \(\tilde{k}\) éxitos.
 
 \begin{proposition}
@@ -2727,6 +2772,358 @@ Con los siguientes códigos se puede calcular la anterior función predictiva.
 \end{figure}
 
 Se puede ver que el número de entrevistas que tiene mayor probabilidad asociadas es el valor 768, usando el comando \texttt{which(fun\ ==\ max(fun))}. También, se puede observar que la probabilidad de que en menos de 500 entrevistas se encuentren los 5 pacientes es de solo el 0.1200985 usando el comando \texttt{sum(fun{[}1:(500\ -\ 4){]})}
+
+\hypertarget{modelo-poisson}{%
+\section{Modelo Poisson}\label{modelo-poisson}}
+
+Suponga que \(\mathbf{Y}=\{Y_1,\ldots,Y_n\}\) es una muestra aleatoria de variables con distribución Poisson con parámetro \(\theta\), la función de distribución conjunta o la función de verosimilitud está dada por
+
+\begin{align*}
+p(\mathbf{Y} \mid \theta)&=\prod_{i=1}^n\frac{e^{-\theta}\theta^{y_i}}{y_i!}I_{\{0,1,\ldots\}}(y_i)\\
+&=\frac{e^{-n\theta}\theta^{\sum_{i=1}^ny_i}}{\prod_{i=1}^ny_i!}I_{\{0,1,\ldots\}^n}(y_1,\ldots,y_n)
+\end{align*}
+
+donde \(\{0,1\ldots\}^n\) denota el producto cartesiano \(n\) veces sobre el conjunto \(\{0,1\ldots\}\). Por otro lado, como el parámetro \(\theta\) está restringido al espacio \(\Theta=(0,\infty)\), entonces es posible formular varias opciones para la distribución previa del parámetro. Algunas de estas se encuentran considerando la distribución exponencial, la distribución Ji-cuadrado o la distribución Gamma. Nótese que las dos primeras son casos particulares de la última. Por lo tanto, la distribución previa del parámetro \(\theta\) está dada por
+
+\begin{equation}
+p(\theta \mid \alpha,\beta)=\frac{\beta^\alpha}{\Gamma(\alpha)}\theta^{\alpha-1} e^{-\beta\theta}I_{(0,\infty)}(\theta).
+\end{equation}
+
+Bajo este marco de referencia se tienen el siguiente resultado con respecto a la distribución posterior del parámetro de interés \(\theta\).
+
+\begin{proposition}
+\protect\hypertarget{prp:ResPoissonPost}{}{\label{prp:ResPoissonPost} }La distribución posterior del parámetro \(\theta\) está dada por
+
+\begin{equation*}
+\theta \mid \mathbf{Y} \sim Gamma\left(\sum_{i=1}^ny_i+\alpha,n+\beta\right)
+\end{equation*}
+\end{proposition}
+
+\begin{proof}
+\iffalse{} {Prueba. } \fi{}\begin{align*}
+p(\theta \mid \mathbf{Y})&\propto p(\mathbf{Y} \mid \theta)p(\theta \mid \alpha,\beta)\\
+&=\frac{I_{\{0,1,\ldots\}^n}(y_1,\ldots,y_n)}{\prod_{i=1}^ny_i!}\frac{\beta^\alpha}{\Gamma(\alpha)}
+\theta^{\alpha-1}\theta^{\sum_{i=1}^ny_i}e^{-\beta\theta}e^{-n\theta}I_{(0,\infty)}(\theta)\\
+&\propto \theta^{\sum_{i=1}^ny_i+\alpha-1}e^{-(\beta+n)\theta}I_{(0,\infty)}(\theta)
+\end{align*}
+
+Por lo tanto, factorizando convenientemente, se encuentra una expresión idéntica a la función de distribución de una variable aleatoria con distribución \(Gamma(\sum_{i=1}^ny_i+\alpha,n+\beta)\).
+\end{proof}
+
+Utilizando el resultado anterior, se tiene que la estimación Bayesiana del parámetro \(\theta\) está dada por
+\begin{equation*}
+\hat{\theta}=\frac{\sum_{i=1}^ny_i+\alpha}{n+\beta}.
+\end{equation*}
+
+La anterior expresión sugiere tomar los parámetros de la distribución previa \(\alpha\) y \(\beta\) de la siguiente manera: \(\beta\) representa el número de observaciones en la información previa, mientras que \(\alpha\) representa la suma de los datos de la información previa. De esta forma, \(\alpha/\beta\) representa la estimación previa del parámetro \(\theta\). Y la estimación Bayesiana de \(\theta\) se puede escribir como
+
+\begin{align*}
+\hat{\theta}&=\frac{\sum_{i=1}^ny_i+\alpha}{\beta+n}\\
+&=\frac{n}{n+\beta}*\frac{\sum y_i}{n}+\frac{\beta}{n+\beta}*\frac{\alpha}{\beta}\\
+&=\frac{n}{n+\beta}*\hat{\theta}_C+\frac{\beta}{n+\beta}*\hat{\theta}_P
+\end{align*}
+
+Es decir, la estimación Bayesiana de \(\theta\) es un promedio ponderado entre la estimación clásica y la estimación previa del parámetro \(\theta\), donde los pesos dependen directamente del tamaño muestral de la información actual y de la información previa.
+
+A continuación estudiamos las distribuciones predictivas previa y posterior para una nueva observación
+
+\begin{proposition}
+\protect\hypertarget{prp:unnamed-chunk-44}{}{\label{prp:unnamed-chunk-44} }La distribución predictiva previa para una observación \(\mathbf{y}=\{y_1,\ldots,y_n\}\) de la muestra aleatoria está dada por
+
+\begin{equation}
+\label{eq:PrePriorPoisson}
+p(\mathbf{Y})=\frac{\Gamma(\sum_{i=1}^ny_i+\alpha)}{\Gamma(\alpha)}\frac{\beta^\alpha}{(n+\beta)^{\sum_{i=1}^ny_i+\alpha}}
+\frac{I_{\{0,1,\ldots\}^n}(y_1,\ldots,y_n)}{\prod_{i=1}^ny_i!}
+\end{equation}
+
+y define una auténtica función de densidad de probabilidad continua.
+\end{proposition}
+
+\begin{proof}
+\iffalse{} {Prueba. } \fi{}De la definición de función de distribución predictiva se tiene que
+
+\begin{align*}
+p(\mathbf{Y})&=\int p(\mathbf{Y} \mid \theta)p(\theta \mid \alpha,\beta)\ d\theta\\
+&=\int_0^{\infty} \frac{e^{-n\theta}\theta^{\sum_{i=1}^ny_i}}{\prod_{i=1}^ny_i!}I_{\{0,1,\ldots\}^n}(y_1,\ldots,y_n)
+\frac{\beta^\alpha \theta^{\alpha-1} e^{-\beta\theta}}{\Gamma(\alpha)}\ d\theta\\
+&=\frac{\Gamma(\sum_{i=1}^ny_i+\alpha)}{\Gamma(\alpha)}\frac{\beta^\alpha}{(n+\beta)^{\sum_{i=1}^ny_i+\alpha}}
+\frac{I_{\{0,1,\ldots\}^n}(y_1,\ldots,y_n)}{\prod_{i=1}^ny_i!}\\
+&\hspace{2cm}\times
+\int_0^{\infty} \frac{(n+\beta)^{\sum_{i=1}^ny_i+\alpha}}{\Gamma(\sum_{i=1}^ny_i+\alpha)}
+\theta^{\sum_{i=1}^ny_i+\alpha-1}e^{-(\beta+n)\theta} \ d\theta\\
+&=\frac{\Gamma(\sum_{i=1}^ny_i+\alpha)}{\Gamma(\alpha)}\frac{\beta^\alpha}{(n+\beta)^{\sum_{i=1}^ny_i+\alpha}}
+\frac{I_{\{0,1,\ldots\}^n}(y_1,\ldots,y_n)}{\prod_{i=1}^ny_i!}
+\end{align*}
+\end{proof}
+
+En el caso en el que la muestra aleatoria estuviera constituida por una sola variable aleatoria, entonces \(n=1\) y si, en particular, los hiper-parámetros de la distribución previa fuesen \(\alpha=\beta=1\), entonces no es difícil ver, utilizando la definición de la función matemática Gamma, que la función de distribución predictiva \eqref{eq:PrePriorPoisson} estaría dada por
+
+\begin{align}
+\label{eq:PrePriorPoisson1}
+p(Y)&=\frac{\Gamma(y+1)}{\Gamma(1)}\frac{1}{2^{y+1}}\frac{I_{\{0,1,\ldots\}}(y)}{y!} \notag\\
+&=\frac{1}{2^{y+1}}I_{\{0,1,\ldots\}}(y)
+\end{align}
+
+Para chequear la convergencia de la anterior distribución es necesario recurrir a los resultados del análisis matemático \citet[pág. 361]{Apostol}. Dado que el espacio de muestreo de la variable aleatoria \(Y\) es \(\{0,1,\ldots\}\), entonces la suma infinita converge a uno, lo que conlleva a que en este caso particular \(P(Y)\) sea una auténtica función de densidad de probabilidad.
+
+\begin{align*}
+\sum_{y=0}^{\infty}p(Y=y)=\sum_{y=0}^{\infty}\left(\frac{1}{2}\right)^{y+1}=\frac{1}{2}\sum_{y=0}^{\infty}\left(\frac{1}{2}\right)^{y}
+=\frac{1}{2}\frac{1}{1-1/2}=1
+\end{align*}
+
+Podemos afirmar que la expresion \eqref{eq:PrePriorPoisson1} sí representa una función de densidad de una variable discreta. Ahora, consideramos la distribución predictiva poseterior de una muestra aleatoria, esta distribución se presenta en el siguiente resultado.
+
+\begin{proposition}
+\protect\hypertarget{prp:ResPoissonPred}{}{\label{prp:ResPoissonPred} }Después de la recolección de los datos, la distribución predictiva posterior para una nueva posible observación \(\tilde{\mathbf{y}}=\{\tilde{y}_1,\ldots,\tilde{y}_{n^*}\}\), de tamaño \(n^*\), está dada por
+
+\begin{align}
+p(\tilde{\mathbf{y}} \mid \mathbf{Y})&=\frac{\Gamma(\sum_{i=1}^{n^*}\tilde{y}_i+\sum_{i=1}^ny_i+\alpha)}{\Gamma(\sum_{i=1}^ny_i+\alpha)}
+\frac{(\beta+n)^{\sum_{i=1}^ny_i+\alpha}}{({n^*}+\beta+n)^{\sum_{i=1}^{n^*}\tilde{y}_i+\sum_{i=1}^ny_i+\alpha}}\notag\\
+&\hspace{5cm}\times
+\frac{I_{\{0,1,\ldots\}^{n^*}}(\tilde{y}_1,\ldots,\tilde{y}_{n^*})}{\prod_{i=1}^{n^*}\tilde{y}_i!}
+\end{align}
+\end{proposition}
+
+La anterior distribución corresponde a una distribucion multivariada que nos permite calcular probabilidades predictivas para cualesquiera valores de \(\tilde{y}_1\), \(\cdots\), \(\tilde{y}_{n^*}\); sin embargo, en algunas situaciones, como por ejemplo cuando \(\theta\) representa el número promedio de algún suceso en una región geográfica, al momento de la predicción, podemos estar interesados en predecir el número total o el número promedio de sucesos en la nueva muestra aleatoria de regiones geográficas. Es decir, podemos estar más interesados en la distribución de \(\sum_{y=1}^{n^*} \tilde{y}_i\) o de \(\sum_{y=1}^{n^*} \tilde{y}_i/n^*\) en vez de la distribución conjunta de \(\tilde{y}_1\), \(\cdots\), \(\tilde{y}_{n^*}\). La distribución predictiva de \(\sum_{y=1}^{n^*} \tilde{y}_i\) se presenta en el siguiente resultado, y con esta se pueden obtener fácilmente probabilidades predictivas para \(\sum_{y=1}^{n^*} \tilde{y}_i/n^*\).
+
+\begin{proposition}
+\protect\hypertarget{prp:unnamed-chunk-46}{}{\label{prp:unnamed-chunk-46} }Después de la recolección de los datos, la distribución predictiva posterior para la suma de un vector de observaciones nuevas \(\left(\tilde{y}_1,\ldots,\tilde{y}_{n^*}\right)\), \(\tilde{s} = \sum_{y=1}^{n^*} \tilde{y}_i\), está dada por:
+
+\begin{align}
+\label{eq:PrePosPoissonSum}
+p(\tilde{\mathbf{s}} \mid \mathbf{Y})&=\frac{\Gamma(\tilde{s}+\sum_{i=1}^ny_i+\alpha)}{\Gamma(\sum_{i=1}^ny_i+\alpha)}
+\frac{(n+\beta)^{\sum_{i=1}^ny_i+\alpha}}{({n^*}+n+\beta)^{\tilde{s}+\sum_{i=1}^ny_i+\alpha}}\frac{(n^*)^{\tilde{s}}I_{\{0,1,\ldots\}}(\tilde{s})}{\tilde{s}!}
+\end{align}
+\end{proposition}
+
+\begin{proof}
+\iffalse{} {Prueba. } \fi{}Usando el hecho de que \(\theta|\mathbf{Y}\sim Gamma(\sum_{i=1}^{n}y_i+\alpha,n+\beta)\) y \(\tilde{s}|\theta\sim Poisson(n^*\theta)\) se procede a calcular \(\tilde{s}/p(\mathbf{y})\),
+así:
+
+\begin{align*}
+&\ \ \ \ p(\tilde{s}|\mathbf{y}) \\
+&= \int_{\Omega} p(\tilde{s}|\theta)p(\theta|\mathbf{y})d\theta\\
+& = \int_{\Omega} \frac{(n^{*}\theta)^{\tilde{s}}e^{-n^*\theta}}{\tilde{s}!} I_{\{0,1,\ldots\}}(\tilde{s}) (\beta+n)^{\sum_{i=1}^{n}y_i+\alpha}\frac{\theta^{\tilde{s}+\sum_{i=1}^{n}y_i+\alpha-1}}{\Gamma(\sum_{i=1}^{n}y_i+\alpha)}e^{-(\beta+n)\theta}I_{(0,\infty)}(\theta) d\theta\\
+&= \frac{(n^*)^{\tilde{s}}(\beta+n)^{\sum_{i=1}^{n}y_i+\alpha}}{\tilde{s}!\Gamma(\sum_{i=1}^{n}y_i+\alpha)}I_{\{0,1,\ldots\}}(\tilde{s})\int_{0}^{\infty}\theta^{\sum_{i=1}^{n}y_i+\alpha-1}e^{-(n^*+\beta+n)\theta}d\theta
+\end{align*}
+
+Agrupando las constantes para obtener la integral de una distribución gamma con \(\alpha=\tilde{s}+\sum_{i=1}^{n}y_i+\alpha\) y \(\beta=n^*+n+\beta\) se obtiene el resultado.
+\end{proof}
+
+En la práctica, evaluar directamente la expresión \eqref{eq:PrePosPoissonSum} puede ocasionar problemas numéricas, por la presencia de la función Gamma y las potencias. Para evitar dicha dificultad, podemos usar la siguiente expresión equivalente cuando \(\tilde{s}=1,2,\cdots\):
+
+\begin{equation*}
+p(\tilde{\mathbf{s}} \mid \mathbf{Y})=\frac{\Gamma(\tilde{s})}{Beta(\tilde{s},\sum_{i=1}^ny_i+\alpha)}
+\left(\frac{n+\beta}{n^*+n+\beta}\right)^{\sum_{i=1}^ny_i+\alpha}\frac{(n^*)^{\tilde{s}}}{(n^*+n+\beta)^{\tilde{s}}}\tilde{s}!
+\end{equation*}
+
+Cuando \(\tilde{s}=0\), la distribución predictiva es simplemente:
+
+\begin{equation*}
+p(\tilde{\mathbf{s}} \mid \mathbf{Y})=
+\left(\frac{n+\beta}{n^*+n+\beta}\right)^{\sum_{i=1}^ny_i+\alpha}
+\end{equation*}
+
+Ahora, debido a la complejidad de la expresión en \eqref{eq:PrePosPoissonSum}, es prácticamente imposible comprobar analíticamente \(\sum_{i=0}^\infty p(\tilde{s}=i)=1\), y también muy difícil encontrar una expresión matemática cerrada de la esperanza de la variable \(\mathbf{\tilde{s}}\). Sin embargo, en situaciones prácticas, se puede usar aproximaciones numéricas tal como se verá en el ejemplo al final de esta sección.
+
+Anteriormente en el ejemplo \ref{exm:EjemPoisson} se consideró la situación en la cual no se tenía ninguna consideración para formular una distribución previa y se consluyó que la distribución previa no informativa de Jeffreys para este caso es
+\begin{equation*}
+p(\theta)\propto\theta^{-1/2},
+\end{equation*}
+
+Esta es una distribución previa impropia, puesto que \(\int_{0}^\infty \theta^{-1/2}=\infty\). Sin embargo, este hecho no afecta que la inferencia posterior se pueda llevar a cabo, puesto que la distribución posterior está dada por
+
+\begin{equation*}
+\theta|\mathbf{Y}\sim Gamma(\sum y_i+1/2,n)
+\end{equation*}
+
+Por consiguiente, la estimación Bayesiana del parámetro \(\theta\) viene dada por
+
+\begin{equation*}
+\hat{\theta}=\frac{\sum y_i+1/2}{n}.
+\end{equation*}
+
+la cual es muy similar a la estimación clásica de \(\theta\) dada por \(\bar{Y}\). Cuando se utiliza la distribución previa no informativa de Jeffreys, la distribución predictiva para nuevas observaciones \(\tilde{y}={\tilde{y}_1,\cdots,\tilde{y}_{n^*}}\) y \(\tilde{s}=\sum_{i=1}^{n^*}\tilde{y_i}\) están dadas por
+
+\begin{equation}
+\label{eq:PredPoissonJeffreys}
+p(\tilde{\mathbf{y}} \mid \mathbf{Y})=\frac{\Gamma(\sum_{i=1}^{n^*}\tilde{y}_i+\sum_{i=1}^ny_i+0.5)}{\Gamma(\sum_{i=1}^ny_i+0.5)}
+\frac{n^{\sum_{i=1}^ny_i+0.5}}{({n^*}+n)^{\sum_{i=1}^n\tilde{y}_i+\sum_{i=1}^ny_i+0.5}}
+\frac{I_{\{0,1,\ldots\}^{n^*}}(\tilde{y}_1,\ldots,\tilde{y}_{n^*})}{\prod_{i=1}^{n^*}\tilde{y}_i!}
+\end{equation}
+
+y
+
+\begin{equation}
+\label{eq:Pred1PoissonJeffreys}
+p(\tilde{\mathbf{s}} \mid \mathbf{Y})=\frac{\Gamma(\tilde{s}+\sum_{i=1}^ny_i+0.5)}{\Gamma(\sum_{i=1}^ny_i+0.5)}
+\frac{n^{\sum_{i=1}^ny_i+0.5}}{({n^*}+n)^{\tilde{s}+\sum_{i=1}^ny_i+0.5}}\frac{I_{\{0,1,\ldots\}}(\tilde{s})}{\tilde{s}!}
+\end{equation}
+
+\begin{example}
+\protect\hypertarget{exm:unnamed-chunk-48}{}{\label{exm:unnamed-chunk-48} }Por políticas gubernamentales, las autoridades municipales están obligados a realizar un seguimiento exhaustivo al comportamiento de la accidentalidad en las vías urbanas y medirlo en términos del número de accidentes de tránsito. Lo anterior es necesario para evaluar la gestión de la administración pública y evaluar las políticas que el gobierno de la ciudad ha implementado para disminuir esta cifra.
+
+Suponga que en una ciudad se quiere implementar una estrategia educativa para disminuir el número de accidentes de tránsito generados por manejar en estado de embriaguez. Para esto, se registraron durante diez días 30 días el número de accidentes de tránsito por ebriedad del conductor. Los datos para cada uno de los días son 22, 9, 9, 20, 10, 14, 11, 14, 11, 11, 19, 12, 8, 9, 16, 8, 13, 8, 14, 12, 14, 11, 14, 13, 11, 14, 13, 11, 7, 12.
+
+Es posible modelar la variable aleatoria número de accidentes de tránsito en un día mediante una distribución de Poisson puesto que el promedio muestral y la varianza muestral de los datos son semejantes. Para este conjunto de datos, el promedio equivale a 12.33, mientras que la varianza es de 12.51. El histograma de los valores observados se puede ver en la figura \ref{fig:EjemPoisson1}.
+\end{example}
+
+\begin{figure}
+\centering
+\includegraphics{3Uniparametricos_files/figure-latex/EjemPoisson1-1.pdf}
+\caption{\label{fig:EjemPoisson1}Histograma para los datos de accidentes de tránsito.}
+\end{figure}
+
+En primera instancia, es posible realizar un análisis no informativo, al formular una distribución previa de Jeffreys proporcional a \(\theta^{-1/2}\), para lo cual la distribución posterior será \(Gamma(\sum_{i=1}^n y_i+1/2, n)=Gamma(370.5, 30)\). Por lo tanto, un estimador de \(\theta\) está dado por la media de la distribución posterior que es \(370.5/30=12.35\), muy cercano al valor del estimador de máxima verosimilitud correspondiente al promedio muestral. La figura \ref{fig:EjemPoisson2} (lado izquierdo) muestra el comportamiento de las distribuciones de Jeffreys y posterior para este ejemplo.
+
+Por otro lado, basándose en datos históricos, la alcaldía observó que, en el mismo periodo del año anterior, ocurrieron 37 accidentes en 9 días de observación. Luego, una distribución previa informativa\footnote{En la práctica, se recomienda que los valores de los hiperparámetros \(\alpha\) y \(\beta\) correspondan a la suma del número de eventos más uno y número de observaciones, respectivamente.} está dada por \(Gamma(\alpha=38,\beta=9)\). Luego, apelando al resultado \ref{prp:ResPoissonPost}, la distribución posterior corresponde a una \(Gamma(370+38, 30+9)=Gamma(408, 39)\). Para este caso, un estimador de \(\theta\) está dado por la media de la distribución posterior que es \(480/39=12.31\). La figura \ref{fig:EjemPoisson2} (lado derecho) muestra el comportamiento de las distribuciones previa (informativa) y posterior para este ejemplo.
+
+\begin{figure}
+\centering
+\includegraphics{3Uniparametricos_files/figure-latex/EjemPoisson2-1.pdf}
+\caption{\label{fig:EjemPoisson2}Distribución previa y distribución posterior para el ejemplo del tránsito con dos distribuciones previas diferentes (el lado izquierdo representa el caso cuando se usa la previa no informativa, el lado derecho la previa informativa).}
+\end{figure}
+
+A continuación se examina la distribución predictiva. En la figura \ref{fig:PredPostPoisson} se grafica la distribución predictiva para una nueva observación cuando se usa la previa no informativa y la previa informativa. Los códigos para el cálculo cuando se usan ambas distribuciones previas es como sigue:
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{n }\OtherTok{\textless{}{-}} \FunctionTok{length}\NormalTok{(Trans)}
+
+\NormalTok{pre.Transito.NoInf }\OtherTok{\textless{}{-}} \ControlFlowTok{function}\NormalTok{(s)\{}
+  \ControlFlowTok{if}\NormalTok{(s }\SpecialCharTok{\textgreater{}} \DecValTok{0}\NormalTok{)\{}
+\NormalTok{    val }\OtherTok{\textless{}{-}} \FunctionTok{gamma}\NormalTok{(s) }\SpecialCharTok{*} 
+\NormalTok{      (n}\SpecialCharTok{/}\NormalTok{(n }\SpecialCharTok{+} \DecValTok{1}\NormalTok{)) }\SpecialCharTok{\^{}}\NormalTok{ (}\FunctionTok{sum}\NormalTok{(Trans) }\SpecialCharTok{+} \FloatTok{0.5}\NormalTok{)}\SpecialCharTok{/}
+\NormalTok{      (}\FunctionTok{beta}\NormalTok{(s, }\FunctionTok{sum}\NormalTok{(Trans) }\SpecialCharTok{+} \FloatTok{0.5}\NormalTok{) }\SpecialCharTok{*} 
+         \FunctionTok{prod}\NormalTok{(}\DecValTok{1}\SpecialCharTok{:}\NormalTok{s) }\SpecialCharTok{*}\NormalTok{ (n }\SpecialCharTok{+} \DecValTok{1}\NormalTok{) }\SpecialCharTok{\^{}}\NormalTok{ s)}
+\NormalTok{  \}}
+  \ControlFlowTok{if}\NormalTok{( s }\SpecialCharTok{==} \DecValTok{0}\NormalTok{)\{}
+\NormalTok{    val }\OtherTok{\textless{}{-}}\NormalTok{ (n}\SpecialCharTok{/}\NormalTok{(n }\SpecialCharTok{+} \DecValTok{1}\NormalTok{)) }\SpecialCharTok{\^{}}\NormalTok{ (}\FunctionTok{sum}\NormalTok{(Trans) }\SpecialCharTok{+} \FloatTok{0.5}\NormalTok{)}
+\NormalTok{  \}}
+  \FunctionTok{return}\NormalTok{(val)}
+\NormalTok{\}}
+
+\NormalTok{pre.Transito }\OtherTok{\textless{}{-}} \ControlFlowTok{function}\NormalTok{(s)\{}
+  \ControlFlowTok{if}\NormalTok{(s }\SpecialCharTok{\textgreater{}} \DecValTok{0}\NormalTok{)\{}
+\NormalTok{    val }\OtherTok{\textless{}{-}} \FunctionTok{gamma}\NormalTok{(s) }\SpecialCharTok{*} 
+\NormalTok{      ((n }\SpecialCharTok{+}\NormalTok{ beta)}\SpecialCharTok{/}\NormalTok{(n }\SpecialCharTok{+}\NormalTok{ beta }\SpecialCharTok{+} \DecValTok{1}\NormalTok{))}\SpecialCharTok{\^{}}\NormalTok{(}\FunctionTok{sum}\NormalTok{(Trans) }\SpecialCharTok{+}\NormalTok{ alfa)}\SpecialCharTok{/}
+\NormalTok{      (}\FunctionTok{beta}\NormalTok{(s, }\FunctionTok{sum}\NormalTok{(Trans) }\SpecialCharTok{+}\NormalTok{ alfa) }\SpecialCharTok{*}\NormalTok{ (}\DecValTok{1}\SpecialCharTok{+}\NormalTok{n}\SpecialCharTok{+}\NormalTok{beta) }\SpecialCharTok{\^{}}\NormalTok{ s }\SpecialCharTok{*} 
+         \FunctionTok{prod}\NormalTok{(}\DecValTok{1}\SpecialCharTok{:}\NormalTok{s))}
+\NormalTok{  \}}
+  \ControlFlowTok{if}\NormalTok{(s }\SpecialCharTok{==} \DecValTok{0}\NormalTok{)\{}
+\NormalTok{    val }\OtherTok{\textless{}{-}}\NormalTok{ ((n }\SpecialCharTok{+}\NormalTok{ beta)}\SpecialCharTok{/}\NormalTok{(n }\SpecialCharTok{+}\NormalTok{ beta }\SpecialCharTok{+} \DecValTok{1}\NormalTok{)) }\SpecialCharTok{\^{}}\NormalTok{ (}\FunctionTok{sum}\NormalTok{(Trans) }\SpecialCharTok{+}\NormalTok{ alfa)}
+\NormalTok{    \}}
+  \FunctionTok{return}\NormalTok{(val)}
+\NormalTok{\}}
+
+\NormalTok{s.max }\OtherTok{\textless{}{-}} \DecValTok{40} 
+\NormalTok{s.val }\OtherTok{\textless{}{-}} \DecValTok{0}\SpecialCharTok{:}\NormalTok{s.max}
+
+\NormalTok{pre.NoInf.val }\OtherTok{\textless{}{-}}\NormalTok{ pre.Inf.val }\OtherTok{\textless{}{-}} \FunctionTok{c}\NormalTok{()}
+\ControlFlowTok{for}\NormalTok{(i }\ControlFlowTok{in} \DecValTok{1}\SpecialCharTok{:}\FunctionTok{length}\NormalTok{(s.val))\{}
+\NormalTok{  pre.NoInf.val[i] }\OtherTok{\textless{}{-}} \FunctionTok{pre.Transito.NoInf}\NormalTok{(s.val[i])}
+\NormalTok{  pre.Inf.val[i] }\OtherTok{\textless{}{-}} \FunctionTok{pre.Transito}\NormalTok{(s.val[i])}
+\NormalTok{\}}
+\FunctionTok{sum}\NormalTok{(pre.NoInf.val)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## [1] 1
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{sum}\NormalTok{(pre.Inf.val)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## [1] 1
+\end{verbatim}
+
+Nótese que en los anteriores códigos se usó como valor máximo 40 para la variable \(\mathbf{\tilde{s}}\), a pesar de que esta toma valores infinitos; pero al ver que la suma de las probabilidades desde el valor 0 hasta el 40 es igual a 1, podemos concluir que la probabilidad de que \(\mathbf{\tilde{s}} > 40\) es prácticamente nula.
+
+Finalmente, podemos tener una aproximación de la esperanza de la variable \(\mathbf{\tilde{s}}\) como
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{sum}\NormalTok{(pre.NoInf.val }\SpecialCharTok{*}\NormalTok{ s.val)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## [1] 12.35
+\end{verbatim}
+
+\begin{figure}
+\centering
+\includegraphics{3Uniparametricos_files/figure-latex/PredPostPoisson-1.pdf}
+\caption{\label{fig:PredPostPoisson}Distribución predictiva posterior para \(n^*=1\) para el ejemplo del tránsito.}
+\end{figure}
+
+A continuación se presenta el código computacional para realizar la inferencia bayesiana en \texttt{STAN} utilizando la distribución previa predictiva.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{Poisson }\OtherTok{\textless{}{-}} \StringTok{\textquotesingle{}}
+\StringTok{data \{}
+\StringTok{  int\textless{}lower=0\textgreater{} n;}
+\StringTok{  int\textless{}lower=0\textgreater{} y[n];}
+\StringTok{\}}
+\StringTok{parameters \{}
+\StringTok{  real\textless{}lower=0\textgreater{} theta;}
+\StringTok{\}}
+\StringTok{model \{}
+\StringTok{  for(i in 1:n) \{}
+\StringTok{  y \textasciitilde{} poisson(theta);}
+\StringTok{  \}}
+\StringTok{  theta \textasciitilde{} gamma(38, 9);}
+\StringTok{\}}
+\StringTok{\textquotesingle{}}
+\NormalTok{sample\_data }\OtherTok{\textless{}{-}} \FunctionTok{list}\NormalTok{(}\AttributeTok{y =}\NormalTok{ Trans, }\AttributeTok{n =} \FunctionTok{length}\NormalTok{(Trans))}
+\NormalTok{Poissonfit }\OtherTok{\textless{}{-}} \FunctionTok{stan}\NormalTok{(}\AttributeTok{model\_code =}\NormalTok{ Poisson,}
+               \AttributeTok{data =}\NormalTok{ sample\_data, }\AttributeTok{verbose =} \ConstantTok{FALSE}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+Después de converger, la salida del anterior código muestra que a estimación puntual dada por 12.2545 y un intervalo de credibilidad al 95\%, dado por \((12.026, 12.4875)\), mucho más estrecho que el intervalo de credibilidad del anterior ejemplo
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{print}\NormalTok{(Poissonfit, }\AttributeTok{pars =} \StringTok{"theta"}\NormalTok{, }
+      \AttributeTok{digits =} \DecValTok{4}\NormalTok{, }\AttributeTok{probs =} \FunctionTok{c}\NormalTok{(}\FloatTok{0.025}\NormalTok{, }\FloatTok{0.975}\NormalTok{))}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## Inference for Stan model: 358b0f218a279f070c49ab235fd030cc.
+## 4 chains, each with iter=2000; warmup=1000; thin=1; 
+## post-warmup draws per chain=1000, total post-warmup draws=4000.
+## 
+##          mean se_mean     sd    2.5%   97.5% n_eff   Rhat
+## theta 12.2478  0.0029 0.1164 12.0086 12.4767  1653 1.0002
+## 
+## Samples were drawn using NUTS(diag_e) at Sat Jun  5 19:26:50 2021.
+## For each parameter, n_eff is a crude measure of effective sample size,
+## and Rhat is the potential scale reduction factor on split chains (at 
+## convergence, Rhat=1).
+\end{verbatim}
+
+La figura \ref{fig:posPoissonStan} muestra la distribución posterior para este ejemplo, junto con la estimación puntual, correspondiente a la media.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{bayesplot}\SpecialCharTok{::}\FunctionTok{mcmc\_areas}\NormalTok{(Poissonfit, }\AttributeTok{pars =} \StringTok{"theta"}\NormalTok{, }
+                      \AttributeTok{prob =} \FloatTok{0.95}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{figure}
+\centering
+\includegraphics{3Uniparametricos_files/figure-latex/posPoissonStan-1.pdf}
+\caption{\label{fig:posPoissonStan}Distribución posterior.}
+\end{figure}
 
 \hypertarget{appendix-apuxe9ndice}{%
 \appendix}
