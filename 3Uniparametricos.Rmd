@@ -745,7 +745,7 @@ qbeta(c(0.025, 0.975), 2040, 5419)
 La figura \@ref(fig:BinomEj1) muestra el comportamiento de las distribuciones previa y posterior para este ejemplo. Nótese que, con un análisis frecuentista, se hubiese llegado a una estimación cercana de $\frac{1825}{6649}=0.274$. 
 
 
-```{r, BinomEj1, fig.cap="Función de densidad previa y función de densidad posterior para el ejemplo de bateo."}
+```{r, BinomEj1, fig.cap="Función de densidad previa y función de densidad posterior para el ejemplo de bateo.", echo=FALSE}
 p <- ggplot(data = data.frame(x = 0), 
             mapping = aes(x = x)) + 
   ylab("") + xlab(expression(theta))
@@ -789,7 +789,7 @@ which(predictiva==max(predictiva))
 
 La última línea del código computacional permite concluir que lo más probable es que el jugador realice 71 hits en 400 turnos al bate, cifra que no convence al entrenador para adquirir los servicios del jugador.
 
-```{r, PredBinom, fig.cap="Función de densidad predictiva posterior para el jugador Max Alvis."}
+```{r, PredBinom, fig.cap="Función de densidad predictiva posterior para el jugador Max Alvis.", echo=FALSE}
 predic <- data.frame(time = c(1:(n.ast + 1)), 
                      y = predictiva)
 ggplot(predic, aes(time, y)) + 
