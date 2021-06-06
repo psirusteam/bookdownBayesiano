@@ -341,7 +341,7 @@ verosimilitud<a href="#fn5" class="footnote-ref" id="fnref5"><sup>5</sup></a> co
 posterior estará centrada en <span class="math inline">\(10/17\)</span>; es decir, la estimación bayesiana
 se encuentra situada entre la estimación previa y la estimación clásica.</p>
 <div class="figure"><span id="fig:beta3"></span>
-<img src="3Uniparametricos_files/figure-html/beta3-1.png" alt="Funciones de verosimilitud, previa y posterior para $\alpha=2$, $\beta=5$, $s=8$ y $n=10$." width="672" />
+<img src="3Uniparametricos_files/figure-html/beta3-1.svg" alt="Funciones de verosimilitud, previa y posterior para $\alpha=2$, $\beta=5$, $s=8$ y $n=10$." width="672" />
 <p class="caption">
 Figura 3.4: Funciones de verosimilitud, previa y posterior para <span class="math inline">\(\alpha=2\)</span>, <span class="math inline">\(\beta=5\)</span>, <span class="math inline">\(s=8\)</span> y <span class="math inline">\(n=10\)</span>.
 </p>
@@ -359,7 +359,7 @@ clásica. En la figura <a href="modelo-binomial.html#fig:betan">3.5</a> se muest
 <span class="math inline">\(\theta\)</span>, es evidente que a medida que el tamaño muestral <span class="math inline">\(n\)</span> aumenta,
 la estimación posterior se acerca más a la estimación clásica.</p>
 <div class="figure"><span id="fig:betan"></span>
-<img src="3Uniparametricos_files/figure-html/betan-1.png" alt="Estimación posterior de $\theta$ para diferentes valores de $n$ y $s$ con $\alpha=\beta=5$." width="672" />
+<img src="3Uniparametricos_files/figure-html/betan-1.svg" alt="Estimación posterior de $\theta$ para diferentes valores de $n$ y $s$ con $\alpha=\beta=5$." width="672" />
 <p class="caption">
 Figura 3.5: Estimación posterior de <span class="math inline">\(\theta\)</span> para diferentes valores de <span class="math inline">\(n\)</span> y <span class="math inline">\(s\)</span> con <span class="math inline">\(\alpha=\beta=5\)</span>.
 </p>
@@ -809,9 +809,9 @@ S_i\sim Binomial (n_i,\theta) \ \ \ \ \ \ \ \ \ i=1,\ldots,18.
 ## post-warmup draws per chain=1000, total post-warmup draws=4000.
 ## 
 ##         mean se_mean     sd   2.5%  97.5% n_eff   Rhat
-## theta 0.2735   1e-04 0.0053 0.2633 0.2841  1552 1.0039
+## theta 0.2736   1e-04 0.0051 0.2637 0.2836  1504 0.9999
 ## 
-## Samples were drawn using NUTS(diag_e) at Sat Jun  5 00:09:01 2021.
+## Samples were drawn using NUTS(diag_e) at Sat Jun  5 21:41:43 2021.
 ## For each parameter, n_eff is a crude measure of effective sample size,
 ## and Rhat is the potential scale reduction factor on split chains (at 
 ## convergence, Rhat=1).</code></pre>
@@ -819,7 +819,7 @@ S_i\sim Binomial (n_i,\theta) \ \ \ \ \ \ \ \ \ i=1,\ldots,18.
 <div class="sourceCode" id="cb26"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb26-1"><a href="modelo-binomial.html#cb26-1" aria-hidden="true" tabindex="-1"></a>bayesplot<span class="sc">::</span><span class="fu">mcmc_areas</span>(Binfit, <span class="at">pars =</span> <span class="st">&quot;theta&quot;</span>, </span>
 <span id="cb26-2"><a href="modelo-binomial.html#cb26-2" aria-hidden="true" tabindex="-1"></a>                      <span class="at">prob =</span> <span class="fl">0.95</span>)</span></code></pre></div>
 <div class="figure"><span id="fig:posBinomialStan"></span>
-<img src="3Uniparametricos_files/figure-html/posBinomialStan-1.png" alt="Distribución posterior." width="672" />
+<img src="3Uniparametricos_files/figure-html/posBinomialStan-1.svg" alt="Distribución posterior." width="672" />
 <p class="caption">
 Figura 3.6: Distribución posterior.
 </p>
@@ -829,7 +829,7 @@ Figura 3.6: Distribución posterior.
 <pre><code>## [1] 0.2634379 0.2836674</code></pre>
 <p>La figura <a href="modelo-binomial.html#fig:BinomEj1">3.7</a> muestra el comportamiento de las distribuciones previa y posterior para este ejemplo. Nótese que, con un análisis frecuentista, se hubiese llegado a una estimación cercana de <span class="math inline">\(\frac{1825}{6649}=0.274\)</span>.</p>
 <div class="figure"><span id="fig:BinomEj1"></span>
-<img src="3Uniparametricos_files/figure-html/BinomEj1-1.png" alt="Función de densidad previa y función de densidad posterior para el ejemplo de bateo." width="672" />
+<img src="3Uniparametricos_files/figure-html/BinomEj1-1.svg" alt="Función de densidad previa y función de densidad posterior para el ejemplo de bateo." width="672" />
 <p class="caption">
 Figura 3.7: Función de densidad previa y función de densidad posterior para el ejemplo de bateo.
 </p>
@@ -858,7 +858,7 @@ Para resolver este cuestionamiento, es conveniente recurrir a la función predic
 <pre><code>## [1] 71</code></pre>
 <p>La última línea del código computacional permite concluir que lo más probable es que el jugador realice 71 hits en 400 turnos al bate, cifra que no convence al entrenador para adquirir los servicios del jugador.</p>
 <div class="figure"><span id="fig:PredBinom"></span>
-<img src="3Uniparametricos_files/figure-html/PredBinom-1.png" alt="Función de densidad predictiva posterior para el jugador Max Alvis." width="672" />
+<img src="3Uniparametricos_files/figure-html/PredBinom-1.svg" alt="Función de densidad predictiva posterior para el jugador Max Alvis." width="672" />
 <p class="caption">
 Figura 3.8: Función de densidad predictiva posterior para el jugador Max Alvis.
 </p>
@@ -907,8 +907,8 @@ la variable aleatoria.<a href="modelo-binomial.html#fnref5" class="footnote-back
 gitbook.require(["gitbook"], function(gitbook) {
 gitbook.start({
 "sharing": {
-"github": false,
-"facebook": true,
+"github": true,
+"facebook": false,
 "twitter": true,
 "linkedin": false,
 "weibo": false,
@@ -923,8 +923,8 @@ gitbook.start({
 "size": 2
 },
 "edit": {
-"link": null,
-"text": null
+"link": "https://github.com/psirusteam/bookdownBayesiano/3Uniparametricos.Rmd",
+"text": "Edit"
 },
 "history": {
 "link": null,
@@ -934,10 +934,11 @@ gitbook.start({
 "link": null,
 "text": null
 },
-"download": ["ModelosBayesianos.pdf", "ModelosBayesianos.epub"],
+"download": ["ModelosBayesianos.pdf", "ModelosBayesianos.epub", "ModelosBayesianos.mobi"],
 "toc": {
 "collapse": "section"
-}
+},
+"tconfig": null
 });
 });
 </script>

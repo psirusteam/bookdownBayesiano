@@ -6,6 +6,10 @@ documentclass: book
 bibliography: [book.bib]
 biblio-style: apalike
 link-citations: yes
+colorlinks: yes
+lot: yes
+lof: yes
+fontsize: 12pt
 github-repo: psirusteam/bookdownBayesiano
 description: "Este es el repositorio del libro *Modelos Bayesianos con R y STAN*."
 knit: "bookdown::render_book"
@@ -41,9 +45,15 @@ output:
     keep_tex: true
   gitbook:
     df_print: kable
+    css: "style.css"
 ---
 
 
 
 
+
 # Prefacio {-}
+
+
+<!-- ![Creative Commons License](https://mirrors.creativecommons.org/presskit/buttons/88x31/png/by-nc-sa.png)   -->
+The online version of this book is licensed under the [Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International License](http://creativecommons.org/licenses/by-nc-sa/4.0/). You can purchase a hardcopy from [Chapman & Hall](https://www.crcpress.com/product/isbn/9781138700109) or Amazon.

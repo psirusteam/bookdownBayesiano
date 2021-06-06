@@ -4,6 +4,7 @@
 \PassOptionsToPackage{dvipsnames,svgnames*,x11names*}{xcolor}
 %
 \documentclass[
+  12pt,
   spanish,
 ]{book}
 \usepackage{amsmath,amssymb}
@@ -116,6 +117,7 @@
   \setlength{\itemsep}{0pt}\setlength{\parskip}{0pt}}
 \setcounter{secnumdepth}{5}
 \usepackage{booktabs}
+
 \usepackage{setspace}
 \def\bPi{\boldsymbol \Pi }
 \def\bGamma{\boldsymbol \Gamma}
@@ -178,9 +180,13 @@
 \setcounter{tocdepth}{1}
 \tableofcontents
 }
+\listoftables
+\listoffigures
 \hypertarget{prefacio}{%
 \chapter*{Prefacio}\label{prefacio}}
 \addcontentsline{toc}{chapter}{Prefacio}
+
+The online version of this book is licensed under the \href{http://creativecommons.org/licenses/by-nc-sa/4.0/}{Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International License}. You can purchase a hardcopy from \href{https://www.crcpress.com/product/isbn/9781138700109}{Chapman \& Hall} or Amazon.
 
 \hypertarget{antes-de-comenzar}{%
 \chapter*{Antes de comenzar}\label{antes-de-comenzar}}
@@ -1846,10 +1852,10 @@ La siguiente salida de \texttt{STAN} permite conocer la estimación bayesiana po
 ## 4 chains, each with iter=2000; warmup=1000; thin=1; 
 ## post-warmup draws per chain=1000, total post-warmup draws=4000.
 ## 
-##         mean se_mean     sd   2.5% 97.5% n_eff   Rhat
-## theta 0.5155   1e-04 0.0042 0.5071 0.524  1591 1.0009
+##         mean se_mean     sd  2.5%  97.5% n_eff   Rhat
+## theta 0.5154   1e-04 0.0043 0.507 0.5242  1609 1.0002
 ## 
-## Samples were drawn using NUTS(diag_e) at Sat Jun  5 00:10:46 2021.
+## Samples were drawn using NUTS(diag_e) at Sat Jun  5 21:35:42 2021.
 ## For each parameter, n_eff is a crude measure of effective sample size,
 ## and Rhat is the potential scale reduction factor on split chains (at 
 ## convergence, Rhat=1).
@@ -2384,10 +2390,10 @@ La siguiente salida de \texttt{STAN} permite conocer la estimación bayesiana po
 ## 4 chains, each with iter=2000; warmup=1000; thin=1; 
 ## post-warmup draws per chain=1000, total post-warmup draws=4000.
 ## 
-##         mean se_mean     sd  2.5%  97.5% n_eff  Rhat
-## theta 0.2736   1e-04 0.0051 0.264 0.2838  1311 1.003
+##         mean se_mean     sd   2.5%  97.5% n_eff   Rhat
+## theta 0.2734   1e-04 0.0053 0.2631 0.2843  1439 1.0014
 ## 
-## Samples were drawn using NUTS(diag_e) at Sat Jun  5 00:11:22 2021.
+## Samples were drawn using NUTS(diag_e) at Sat Jun  5 21:36:29 2021.
 ## For each parameter, n_eff is a crude measure of effective sample size,
 ## and Rhat is the potential scale reduction factor on split chains (at 
 ## convergence, Rhat=1).
@@ -2570,10 +2576,10 @@ La siguiente salida de \texttt{STAN} permite conocer la estimación bayesiana po
 ## 4 chains, each with iter=2000; warmup=1000; thin=1; 
 ## post-warmup draws per chain=1000, total post-warmup draws=4000.
 ## 
-##         mean se_mean     sd   2.5% 97.5% n_eff   Rhat
-## theta 0.0051   1e-04 0.0021 0.0019  0.01  1720 1.0009
+##         mean se_mean     sd   2.5%  97.5% n_eff   Rhat
+## theta 0.0049       0 0.0021 0.0017 0.0098  1789 1.0018
 ## 
-## Samples were drawn using NUTS(diag_e) at Sat Jun  5 15:23:38 2021.
+## Samples were drawn using NUTS(diag_e) at Sat Jun  5 21:37:12 2021.
 ## For each parameter, n_eff is a crude measure of effective sample size,
 ## and Rhat is the potential scale reduction factor on split chains (at 
 ## convergence, Rhat=1).
@@ -2684,9 +2690,9 @@ Después de cinco mil iteraciones, la salida del anterior código muestra la est
 ## post-warmup draws per chain=1000, total post-warmup draws=4000.
 ## 
 ##         mean se_mean    sd   2.5% 97.5% n_eff   Rhat
-## theta 0.0051       0 4e-04 0.0044 0.006  1325 1.0008
+## theta 0.0051       0 4e-04 0.0044 0.006  1310 1.0038
 ## 
-## Samples were drawn using NUTS(diag_e) at Sat Jun  5 15:24:08 2021.
+## Samples were drawn using NUTS(diag_e) at Sat Jun  5 21:37:44 2021.
 ## For each parameter, n_eff is a crude measure of effective sample size,
 ## and Rhat is the potential scale reduction factor on split chains (at 
 ## convergence, Rhat=1).
@@ -3101,10 +3107,10 @@ Después de converger, la salida del anterior código muestra que a estimación 
 ## 4 chains, each with iter=2000; warmup=1000; thin=1; 
 ## post-warmup draws per chain=1000, total post-warmup draws=4000.
 ## 
-##          mean se_mean     sd    2.5%   97.5% n_eff   Rhat
-## theta 12.2478  0.0029 0.1164 12.0086 12.4767  1653 1.0002
+##         mean se_mean     sd    2.5%   97.5% n_eff   Rhat
+## theta 12.256  0.0031 0.1144 12.0377 12.4865  1368 1.0023
 ## 
-## Samples were drawn using NUTS(diag_e) at Sat Jun  5 19:26:50 2021.
+## Samples were drawn using NUTS(diag_e) at Sat Jun  5 21:38:29 2021.
 ## For each parameter, n_eff is a crude measure of effective sample size,
 ## and Rhat is the potential scale reduction factor on split chains (at 
 ## convergence, Rhat=1).
@@ -4136,13 +4142,13 @@ Como lo afirma \citet{Gelman03} la simulación numérica es parte central del an
 Al momento de la simulación estocástica de observaciones provenientes de alguna distribución de interés, la distribución uniforme es quizás la más usada y la más importante. El siguiente resultado adaptado de \citet{Casella} así lo confirma.
 
 \begin{proposition}
-\protect\hypertarget{prp:unnamed-chunk-1}{}{\label{prp:unnamed-chunk-1} }Si \(U\) es una variable aleatoria con distribución uniforme en el intervalo \((0,1)\), entonces la la variable aleatoria \(F^{-1}(U)\) tiene distribución F.
+\protect\hypertarget{prp:unnamed-chunk-2}{}{\label{prp:unnamed-chunk-2} }Si \(U\) es una variable aleatoria con distribución uniforme en el intervalo \((0,1)\), entonces la la variable aleatoria \(F^{-1}(U)\) tiene distribución F.
 \end{proposition}
 
 Aunque la función \(F\) no necesariamente es una función uno a uno (por lo menos no lo es en el caso discreto) sí se puede verificar que \(F^{-1}(U)\) es única con probabilidad uno. Una definición general, que encaja en el caso continuo o discreto, de la función \(F\) inversa es la siguiente
 
 \begin{definition}
-\protect\hypertarget{def:unnamed-chunk-2}{}{\label{def:unnamed-chunk-2} }Para cualquier función \(F\) definida sobre \(\mathbb{R}\), se define la función inversa generalizada de \(F\) como
+\protect\hypertarget{def:unnamed-chunk-3}{}{\label{def:unnamed-chunk-3} }Para cualquier función \(F\) definida sobre \(\mathbb{R}\), se define la función inversa generalizada de \(F\) como
 
 \begin{equation}
 F^{-1}(u)=\inf \{x \mid F(x)\geq u\}
@@ -4150,7 +4156,7 @@ F^{-1}(u)=\inf \{x \mid F(x)\geq u\}
 \end{definition}
 
 \begin{example}
-\protect\hypertarget{exm:unnamed-chunk-3}{}{\label{exm:unnamed-chunk-3} }Suponga que \(X\) es una variable aleatoria con distribución exponencial. De esta forma, su función de densidad acumulativa viene dada por
+\protect\hypertarget{exm:unnamed-chunk-4}{}{\label{exm:unnamed-chunk-4} }Suponga que \(X\) es una variable aleatoria con distribución exponencial. De esta forma, su función de densidad acumulativa viene dada por
 
 \begin{equation*}
 F(x)=1-\exp\{ -\theta x\}
@@ -4175,7 +4181,7 @@ entrega una forma diáfana para la simulación de una observación con distribuc
 \end{Shaded}
 
 \begin{verbatim}
-## [1] 5.350282
+## [1] 5.020784
 \end{verbatim}
 
 \begin{Shaded}
@@ -4187,8 +4193,8 @@ entrega una forma diáfana para la simulación de una observación con distribuc
 
 \begin{figure}
 \centering
-\includegraphics{A3Simulacion_files/figure-latex/unnamed-chunk-4-1.pdf}
-\caption{\label{fig:unnamed-chunk-4}Histograma de observaciones con distribución exponencial}
+\includegraphics{A3Simulacion_files/figure-latex/unnamed-chunk-5-1.pdf}
+\caption{\label{fig:unnamed-chunk-5}Histograma de observaciones con distribución exponencial}
 \end{figure}
 
 \hypertarget{muxe9todo-de-la-grilla}{%
@@ -4238,7 +4244,7 @@ P(F(x_k)< U \leq F(x_{k+1}))&=F(x_{k+1})-F(x_{k})\\
 Si se quiere extraer una muestra aleatoria de \(N\) observaciones provenientes de la distribución de interés, entonces basta con repetir el anterior proceso \(N\) veces. Por supuesto, como se trata de una muestra aleatoria cada selección se debe realizar con repetición; de esta manera no importa si \(N>n\). Suponiendo que el conjunto \(x_1,\ldots,x_n\) conforma una grilla de puntos lo suficientemente cercanos y que no sucede nada importante entre cada uno de ellos, entonces esta técnica debe tener un buen funcionamiento.
 
 \begin{example}
-\protect\hypertarget{exm:unnamed-chunk-5}{}{\label{exm:unnamed-chunk-5} }El siguiente código computacional permite utilizar el método de la grilla para simular mil valores provenientes de una distribución exponencial con parámetro \(\theta = 5\).
+\protect\hypertarget{exm:unnamed-chunk-6}{}{\label{exm:unnamed-chunk-6} }El siguiente código computacional permite utilizar el método de la grilla para simular mil valores provenientes de una distribución exponencial con parámetro \(\theta = 5\).
 \end{example}
 
 \begin{Shaded}
@@ -4252,7 +4258,7 @@ Si se quiere extraer una muestra aleatoria de \(N\) observaciones provenientes d
 \end{Shaded}
 
 \begin{verbatim}
-## [1] 4.805151
+## [1] 4.882812
 \end{verbatim}
 
 \begin{Shaded}
@@ -4262,9 +4268,9 @@ Si se quiere extraer una muestra aleatoria de \(N\) observaciones provenientes d
 \end{Highlighting}
 \end{Shaded}
 
-\includegraphics{A3Simulacion_files/figure-latex/unnamed-chunk-6-1.pdf}
+\includegraphics{A3Simulacion_files/figure-latex/unnamed-chunk-7-1.pdf}
 \begin{example}
-\protect\hypertarget{exm:unnamed-chunk-7}{}{\label{exm:unnamed-chunk-7} }De la misma manera, el método de la grilla permite simular valores de un distribución discreta. El siguiente código computacional permite utilizar el método de la grilla para simular mil valores provenientes de una distribución Poisson con parámetro \(\theta = 2\).
+\protect\hypertarget{exm:unnamed-chunk-8}{}{\label{exm:unnamed-chunk-8} }De la misma manera, el método de la grilla permite simular valores de un distribución discreta. El siguiente código computacional permite utilizar el método de la grilla para simular mil valores provenientes de una distribución Poisson con parámetro \(\theta = 2\).
 \end{example}
 
 \begin{Shaded}
@@ -4300,7 +4306,7 @@ Si se quiere extraer una muestra aleatoria de \(N\) observaciones provenientes d
 \end{Shaded}
 
 \begin{verbatim}
-## [1] 2.013
+## [1] 1.972
 \end{verbatim}
 
 \begin{Shaded}
@@ -4310,7 +4316,7 @@ Si se quiere extraer una muestra aleatoria de \(N\) observaciones provenientes d
 \end{Shaded}
 
 \begin{verbatim}
-## [1] 1.972804
+## [1] 1.899115
 \end{verbatim}
 
 \begin{Shaded}
@@ -4321,12 +4327,12 @@ Si se quiere extraer una muestra aleatoria de \(N\) observaciones provenientes d
 
 \begin{figure}
 \centering
-\includegraphics{A3Simulacion_files/figure-latex/unnamed-chunk-8-1.pdf}
-\caption{\label{fig:unnamed-chunk-8}Histograma de observaciones con distribución Poisson}
+\includegraphics{A3Simulacion_files/figure-latex/unnamed-chunk-9-1.pdf}
+\caption{\label{fig:unnamed-chunk-9}Histograma de observaciones con distribución Poisson}
 \end{figure}
 
 \begin{example}
-\protect\hypertarget{exm:unnamed-chunk-9}{}{\label{exm:unnamed-chunk-9} }El método de la grilla también puede utilizarse para simular observaciones de una distribución biparamétrica, univariada y continua. El siguiente código computacional permite utilizar el método de la grilla para simular mil valores provenientes de una distribución Gamma con parámetros \(\theta = 4\), \(\beta = 2\).
+\protect\hypertarget{exm:unnamed-chunk-10}{}{\label{exm:unnamed-chunk-10} }El método de la grilla también puede utilizarse para simular observaciones de una distribución biparamétrica, univariada y continua. El siguiente código computacional permite utilizar el método de la grilla para simular mil valores provenientes de una distribución Gamma con parámetros \(\theta = 4\), \(\beta = 2\).
 \end{example}
 
 \begin{Shaded}
@@ -4355,7 +4361,7 @@ Si se quiere extraer una muestra aleatoria de \(N\) observaciones provenientes d
 \end{Shaded}
 
 \begin{verbatim}
-## [1] 1.9975
+## [1] 1.965
 \end{verbatim}
 
 \begin{Shaded}
@@ -4365,7 +4371,7 @@ Si se quiere extraer una muestra aleatoria de \(N\) observaciones provenientes d
 \end{Shaded}
 
 \begin{verbatim}
-## [1] 1.031415
+## [1] 0.9266416
 \end{verbatim}
 
 \begin{Shaded}
@@ -4377,12 +4383,12 @@ Si se quiere extraer una muestra aleatoria de \(N\) observaciones provenientes d
 
 \begin{figure}
 \centering
-\includegraphics{A3Simulacion_files/figure-latex/unnamed-chunk-10-1.pdf}
-\caption{\label{fig:unnamed-chunk-10}Histograma de observaciones con distribución Gamma.}
+\includegraphics{A3Simulacion_files/figure-latex/unnamed-chunk-11-1.pdf}
+\caption{\label{fig:unnamed-chunk-11}Histograma de observaciones con distribución Gamma.}
 \end{figure}
 
 \begin{example}
-\protect\hypertarget{exm:unnamed-chunk-11}{}{\label{exm:unnamed-chunk-11} }Para comprobar el poder de este método de simulación, se presenta el siguiente código que permite simular valores de una distribución multiparamétrica, bivariada y continua. En particular, se simulan valores de la distribución Normal multivariante con vector de medias \(\boldsymbol \mu= (2, 4)'\) y matriz de varianzas covarianzas
+\protect\hypertarget{exm:unnamed-chunk-12}{}{\label{exm:unnamed-chunk-12} }Para comprobar el poder de este método de simulación, se presenta el siguiente código que permite simular valores de una distribución multiparamétrica, bivariada y continua. En particular, se simulan valores de la distribución Normal multivariante con vector de medias \(\boldsymbol \mu= (2, 4)'\) y matriz de varianzas covarianzas
 \(\boldsymbol \Sigma= \begin{bmatrix} 25 & 30 \\ 30 & 16 \end{bmatrix}\)
 \end{example}
 
@@ -4448,7 +4454,7 @@ Si se quiere extraer una muestra aleatoria de \(N\) observaciones provenientes d
 \end{Shaded}
 
 \begin{verbatim}
-## [1] 1.678 3.976
+## [1] 1.911 4.135
 \end{verbatim}
 
 \begin{Shaded}
@@ -4457,11 +4463,13 @@ Si se quiere extraer una muestra aleatoria de \(N\) observaciones provenientes d
 \end{Highlighting}
 \end{Shaded}
 
-\begin{verbatim}
-##           [,1]      [,2]
-## [1,] 24.955271  9.292064
-## [2,]  9.292064 14.929353
-\end{verbatim}
+\begin{tabular}{r|r}
+\hline
+25.01209 & 10.69646\\
+\hline
+10.69646 & 15.63191\\
+\hline
+\end{tabular}
 
 \begin{Shaded}
 \begin{Highlighting}[]
@@ -4472,8 +4480,8 @@ Si se quiere extraer una muestra aleatoria de \(N\) observaciones provenientes d
 
 \begin{figure}
 \centering
-\includegraphics{A3Simulacion_files/figure-latex/unnamed-chunk-12-1.pdf}
-\caption{\label{fig:unnamed-chunk-12-1}Histogramas de observaciones con distribución Normal bivariada.}
+\includegraphics{A3Simulacion_files/figure-latex/unnamed-chunk-13-1.pdf}
+\caption{\label{fig:unnamed-chunk-13-1}Histogramas de observaciones con distribución Normal bivariada.}
 \end{figure}
 
 \begin{Shaded}
@@ -4485,8 +4493,8 @@ Si se quiere extraer una muestra aleatoria de \(N\) observaciones provenientes d
 
 \begin{figure}
 \centering
-\includegraphics{A3Simulacion_files/figure-latex/unnamed-chunk-12-2.pdf}
-\caption{\label{fig:unnamed-chunk-12-2}Histogramas de observaciones con distribución Normal bivariada.}
+\includegraphics{A3Simulacion_files/figure-latex/unnamed-chunk-13-2.pdf}
+\caption{\label{fig:unnamed-chunk-13-2}Histogramas de observaciones con distribución Normal bivariada.}
 \end{figure}
 
 \hypertarget{muxe9todos-de-monte-carlo-vuxeda-cadenas-de-markov}{%
@@ -4513,7 +4521,7 @@ conjunta cuando es fácil muestrear de las distribuciones condicionadas. El algo
 La idea de este esquema es renovar cada componente por medio de la simulación de la correspondiente distribución condicional. Una vez que la cadena converge, se tiene que los valores de \(\boldsymbol \theta\) corresponden a observaciones de la distribución requerida, \(p(\boldsymbol \theta\mid x)\). Sin embargo, en general, no se garantiza una muestra variables aleatorias \emph{totalmente} independientes provenientes de la distribución \(p(\theta \mid x)\), dado que el esquema del muestreador de Gibbs usa el valor actual para construir el siguiente valor; por ende, la secuencia de valores que se obtiene estará correlacionada.
 
 \begin{example}
-\protect\hypertarget{exm:unnamed-chunk-13}{}{\label{exm:unnamed-chunk-13} }Se puede implementar el muestreador de Gibbs para generar una secuencia de observaciones con densidad
+\protect\hypertarget{exm:unnamed-chunk-14}{}{\label{exm:unnamed-chunk-14} }Se puede implementar el muestreador de Gibbs para generar una secuencia de observaciones con densidad
 conjunta
 
 \begin{equation*}
@@ -4554,8 +4562,8 @@ y_{t+1}\mid x_{t+1} & \sim N(\rho x_{t+1}, 1-\rho^2)
 \end{Shaded}
 
 \begin{verbatim}
-##           V1           V2 
-## -0.009751821 -0.028181553
+##          V1          V2 
+## 0.002668396 0.012347404
 \end{verbatim}
 
 \begin{Shaded}
@@ -4564,11 +4572,15 @@ y_{t+1}\mid x_{t+1} & \sim N(\rho x_{t+1}, 1-\rho^2)
 \end{Highlighting}
 \end{Shaded}
 
-\begin{verbatim}
-##           V1        V2
-## V1 0.9705958 0.4782972
-## V2 0.4782972 0.9944298
-\end{verbatim}
+\begin{tabular}{l|r|r}
+\hline
+  & V1 & V2\\
+\hline
+V1 & 1.0283294 & 0.5102611\\
+\hline
+V2 & 0.5102611 & 1.0092864\\
+\hline
+\end{tabular}
 
 \begin{Shaded}
 \begin{Highlighting}[]
@@ -4576,11 +4588,15 @@ y_{t+1}\mid x_{t+1} & \sim N(\rho x_{t+1}, 1-\rho^2)
 \end{Highlighting}
 \end{Shaded}
 
-\begin{verbatim}
-##           V1        V2
-## V1 1.0000000 0.4868459
-## V2 0.4868459 1.0000000
-\end{verbatim}
+\begin{tabular}{l|r|r}
+\hline
+  & V1 & V2\\
+\hline
+V1 & 1.0000000 & 0.5008632\\
+\hline
+V2 & 0.5008632 & 1.0000000\\
+\hline
+\end{tabular}
 
 \begin{Shaded}
 \begin{Highlighting}[]
@@ -4590,12 +4606,12 @@ y_{t+1}\mid x_{t+1} & \sim N(\rho x_{t+1}, 1-\rho^2)
 
 \begin{figure}
 \centering
-\includegraphics{A3Simulacion_files/figure-latex/unnamed-chunk-14-1.pdf}
-\caption{\label{fig:unnamed-chunk-14}Generación de valores para una distribución normal bivariada.}
+\includegraphics{A3Simulacion_files/figure-latex/unnamed-chunk-15-1.pdf}
+\caption{\label{fig:unnamed-chunk-15}Generación de valores para una distribución normal bivariada.}
 \end{figure}
 
 \begin{example}
-\protect\hypertarget{exm:unnamed-chunk-15}{}{\label{exm:unnamed-chunk-15} }Un problema común es el de descartar los primeros valores, puesto que el algoritmo puede demorar en obtener convergencia;
+\protect\hypertarget{exm:unnamed-chunk-16}{}{\label{exm:unnamed-chunk-16} }Un problema común es el de descartar los primeros valores, puesto que el algoritmo puede demorar en obtener convergencia;
 esto se puede resolver en forma empírica utilizando las medias y varianzas acumuladas y graficándolas se puede tomar una decisión acerca del valor óptimo en el que la cadena converge.
 
 Con el siguiente código computacional, es posible corroborar que un punto de corte óptimo desde el cual se consideraría que las cadenas simuladas anteriormente es a partir de la iteración \textbf{600}.
@@ -4629,8 +4645,8 @@ Con el siguiente código computacional, es posible corroborar que un punto de co
 
 \begin{figure}
 \centering
-\includegraphics{A3Simulacion_files/figure-latex/unnamed-chunk-16-1.pdf}
-\caption{\label{fig:unnamed-chunk-16}Convergencia de la media y varianza usando el muestreador de Gibbs.}
+\includegraphics{A3Simulacion_files/figure-latex/unnamed-chunk-17-1.pdf}
+\caption{\label{fig:unnamed-chunk-17}Convergencia de la media y varianza usando el muestreador de Gibbs.}
 \end{figure}
 
 El muestrador de Gibbs también funciona en una ``segunda fase'', cuando queremos seleccionar una muestra de \(f(\theta\mid x)\), es decir, la distribución de los parámetros dada la información observada \(x\).
@@ -4723,7 +4739,7 @@ La siguiente función en \texttt{R} implementa el muestreador de Gibbs para el a
 \end{Shaded}
 
 \begin{verbatim}
-## [1] 4.718260 4.056971
+## [1] 5.019399 4.117409
 \end{verbatim}
 
 \begin{Shaded}
@@ -4736,8 +4752,8 @@ La siguiente función en \texttt{R} implementa el muestreador de Gibbs para el a
 
 \begin{figure}
 \centering
-\includegraphics{A3Simulacion_files/figure-latex/unnamed-chunk-18-1.pdf}
-\caption{\label{fig:unnamed-chunk-18}Cadenas generadas desde el muestreador de Gibbs.}
+\includegraphics{A3Simulacion_files/figure-latex/unnamed-chunk-19-1.pdf}
+\caption{\label{fig:unnamed-chunk-19}Cadenas generadas desde el muestreador de Gibbs.}
 \end{figure}
 
 \begin{Shaded}
@@ -4752,8 +4768,8 @@ La siguiente función en \texttt{R} implementa el muestreador de Gibbs para el a
 
 \begin{figure}
 \centering
-\includegraphics{A3Simulacion_files/figure-latex/unnamed-chunk-19-1.pdf}
-\caption{\label{fig:unnamed-chunk-19}Densidades posteriores generadas con el muestreador de Gibbs.}
+\includegraphics{A3Simulacion_files/figure-latex/unnamed-chunk-20-1.pdf}
+\caption{\label{fig:unnamed-chunk-20}Densidades posteriores generadas con el muestreador de Gibbs.}
 \end{figure}
 
 \hypertarget{el-algoritmo-de-metruxf3polis-hastings}{%
@@ -4795,7 +4811,7 @@ describe la probabilidad de aceptación de \(\theta'\) a partir de la posición 
 Siguiendo el anterior algoritmo, entonces se tiene que \(\theta_{m+1}, \theta_{m+2}, \ldots\) es una secuencia (correlacionada) de la distribución requerida. En principio, puede ser usada cualquier densidad \(q\), pero si ésta es escogida ingenuamente, la eficiencia de la cadena puede ser muy pobre. La relación más importante entre el muestreados de Gibbs y el algorítmo de Metropolis-Hastings, está dada como un teorema en el libro de \citet[pág. 296]{Robert}.
 
 \begin{proposition}
-\protect\hypertarget{prp:unnamed-chunk-20}{}{\label{prp:unnamed-chunk-20} }El muestreador de Gibbs es equivalente al algoritmo de Metropolis-Hastings, con la
+\protect\hypertarget{prp:unnamed-chunk-21}{}{\label{prp:unnamed-chunk-21} }El muestreador de Gibbs es equivalente al algoritmo de Metropolis-Hastings, con la
 probabilidad de aceptación igual a uno para todos los puntos propuestos.
 \end{proposition}
 
@@ -4853,7 +4869,7 @@ parámetro, ambas con varianza igual a uno. Dadas las distribuciones propuestas,
 \end{Shaded}
 
 \begin{verbatim}
-## [1] 4.729000 4.387919
+## [1] 4.851538 3.653947
 \end{verbatim}
 
 \begin{Shaded}
@@ -4868,8 +4884,8 @@ parámetro, ambas con varianza igual a uno. Dadas las distribuciones propuestas,
 
 \begin{figure}
 \centering
-\includegraphics{A3Simulacion_files/figure-latex/unnamed-chunk-22-1.pdf}
-\caption{\label{fig:unnamed-chunk-22}Autocorrelación y autocorrelación parcial para las cadenas simuladas del algoritmo MH.}
+\includegraphics{A3Simulacion_files/figure-latex/unnamed-chunk-23-1.pdf}
+\caption{\label{fig:unnamed-chunk-23}Autocorrelación y autocorrelación parcial para las cadenas simuladas del algoritmo MH.}
 \end{figure}
 
 \hypertarget{buenas-pruxe1cticas-en-la-aplicaciuxf3n-de-muxe9todos-mcmc}{%

@@ -431,7 +431,7 @@ p(\tilde{\mathbf{s}} \mid \mathbf{Y})=\frac{\Gamma(\tilde{s}+\sum_{i=1}^ny_i+0.5
 Es posible modelar la variable aleatoria número de accidentes de tránsito en un día mediante una distribución de Poisson puesto que el promedio muestral y la varianza muestral de los datos son semejantes. Para este conjunto de datos, el promedio equivale a 12.33, mientras que la varianza es de 12.51. El histograma de los valores observados se puede ver en la figura <a href="modelo-poisson.html#fig:EjemPoisson1">3.11</a>.
 </div>
 <div class="figure"><span id="fig:EjemPoisson1"></span>
-<img src="3Uniparametricos_files/figure-html/EjemPoisson1-1.png" alt="Histograma para los datos de accidentes de tránsito." width="672" />
+<img src="3Uniparametricos_files/figure-html/EjemPoisson1-1.svg" alt="Histograma para los datos de accidentes de tránsito." width="672" />
 <p class="caption">
 Figura 3.11: Histograma para los datos de accidentes de tránsito.
 </p>
@@ -439,7 +439,7 @@ Figura 3.11: Histograma para los datos de accidentes de tránsito.
 <p>En primera instancia, es posible realizar un análisis no informativo, al formular una distribución previa de Jeffreys proporcional a <span class="math inline">\(\theta^{-1/2}\)</span>, para lo cual la distribución posterior será <span class="math inline">\(Gamma(\sum_{i=1}^n y_i+1/2, n)=Gamma(370.5, 30)\)</span>. Por lo tanto, un estimador de <span class="math inline">\(\theta\)</span> está dado por la media de la distribución posterior que es <span class="math inline">\(370.5/30=12.35\)</span>, muy cercano al valor del estimador de máxima verosimilitud correspondiente al promedio muestral. La figura <a href="modelo-poisson.html#fig:EjemPoisson2">3.12</a> (lado izquierdo) muestra el comportamiento de las distribuciones de Jeffreys y posterior para este ejemplo.</p>
 <p>Por otro lado, basándose en datos históricos, la alcaldía observó que, en el mismo periodo del año anterior, ocurrieron 37 accidentes en 9 días de observación. Luego, una distribución previa informativa<a href="#fn8" class="footnote-ref" id="fnref8"><sup>8</sup></a> está dada por <span class="math inline">\(Gamma(\alpha=38,\beta=9)\)</span>. Luego, apelando al resultado <a href="modelo-poisson.html#prp:ResPoissonPost">3.7</a>, la distribución posterior corresponde a una <span class="math inline">\(Gamma(370+38, 30+9)=Gamma(408, 39)\)</span>. Para este caso, un estimador de <span class="math inline">\(\theta\)</span> está dado por la media de la distribución posterior que es <span class="math inline">\(480/39=12.31\)</span>. La figura <a href="modelo-poisson.html#fig:EjemPoisson2">3.12</a> (lado derecho) muestra el comportamiento de las distribuciones previa (informativa) y posterior para este ejemplo.</p>
 <div class="figure"><span id="fig:EjemPoisson2"></span>
-<img src="3Uniparametricos_files/figure-html/EjemPoisson2-1.png" alt="Distribución previa y distribución posterior para el ejemplo del tránsito con dos distribuciones previas diferentes (el lado izquierdo representa el caso cuando se usa la previa no informativa, el lado derecho la previa informativa)." width="672" />
+<img src="3Uniparametricos_files/figure-html/EjemPoisson2-1.svg" alt="Distribución previa y distribución posterior para el ejemplo del tránsito con dos distribuciones previas diferentes (el lado izquierdo representa el caso cuando se usa la previa no informativa, el lado derecho la previa informativa)." width="672" />
 <p class="caption">
 Figura 3.12: Distribución previa y distribución posterior para el ejemplo del tránsito con dos distribuciones previas diferentes (el lado izquierdo representa el caso cuando se usa la previa no informativa, el lado derecho la previa informativa).
 </p>
@@ -490,7 +490,7 @@ Figura 3.12: Distribución previa y distribución posterior para el ejemplo del 
 <div class="sourceCode" id="cb46"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb46-1"><a href="modelo-poisson.html#cb46-1" aria-hidden="true" tabindex="-1"></a><span class="fu">sum</span>(pre.NoInf.val <span class="sc">*</span> s.val)</span></code></pre></div>
 <pre><code>## [1] 12.35</code></pre>
 <div class="figure"><span id="fig:PredPostPoisson"></span>
-<img src="3Uniparametricos_files/figure-html/PredPostPoisson-1.png" alt="Distribución predictiva posterior para $n^*=1$ para el ejemplo del tránsito." width="672" />
+<img src="3Uniparametricos_files/figure-html/PredPostPoisson-1.svg" alt="Distribución predictiva posterior para $n^*=1$ para el ejemplo del tránsito." width="672" />
 <p class="caption">
 Figura 3.13: Distribución predictiva posterior para <span class="math inline">\(n^*=1\)</span> para el ejemplo del tránsito.
 </p>
@@ -522,9 +522,9 @@ Figura 3.13: Distribución predictiva posterior para <span class="math inline">\
 ## post-warmup draws per chain=1000, total post-warmup draws=4000.
 ## 
 ##          mean se_mean     sd    2.5%   97.5% n_eff   Rhat
-## theta 12.2585  0.0029 0.1146 12.0344 12.4862  1596 1.0004
+## theta 12.2538  0.0031 0.1155 12.0282 12.4813  1389 1.0041
 ## 
-## Samples were drawn using NUTS(diag_e) at Sat Jun  5 19:22:14 2021.
+## Samples were drawn using NUTS(diag_e) at Sat Jun  5 21:43:37 2021.
 ## For each parameter, n_eff is a crude measure of effective sample size,
 ## and Rhat is the potential scale reduction factor on split chains (at 
 ## convergence, Rhat=1).</code></pre>
@@ -532,7 +532,7 @@ Figura 3.13: Distribución predictiva posterior para <span class="math inline">\
 <div class="sourceCode" id="cb51"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb51-1"><a href="modelo-poisson.html#cb51-1" aria-hidden="true" tabindex="-1"></a>bayesplot<span class="sc">::</span><span class="fu">mcmc_areas</span>(Poissonfit, <span class="at">pars =</span> <span class="st">&quot;theta&quot;</span>, </span>
 <span id="cb51-2"><a href="modelo-poisson.html#cb51-2" aria-hidden="true" tabindex="-1"></a>                      <span class="at">prob =</span> <span class="fl">0.95</span>)</span></code></pre></div>
 <div class="figure"><span id="fig:posPoissonStan"></span>
-<img src="3Uniparametricos_files/figure-html/posPoissonStan-1.png" alt="Distribución posterior." width="672" />
+<img src="3Uniparametricos_files/figure-html/posPoissonStan-1.svg" alt="Distribución posterior." width="672" />
 <p class="caption">
 Figura 3.14: Distribución posterior.
 </p>
@@ -577,8 +577,8 @@ Apostol, T. M. 1957. <em>Mathematical Analysis</em>. McGraw - Hill.
 gitbook.require(["gitbook"], function(gitbook) {
 gitbook.start({
 "sharing": {
-"github": false,
-"facebook": true,
+"github": true,
+"facebook": false,
 "twitter": true,
 "linkedin": false,
 "weibo": false,
@@ -593,8 +593,8 @@ gitbook.start({
 "size": 2
 },
 "edit": {
-"link": null,
-"text": null
+"link": "https://github.com/psirusteam/bookdownBayesiano/3Uniparametricos.Rmd",
+"text": "Edit"
 },
 "history": {
 "link": null,
@@ -604,10 +604,11 @@ gitbook.start({
 "link": null,
 "text": null
 },
-"download": ["ModelosBayesianos.pdf", "ModelosBayesianos.epub"],
+"download": ["ModelosBayesianos.pdf", "ModelosBayesianos.epub", "ModelosBayesianos.mobi"],
 "toc": {
 "collapse": "section"
-}
+},
+"tconfig": null
 });
 });
 </script>

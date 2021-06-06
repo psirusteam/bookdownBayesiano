@@ -277,20 +277,20 @@ div.csl-indent {
 <p>Al momento de la simulación estocástica de observaciones provenientes de alguna distribución de interés, la distribución uniforme es quizás la más usada y la más importante. El siguiente resultado adaptado de <span class="citation"><a href="#ref-Casella" role="doc-biblioref">Robert y Casella</a> (<a href="#ref-Casella" role="doc-biblioref">1999</a>)</span> así lo confirma.</p>
 
 <div class="proposition">
-<span id="prp:unnamed-chunk-1" class="proposition"><strong>Resultado 3.1  </strong></span>Si <span class="math inline">\(U\)</span> es una variable aleatoria con distribución uniforme en el intervalo <span class="math inline">\((0,1)\)</span>, entonces la la variable aleatoria <span class="math inline">\(F^{-1}(U)\)</span> tiene distribución F.
+<span id="prp:unnamed-chunk-2" class="proposition"><strong>Resultado A.1  </strong></span>Si <span class="math inline">\(U\)</span> es una variable aleatoria con distribución uniforme en el intervalo <span class="math inline">\((0,1)\)</span>, entonces la la variable aleatoria <span class="math inline">\(F^{-1}(U)\)</span> tiene distribución F.
 </div>
 <p><br></p>
 <p>Aunque la función <span class="math inline">\(F\)</span> no necesariamente es una función uno a uno (por lo menos no lo es en el caso discreto) sí se puede verificar que <span class="math inline">\(F^{-1}(U)\)</span> es única con probabilidad uno. Una definición general, que encaja en el caso continuo o discreto, de la función <span class="math inline">\(F\)</span> inversa es la siguiente</p>
 
 <div class="definition">
-<p><span id="def:unnamed-chunk-2" class="definition"><strong>Definición C.1  </strong></span>Para cualquier función <span class="math inline">\(F\)</span> definida sobre <span class="math inline">\(\mathbb{R}\)</span>, se define la función inversa generalizada de <span class="math inline">\(F\)</span> como</p>
+<p><span id="def:unnamed-chunk-3" class="definition"><strong>Definición A.1  </strong></span>Para cualquier función <span class="math inline">\(F\)</span> definida sobre <span class="math inline">\(\mathbb{R}\)</span>, se define la función inversa generalizada de <span class="math inline">\(F\)</span> como</p>
 <span class="math display">\[\begin{equation}
 F^{-1}(u)=\inf \{x \mid F(x)\geq u\}
 \end{equation}\]</span>
 </div>
 
 <div class="example">
-<p><span id="exm:unnamed-chunk-3" class="example"><strong>Ejemplo 1.3  </strong></span>Suponga que <span class="math inline">\(X\)</span> es una variable aleatoria con distribución exponencial. De esta forma, su función de densidad acumulativa viene dada por</p>
+<p><span id="exm:unnamed-chunk-4" class="example"><strong>Ejemplo C.1  </strong></span>Suponga que <span class="math inline">\(X\)</span> es una variable aleatoria con distribución exponencial. De esta forma, su función de densidad acumulativa viene dada por</p>
 <p><span class="math display">\[\begin{equation*}
 F(x)=1-\exp\{ -\theta x\}
 \end{equation*}\]</span></p>
@@ -304,11 +304,11 @@ entrega una forma diáfana para la simulación de una observación con distribuc
 <span id="cb52-2"><a href="métodos-directos.html#cb52-2" aria-hidden="true" tabindex="-1"></a>u <span class="ot">&lt;-</span> <span class="fu">runif</span>(<span class="dv">1000</span>)</span>
 <span id="cb52-3"><a href="métodos-directos.html#cb52-3" aria-hidden="true" tabindex="-1"></a>rexpo <span class="ot">&lt;-</span> <span class="fu">log</span>(<span class="dv">1</span> <span class="sc">-</span> u)<span class="sc">/</span>(<span class="sc">-</span>theta)</span>
 <span id="cb52-4"><a href="métodos-directos.html#cb52-4" aria-hidden="true" tabindex="-1"></a><span class="dv">1</span><span class="sc">/</span><span class="fu">mean</span>(rexpo)</span></code></pre></div>
-<pre><code>## [1] 5.073495</code></pre>
+<pre><code>## [1] 4.843383</code></pre>
 <div class="sourceCode" id="cb54"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb54-1"><a href="métodos-directos.html#cb54-1" aria-hidden="true" tabindex="-1"></a><span class="fu">hist</span>(rexpo, <span class="at">freq =</span> <span class="cn">FALSE</span>)</span>
 <span id="cb54-2"><a href="métodos-directos.html#cb54-2" aria-hidden="true" tabindex="-1"></a><span class="fu">lines</span>(<span class="fu">density</span>(rexpo), <span class="at">col =</span> <span class="dv">2</span>)</span></code></pre></div>
-<div class="figure"><span id="fig:unnamed-chunk-4"></span>
-<img src="A3Simulacion_files/figure-html/unnamed-chunk-4-1.png" alt="Histograma de observaciones con distribución exponencial" width="672" />
+<div class="figure"><span id="fig:unnamed-chunk-5"></span>
+<img src="A3Simulacion_files/figure-html/unnamed-chunk-5-1.svg" alt="Histograma de observaciones con distribución exponencial" width="672" />
 <p class="caption">
 Figura C.1: Histograma de observaciones con distribución exponencial
 </p>
@@ -346,25 +346,25 @@ P(F(x_k)&lt; U \leq F(x_{k+1}))&amp;=F(x_{k+1})-F(x_{k})\\
 <p>Si se quiere extraer una muestra aleatoria de <span class="math inline">\(N\)</span> observaciones provenientes de la distribución de interés, entonces basta con repetir el anterior proceso <span class="math inline">\(N\)</span> veces. Por supuesto, como se trata de una muestra aleatoria cada selección se debe realizar con repetición; de esta manera no importa si <span class="math inline">\(N&gt;n\)</span>. Suponiendo que el conjunto <span class="math inline">\(x_1,\ldots,x_n\)</span> conforma una grilla de puntos lo suficientemente cercanos y que no sucede nada importante entre cada uno de ellos, entonces esta técnica debe tener un buen funcionamiento.</p>
 
 <div class="example">
-<span id="exm:unnamed-chunk-5" class="example"><strong>Ejemplo C.1  </strong></span>El siguiente código computacional permite utilizar el método de la grilla para simular mil valores provenientes de una distribución exponencial con parámetro <span class="math inline">\(\theta = 5\)</span>.
+<span id="exm:unnamed-chunk-6" class="example"><strong>Ejemplo B.1  </strong></span>El siguiente código computacional permite utilizar el método de la grilla para simular mil valores provenientes de una distribución exponencial con parámetro <span class="math inline">\(\theta = 5\)</span>.
 </div>
 <div class="sourceCode" id="cb55"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb55-1"><a href="métodos-directos.html#cb55-1" aria-hidden="true" tabindex="-1"></a>theta <span class="ot">&lt;-</span> <span class="dv">5</span></span>
 <span id="cb55-2"><a href="métodos-directos.html#cb55-2" aria-hidden="true" tabindex="-1"></a>x.grid <span class="ot">&lt;-</span> <span class="fu">seq</span>(<span class="dv">0</span>, <span class="dv">100</span>, <span class="at">by=</span><span class="fl">0.01</span>)</span>
 <span id="cb55-3"><a href="métodos-directos.html#cb55-3" aria-hidden="true" tabindex="-1"></a>p.exp <span class="ot">&lt;-</span> theta <span class="sc">*</span> <span class="fu">exp</span>(<span class="sc">-</span>theta <span class="sc">*</span> x.grid)</span>
 <span id="cb55-4"><a href="métodos-directos.html#cb55-4" aria-hidden="true" tabindex="-1"></a>r.exp <span class="ot">&lt;-</span> <span class="fu">sample</span>(x.grid, <span class="dv">1000</span>, <span class="at">prob =</span> p.exp, <span class="at">replace =</span> T)</span>
 <span id="cb55-5"><a href="métodos-directos.html#cb55-5" aria-hidden="true" tabindex="-1"></a><span class="dv">1</span><span class="sc">/</span><span class="fu">mean</span>(r.exp)</span></code></pre></div>
-<pre><code>## [1] 5.111429</code></pre>
+<pre><code>## [1] 5.239717</code></pre>
 <div class="sourceCode" id="cb57"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb57-1"><a href="métodos-directos.html#cb57-1" aria-hidden="true" tabindex="-1"></a><span class="fu">hist</span>(r.exp, <span class="at">freq =</span> <span class="cn">FALSE</span>)</span>
 <span id="cb57-2"><a href="métodos-directos.html#cb57-2" aria-hidden="true" tabindex="-1"></a><span class="fu">lines</span>(<span class="fu">density</span>(rexpo), <span class="at">col =</span> <span class="dv">2</span>)</span></code></pre></div>
-<div class="figure"><span id="fig:unnamed-chunk-6"></span>
-<img src="A3Simulacion_files/figure-html/unnamed-chunk-6-1.png" alt="Histograma de observaciones con distribución exponencial" width="672" />
+<div class="figure"><span id="fig:unnamed-chunk-7"></span>
+<img src="A3Simulacion_files/figure-html/unnamed-chunk-7-1.svg" alt="Histograma de observaciones con distribución exponencial" width="672" />
 <p class="caption">
 Figura C.2: Histograma de observaciones con distribución exponencial
 </p>
 </div>
 
 <div class="example">
-<span id="exm:unnamed-chunk-7" class="example"><strong>Ejemplo C.2  </strong></span>De la misma manera, el método de la grilla permite simular valores de un distribución discreta. El siguiente código computacional permite utilizar el método de la grilla para simular mil valores provenientes de una distribución Poisson con parámetro <span class="math inline">\(\theta = 2\)</span>.
+<span id="exm:unnamed-chunk-8" class="example"><strong>Ejemplo C.2  </strong></span>De la misma manera, el método de la grilla permite simular valores de un distribución discreta. El siguiente código computacional permite utilizar el método de la grilla para simular mil valores provenientes de una distribución Poisson con parámetro <span class="math inline">\(\theta = 2\)</span>.
 </div>
 <div class="sourceCode" id="cb58"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb58-1"><a href="métodos-directos.html#cb58-1" aria-hidden="true" tabindex="-1"></a>p.poisson <span class="ot">&lt;-</span><span class="cf">function</span>(theta, x.grid){</span>
 <span id="cb58-2"><a href="métodos-directos.html#cb58-2" aria-hidden="true" tabindex="-1"></a>  N <span class="ot">&lt;-</span> <span class="fu">length</span>(x.grid)</span>
@@ -385,19 +385,19 @@ Figura C.2: Histograma de observaciones con distribución exponencial
 <pre><code>## [1] 1</code></pre>
 <div class="sourceCode" id="cb60"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb60-1"><a href="métodos-directos.html#cb60-1" aria-hidden="true" tabindex="-1"></a>rpois <span class="ot">&lt;-</span> <span class="fu">sample</span>(x.grid, <span class="dv">1000</span>, <span class="at">prob=</span>p.x, <span class="at">replace =</span> T)</span>
 <span id="cb60-2"><a href="métodos-directos.html#cb60-2" aria-hidden="true" tabindex="-1"></a><span class="fu">mean</span>(rpois)</span></code></pre></div>
-<pre><code>## [1] 2.012</code></pre>
+<pre><code>## [1] 1.981</code></pre>
 <div class="sourceCode" id="cb62"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb62-1"><a href="métodos-directos.html#cb62-1" aria-hidden="true" tabindex="-1"></a><span class="fu">var</span>(rpois)</span></code></pre></div>
-<pre><code>## [1] 1.929786</code></pre>
+<pre><code>## [1] 2.22086</code></pre>
 <div class="sourceCode" id="cb64"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb64-1"><a href="métodos-directos.html#cb64-1" aria-hidden="true" tabindex="-1"></a><span class="fu">hist</span>(rpois, <span class="at">freq =</span> <span class="cn">FALSE</span>)</span></code></pre></div>
-<div class="figure"><span id="fig:unnamed-chunk-8"></span>
-<img src="A3Simulacion_files/figure-html/unnamed-chunk-8-1.png" alt="Histograma de observaciones con distribución Poisson" width="672" />
+<div class="figure"><span id="fig:unnamed-chunk-9"></span>
+<img src="A3Simulacion_files/figure-html/unnamed-chunk-9-1.svg" alt="Histograma de observaciones con distribución Poisson" width="672" />
 <p class="caption">
 Figura C.3: Histograma de observaciones con distribución Poisson
 </p>
 </div>
 
 <div class="example">
-<span id="exm:unnamed-chunk-9" class="example"><strong>Ejemplo B.2  </strong></span>El método de la grilla también puede utilizarse para simular observaciones de una distribución biparamétrica, univariada y continua. El siguiente código computacional permite utilizar el método de la grilla para simular mil valores provenientes de una distribución Gamma con parámetros <span class="math inline">\(\theta = 4\)</span>, <span class="math inline">\(\beta = 2\)</span>.
+<span id="exm:unnamed-chunk-10" class="example"><strong>Ejemplo C.3  </strong></span>El método de la grilla también puede utilizarse para simular observaciones de una distribución biparamétrica, univariada y continua. El siguiente código computacional permite utilizar el método de la grilla para simular mil valores provenientes de una distribución Gamma con parámetros <span class="math inline">\(\theta = 4\)</span>, <span class="math inline">\(\beta = 2\)</span>.
 </div>
 <div class="sourceCode" id="cb65"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb65-1"><a href="métodos-directos.html#cb65-1" aria-hidden="true" tabindex="-1"></a>p.gamma <span class="ot">&lt;-</span> <span class="cf">function</span>(a, b, x.grid){</span>
 <span id="cb65-2"><a href="métodos-directos.html#cb65-2" aria-hidden="true" tabindex="-1"></a>  N <span class="ot">&lt;-</span><span class="fu">length</span>(x.grid)</span>
@@ -419,20 +419,20 @@ Figura C.3: Histograma de observaciones con distribución Poisson
 <span id="cb65-18"><a href="métodos-directos.html#cb65-18" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb65-19"><a href="métodos-directos.html#cb65-19" aria-hidden="true" tabindex="-1"></a>rgamma <span class="ot">&lt;-</span> <span class="fu">sample</span>(x.grid, <span class="dv">1000</span>, <span class="at">prob =</span> p.x, <span class="at">replace =</span> T)</span>
 <span id="cb65-20"><a href="métodos-directos.html#cb65-20" aria-hidden="true" tabindex="-1"></a><span class="fu">mean</span>(rgamma)</span></code></pre></div>
-<pre><code>## [1] 2.0266</code></pre>
+<pre><code>## [1] 1.9917</code></pre>
 <div class="sourceCode" id="cb67"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb67-1"><a href="métodos-directos.html#cb67-1" aria-hidden="true" tabindex="-1"></a><span class="fu">var</span>(rgamma)</span></code></pre></div>
-<pre><code>## [1] 1.045178</code></pre>
+<pre><code>## [1] 0.999841</code></pre>
 <div class="sourceCode" id="cb69"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb69-1"><a href="métodos-directos.html#cb69-1" aria-hidden="true" tabindex="-1"></a><span class="fu">hist</span>(rgamma, <span class="at">freq =</span> F)</span>
 <span id="cb69-2"><a href="métodos-directos.html#cb69-2" aria-hidden="true" tabindex="-1"></a><span class="fu">lines</span>(<span class="fu">density</span>(rgamma), <span class="at">col =</span> <span class="dv">2</span>)</span></code></pre></div>
-<div class="figure"><span id="fig:unnamed-chunk-10"></span>
-<img src="A3Simulacion_files/figure-html/unnamed-chunk-10-1.png" alt="Histograma de observaciones con distribución Gamma." width="672" />
+<div class="figure"><span id="fig:unnamed-chunk-11"></span>
+<img src="A3Simulacion_files/figure-html/unnamed-chunk-11-1.svg" alt="Histograma de observaciones con distribución Gamma." width="672" />
 <p class="caption">
 Figura C.4: Histograma de observaciones con distribución Gamma.
 </p>
 </div>
 
 <div class="example">
-<span id="exm:unnamed-chunk-11" class="example"><strong>Ejemplo 1.4  </strong></span>Para comprobar el poder de este método de simulación, se presenta el siguiente código que permite simular valores de una distribución multiparamétrica, bivariada y continua. En particular, se simulan valores de la distribución Normal multivariante con vector de medias <span class="math inline">\(\boldsymbol \mu= (2, 4)&#39;\)</span> y matriz de varianzas covarianzas
+<span id="exm:unnamed-chunk-12" class="example"><strong>Ejemplo 1.5  </strong></span>Para comprobar el poder de este método de simulación, se presenta el siguiente código que permite simular valores de una distribución multiparamétrica, bivariada y continua. En particular, se simulan valores de la distribución Normal multivariante con vector de medias <span class="math inline">\(\boldsymbol \mu= (2, 4)&#39;\)</span> y matriz de varianzas covarianzas
 <span class="math inline">\(\boldsymbol \Sigma= \begin{bmatrix} 25 &amp; 30 \\ 30 &amp; 16 \end{bmatrix}\)</span>
 </div>
 <div class="sourceCode" id="cb70"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb70-1"><a href="métodos-directos.html#cb70-1" aria-hidden="true" tabindex="-1"></a>p.normal2 <span class="ot">&lt;-</span> <span class="cf">function</span>(mu, Sigma, x, y){</span>
@@ -483,23 +483,32 @@ Figura C.4: Histograma de observaciones con distribución Gamma.
 <span id="cb72-4"><a href="métodos-directos.html#cb72-4" aria-hidden="true" tabindex="-1"></a>ry.normal <span class="ot">&lt;-</span> rxy.normal2[, <span class="dv">2</span>]</span>
 <span id="cb72-5"><a href="métodos-directos.html#cb72-5" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb72-6"><a href="métodos-directos.html#cb72-6" aria-hidden="true" tabindex="-1"></a><span class="fu">colMeans</span>(rxy.normal2)</span></code></pre></div>
-<pre><code>## [1] 2.0100 4.0955</code></pre>
+<pre><code>## [1] 2.170 4.145</code></pre>
 <div class="sourceCode" id="cb74"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb74-1"><a href="métodos-directos.html#cb74-1" aria-hidden="true" tabindex="-1"></a><span class="fu">var</span>(rxy.normal2)</span></code></pre></div>
-<pre><code>##          [,1]     [,2]
-## [1,] 25.23213 10.38343
-## [2,] 10.38343 15.95759</code></pre>
-<div class="sourceCode" id="cb76"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb76-1"><a href="métodos-directos.html#cb76-1" aria-hidden="true" tabindex="-1"></a><span class="fu">hist</span>(rx.normal, <span class="at">freq =</span> F)</span>
-<span id="cb76-2"><a href="métodos-directos.html#cb76-2" aria-hidden="true" tabindex="-1"></a><span class="fu">lines</span>(<span class="fu">density</span>(rx.normal), <span class="at">col =</span> <span class="dv">2</span>)</span></code></pre></div>
-<div class="figure"><span id="fig:unnamed-chunk-12-1"></span>
-<img src="A3Simulacion_files/figure-html/unnamed-chunk-12-1.png" alt="Histogramas de observaciones con distribución Normal bivariada." width="672" />
+<table>
+<tbody>
+<tr class="odd">
+<td align="right">24.38298</td>
+<td align="right">10.52813</td>
+</tr>
+<tr class="even">
+<td align="right">10.52813</td>
+<td align="right">17.15263</td>
+</tr>
+</tbody>
+</table>
+<div class="sourceCode" id="cb75"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb75-1"><a href="métodos-directos.html#cb75-1" aria-hidden="true" tabindex="-1"></a><span class="fu">hist</span>(rx.normal, <span class="at">freq =</span> F)</span>
+<span id="cb75-2"><a href="métodos-directos.html#cb75-2" aria-hidden="true" tabindex="-1"></a><span class="fu">lines</span>(<span class="fu">density</span>(rx.normal), <span class="at">col =</span> <span class="dv">2</span>)</span></code></pre></div>
+<div class="figure"><span id="fig:unnamed-chunk-13-1"></span>
+<img src="A3Simulacion_files/figure-html/unnamed-chunk-13-1.svg" alt="Histogramas de observaciones con distribución Normal bivariada." width="672" />
 <p class="caption">
 Figura C.5: Histogramas de observaciones con distribución Normal bivariada.
 </p>
 </div>
-<div class="sourceCode" id="cb77"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb77-1"><a href="métodos-directos.html#cb77-1" aria-hidden="true" tabindex="-1"></a><span class="fu">hist</span>(ry.normal, <span class="at">freq =</span> F)</span>
-<span id="cb77-2"><a href="métodos-directos.html#cb77-2" aria-hidden="true" tabindex="-1"></a><span class="fu">lines</span>(<span class="fu">density</span>(ry.normal), <span class="at">col =</span> <span class="dv">2</span>)</span></code></pre></div>
-<div class="figure"><span id="fig:unnamed-chunk-12-2"></span>
-<img src="A3Simulacion_files/figure-html/unnamed-chunk-12-2.png" alt="Histogramas de observaciones con distribución Normal bivariada." width="672" />
+<div class="sourceCode" id="cb76"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb76-1"><a href="métodos-directos.html#cb76-1" aria-hidden="true" tabindex="-1"></a><span class="fu">hist</span>(ry.normal, <span class="at">freq =</span> F)</span>
+<span id="cb76-2"><a href="métodos-directos.html#cb76-2" aria-hidden="true" tabindex="-1"></a><span class="fu">lines</span>(<span class="fu">density</span>(ry.normal), <span class="at">col =</span> <span class="dv">2</span>)</span></code></pre></div>
+<div class="figure"><span id="fig:unnamed-chunk-13-2"></span>
+<img src="A3Simulacion_files/figure-html/unnamed-chunk-13-2.svg" alt="Histogramas de observaciones con distribución Normal bivariada." width="672" />
 <p class="caption">
 Figura C.6: Histogramas de observaciones con distribución Normal bivariada.
 </p>
@@ -534,8 +543,8 @@ Robert, C. P., y G. Casella. 1999. <em>Monte Carlo Statistical Methods</em>. Spr
 gitbook.require(["gitbook"], function(gitbook) {
 gitbook.start({
 "sharing": {
-"github": false,
-"facebook": true,
+"github": true,
+"facebook": false,
 "twitter": true,
 "linkedin": false,
 "weibo": false,
@@ -550,8 +559,8 @@ gitbook.start({
 "size": 2
 },
 "edit": {
-"link": null,
-"text": null
+"link": "https://github.com/psirusteam/bookdownBayesiano/A3Simulacion.Rmd",
+"text": "Edit"
 },
 "history": {
 "link": null,
@@ -561,10 +570,11 @@ gitbook.start({
 "link": null,
 "text": null
 },
-"download": ["ModelosBayesianos.pdf", "ModelosBayesianos.epub"],
+"download": ["ModelosBayesianos.pdf", "ModelosBayesianos.epub", "ModelosBayesianos.mobi"],
 "toc": {
 "collapse": "section"
-}
+},
+"tconfig": null
 });
 });
 </script>

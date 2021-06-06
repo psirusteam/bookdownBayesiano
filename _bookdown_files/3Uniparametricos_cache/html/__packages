@@ -1,9 +1,10 @@
 base
-ggplot2
-patchwork
 StanHeaders
+ggplot2
 rstan
-VGAM
-pscl
 printr
 knitr
+thematic
+patchwork
+VGAM
+pscl

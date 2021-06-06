@@ -1,3 +1,20 @@
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(warning = FALSE, 
+                      message = FALSE,
+                      cache = TRUE)
+library(rstan)
+library(printr)
+library(knitr)
+rstan_options (javascript = FALSE)
+library(thematic)
+library(ggplot2) 
+theme_set(theme_bw())
+thematic_on(
+  bg = "white", fg = "black", accent = "red",
+  font = font_spec("Oxanium", scale = 1.25)
+)
+```
+
 # (APPENDIX) Apéndice {-} 
 
 # Elementos de probabilidad

@@ -1,3 +1,21 @@
+```{r, include=FALSE}
+knitr::opts_chunk$set(warning = FALSE, 
+                      message = FALSE,
+                      cache = TRUE)
+library(rstan)
+library(printr)
+library(knitr)
+rstan_options (javascript = FALSE)
+library(thematic)
+library(ggplot2) 
+theme_set(theme_bw())
+thematic_on(
+  bg = "white", fg = "black", accent = "red",
+  font = font_spec("Oxanium", scale = 1.25)
+)
+```
+
+
 # Elementos de simulación estadística
 
 Como lo afirma @Gelman03 la simulación numérica es parte central del análisis bayesiano puesto que la generación de datos provenientes de una distribución de probabilidad se puede realizar fácilmente, incluso cuando la forma estructural de ésta no es conocida o es muy complicada computacionalmente. A lo largo de la historia del desarrollo de la teoría estadística, la simulación de distribuciones de probabilidad ha jugado un papel importante. Aunque son innumerables los métodos de generación de datos, en este apartado, se da cuenta de unos pocos, quizás lo más usados en este auge computacional.

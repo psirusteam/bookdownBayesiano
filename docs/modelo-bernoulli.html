@@ -333,7 +333,7 @@ a los valores extremos del parámetro de interés y su característica de
 ser no informativa se representa en la simetría de la función alrededor
 del valor 0.5.</p>
 <div class="figure"><span id="fig:jefber1"></span>
-<img src="3Uniparametricos_files/figure-html/jefber1-1.png" alt="Distribución previa no informativa de Jeffreys para el parámetro de una distribución Bernoulli" width="672" />
+<img src="3Uniparametricos_files/figure-html/jefber1-1.svg" alt="Distribución previa no informativa de Jeffreys para el parámetro de una distribución Bernoulli" width="672" />
 <p class="caption">
 Figura 3.1: Distribución previa no informativa de Jeffreys para el parámetro de una distribución Bernoulli
 </p>
@@ -423,7 +423,7 @@ aleatoria Bernoulli <span class="math inline">\(Y\)</span>, sino una muestra de 
 La figuras <a href="modelo-bernoulli.html#fig:BernoEj1">3.2</a> muestra el comportamiento de las distribuciones previas y posteriores en ambos escenarios. Nótese que la distribución no informativa influye muy poco en el comportamiento de la distribución posterior.
 </div>
 <div class="figure"><span id="fig:BernoEj1"></span>
-<img src="3Uniparametricos_files/figure-html/BernoEj1-1.png" alt="Distribuciones previas (línea punteada) y posteriores (línea sólida) para el ejemplo de las encuestas electorales." width="672" />
+<img src="3Uniparametricos_files/figure-html/BernoEj1-1.svg" alt="Distribuciones previas (línea punteada) y posteriores (línea sólida) para el ejemplo de las encuestas electorales." width="672" />
 <p class="caption">
 Figura 3.2: Distribuciones previas (línea punteada) y posteriores (línea sólida) para el ejemplo de las encuestas electorales.
 </p>
@@ -474,10 +474,10 @@ probabilidad coincide con la distribución posterior del ejemplo.</p>
 ## 4 chains, each with iter=2000; warmup=1000; thin=1; 
 ## post-warmup draws per chain=1000, total post-warmup draws=4000.
 ## 
-##         mean se_mean     sd   2.5% 97.5% n_eff   Rhat
-## theta 0.5156   1e-04 0.0043 0.5072 0.524  1584 1.0006
+##         mean se_mean     sd   2.5%  97.5% n_eff   Rhat
+## theta 0.5154   1e-04 0.0043 0.5072 0.5239  1652 1.0019
 ## 
-## Samples were drawn using NUTS(diag_e) at Fri Jun  4 23:06:22 2021.
+## Samples were drawn using NUTS(diag_e) at Sat Jun  5 21:40:50 2021.
 ## For each parameter, n_eff is a crude measure of effective sample size,
 ## and Rhat is the potential scale reduction factor on split chains (at 
 ## convergence, Rhat=1).</code></pre>
@@ -485,7 +485,7 @@ probabilidad coincide con la distribución posterior del ejemplo.</p>
 <div class="sourceCode" id="cb8"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb8-1"><a href="modelo-bernoulli.html#cb8-1" aria-hidden="true" tabindex="-1"></a>bayesplot<span class="sc">::</span><span class="fu">mcmc_areas</span>(Berfit, <span class="at">pars =</span> <span class="st">&quot;theta&quot;</span>, </span>
 <span id="cb8-2"><a href="modelo-bernoulli.html#cb8-2" aria-hidden="true" tabindex="-1"></a>                      <span class="at">prob =</span> <span class="fl">0.95</span>)</span></code></pre></div>
 <div class="figure"><span id="fig:posBernoulliStan"></span>
-<img src="3Uniparametricos_files/figure-html/posBernoulliStan-1.png" alt="Distribución posterior." width="672" />
+<img src="3Uniparametricos_files/figure-html/posBernoulliStan-1.svg" alt="Distribución posterior." width="672" />
 <p class="caption">
 Figura 3.3: Distribución posterior.
 </p>
@@ -513,8 +513,8 @@ Figura 3.3: Distribución posterior.
 gitbook.require(["gitbook"], function(gitbook) {
 gitbook.start({
 "sharing": {
-"github": false,
-"facebook": true,
+"github": true,
+"facebook": false,
 "twitter": true,
 "linkedin": false,
 "weibo": false,
@@ -529,8 +529,8 @@ gitbook.start({
 "size": 2
 },
 "edit": {
-"link": null,
-"text": null
+"link": "https://github.com/psirusteam/bookdownBayesiano/3Uniparametricos.Rmd",
+"text": "Edit"
 },
 "history": {
 "link": null,
@@ -540,10 +540,11 @@ gitbook.start({
 "link": null,
 "text": null
 },
-"download": ["ModelosBayesianos.pdf", "ModelosBayesianos.epub"],
+"download": ["ModelosBayesianos.pdf", "ModelosBayesianos.epub", "ModelosBayesianos.mobi"],
 "toc": {
 "collapse": "section"
-}
+},
+"tconfig": null
 });
 });
 </script>

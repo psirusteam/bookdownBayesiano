@@ -6,7 +6,15 @@ library(rstan)
 library(printr)
 library(knitr)
 rstan_options (javascript = FALSE)
+library(thematic)
+library(ggplot2) 
+theme_set(theme_bw())
+thematic_on(
+  bg = "white", fg = "black", accent = "red",
+  font = font_spec("Oxanium", scale = 1.25)
+)
 ```
+
 
 # Modelos uniparamétricos
 
@@ -376,7 +384,7 @@ posterior estará centrada en $10/17$; es decir, la estimación bayesiana
 se encuentra situada entre la estimación previa y la estimación clásica.
 
 ```{r, beta3, echo=FALSE, fig.cap="Funciones de verosimilitud, previa y posterior para $\\alpha=2$, $\\beta=5$, $s=8$ y $n=10$."}
-p <- ggplot(data = data.frame(x = 0), mapping = aes(x = x)) + ylab("") +xlab(expression(theta))
+p <- ggplot(data = data.frame(x = 0), mapping = aes(x = x)) + ylab("") +xlab("theta")
 
 previa <- function(x) dbeta(x, 2,5)
 veros <- function(x) {x^8*(1-x)^2/beta(8,2)}
@@ -692,6 +700,7 @@ data(EfronMorris)
 ```
 
 ```{r, echo=FALSE}
+library(knitr)
 kable(EfronMorris)
 ```
 
@@ -762,7 +771,7 @@ La figura \@ref(fig:BinomEj1) muestra el comportamiento de las distribuciones pr
 ```{r, BinomEj1, fig.cap="Función de densidad previa y función de densidad posterior para el ejemplo de bateo.", echo=FALSE}
 p <- ggplot(data = data.frame(x = 0), 
             mapping = aes(x = x)) + 
-  ylab("") + xlab(expression(theta))
+  ylab("") + xlab("theta")
 previa <- function(x) dbeta(x, 215, 595)
 posterior <- function(x) dbeta(x, 2040, 5419)
 p + 
@@ -1278,7 +1287,7 @@ Por otro lado, basándose en datos históricos, la alcaldía observó que, en el
 library(patchwork)
 p <- ggplot(data = data.frame(x = 0), 
             mapping = aes(x = x)) + 
-  ylab("") + xlab(expression(theta))
+  ylab("") + xlab("theta")
 previa_J <- function(x){
 	x^{- 1/2}/20
 }

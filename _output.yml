@@ -1,14 +1,20 @@
 bookdown::gitbook:
+  dev: svglite
   css: style.css
   split_by: section
   config:
+    tconfig:
     toc:
       collapse: section
       before: |
         <li><a href="./">Modelos Bayesianos con R y STAN</a></li>
       after: |
         <li><a Modelos Bayesianos con R y STAN</a></li>
-    download: ["pdf", "epub"]
+    download: [pdf, epub, mobi]
+    edit: https://github.com/psirusteam/bookdownBayesiano/%s
+    sharing:
+      github: yes
+      facebook: no
 bookdown::pdf_book:
   includes:
     in_header: preamble.tex
