@@ -24,7 +24,7 @@
 <meta name="author" content="Andrés Gutiérrez - Hanwen Zhang" />
 
 
-<meta name="date" content="2021-06-05" />
+<meta name="date" content="2021-06-06" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
@@ -32,7 +32,7 @@
   
   
 <link rel="prev" href="modelo-binomial-negativo.html"/>
-<link rel="next" href="elementos-de-probabilidad.html"/>
+<link rel="next" href="modelo-exponencial.html"/>
 <script src="libs/header-attrs-2.8/header-attrs.js"></script>
 <script src="libs/jquery-2.2.3/jquery.min.js"></script>
 <link href="libs/gitbook-2.6.7/css/style.css" rel="stylesheet" />
@@ -196,6 +196,7 @@ div.csl-indent {
 <li class="chapter" data-level="3.2" data-path="modelo-binomial.html"><a href="modelo-binomial.html"><i class="fa fa-check"></i><b>3.2</b> Modelo Binomial</a></li>
 <li class="chapter" data-level="3.3" data-path="modelo-binomial-negativo.html"><a href="modelo-binomial-negativo.html"><i class="fa fa-check"></i><b>3.3</b> Modelo Binomial negativo</a></li>
 <li class="chapter" data-level="3.4" data-path="modelo-poisson.html"><a href="modelo-poisson.html"><i class="fa fa-check"></i><b>3.4</b> Modelo Poisson</a></li>
+<li class="chapter" data-level="3.5" data-path="modelo-exponencial.html"><a href="modelo-exponencial.html"><i class="fa fa-check"></i><b>3.5</b> Modelo Exponencial</a></li>
 </ul></li>
 <li class="appendix"><span><b>Apéndice</b></span></li>
 <li class="chapter" data-level="A" data-path="elementos-de-probabilidad.html"><a href="elementos-de-probabilidad.html"><i class="fa fa-check"></i><b>A</b> Elementos de probabilidad</a>
@@ -278,7 +279,8 @@ p(\mathbf{Y} \mid \theta)&amp;=\prod_{i=1}^n\frac{e^{-\theta}\theta^{y_i}}{y_i!}
 &amp;=\frac{e^{-n\theta}\theta^{\sum_{i=1}^ny_i}}{\prod_{i=1}^ny_i!}I_{\{0,1,\ldots\}^n}(y_1,\ldots,y_n)
 \end{align*}\]</span></p>
 <p>donde <span class="math inline">\(\{0,1\ldots\}^n\)</span> denota el producto cartesiano <span class="math inline">\(n\)</span> veces sobre el conjunto <span class="math inline">\(\{0,1\ldots\}\)</span>. Por otro lado, como el parámetro <span class="math inline">\(\theta\)</span> está restringido al espacio <span class="math inline">\(\Theta=(0,\infty)\)</span>, entonces es posible formular varias opciones para la distribución previa del parámetro. Algunas de estas se encuentran considerando la distribución exponencial, la distribución Ji-cuadrado o la distribución Gamma. Nótese que las dos primeras son casos particulares de la última. Por lo tanto, la distribución previa del parámetro <span class="math inline">\(\theta\)</span> está dada por</p>
-<p><span class="math display">\[\begin{equation}
+<p><span class="math display" id="eq:PreviaGamma">\[\begin{equation}
+\tag{3.7}
 p(\theta \mid \alpha,\beta)=\frac{\beta^\alpha}{\Gamma(\alpha)}\theta^{\alpha-1} e^{-\beta\theta}I_{(0,\infty)}(\theta).
 \end{equation}\]</span></p>
 <p>Bajo este marco de referencia se tienen el siguiente resultado con respecto a la distribución posterior del parámetro de interés <span class="math inline">\(\theta\)</span>.</p>
@@ -317,7 +319,7 @@ Por lo tanto, factorizando convenientemente, se encuentra una expresión idénti
 <div class="proposition">
 <p><span id="prp:unnamed-chunk-44" class="proposition"><strong>Resultado 3.8  </strong></span>La distribución predictiva previa para una observación <span class="math inline">\(\mathbf{y}=\{y_1,\ldots,y_n\}\)</span> de la muestra aleatoria está dada por</p>
 <p><span class="math display" id="eq:PrePriorPoisson">\[\begin{equation}
-\tag{3.7}
+\tag{3.8}
 p(\mathbf{Y})=\frac{\Gamma(\sum_{i=1}^ny_i+\alpha)}{\Gamma(\alpha)}\frac{\beta^\alpha}{(n+\beta)^{\sum_{i=1}^ny_i+\alpha}}
 \frac{I_{\{0,1,\ldots\}^n}(y_1,\ldots,y_n)}{\prod_{i=1}^ny_i!}
 \end{equation}\]</span></p>
@@ -341,9 +343,9 @@ p(\mathbf{Y})&amp;=\int p(\mathbf{Y} \mid \theta)p(\theta \mid \alpha,\beta)\ d\
 \end{align*}\]</span>
 </div>
 <p><br></p>
-<p>En el caso en el que la muestra aleatoria estuviera constituida por una sola variable aleatoria, entonces <span class="math inline">\(n=1\)</span> y si, en particular, los hiper-parámetros de la distribución previa fuesen <span class="math inline">\(\alpha=\beta=1\)</span>, entonces no es difícil ver, utilizando la definición de la función matemática Gamma, que la función de distribución predictiva <a href="modelo-poisson.html#eq:PrePriorPoisson">(3.7)</a> estaría dada por</p>
+<p>En el caso en el que la muestra aleatoria estuviera constituida por una sola variable aleatoria, entonces <span class="math inline">\(n=1\)</span> y si, en particular, los hiper-parámetros de la distribución previa fuesen <span class="math inline">\(\alpha=\beta=1\)</span>, entonces no es difícil ver, utilizando la definición de la función matemática Gamma, que la función de distribución predictiva <a href="modelo-poisson.html#eq:PrePriorPoisson">(3.8)</a> estaría dada por</p>
 <p><span class="math display" id="eq:PrePriorPoisson1">\[\begin{align}
-\tag{3.8}
+\tag{3.9}
 p(Y)&amp;=\frac{\Gamma(y+1)}{\Gamma(1)}\frac{1}{2^{y+1}}\frac{I_{\{0,1,\ldots\}}(y)}{y!} \notag\\
 &amp;=\frac{1}{2^{y+1}}I_{\{0,1,\ldots\}}(y)
 \end{align}\]</span></p>
@@ -352,7 +354,7 @@ p(Y)&amp;=\frac{\Gamma(y+1)}{\Gamma(1)}\frac{1}{2^{y+1}}\frac{I_{\{0,1,\ldots\}}
 \sum_{y=0}^{\infty}p(Y=y)=\sum_{y=0}^{\infty}\left(\frac{1}{2}\right)^{y+1}=\frac{1}{2}\sum_{y=0}^{\infty}\left(\frac{1}{2}\right)^{y}
 =\frac{1}{2}\frac{1}{1-1/2}=1
 \end{align*}\]</span></p>
-<p>Podemos afirmar que la expresion <a href="modelo-poisson.html#eq:PrePriorPoisson1">(3.8)</a> sí representa una función de densidad de una variable discreta. Ahora, consideramos la distribución predictiva poseterior de una muestra aleatoria, esta distribución se presenta en el siguiente resultado.</p>
+<p>Podemos afirmar que la expresion <a href="modelo-poisson.html#eq:PrePriorPoisson1">(3.9)</a> sí representa una función de densidad de una variable discreta. Ahora, consideramos la distribución predictiva poseterior de una muestra aleatoria, esta distribución se presenta en el siguiente resultado.</p>
 
 <div class="proposition">
 <p><span id="prp:ResPoissonPred" class="proposition"><strong>Resultado 3.9  </strong></span>Después de la recolección de los datos, la distribución predictiva posterior para una nueva posible observación <span class="math inline">\(\tilde{\mathbf{y}}=\{\tilde{y}_1,\ldots,\tilde{y}_{n^*}\}\)</span>, de tamaño <span class="math inline">\(n^*\)</span>, está dada por</p>
@@ -369,7 +371,7 @@ p(\tilde{\mathbf{y}} \mid \mathbf{Y})&amp;=\frac{\Gamma(\sum_{i=1}^{n^*}\tilde{y
 <div class="proposition">
 <p><span id="prp:unnamed-chunk-46" class="proposition"><strong>Resultado 3.10  </strong></span>Después de la recolección de los datos, la distribución predictiva posterior para la suma de un vector de observaciones nuevas <span class="math inline">\(\left(\tilde{y}_1,\ldots,\tilde{y}_{n^*}\right)\)</span>, <span class="math inline">\(\tilde{s} = \sum_{y=1}^{n^*} \tilde{y}_i\)</span>, está dada por:</p>
 <span class="math display" id="eq:PrePosPoissonSum">\[\begin{align}
-\tag{3.9}
+\tag{3.10}
 p(\tilde{\mathbf{s}} \mid \mathbf{Y})&amp;=\frac{\Gamma(\tilde{s}+\sum_{i=1}^ny_i+\alpha)}{\Gamma(\sum_{i=1}^ny_i+\alpha)}
 \frac{(n+\beta)^{\sum_{i=1}^ny_i+\alpha}}{({n^*}+n+\beta)^{\tilde{s}+\sum_{i=1}^ny_i+\alpha}}\frac{(n^*)^{\tilde{s}}I_{\{0,1,\ldots\}}(\tilde{s})}{\tilde{s}!}
 \end{align}\]</span>
@@ -388,7 +390,7 @@ así:</p>
 Agrupando las constantes para obtener la integral de una distribución gamma con <span class="math inline">\(\alpha=\tilde{s}+\sum_{i=1}^{n}y_i+\alpha\)</span> y <span class="math inline">\(\beta=n^*+n+\beta\)</span> se obtiene el resultado.
 </div>
 <p><br></p>
-<p>En la práctica, evaluar directamente la expresión <a href="modelo-poisson.html#eq:PrePosPoissonSum">(3.9)</a> puede ocasionar problemas numéricas, por la presencia de la función Gamma y las potencias. Para evitar dicha dificultad, podemos usar la siguiente expresión equivalente cuando <span class="math inline">\(\tilde{s}=1,2,\cdots\)</span>:</p>
+<p>En la práctica, evaluar directamente la expresión <a href="modelo-poisson.html#eq:PrePosPoissonSum">(3.10)</a> puede ocasionar problemas numéricas, por la presencia de la función Gamma y las potencias. Para evitar dicha dificultad, podemos usar la siguiente expresión equivalente cuando <span class="math inline">\(\tilde{s}=1,2,\cdots\)</span>:</p>
 <p><span class="math display">\[\begin{equation*}
 p(\tilde{\mathbf{s}} \mid \mathbf{Y})=\frac{\Gamma(\tilde{s})}{Beta(\tilde{s},\sum_{i=1}^ny_i+\alpha)}
 \left(\frac{n+\beta}{n^*+n+\beta}\right)^{\sum_{i=1}^ny_i+\alpha}\frac{(n^*)^{\tilde{s}}}{(n^*+n+\beta)^{\tilde{s}}}\tilde{s}!
@@ -398,7 +400,7 @@ p(\tilde{\mathbf{s}} \mid \mathbf{Y})=\frac{\Gamma(\tilde{s})}{Beta(\tilde{s},\s
 p(\tilde{\mathbf{s}} \mid \mathbf{Y})=
 \left(\frac{n+\beta}{n^*+n+\beta}\right)^{\sum_{i=1}^ny_i+\alpha}
 \end{equation*}\]</span></p>
-<p>Ahora, debido a la complejidad de la expresión en <a href="modelo-poisson.html#eq:PrePosPoissonSum">(3.9)</a>, es prácticamente imposible comprobar analíticamente <span class="math inline">\(\sum_{i=0}^\infty p(\tilde{s}=i)=1\)</span>, y también muy difícil encontrar una expresión matemática cerrada de la esperanza de la variable <span class="math inline">\(\mathbf{\tilde{s}}\)</span>. Sin embargo, en situaciones prácticas, se puede usar aproximaciones numéricas tal como se verá en el ejemplo al final de esta sección.</p>
+<p>Ahora, debido a la complejidad de la expresión en <a href="modelo-poisson.html#eq:PrePosPoissonSum">(3.10)</a>, es prácticamente imposible comprobar analíticamente <span class="math inline">\(\sum_{i=0}^\infty p(\tilde{s}=i)=1\)</span>, y también muy difícil encontrar una expresión matemática cerrada de la esperanza de la variable <span class="math inline">\(\mathbf{\tilde{s}}\)</span>. Sin embargo, en situaciones prácticas, se puede usar aproximaciones numéricas tal como se verá en el ejemplo al final de esta sección.</p>
 <p>Anteriormente en el ejemplo <a href="la-distribución-previa.html#exm:EjemPoisson">2.3</a> se consideró la situación en la cual no se tenía ninguna consideración para formular una distribución previa y se consluyó que la distribución previa no informativa de Jeffreys para este caso es
 <span class="math display">\[\begin{equation*}
 p(\theta)\propto\theta^{-1/2},
@@ -413,14 +415,14 @@ p(\theta)\propto\theta^{-1/2},
 \end{equation*}\]</span></p>
 <p>la cual es muy similar a la estimación clásica de <span class="math inline">\(\theta\)</span> dada por <span class="math inline">\(\bar{Y}\)</span>. Cuando se utiliza la distribución previa no informativa de Jeffreys, la distribución predictiva para nuevas observaciones <span class="math inline">\(\tilde{y}={\tilde{y}_1,\cdots,\tilde{y}_{n^*}}\)</span> y <span class="math inline">\(\tilde{s}=\sum_{i=1}^{n^*}\tilde{y_i}\)</span> están dadas por</p>
 <p><span class="math display" id="eq:PredPoissonJeffreys">\[\begin{equation}
-\tag{3.10}
+\tag{3.11}
 p(\tilde{\mathbf{y}} \mid \mathbf{Y})=\frac{\Gamma(\sum_{i=1}^{n^*}\tilde{y}_i+\sum_{i=1}^ny_i+0.5)}{\Gamma(\sum_{i=1}^ny_i+0.5)}
 \frac{n^{\sum_{i=1}^ny_i+0.5}}{({n^*}+n)^{\sum_{i=1}^n\tilde{y}_i+\sum_{i=1}^ny_i+0.5}}
 \frac{I_{\{0,1,\ldots\}^{n^*}}(\tilde{y}_1,\ldots,\tilde{y}_{n^*})}{\prod_{i=1}^{n^*}\tilde{y}_i!}
 \end{equation}\]</span></p>
 <p>y</p>
 <p><span class="math display" id="eq:Pred1PoissonJeffreys">\[\begin{equation}
-\tag{3.11}
+\tag{3.12}
 p(\tilde{\mathbf{s}} \mid \mathbf{Y})=\frac{\Gamma(\tilde{s}+\sum_{i=1}^ny_i+0.5)}{\Gamma(\sum_{i=1}^ny_i+0.5)}
 \frac{n^{\sum_{i=1}^ny_i+0.5}}{({n^*}+n)^{\tilde{s}+\sum_{i=1}^ny_i+0.5}}\frac{I_{\{0,1,\ldots\}}(\tilde{s})}{\tilde{s}!}
 \end{equation}\]</span></p>
@@ -505,26 +507,24 @@ Figura 3.13: Distribución predictiva posterior para <span class="math inline">\
 <span id="cb48-7"><a href="modelo-poisson.html#cb48-7" aria-hidden="true" tabindex="-1"></a><span class="st">  real&lt;lower=0&gt; theta;</span></span>
 <span id="cb48-8"><a href="modelo-poisson.html#cb48-8" aria-hidden="true" tabindex="-1"></a><span class="st">}</span></span>
 <span id="cb48-9"><a href="modelo-poisson.html#cb48-9" aria-hidden="true" tabindex="-1"></a><span class="st">model {</span></span>
-<span id="cb48-10"><a href="modelo-poisson.html#cb48-10" aria-hidden="true" tabindex="-1"></a><span class="st">  for(i in 1:n) {</span></span>
-<span id="cb48-11"><a href="modelo-poisson.html#cb48-11" aria-hidden="true" tabindex="-1"></a><span class="st">  y ~ poisson(theta);</span></span>
-<span id="cb48-12"><a href="modelo-poisson.html#cb48-12" aria-hidden="true" tabindex="-1"></a><span class="st">  }</span></span>
-<span id="cb48-13"><a href="modelo-poisson.html#cb48-13" aria-hidden="true" tabindex="-1"></a><span class="st">  theta ~ gamma(38, 9);</span></span>
-<span id="cb48-14"><a href="modelo-poisson.html#cb48-14" aria-hidden="true" tabindex="-1"></a><span class="st">}</span></span>
-<span id="cb48-15"><a href="modelo-poisson.html#cb48-15" aria-hidden="true" tabindex="-1"></a><span class="st">&#39;</span></span>
-<span id="cb48-16"><a href="modelo-poisson.html#cb48-16" aria-hidden="true" tabindex="-1"></a>sample_data <span class="ot">&lt;-</span> <span class="fu">list</span>(<span class="at">y =</span> Trans, <span class="at">n =</span> <span class="fu">length</span>(Trans))</span>
-<span id="cb48-17"><a href="modelo-poisson.html#cb48-17" aria-hidden="true" tabindex="-1"></a>Poissonfit <span class="ot">&lt;-</span> <span class="fu">stan</span>(<span class="at">model_code =</span> Poisson,</span>
-<span id="cb48-18"><a href="modelo-poisson.html#cb48-18" aria-hidden="true" tabindex="-1"></a>               <span class="at">data =</span> sample_data, <span class="at">verbose =</span> <span class="cn">FALSE</span>)</span></code></pre></div>
-<p>Después de converger, la salida del anterior código muestra que a estimación puntual dada por 12.2545 y un intervalo de credibilidad al 95%, dado por <span class="math inline">\((12.026, 12.4875)\)</span>, mucho más estrecho que el intervalo de credibilidad del anterior ejemplo</p>
+<span id="cb48-10"><a href="modelo-poisson.html#cb48-10" aria-hidden="true" tabindex="-1"></a><span class="st">  y ~ poisson(theta);</span></span>
+<span id="cb48-11"><a href="modelo-poisson.html#cb48-11" aria-hidden="true" tabindex="-1"></a><span class="st">  theta ~ gamma(38, 9);</span></span>
+<span id="cb48-12"><a href="modelo-poisson.html#cb48-12" aria-hidden="true" tabindex="-1"></a><span class="st">}</span></span>
+<span id="cb48-13"><a href="modelo-poisson.html#cb48-13" aria-hidden="true" tabindex="-1"></a><span class="st">&#39;</span></span>
+<span id="cb48-14"><a href="modelo-poisson.html#cb48-14" aria-hidden="true" tabindex="-1"></a>sample_data <span class="ot">&lt;-</span> <span class="fu">list</span>(<span class="at">y =</span> Trans, <span class="at">n =</span> <span class="fu">length</span>(Trans))</span>
+<span id="cb48-15"><a href="modelo-poisson.html#cb48-15" aria-hidden="true" tabindex="-1"></a>Poissonfit <span class="ot">&lt;-</span> <span class="fu">stan</span>(<span class="at">model_code =</span> Poisson,</span>
+<span id="cb48-16"><a href="modelo-poisson.html#cb48-16" aria-hidden="true" tabindex="-1"></a>               <span class="at">data =</span> sample_data, <span class="at">verbose =</span> <span class="cn">FALSE</span>)</span></code></pre></div>
+<p>Después de converger, la salida del anterior código muestra la estimación puntual dada por 10.482 y un intervalo de credibilidad al 95%, dado por <span class="math inline">\((9.470, 11.500)\)</span>, mucho más estrecho que el intervalo de credibilidad del anterior ejemplo</p>
 <div class="sourceCode" id="cb49"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb49-1"><a href="modelo-poisson.html#cb49-1" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(Poissonfit, <span class="at">pars =</span> <span class="st">&quot;theta&quot;</span>, </span>
 <span id="cb49-2"><a href="modelo-poisson.html#cb49-2" aria-hidden="true" tabindex="-1"></a>      <span class="at">digits =</span> <span class="dv">4</span>, <span class="at">probs =</span> <span class="fu">c</span>(<span class="fl">0.025</span>, <span class="fl">0.975</span>))</span></code></pre></div>
-<pre><code>## Inference for Stan model: 358b0f218a279f070c49ab235fd030cc.
+<pre><code>## Inference for Stan model: 1c8218d83e89323ee40322eb3f4fd32d.
 ## 4 chains, each with iter=2000; warmup=1000; thin=1; 
 ## post-warmup draws per chain=1000, total post-warmup draws=4000.
 ## 
-##          mean se_mean     sd    2.5%   97.5% n_eff   Rhat
-## theta 12.2538  0.0031 0.1155 12.0282 12.4813  1389 1.0041
+##          mean se_mean  sd   2.5%   97.5% n_eff   Rhat
+## theta 10.4536  0.0127 0.5 9.5045 11.4422  1558 1.0006
 ## 
-## Samples were drawn using NUTS(diag_e) at Sat Jun  5 21:43:37 2021.
+## Samples were drawn using NUTS(diag_e) at Sun Jun  6 17:28:22 2021.
 ## For each parameter, n_eff is a crude measure of effective sample size,
 ## and Rhat is the potential scale reduction factor on split chains (at 
 ## convergence, Rhat=1).</code></pre>
@@ -537,12 +537,7 @@ Figura 3.13: Distribución predictiva posterior para <span class="math inline">\
 Figura 3.14: Distribución posterior.
 </p>
 </div>
-
 </div>
-<!-- </div> -->
-
-
-
 <h3>Referencias</h3>
 <div id="refs" class="references csl-bib-body hanging-indent">
 <div id="ref-Apostol" class="csl-entry">
@@ -561,7 +556,7 @@ Apostol, T. M. 1957. <em>Mathematical Analysis</em>. McGraw - Hill.
         </div>
       </div>
 <a href="modelo-binomial-negativo.html" class="navigation navigation-prev " aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
-<a href="elementos-de-probabilidad.html" class="navigation navigation-next " aria-label="Next page"><i class="fa fa-angle-right"></i></a>
+<a href="modelo-exponencial.html" class="navigation navigation-next " aria-label="Next page"><i class="fa fa-angle-right"></i></a>
     </div>
   </div>
 <script src="libs/gitbook-2.6.7/js/app.min.js"></script>

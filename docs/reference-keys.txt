@@ -58,6 +58,7 @@ fig:posBNStan
 prp:unnamed-chunk-39
 exm:unnamed-chunk-41
 fig:jefber
+eq:PreviaGamma
 prp:ResPoissonPost
 prp:unnamed-chunk-44
 eq:PrePriorPoisson
@@ -72,6 +73,18 @@ fig:EjemPoisson1
 fig:EjemPoisson2
 fig:PredPostPoisson
 fig:posPoissonStan
+prp:unnamed-chunk-53
+prp:unnamed-chunk-55
+prp:unnamed-chunk-57
+prp:unnamed-chunk-58
+eq:PredExpoInforma2
+eq:PredExpoJeffreys1
+eq:PredExpoJeffreys2
+exm:unnamed-chunk-60
+fig:posExponencialStan1
+fig:posExponencialStan2
+exm:unnamed-chunk-65
+fig:PredPostExpoEje
 prp:unnamed-chunk-2
 def:unnamed-chunk-3
 prp:unnamed-chunk-4
@@ -124,8 +137,6 @@ prp:unnamed-chunk-54
 def:unnamed-chunk-55
 prp:normalmulti
 prp:unnamed-chunk-56
-prp:unnamed-chunk-57
-prp:unnamed-chunk-58
 def:unnamed-chunk-60
 prp:unnamed-chunk-61
 def:unnamed-chunk-62
@@ -173,6 +184,7 @@ modelo-bernoulli
 modelo-binomial
 modelo-binomial-negativo
 modelo-poisson
+modelo-exponencial
 elementos-de-probabilidad
 distribuciones-discretas
 distribución-uniforme-discreta

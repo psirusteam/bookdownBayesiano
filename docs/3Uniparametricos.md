@@ -254,9 +254,9 @@ print(Berfit, pars = "theta",
 ## post-warmup draws per chain=1000, total post-warmup draws=4000.
 ## 
 ##         mean se_mean     sd   2.5%  97.5% n_eff   Rhat
-## theta 0.5154   1e-04 0.0043 0.5072 0.5239  1652 1.0019
+## theta 0.5153   1e-04 0.0044 0.5065 0.5242  1437 1.0006
 ## 
-## Samples were drawn using NUTS(diag_e) at Sat Jun  5 21:40:50 2021.
+## Samples were drawn using NUTS(diag_e) at Sun Jun  6 17:25:56 2021.
 ## For each parameter, n_eff is a crude measure of effective sample size,
 ## and Rhat is the potential scale reduction factor on split chains (at 
 ## convergence, Rhat=1).
@@ -747,9 +747,9 @@ print(Binfit, pars = "theta",
 ## post-warmup draws per chain=1000, total post-warmup draws=4000.
 ## 
 ##         mean se_mean     sd   2.5%  97.5% n_eff   Rhat
-## theta 0.2736   1e-04 0.0051 0.2637 0.2836  1504 0.9999
+## theta 0.2735   1e-04 0.0051 0.2638 0.2837  1448 1.0039
 ## 
-## Samples were drawn using NUTS(diag_e) at Sat Jun  5 21:41:43 2021.
+## Samples were drawn using NUTS(diag_e) at Sun Jun  6 17:26:36 2021.
 ## For each parameter, n_eff is a crude measure of effective sample size,
 ## and Rhat is the potential scale reduction factor on split chains (at 
 ## convergence, Rhat=1).
@@ -916,10 +916,10 @@ print(BNfit, pars = "theta",
 ## 4 chains, each with iter=2000; warmup=1000; thin=1; 
 ## post-warmup draws per chain=1000, total post-warmup draws=4000.
 ## 
-##        mean se_mean     sd   2.5%  97.5% n_eff   Rhat
-## theta 0.005   1e-04 0.0021 0.0018 0.0099  1312 1.0014
+##        mean se_mean     sd   2.5% 97.5% n_eff   Rhat
+## theta 0.005   1e-04 0.0021 0.0017  0.01  1441 1.0018
 ## 
-## Samples were drawn using NUTS(diag_e) at Sat Jun  5 21:42:24 2021.
+## Samples were drawn using NUTS(diag_e) at Sun Jun  6 17:27:12 2021.
 ## For each parameter, n_eff is a crude measure of effective sample size,
 ## and Rhat is the potential scale reduction factor on split chains (at 
 ## convergence, Rhat=1).
@@ -1020,10 +1020,10 @@ print(BNfit2, pars = "theta",
 ## 4 chains, each with iter=2000; warmup=1000; thin=1; 
 ## post-warmup draws per chain=1000, total post-warmup draws=4000.
 ## 
-##         mean se_mean    sd   2.5%  97.5% n_eff   Rhat
-## theta 0.0051       0 4e-04 0.0044 0.0059  1617 1.0021
+##         mean se_mean    sd   2.5% 97.5% n_eff   Rhat
+## theta 0.0051       0 4e-04 0.0043 0.006  1250 1.0031
 ## 
-## Samples were drawn using NUTS(diag_e) at Sat Jun  5 21:42:59 2021.
+## Samples were drawn using NUTS(diag_e) at Sun Jun  6 17:27:45 2021.
 ## For each parameter, n_eff is a crude measure of effective sample size,
 ## and Rhat is the potential scale reduction factor on split chains (at 
 ## convergence, Rhat=1).
@@ -1113,6 +1113,7 @@ p(\mathbf{Y} \mid \theta)&=\prod_{i=1}^n\frac{e^{-\theta}\theta^{y_i}}{y_i!}I_{\
 donde $\{0,1\ldots\}^n$ denota el producto cartesiano $n$ veces sobre el conjunto $\{0,1\ldots\}$. Por otro lado, como el parámetro $\theta$ está restringido al espacio $\Theta=(0,\infty)$, entonces es posible formular varias opciones para la distribución previa del parámetro. Algunas de estas se encuentran considerando la distribución exponencial, la distribución Ji-cuadrado o la distribución Gamma. Nótese que las dos primeras son casos particulares de la última. Por lo tanto, la distribución previa del parámetro $\theta$ está dada por
 
 \begin{equation}
+(\#eq:PreviaGamma)
 p(\theta \mid \alpha,\beta)=\frac{\beta^\alpha}{\Gamma(\alpha)}\theta^{\alpha-1} e^{-\beta\theta}I_{(0,\infty)}(\theta).
 \end{equation}
 
@@ -1386,9 +1387,7 @@ parameters {
   real<lower=0> theta;
 }
 model {
-  for(i in 1:n) {
   y ~ poisson(theta);
-  }
   theta ~ gamma(38, 9);
 }
 '
@@ -1397,7 +1396,7 @@ Poissonfit <- stan(model_code = Poisson,
                data = sample_data, verbose = FALSE)
 ```
 
-Después de converger, la salida del anterior código muestra que a estimación puntual dada por 12.2545 y un intervalo de credibilidad al 95%, dado por $(12.026, 12.4875)$, mucho más estrecho que el intervalo de credibilidad del anterior ejemplo
+Después de converger, la salida del anterior código muestra la estimación puntual dada por 10.482 y un intervalo de credibilidad al 95%, dado por $(9.470, 11.500)$, mucho más estrecho que el intervalo de credibilidad del anterior ejemplo
 
 
 ```r
@@ -1406,14 +1405,14 @@ print(Poissonfit, pars = "theta",
 ```
 
 ```
-## Inference for Stan model: 358b0f218a279f070c49ab235fd030cc.
+## Inference for Stan model: 1c8218d83e89323ee40322eb3f4fd32d.
 ## 4 chains, each with iter=2000; warmup=1000; thin=1; 
 ## post-warmup draws per chain=1000, total post-warmup draws=4000.
 ## 
-##          mean se_mean     sd    2.5%   97.5% n_eff   Rhat
-## theta 12.2538  0.0031 0.1155 12.0282 12.4813  1389 1.0041
+##          mean se_mean  sd   2.5%   97.5% n_eff   Rhat
+## theta 10.4536  0.0127 0.5 9.5045 11.4422  1558 1.0006
 ## 
-## Samples were drawn using NUTS(diag_e) at Sat Jun  5 21:43:37 2021.
+## Samples were drawn using NUTS(diag_e) at Sun Jun  6 17:28:22 2021.
 ## For each parameter, n_eff is a crude measure of effective sample size,
 ## and Rhat is the potential scale reduction factor on split chains (at 
 ## convergence, Rhat=1).
@@ -1432,11 +1431,281 @@ bayesplot::mcmc_areas(Poissonfit, pars = "theta",
 <p class="caption">(\#fig:posPoissonStan)Distribución posterior.</p>
 </div>
 
+## Modelo Exponencial
+
+Suponga que $\mathbf{Y}=\{Y_1,\ldots,Y_n\}$ corresponde a una muestra de variables aleatorias con distribución Exponencial. Luego, la función de distribución conjunta o verosimilitud está dada por
+
+\begin{align}
+p(\mathbf{Y} \mid \theta)&=\prod_{i=1}^n\theta e^{(-\theta y)}I_{(0,\infty)}(y_i) \notag \\
+&=\theta^n e^{(-\theta \sum_{i=1}^ny_i)}I_{(0,\infty)^n}(y_1,\ldots,y_n)
+\end{align}
+
+Donde $\{0,1\ldots\}^n$ denota el producto cartesiano $n$ veces sobre el intervalo $(0,\infty)$. Por otro lado, como el parámetro $\theta$ está restringido al espacio $\Theta=(0,\infty)$, entonces es posible formular varias opciones para la distribución previa del parámetro, al igual que en la distribución Poisson. Así mismo, suponga que la distribución previa para el parámetro de interés es la distribución Gamma tal como aparece en la expresión \@ref(eq:PreviaGamma). Bajo este marco de referencia se tienen los siguientes resultados
+
+\BeginKnitrBlock{proposition}<div class="proposition"><span class="proposition" id="prp:unnamed-chunk-53"><strong>(\#prp:unnamed-chunk-53) </strong></span>La distribución posterior del parámetro $\theta$ sigue una distribución
+\begin{equation*}
+\theta \mid \mathbf{Y} \sim Gamma\left(\alpha+n,\beta+\sum_{i=1}^ny_i\right)
+\end{equation*}</div>\EndKnitrBlock{proposition}
+<br>
+
+\BeginKnitrBlock{proof}<div class="proof">\iffalse{} <span class="proof"><em>Prueba. </em></span>  \fi{}\begin{align*}
+p(\theta \mid \mathbf{Y})&\propto p(\mathbf{Y} \mid \theta)p(\theta \mid \alpha,\beta)\\
+&=\theta^n e^{(-\theta \sum_{i=1}^ny_i)}I_{(0,\infty)^n}(y_1,\ldots,y_n)\frac{\beta^\alpha \theta^{\alpha-1} e^{-\beta\theta}}{\Gamma(\alpha)}I_{(0,\infty)}(\theta)\\
+&\propto \theta^{\alpha+n-1}e^{-(\beta+\sum_{i=1}^ny_i)}I_{(0,\infty)}(\theta)
+\end{align*}
+
+Por lo tanto, factorizando convenientemente, se encuentra una expresión idéntica a la función de distribución de una variable aleatoria con distribución $Gamma(\alpha+n,\beta+\sum_{i=1}^ny_i)$.</div>\EndKnitrBlock{proof}
+<br>
+
+
+\BeginKnitrBlock{proposition}<div class="proposition"><span class="proposition" id="prp:unnamed-chunk-55"><strong>(\#prp:unnamed-chunk-55) </strong></span>La distribución predictiva previa para una observación $\mathbf{y}=\{y_1,\ldots,y_n\}$ de la muestra aleatoria está dada por
+
+\begin{equation}
+p(\mathbf{Y})=\frac{\Gamma(\alpha+n)}{\Gamma(\alpha)}\frac{\beta^\alpha}{(\beta+\sum_{i=1}^ny_i)^{\alpha+n}}
+I_{(0,\infty)^n}(y_1,\ldots,y_n)
+\end{equation}
+
+y define una auténtica función de densidad de probabilidad continua.</div>\EndKnitrBlock{proposition}
+<br>
+
+\BeginKnitrBlock{proof}<div class="proof">\iffalse{} <span class="proof"><em>Prueba. </em></span>  \fi{}De la definición de función de distribución predictiva se tiene que
+
+\begin{align*}
+p(\mathbf{Y})&=\int p(\mathbf{Y} \mid \theta)p(\theta \mid \alpha,\beta)\ d\theta\\
+&=\int_0^{\infty}\theta^n e^{(-\theta \sum_{i=1}^ny_i)}I_{(0,\infty)^n}(y_1,\ldots,y_n)\frac{\beta^\alpha \theta^{\alpha-1} e^{-\beta\theta}}{\Gamma(\alpha)} \ d\theta\\
+&=\frac{\Gamma(n+\alpha)}{\Gamma(\alpha)}\frac{\beta^\alpha}{(\beta+\sum_{i=1}^ny_i)^{\alpha+n}}I_{(0,\infty)^n}(y_1,\ldots,y_n)\\
+&\hspace{2cm}\times
+\int_0^{\infty} \frac{(\beta+\sum_{i=1}^ny_i)^{\alpha+n}}{\Gamma(n+\alpha)} \theta^{\alpha+n-1}e^{-(\beta+\sum_{i=1}^ny_i)\theta}
+\ d\theta\\
+&=\frac{\Gamma(\alpha+n)}{\Gamma(\alpha)}\frac{\beta^\alpha}{(\beta+\sum_{i=1}^ny_i)^{\alpha+n}}I_{(0,\infty)^n}(y_1,\ldots,y_n)
+\end{align*}</div>\EndKnitrBlock{proof}
+<br>
+
+Por ejemplo, en el caso en que la muestra aleatoria estuviera constituida por una sola variable aleatoria, entonces no es difícil ver, utilizando la definición de la función matemática Gamma, que la función de distribución predictiva estaría dada por
+
+\begin{align*}
+p(Y)&=\frac{\Gamma(\alpha+1)}{\Gamma(\alpha)}\frac{\beta^\alpha}{(\beta+y)^{\alpha+1}}
+I_{(0,\infty)}(y)\notag \\
+&=\frac{\alpha \beta^\alpha}{(\beta+y)^{\alpha+1}}
+I_{(0,\infty)}(y)
+\end{align*}
+
+Para chequear la convergencia de la anterior distribución es necesario recurrir a los resultados del cálculo integral. Dado que el espacio de muestreo de la variable aleatoria $Y$ es el intervalo $(0,\infty)$, entonces la integral definida es igual a uno, lo que conlleva a que en este caso particular $P(Y)$ sea una auténtica función de densidad de probabilidad.
+
+\begin{align*}
+\int_0^{\infty}p(Y)\ dy=\int_0^{\infty}\frac{\alpha \beta^\alpha}{(\beta+y)^{\alpha+1}} \ dy
+=  \beta^\alpha \left[\frac{(\beta+y)^{-\alpha}}{-\alpha} \right]_0^{\infty}
+=1
+\end{align*}
+
+Volviendo al caso general en donde se tiene una muestra aleatoria, se tiene el siguiente resultado.
+
+\BeginKnitrBlock{proposition}<div class="proposition"><span class="proposition" id="prp:unnamed-chunk-57"><strong>(\#prp:unnamed-chunk-57) </strong></span>Después de la recolección de los datos, la distribución predictiva posterior para una conjunto de nuevas variables aleatorias $\tilde{\mathbf{y}}=\{\tilde{y}_1,\ldots,\tilde{y}_{n^*}\}$, de tamaño $n^*$, está dada por
+
+\begin{align}
+p(\tilde{\mathbf{y}} \mid \mathbf{Y})&=
+\frac{\Gamma(n+\alpha+n^{*})}{\Gamma(n+\alpha)}
+\frac{(\beta+\sum_{i=1}^ny_i)^{n+\alpha}}{(\sum_{i=1}^{n^*}\tilde{y}_i+\beta+\sum_{i=1}^ny_i)^{n^*+\alpha+n}}\notag\\
+&\hspace{4cm}\times
+I_{(0,\infty)^{n^*}}(\tilde{y}_1,\ldots,\tilde{y}_n)
+\end{align}</div>\EndKnitrBlock{proposition}
+<br>
+
+El anterior resultado permite calcular la distribución predictiva conjunta de variables aleatorias por observar. En algunas situaciones lo que se quiere pronosticar es el comportamiento probabilístico de promedio muestral de este conjunto de variables aleatorias; es decir, $\bar{Y}^*=\sum_{i=1}^{n^*}\tilde{Y}_i$. En el siguiente resultado se presenta la distribución predictiva de esta variable aleatoria.
+
+\BeginKnitrBlock{proposition}<div class="proposition"><span class="proposition" id="prp:unnamed-chunk-58"><strong>(\#prp:unnamed-chunk-58) </strong></span>Después de la recolección de los datos, la distribución predictiva posterior para el promedio muestral de un nuevo conjunto de variables aleatorias $\bar{Y}^*=\sum_{i=1}^{n^*}\tilde{Y}_i$ está dada por
+
+\begin{equation*}
+p(\bar{Y}^*)=\frac{n^*\Gamma(n^*+\alpha+n)}{\Gamma(n^*)\Gamma(\alpha+n)}\frac{(\beta+\sum_{i=1}^ny_i)^{\alpha+n}}{(n^*\bar{Y}^*+\beta+\sum y_i)^{n^*+\alpha+n}}(n^*\bar{Y}^*)^{n^*-1}I_{(0,\infty)}(\bar{Y}^*)
+\end{equation*}</div>\EndKnitrBlock{proposition}
+<br>
+
+\BeginKnitrBlock{proof}<div class="proof">\iffalse{} <span class="proof"><em>Prueba. </em></span>  \fi{}En primer lugar se halla la distribución predictiva posterior de la variable $\tilde{S}=\sum_{i=1}^{n^*}\tilde{Y}_i$, teniendo en cuenta que $\tilde{S}|\theta\sim Gamma(n^*,\theta)$, de esta forma
+
+\begin{align*}
+p(\tilde{S}|\mathbf{Y})&=\int p(\tilde{S}|\theta)p(\theta|\mathbf{Y})\ d\theta\\
+&=\int_0^{\infty} \frac{\theta^{n^*}}{\Gamma(n^*)}\tilde{S}^{n^*-1}e^{-\theta\tilde{S}}I_{(0,\infty)}(\tilde{S})\frac{(\beta+\sum_{i=1}^ny_i)^{\alpha+n}}{\Gamma(\alpha+n)}\theta^{{\alpha+n-1}}e^{-(\beta+\sum y_i)\theta}d\theta\\
+&=\frac{\tilde{S}^{n^*-1}(\beta+\sum_{i=1}^ny_i)^{\alpha+n}}{\Gamma(n^*)\Gamma(\alpha+n)}I_{(0,\infty)}(\tilde{S})\int_0^{\infty} \theta^{n^*+\alpha+n-1}e^{-(\tilde{S}+\beta+\sum y_i)\theta}\ d\theta\\
+&=\frac{\tilde{S}^{n^*-1}(\beta+\sum_{i=1}^ny_i)^{\alpha+n}}{\Gamma(n^*)\Gamma(\alpha+n)}\frac{\Gamma(n^*+\alpha+n)}{(\tilde{S}+\beta+\sum y_i)^{n^*+\alpha+n}}I_{(0,\infty)}(\tilde{S})
+\end{align*}
+
+Al aplicar el teorema de transformación a la distribución predictiva, se puede hallar la distribución de $\bar{Y}^*$, dada por
+
+\begin{align*}
+p(\bar{Y}^*|\mathbf{Y})=\frac{n^*\Gamma(n^*+\alpha+n)}{\Gamma(n^*)\Gamma(\alpha+n)}\frac{(\beta+\sum_{i=1}^ny_i)^{\alpha+n}}{(n^*\bar{Y}^*+\beta+\sum y_i)^{n^*+\alpha+n}}(n^*\bar{Y}^*)^{n^*-1}I_{(0,\infty)}(\bar{Y}^*)
+\end{align*}</div>\EndKnitrBlock{proof}
+<br>
+
+En la práctica puede ocurrir que algunos de los valores de $n$, $n^*$, $\sum_{i=1}^ny_i$ y $n^*\bar{Y}^*$ sean muy grandes; por consiguiente, evaluar directamente la expresión anterior puede ocasionar problemas numéricos. Realizando algunas operaciones algebraicas, se encuentra la siguiente expresión equivalente para la distribución predictiva posterior de $\bar{Y}^*$ que evita problemas numéricas:
+
+\begin{equation}
+(\#eq:PredExpoInforma2)
+p(\bar{Y}^*|\mathbf{Y})=\frac{1}{\bar{Y}^*Beta(n,n^*)}\left(\frac{\beta+\sum_{i=1}^ny_i}{\beta+\sum_{i=1}^ny_i+n^*\bar{Y}^*}\right)^{\alpha+n}\left(\frac{n^*\bar{Y}^*}{\beta+\sum_{i=1}^ny_i+n^*\bar{Y}^*}\right)^{n^*}I_{(0,\infty)}(\bar{Y}^*)
+\end{equation}
+
+Por otro lado, se puede ver que al utilizar la distribución previa no informativa de Jeffreys, la distribución predictiva posterior de $\bar{Y}^*$ está dada por
+
+\begin{equation}
+(\#eq:PredExpoJeffreys1)
+p(\bar{Y}^*|\mathbf{Y})=\frac{n^*\Gamma(n^*+n)}{\Gamma(n^*)\Gamma(n)}\frac{(\sum_{i=1}^ny_i)^n}{(n^*\bar{Y}^*+\sum y_i)^{n^*+n}}(n^*\bar{Y}^*)^{n^*-1}I_{(0,\infty)}(\bar{Y}^*)
+\end{equation}
+
+La cual es equivalente a la siguiente expresión que en ocasiones puede ser útil para evitar problemas numéricos
+
+\begin{equation}
+(\#eq:PredExpoJeffreys2)
+p(\bar{Y}^*|\mathbf{Y})=\frac{1}{\bar{Y}^*Beta(n,n^*)}\left(\frac{\sum_{i=1}^ny_i}{\sum_{i=1}^ny_i+n^*\bar{Y}^*}\right)^n\left(\frac{n^*\bar{Y}^*}{\sum_{i=1}^ny_i+n^*\bar{Y}^*}\right)^{n^*}I_{(0,\infty)}(\bar{Y}^*)
+\end{equation}
+
+\BeginKnitrBlock{example}<div class="example"><span class="example" id="exm:unnamed-chunk-60"><strong>(\#exm:unnamed-chunk-60) </strong></span>@survi reportan un conjunto de datos que da cuenta de los tiempos de sobrevivencia de $n=69$ miembros del programa de transplante de corazón de Stanford (los tiempos se reportan en días después del transplante). Los datos pueden ser encontrados en el paquete `survival` @survival de `R`, mediante la implementación del siguiente código computacional.</div>\EndKnitrBlock{example}
+
+
+```r
+library(survival)
+library(dplyr)
+data(heart)
+
+sobrevida <- heart %>%
+  filter(transplant == 1) %>%
+  mutate(tiempo = stop - start)
+```
+
+A continuación, se muestran los primeros y últimos datos de este estudio. Se recuerda que el total de pacientes atendidos en este estudio fue de $n=69$ y la suma de los tiempos de sobrevida es de $\sum_{i=1}^ny_i=25998.5$.
+
+
+```r
+sobrevida %>% {
+  rbind(head(., 5), tail(., 5))
+}
+```
 
 
 
+|   | start| stop| event|        age|      year| surgery|transplant |  id| tiempo|
+|:--|-----:|----:|-----:|----------:|---------:|-------:|:----------|---:|------:|
+|1  |     1|   16|     1|   6.297057| 0.2655715|       0|1          |   3|     15|
+|2  |    36|   39|     1|  -7.737166| 0.4900753|       0|1          |   4|      3|
+|3  |    51|  675|     1|   2.869268| 0.7802875|       0|1          |   7|    624|
+|4  |    12|   58|     1|  -5.497604| 0.8624230|       0|1          |  10|     46|
+|5  |    26|  153|     1|  -0.019165| 0.8733744|       0|1          |  11|    127|
+|65 |     2|   16|     1|  -7.718001| 5.9767283|       0|1          |  95|     14|
+|66 |    13|  180|     0| -21.349760| 6.0095825|       0|1          |  96|    167|
+|67 |    21|  131|     0| -24.383299| 6.1437372|       0|1          |  97|    110|
+|68 |    96|  109|     0| -19.370294| 6.2039699|       0|1          |  98|     13|
+|69 |    38|   39|     0| -12.939083| 6.3956194|       1|1          | 100|      1|
+
+Estos tiempos de sobrevivencia pueden ser modelados mediante una distribución exponencial. Además de inferir acerca del parámetro de esta distribución, también es posible inferir acerca del tiempo promedio de sobrevivencia de un individuo sometido a este tipo de transplantes. Luego, dadas las implicaciones del estudio, se debe ser muy cuidadoso en la asignación de los parámetros de la distribución previa. Una forma de hacerlo es asignar valores muy pequeños a estos parámetros. Otra forma de hacerlo es utilizando la distribución previa de Jeffreys, que corresponde a una distribución impropia y que conduce a resultados muy cercanos a los del enfoque anterior.
+
+Utilizando parámetros previos muy cercanos a cero, la distribución posterior del parámetro de interés es $Gamma(69, 25998.5)$. Como es bien sabido, una estimación bayesiana para el parámetro $\theta$ está dada por la media de esta distribución posterior, la cual equivale a $69/25998.5=0.0026$. Ahora, como la esperanza de la distribución exponencial es $1/\theta$, entonces el tiempo promedio de sobrevivencia es de $1/0.0026=376.78$ días. Sin embargo, en este tipo de estudios es común que se presenten muchos datos atípicos; por ende el promedio no es una medida de escala válida en este tipo de análisis, puesto que no es una medida robusta y se prefiere la utilización de la mediana. El siguiente código computacional en `STAN` puede ser usado para realizar inferencias sobre el parámetro $\theta$, sobre el tiempo promedio y el tiempo mediano. De la misma forma, es posible obtener intervalos de credibilidad para estos parámetros.
 
 
+```r
+Exponencial <- '
+data {
+  int<lower=0> n;
+  vector[n] y;
+}
+parameters {
+  real<lower=0> theta;
+}
+transformed parameters {
+  real<lower=0> invtheta = 1/theta;
+}
+model {
+  y ~ exponential(theta);
+  theta ~ gamma(0.1, 0.1);
+}
+'
+sample_data <- list(y = sobrevida$tiempo, 
+                    n = nrow(sobrevida))
+Expofit <- stan(model_code = Exponencial,
+                data = sample_data, verbose = FALSE)
+```
+
+Después de las iteraciones, los resultados de este código muestran una estimación para	 $\theta$ de 0.0026 con un intervalo de credibilidad de (0.00208, 0.00332). Para la media $1/\theta$, se tiene una estimación puntual de 381.4 con un intervalo de credibilidad de (302.2, 485.8). La mediana se estimó en 376.8 días de sobrevivencia.
+
+
+```r
+print(Expofit, digits = 4, pars = c("theta", "invtheta"))
+```
+
+```
+## Inference for Stan model: 1e6dccb88d5f711b516d61c512b5ced4.
+## 4 chains, each with iter=2000; warmup=1000; thin=1; 
+## post-warmup draws per chain=1000, total post-warmup draws=4000.
+## 
+##              mean se_mean      sd     2.5%      25%      50%      75%    97.5%
+## theta      0.0027  0.0000  0.0003   0.0021   0.0024   0.0026   0.0029   0.0033
+## invtheta 382.7474  1.1865 47.1055 300.9592 350.1393 377.9283 410.6681 487.4307
+##          n_eff   Rhat
+## theta     1653 1.0015
+## invtheta  1576 1.0014
+## 
+## Samples were drawn using NUTS(diag_e) at Sun Jun  6 17:29:01 2021.
+## For each parameter, n_eff is a crude measure of effective sample size,
+## and Rhat is the potential scale reduction factor on split chains (at 
+## convergence, Rhat=1).
+```
+
+Las figuras \@ref(fig:posExponencialStan1) y \@ref(fig:posExponencialStan2) muestra la distribución posterior para este ejemplo, junto con la estimación puntual, correspondiente a la media. 
+
+
+```r
+bayesplot::mcmc_areas(Expofit, pars = "theta", 
+                      prob = 0.95)
+```
+
+<div class="figure">
+<img src="3Uniparametricos_files/figure-html/posExponencialStan1-1.svg" alt="Distribución posterior." width="672" />
+<p class="caption">(\#fig:posExponencialStan1)Distribución posterior.</p>
+</div>
+
+
+```r
+bayesplot::mcmc_areas(Expofit, pars = "invtheta", 
+                      prob = 0.95)
+```
+
+<div class="figure">
+<img src="3Uniparametricos_files/figure-html/posExponencialStan2-1.svg" alt="Distribución posterior." width="672" />
+<p class="caption">(\#fig:posExponencialStan2)Distribución posterior.</p>
+</div>
+
+\BeginKnitrBlock{example}<div class="example"><span class="example" id="exm:unnamed-chunk-65"><strong>(\#exm:unnamed-chunk-65) </strong></span>Suponga ahora que se va a realizar el trasplante de corazón a 5 pacientes, y se quiere conocer el comportamiento probabilístico del tiempo promedio de sobrevida en estos 5 pacientes. Aplicando la distribución predictiva y definiendo una distribución previa no informativa de Jeffreys, se tiene que
+
+\begin{align*}
+p(\bar{Y}^*|\mathbf{Y})&=\frac{5\Gamma(5+69)}{\Gamma(5)\Gamma(69)}\frac{25998.5^{69}}{(5\bar{Y}^*+25998.5)^{5+69}}(5\bar{Y}^*)^4\\
+&=\frac{1}{\bar{Y}^*Beta(5,69)}\left(\frac{25998.5}{5\bar{Y}^*+25998.5}\right)^{69}\left(\frac{5\bar{Y}^*}{5\bar{Y}^*+25998.5}\right)^5
+\end{align*}
+
+El cálculo de esta función predictiva se puede llevar a cabo con el siguiente código en `R`, además de comprobar que la integral de la función es 1.</div>\EndKnitrBlock{example}
+
+
+```r
+pred_exp <- function(x){
+  ((s/(s+x*n.mono))^n) * 
+    ((x*n.mono/(s+x*n.mono))^n.mono) / 
+    (x*beta(n,n.mono))
+}
+
+
+alfa <- beta <- 0
+s <- 25998.5
+n <- 69
+n.mono <- 5
+integrate(pred_exp, 0.0001, 10000)
+```
+
+```
+## 1 with absolute error < 3.2e-10
+```
+
+La distribución predictiva de esta función se puede visualizar en la Figura \@ref(fig:PredPostExpoEje), donde se puede ver que la mayor masa de la función se acumula alrededor de los 300 días. Usando el comando `integrate(pred_exp, 800, 10000)`, también se puede observar que la probabilidad de que en promedio los cinco pacientes sobrevivan más de 800 días es de 0.0264485.
+
+<div class="figure">
+<img src="3Uniparametricos_files/figure-html/PredPostExpoEje-1.svg" alt="Distribución predictiva posterior para el tiempo promedio de sobrevivencia de transplante de corazón." width="672" />
+<p class="caption">(\#fig:PredPostExpoEje)Distribución predictiva posterior para el tiempo promedio de sobrevivencia de transplante de corazón.</p>
+</div>
 
 
 

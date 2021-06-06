@@ -24,7 +24,7 @@
 <meta name="author" content="Andrés Gutiérrez - Hanwen Zhang" />
 
 
-<meta name="date" content="2021-06-05" />
+<meta name="date" content="2021-06-06" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
@@ -196,6 +196,7 @@ div.csl-indent {
 <li class="chapter" data-level="3.2" data-path="modelo-binomial.html"><a href="modelo-binomial.html"><i class="fa fa-check"></i><b>3.2</b> Modelo Binomial</a></li>
 <li class="chapter" data-level="3.3" data-path="modelo-binomial-negativo.html"><a href="modelo-binomial-negativo.html"><i class="fa fa-check"></i><b>3.3</b> Modelo Binomial negativo</a></li>
 <li class="chapter" data-level="3.4" data-path="modelo-poisson.html"><a href="modelo-poisson.html"><i class="fa fa-check"></i><b>3.4</b> Modelo Poisson</a></li>
+<li class="chapter" data-level="3.5" data-path="modelo-exponencial.html"><a href="modelo-exponencial.html"><i class="fa fa-check"></i><b>3.5</b> Modelo Exponencial</a></li>
 </ul></li>
 <li class="appendix"><span><b>Apéndice</b></span></li>
 <li class="chapter" data-level="A" data-path="elementos-de-probabilidad.html"><a href="elementos-de-probabilidad.html"><i class="fa fa-check"></i><b>A</b> Elementos de probabilidad</a>
@@ -353,7 +354,7 @@ Var(\mathbf{Y}_1 \mid \mathbf{Y}_2)&amp;=Var(\mathbf{Y}_1)-Cov(\mathbf{Y}_1,\mat
 </div>
 
 <div class="proposition">
-<p><span id="prp:unnamed-chunk-57" class="proposition"><strong>Resultado A.29  </strong></span>Dado <span class="math inline">\(\mathbf{Y}\)</span> un vector aleatorio particionado como <span class="math inline">\(\mathbf{Y}=(\mathbf{Y}_1&#39;,\mathbf{Y}_2&#39;)\)</span> con esperanza <span class="math inline">\(\boldsymbol \theta=(\boldsymbol \theta_1&#39;,\boldsymbol \theta_2&#39;)\)</span> y matrix de varianzas y covarianzas</p>
+<p><span id="prp:unnamed-chunk-57" class="proposition"><strong>Resultado 3.13  </strong></span>Dado <span class="math inline">\(\mathbf{Y}\)</span> un vector aleatorio particionado como <span class="math inline">\(\mathbf{Y}=(\mathbf{Y}_1&#39;,\mathbf{Y}_2&#39;)\)</span> con esperanza <span class="math inline">\(\boldsymbol \theta=(\boldsymbol \theta_1&#39;,\boldsymbol \theta_2&#39;)\)</span> y matrix de varianzas y covarianzas</p>
 <p><span class="math display">\[\begin{equation*}
 \boldsymbol \Sigma=\begin{pmatrix}
 \boldsymbol \Sigma_{11}&amp;\boldsymbol \Sigma_{12}\\
@@ -367,7 +368,7 @@ Var(\mathbf{Y}_1 \mid \mathbf{Y}_2)&amp;=Var(\mathbf{Y}_1)-Cov(\mathbf{Y}_1,\mat
 </div>
 
 <div class="proposition">
-<p><span id="prp:unnamed-chunk-58" class="proposition"><strong>Resultado A.30  </strong></span>Si <span class="math inline">\(\mathbf{Y}_1,\ldots,\mathbf{Y}_n\)</span> es una muestra aleatoria de vectores con distribución Normal Multivariante, entonces la verosimilitud de la muestra se puede escribir como</p>
+<p><span id="prp:unnamed-chunk-58" class="proposition"><strong>Resultado 3.14  </strong></span>Si <span class="math inline">\(\mathbf{Y}_1,\ldots,\mathbf{Y}_n\)</span> es una muestra aleatoria de vectores con distribución Normal Multivariante, entonces la verosimilitud de la muestra se puede escribir como</p>
 <p><span class="math display">\[\begin{equation}
 \prod_{i=1}^np(\mathbf{Y}_i \mid \boldsymbol \theta,\boldsymbol \Sigma)\propto \mid \boldsymbol \Sigma\mid ^{-n/2}\exp\left\{-\frac{1}{2}traza(\boldsymbol \Sigma^{-1}\mathbf{S}_{\boldsymbol \theta})\right\}
 \end{equation}\]</span></p>
@@ -414,7 +415,7 @@ donde <span class="math inline">\(\mid \boldsymbol \Lambda\mid\)</span> se refie
 </div>
 
 <div class="proposition">
-<span id="prp:unnamed-chunk-61" class="proposition"><strong>Resultado A.31  </strong></span>Si <span class="math inline">\(\boldsymbol \Sigma\)</span> es una matriz aleatoria con distribución Wishart con <span class="math inline">\(v\)</span> grados de libertad, entonces <span class="math inline">\(E(\boldsymbol \Sigma)=v\boldsymbol \Lambda\)</span>
+<span id="prp:unnamed-chunk-61" class="proposition"><strong>Resultado A.29  </strong></span>Si <span class="math inline">\(\boldsymbol \Sigma\)</span> es una matriz aleatoria con distribución Wishart con <span class="math inline">\(v\)</span> grados de libertad, entonces <span class="math inline">\(E(\boldsymbol \Sigma)=v\boldsymbol \Lambda\)</span>
 </div>
 </div>
 <div id="distribución-inversa-wishart" class="section level3" number="4.3.5">
@@ -432,11 +433,11 @@ donde <span class="math inline">\(\mid \boldsymbol \Lambda\mid\)</span> se refie
 </div>
 
 <div class="proposition">
-<span id="prp:unnamed-chunk-63" class="proposition"><strong>Resultado A.32  </strong></span>Si <span class="math inline">\(\boldsymbol \Sigma\)</span> es una matriz aleatoria con distribución inversa-Wishart con <span class="math inline">\(v\)</span> grados de libertad, entonces <span class="math inline">\(E(\boldsymbol \Sigma)=\dfrac{1}{v-p-1}\boldsymbol \Lambda\)</span>
+<span id="prp:unnamed-chunk-63" class="proposition"><strong>Resultado A.30  </strong></span>Si <span class="math inline">\(\boldsymbol \Sigma\)</span> es una matriz aleatoria con distribución inversa-Wishart con <span class="math inline">\(v\)</span> grados de libertad, entonces <span class="math inline">\(E(\boldsymbol \Sigma)=\dfrac{1}{v-p-1}\boldsymbol \Lambda\)</span>
 </div>
 
 <div class="proposition">
-<span id="prp:unnamed-chunk-64" class="proposition"><strong>Resultado A.33  </strong></span>Si <span class="math inline">\(\boldsymbol \Sigma^{-1}\)</span> es una matriz aleatoria con distribución inversa-Wishart, entonces con <span class="math inline">\(\boldsymbol \Sigma\)</span> tiene distribución Wishart.
+<span id="prp:unnamed-chunk-64" class="proposition"><strong>Resultado A.31  </strong></span>Si <span class="math inline">\(\boldsymbol \Sigma^{-1}\)</span> es una matriz aleatoria con distribución inversa-Wishart, entonces con <span class="math inline">\(\boldsymbol \Sigma\)</span> tiene distribución Wishart.
 </div>
 
 </div>
