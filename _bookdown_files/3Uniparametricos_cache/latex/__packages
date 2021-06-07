@@ -1,0 +1,12 @@
+base
+StanHeaders
+ggplot2
+rstan
+printr
+knitr
+thematic
+patchwork
+VGAM
+pscl
+survival
+dplyr

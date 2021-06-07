@@ -197,6 +197,12 @@ div.csl-indent {
 <li class="chapter" data-level="3.3" data-path="modelo-binomial-negativo.html"><a href="modelo-binomial-negativo.html"><i class="fa fa-check"></i><b>3.3</b> Modelo Binomial negativo</a></li>
 <li class="chapter" data-level="3.4" data-path="modelo-poisson.html"><a href="modelo-poisson.html"><i class="fa fa-check"></i><b>3.4</b> Modelo Poisson</a></li>
 <li class="chapter" data-level="3.5" data-path="modelo-exponencial.html"><a href="modelo-exponencial.html"><i class="fa fa-check"></i><b>3.5</b> Modelo Exponencial</a></li>
+<li class="chapter" data-level="3.6" data-path="modelo-normal-con-media-desconocida-y-varianza-conocida.html"><a href="modelo-normal-con-media-desconocida-y-varianza-conocida.html"><i class="fa fa-check"></i><b>3.6</b> Modelo Normal con media desconocida y varianza conocida</a>
+<ul>
+<li class="chapter" data-level="3.6.1" data-path="modelo-normal-con-media-desconocida-y-varianza-conocida.html"><a href="modelo-normal-con-media-desconocida-y-varianza-conocida.html#distribución-previa-no-informativa-para-theta"><i class="fa fa-check"></i><b>3.6.1</b> Distribución previa no informativa para <span class="math inline">\(\theta\)</span></a></li>
+<li class="chapter" data-level="3.6.2" data-path="modelo-normal-con-media-desconocida-y-varianza-conocida.html"><a href="modelo-normal-con-media-desconocida-y-varianza-conocida.html#diferentes-formas-de-hallar-la-distribución-previa-para-theta"><i class="fa fa-check"></i><b>3.6.2</b> Diferentes formas de hallar la distribución previa para <span class="math inline">\(\theta\)</span></a></li>
+<li class="chapter" data-level="3.6.3" data-path="modelo-normal-con-media-desconocida-y-varianza-conocida.html"><a href="modelo-normal-con-media-desconocida-y-varianza-conocida.html#distribuciones-predictivas"><i class="fa fa-check"></i><b>3.6.3</b> Distribuciones predictivas</a></li>
+</ul></li>
 </ul></li>
 <li class="appendix"><span><b>Apéndice</b></span></li>
 <li class="chapter" data-level="A" data-path="elementos-de-probabilidad.html"><a href="elementos-de-probabilidad.html"><i class="fa fa-check"></i><b>A</b> Elementos de probabilidad</a>
@@ -347,10 +353,10 @@ El siguiente código computacional muestra cómo se puede llegar a las mismas co
 ## 4 chains, each with iter=2000; warmup=1000; thin=1; 
 ## post-warmup draws per chain=1000, total post-warmup draws=4000.
 ## 
-##        mean se_mean     sd   2.5% 97.5% n_eff   Rhat
-## theta 0.005   1e-04 0.0021 0.0017  0.01  1441 1.0018
+##         mean se_mean     sd   2.5%  97.5% n_eff   Rhat
+## theta 0.0049   1e-04 0.0021 0.0016 0.0099  1583 1.0009
 ## 
-## Samples were drawn using NUTS(diag_e) at Sun Jun  6 17:27:12 2021.
+## Samples were drawn using NUTS(diag_e) at Sun Jun  6 23:43:20 2021.
 ## For each parameter, n_eff is a crude measure of effective sample size,
 ## and Rhat is the potential scale reduction factor on split chains (at 
 ## convergence, Rhat=1).</code></pre>
@@ -572,17 +578,17 @@ Mediante el análisis bayesiano, suponiendo una distribución previa<a href="#fn
 ## post-warmup draws per chain=1000, total post-warmup draws=4000.
 ## 
 ##         mean se_mean    sd   2.5% 97.5% n_eff   Rhat
-## theta 0.0051       0 4e-04 0.0043 0.006  1250 1.0031
+## theta 0.0052       0 4e-04 0.0044 0.006  1302 1.0032
 ## 
-## Samples were drawn using NUTS(diag_e) at Sun Jun  6 17:27:45 2021.
+## Samples were drawn using NUTS(diag_e) at Sun Jun  6 23:43:53 2021.
 ## For each parameter, n_eff is a crude measure of effective sample size,
 ## and Rhat is the potential scale reduction factor on split chains (at 
 ## convergence, Rhat=1).</code></pre>
 <p>La figura <a href="modelo-binomial-negativo.html#fig:posBNStan">3.9</a> muestra la distribución posterior para este ejemplo, junto con la estimación puntual, correspondiente a la media.</p>
 <div class="sourceCode" id="cb39"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb39-1"><a href="modelo-binomial-negativo.html#cb39-1" aria-hidden="true" tabindex="-1"></a>bayesplot<span class="sc">::</span><span class="fu">mcmc_areas</span>(BNfit2, <span class="at">pars =</span> <span class="st">&quot;theta&quot;</span>, </span>
 <span id="cb39-2"><a href="modelo-binomial-negativo.html#cb39-2" aria-hidden="true" tabindex="-1"></a>                      <span class="at">prob =</span> <span class="fl">0.95</span>)</span></code></pre></div>
-<div class="figure"><span id="fig:posBNStan"></span>
-<img src="3Uniparametricos_files/figure-html/posBNStan-1.svg" alt="Distribución posterior." width="672" />
+<div class="figure" style="text-align: center"><span id="fig:posBNStan"></span>
+<img src="3Uniparametricos_files/figure-html/posBNStan-1.svg" alt="Distribución posterior." width="576" />
 <p class="caption">
 Figura 3.9: Distribución posterior.
 </p>
@@ -635,8 +641,8 @@ Con los siguientes códigos se puede calcular la anterior función predictiva.
 <span id="cb40-16"><a href="modelo-binomial-negativo.html#cb40-16" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb40-17"><a href="modelo-binomial-negativo.html#cb40-17" aria-hidden="true" tabindex="-1"></a><span class="fu">sum</span>(fun)</span></code></pre></div>
 <pre><code>## [1] 0.9999994</code></pre>
-<div class="figure"><span id="fig:jefber"></span>
-<img src="3Uniparametricos_files/figure-html/jefber-1.svg" alt="Distribución predictiva posterior para el número de entrevistas necesarias para encontrar 5 pacientes." width="672" />
+<div class="figure" style="text-align: center"><span id="fig:jefber"></span>
+<img src="3Uniparametricos_files/figure-html/jefber-1.svg" alt="Distribución predictiva posterior para el número de entrevistas necesarias para encontrar 5 pacientes." width="576" />
 <p class="caption">
 Figura 3.10: Distribución predictiva posterior para el número de entrevistas necesarias para encontrar 5 pacientes.
 </p>

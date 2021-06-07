@@ -1,0 +1,588 @@
+<!DOCTYPE html>
+<html lang="es" xml:lang="es">
+<head>
+
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <title>3.6 Modelo Normal con media desconocida y varianza conocida | Modelos Bayesianos con R y STAN</title>
+  <meta name="description" content="Este es el repositorio del libro Modelos Bayesianos con R y STAN." />
+  <meta name="generator" content="bookdown 0.22 and GitBook 2.6.7" />
+
+  <meta property="og:title" content="3.6 Modelo Normal con media desconocida y varianza conocida | Modelos Bayesianos con R y STAN" />
+  <meta property="og:type" content="book" />
+  
+  
+  <meta property="og:description" content="Este es el repositorio del libro Modelos Bayesianos con R y STAN." />
+  <meta name="github-repo" content="psirusteam/bookdownBayesiano" />
+
+  <meta name="twitter:card" content="summary" />
+  <meta name="twitter:title" content="3.6 Modelo Normal con media desconocida y varianza conocida | Modelos Bayesianos con R y STAN" />
+  
+  <meta name="twitter:description" content="Este es el repositorio del libro Modelos Bayesianos con R y STAN." />
+  
+
+<meta name="author" content="Andrés Gutiérrez - Hanwen Zhang" />
+
+
+<meta name="date" content="2021-06-06" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black" />
+  
+  
+<link rel="prev" href="modelo-exponencial.html"/>
+<link rel="next" href="elementos-de-probabilidad.html"/>
+<script src="libs/header-attrs-2.8/header-attrs.js"></script>
+<script src="libs/jquery-2.2.3/jquery.min.js"></script>
+<link href="libs/gitbook-2.6.7/css/style.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-table.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-bookdown.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-highlight.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-search.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-fontsettings.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-clipboard.css" rel="stylesheet" />
+
+
+
+
+
+
+
+
+
+<link href="libs/anchor-sections-1.0.1/anchor-sections.css" rel="stylesheet" />
+<script src="libs/anchor-sections-1.0.1/anchor-sections.js"></script>
+
+
+<style type="text/css">
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+    color: #aaaaaa;
+  }
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code span.at { color: #7d9029; } /* Attribute */
+code span.bn { color: #40a070; } /* BaseN */
+code span.bu { } /* BuiltIn */
+code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code span.ch { color: #4070a0; } /* Char */
+code span.cn { color: #880000; } /* Constant */
+code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code span.dt { color: #902000; } /* DataType */
+code span.dv { color: #40a070; } /* DecVal */
+code span.er { color: #ff0000; font-weight: bold; } /* Error */
+code span.ex { } /* Extension */
+code span.fl { color: #40a070; } /* Float */
+code span.fu { color: #06287e; } /* Function */
+code span.im { } /* Import */
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code span.op { color: #666666; } /* Operator */
+code span.ot { color: #007020; } /* Other */
+code span.pp { color: #bc7a00; } /* Preprocessor */
+code span.sc { color: #4070a0; } /* SpecialChar */
+code span.ss { color: #bb6688; } /* SpecialString */
+code span.st { color: #4070a0; } /* String */
+code span.va { color: #19177c; } /* Variable */
+code span.vs { color: #4070a0; } /* VerbatimString */
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+</style>
+
+<style type="text/css">
+/* Used with Pandoc 2.11+ new --citeproc when CSL is used */
+div.csl-bib-body { }
+div.csl-entry {
+  clear: both;
+}
+.hanging div.csl-entry {
+  margin-left:2em;
+  text-indent:-2em;
+}
+div.csl-left-margin {
+  min-width:2em;
+  float:left;
+}
+div.csl-right-inline {
+  margin-left:2em;
+  padding-left:1em;
+}
+div.csl-indent {
+  margin-left: 2em;
+}
+</style>
+
+<link rel="stylesheet" href="style.css" type="text/css" />
+</head>
+
+<body>
+
+
+
+  <div class="book without-animation with-summary font-size-2 font-family-1" data-basepath=".">
+
+    <div class="book-summary">
+      <nav role="navigation">
+
+<ul class="summary">
+<li><a href="./">Modelos Bayesianos con R y STAN</a></li>
+
+<li class="divider"></li>
+<li class="chapter" data-level="" data-path="index.html"><a href="index.html"><i class="fa fa-check"></i>Prefacio</a></li>
+<li class="chapter" data-level="" data-path="antes-de-comenzar.html"><a href="antes-de-comenzar.html"><i class="fa fa-check"></i>Antes de comenzar</a>
+<ul>
+<li class="chapter" data-level="" data-path="cuestionamientos-sobre-el-enfoque-bayesiano.html"><a href="cuestionamientos-sobre-el-enfoque-bayesiano.html"><i class="fa fa-check"></i>Cuestionamientos sobre el enfoque bayesiano</a></li>
+<li class="chapter" data-level="" data-path="acerca-de-la-notación.html"><a href="acerca-de-la-notación.html"><i class="fa fa-check"></i>Acerca de la notación</a></li>
+</ul></li>
+<li class="chapter" data-level="1" data-path="tópicos-básicos.html"><a href="tópicos-básicos.html"><i class="fa fa-check"></i><b>1</b> Tópicos básicos</a>
+<ul>
+<li class="chapter" data-level="1.1" data-path="teoría-de-la-decisión.html"><a href="teoría-de-la-decisión.html"><i class="fa fa-check"></i><b>1.1</b> Teoría de la decisión</a></li>
+<li class="chapter" data-level="1.2" data-path="algunos-resultados-de-probabilidad.html"><a href="algunos-resultados-de-probabilidad.html"><i class="fa fa-check"></i><b>1.2</b> Algunos resultados de probabilidad</a></li>
+<li class="chapter" data-level="1.3" data-path="teorema-de-bayes.html"><a href="teorema-de-bayes.html"><i class="fa fa-check"></i><b>1.3</b> Teorema de Bayes</a></li>
+</ul></li>
+<li class="chapter" data-level="2" data-path="inferencia-bayesiana.html"><a href="inferencia-bayesiana.html"><i class="fa fa-check"></i><b>2</b> Inferencia bayesiana</a>
+<ul>
+<li class="chapter" data-level="2.1" data-path="la-distribución-previa.html"><a href="la-distribución-previa.html"><i class="fa fa-check"></i><b>2.1</b> La distribución previa</a>
+<ul>
+<li class="chapter" data-level="2.1.1" data-path="la-distribución-previa.html"><a href="la-distribución-previa.html#distribuciones-conjugadas"><i class="fa fa-check"></i><b>2.1.1</b> Distribuciones conjugadas</a></li>
+<li class="chapter" data-level="2.1.2" data-path="la-distribución-previa.html"><a href="la-distribución-previa.html#familia-exponencial"><i class="fa fa-check"></i><b>2.1.2</b> Familia exponencial</a></li>
+<li class="chapter" data-level="2.1.3" data-path="la-distribución-previa.html"><a href="la-distribución-previa.html#distribuciones-previas-no-informativas"><i class="fa fa-check"></i><b>2.1.3</b> Distribuciones previas no informativas</a></li>
+</ul></li>
+<li class="chapter" data-level="2.2" data-path="pruebas-de-hipótesis.html"><a href="pruebas-de-hipótesis.html"><i class="fa fa-check"></i><b>2.2</b> Pruebas de hipótesis</a>
+<ul>
+<li class="chapter" data-level="2.2.1" data-path="pruebas-de-hipótesis.html"><a href="pruebas-de-hipótesis.html#factor-de-bayes"><i class="fa fa-check"></i><b>2.2.1</b> Factor de Bayes</a></li>
+<li class="chapter" data-level="2.2.2" data-path="pruebas-de-hipótesis.html"><a href="pruebas-de-hipótesis.html#valor-p-bayesiano"><i class="fa fa-check"></i><b>2.2.2</b> Valor-<span class="math inline">\(p\)</span> Bayesiano</a></li>
+</ul></li>
+<li class="chapter" data-level="2.3" data-path="criterios-de-información.html"><a href="criterios-de-información.html"><i class="fa fa-check"></i><b>2.3</b> Criterios de información</a>
+<ul>
+<li class="chapter" data-level="2.3.1" data-path="criterios-de-información.html"><a href="criterios-de-información.html#criterio-dic"><i class="fa fa-check"></i><b>2.3.1</b> Criterio DIC</a></li>
+<li class="chapter" data-level="2.3.2" data-path="criterios-de-información.html"><a href="criterios-de-información.html#criterios-aic-y-bic"><i class="fa fa-check"></i><b>2.3.2</b> Criterios AIC y BIC</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="3" data-path="modelos-uniparamétricos.html"><a href="modelos-uniparamétricos.html"><i class="fa fa-check"></i><b>3</b> Modelos uniparamétricos</a>
+<ul>
+<li class="chapter" data-level="3.1" data-path="modelo-bernoulli.html"><a href="modelo-bernoulli.html"><i class="fa fa-check"></i><b>3.1</b> Modelo Bernoulli</a></li>
+<li class="chapter" data-level="3.2" data-path="modelo-binomial.html"><a href="modelo-binomial.html"><i class="fa fa-check"></i><b>3.2</b> Modelo Binomial</a></li>
+<li class="chapter" data-level="3.3" data-path="modelo-binomial-negativo.html"><a href="modelo-binomial-negativo.html"><i class="fa fa-check"></i><b>3.3</b> Modelo Binomial negativo</a></li>
+<li class="chapter" data-level="3.4" data-path="modelo-poisson.html"><a href="modelo-poisson.html"><i class="fa fa-check"></i><b>3.4</b> Modelo Poisson</a></li>
+<li class="chapter" data-level="3.5" data-path="modelo-exponencial.html"><a href="modelo-exponencial.html"><i class="fa fa-check"></i><b>3.5</b> Modelo Exponencial</a></li>
+<li class="chapter" data-level="3.6" data-path="modelo-normal-con-media-desconocida-y-varianza-conocida.html"><a href="modelo-normal-con-media-desconocida-y-varianza-conocida.html"><i class="fa fa-check"></i><b>3.6</b> Modelo Normal con media desconocida y varianza conocida</a>
+<ul>
+<li class="chapter" data-level="3.6.1" data-path="modelo-normal-con-media-desconocida-y-varianza-conocida.html"><a href="modelo-normal-con-media-desconocida-y-varianza-conocida.html#distribución-previa-no-informativa-para-theta"><i class="fa fa-check"></i><b>3.6.1</b> Distribución previa no informativa para <span class="math inline">\(\theta\)</span></a></li>
+<li class="chapter" data-level="3.6.2" data-path="modelo-normal-con-media-desconocida-y-varianza-conocida.html"><a href="modelo-normal-con-media-desconocida-y-varianza-conocida.html#diferentes-formas-de-hallar-la-distribución-previa-para-theta"><i class="fa fa-check"></i><b>3.6.2</b> Diferentes formas de hallar la distribución previa para <span class="math inline">\(\theta\)</span></a></li>
+<li class="chapter" data-level="3.6.3" data-path="modelo-normal-con-media-desconocida-y-varianza-conocida.html"><a href="modelo-normal-con-media-desconocida-y-varianza-conocida.html#distribuciones-predictivas"><i class="fa fa-check"></i><b>3.6.3</b> Distribuciones predictivas</a></li>
+</ul></li>
+</ul></li>
+<li class="appendix"><span><b>Apéndice</b></span></li>
+<li class="chapter" data-level="A" data-path="elementos-de-probabilidad.html"><a href="elementos-de-probabilidad.html"><i class="fa fa-check"></i><b>A</b> Elementos de probabilidad</a>
+<ul>
+<li class="chapter" data-level="A.1" data-path="distribuciones-discretas.html"><a href="distribuciones-discretas.html"><i class="fa fa-check"></i><b>A.1</b> Distribuciones discretas</a>
+<ul>
+<li class="chapter" data-level="A.1.1" data-path="distribuciones-discretas.html"><a href="distribuciones-discretas.html#distribución-uniforme-discreta"><i class="fa fa-check"></i><b>A.1.1</b> Distribución uniforme discreta</a></li>
+<li class="chapter" data-level="A.1.2" data-path="distribuciones-discretas.html"><a href="distribuciones-discretas.html#distribución-hipergeométrica"><i class="fa fa-check"></i><b>A.1.2</b> Distribución hipergeométrica</a></li>
+<li class="chapter" data-level="A.1.3" data-path="distribuciones-discretas.html"><a href="distribuciones-discretas.html#distribución-bernoulli"><i class="fa fa-check"></i><b>A.1.3</b> Distribución Bernoulli</a></li>
+<li class="chapter" data-level="A.1.4" data-path="distribuciones-discretas.html"><a href="distribuciones-discretas.html#distribución-binomial"><i class="fa fa-check"></i><b>A.1.4</b> Distribución binomial</a></li>
+<li class="chapter" data-level="A.1.5" data-path="distribuciones-discretas.html"><a href="distribuciones-discretas.html#distribución-binomial-negativa"><i class="fa fa-check"></i><b>A.1.5</b> Distribución Binomial negativa</a></li>
+<li class="chapter" data-level="A.1.6" data-path="distribuciones-discretas.html"><a href="distribuciones-discretas.html#distribución-de-poisson"><i class="fa fa-check"></i><b>A.1.6</b> Distribución de Poisson</a></li>
+</ul></li>
+<li class="chapter" data-level="A.2" data-path="distribuciones-continuas.html"><a href="distribuciones-continuas.html"><i class="fa fa-check"></i><b>A.2</b> Distribuciones continuas</a>
+<ul>
+<li class="chapter" data-level="A.2.1" data-path="distribuciones-continuas.html"><a href="distribuciones-continuas.html#distribución-uniforme-continua"><i class="fa fa-check"></i><b>A.2.1</b> Distribución Uniforme Continua</a></li>
+<li class="chapter" data-level="A.2.2" data-path="distribuciones-continuas.html"><a href="distribuciones-continuas.html#distribución-weibull"><i class="fa fa-check"></i><b>A.2.2</b> Distribución Weibull</a></li>
+<li class="chapter" data-level="A.2.3" data-path="distribuciones-continuas.html"><a href="distribuciones-continuas.html#distribución-valor-extremo"><i class="fa fa-check"></i><b>A.2.3</b> Distribución valor-extremo</a></li>
+<li class="chapter" data-level="A.2.4" data-path="distribuciones-continuas.html"><a href="distribuciones-continuas.html#distribución-gamma"><i class="fa fa-check"></i><b>A.2.4</b> Distribución Gamma</a></li>
+<li class="chapter" data-level="A.2.5" data-path="distribuciones-continuas.html"><a href="distribuciones-continuas.html#distribución-gamma-inversa"><i class="fa fa-check"></i><b>A.2.5</b> Distribución Gamma-inversa</a></li>
+<li class="chapter" data-level="A.2.6" data-path="distribuciones-continuas.html"><a href="distribuciones-continuas.html#distribución-exponencial"><i class="fa fa-check"></i><b>A.2.6</b> Distribución exponencial</a></li>
+<li class="chapter" data-level="A.2.7" data-path="distribuciones-continuas.html"><a href="distribuciones-continuas.html#distribución-beta"><i class="fa fa-check"></i><b>A.2.7</b> Distribución Beta</a></li>
+<li class="chapter" data-level="A.2.8" data-path="distribuciones-continuas.html"><a href="distribuciones-continuas.html#distribución-normal"><i class="fa fa-check"></i><b>A.2.8</b> Distribución normal</a></li>
+<li class="chapter" data-level="A.2.9" data-path="distribuciones-continuas.html"><a href="distribuciones-continuas.html#distribución-log-normal"><i class="fa fa-check"></i><b>A.2.9</b> Distribución log-normal</a></li>
+<li class="chapter" data-level="A.2.10" data-path="distribuciones-continuas.html"><a href="distribuciones-continuas.html#distribución-ji-cuadrado"><i class="fa fa-check"></i><b>A.2.10</b> Distribución Ji-cuadrado</a></li>
+<li class="chapter" data-level="A.2.11" data-path="distribuciones-continuas.html"><a href="distribuciones-continuas.html#distribución-t-student"><i class="fa fa-check"></i><b>A.2.11</b> Distribución t-student</a></li>
+<li class="chapter" data-level="A.2.12" data-path="distribuciones-continuas.html"><a href="distribuciones-continuas.html#distribución-t-student-generalizada"><i class="fa fa-check"></i><b>A.2.12</b> Distribución t-student generalizada</a></li>
+<li class="chapter" data-level="A.2.13" data-path="distribuciones-continuas.html"><a href="distribuciones-continuas.html#distribución-f"><i class="fa fa-check"></i><b>A.2.13</b> Distribución F</a></li>
+</ul></li>
+<li class="chapter" data-level="A.3" data-path="distribuciones-multivariadas.html"><a href="distribuciones-multivariadas.html"><i class="fa fa-check"></i><b>A.3</b> Distribuciones multivariadas</a>
+<ul>
+<li class="chapter" data-level="A.3.1" data-path="distribuciones-multivariadas.html"><a href="distribuciones-multivariadas.html#distribución-multinomial"><i class="fa fa-check"></i><b>A.3.1</b> Distribución Multinomial</a></li>
+<li class="chapter" data-level="A.3.2" data-path="distribuciones-multivariadas.html"><a href="distribuciones-multivariadas.html#distribución-dirichelt"><i class="fa fa-check"></i><b>A.3.2</b> Distribución Dirichelt</a></li>
+<li class="chapter" data-level="A.3.3" data-path="distribuciones-multivariadas.html"><a href="distribuciones-multivariadas.html#distribución-normal-multivariante"><i class="fa fa-check"></i><b>A.3.3</b> Distribución Normal Multivariante</a></li>
+<li class="chapter" data-level="A.3.4" data-path="distribuciones-multivariadas.html"><a href="distribuciones-multivariadas.html#distribución-wishart"><i class="fa fa-check"></i><b>A.3.4</b> Distribución Wishart</a></li>
+<li class="chapter" data-level="A.3.5" data-path="distribuciones-multivariadas.html"><a href="distribuciones-multivariadas.html#distribución-inversa-wishart"><i class="fa fa-check"></i><b>A.3.5</b> Distribución inversa-Wishart</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="B" data-path="matriz-de-información.html"><a href="matriz-de-información.html"><i class="fa fa-check"></i><b>B</b> Matriz de información</a></li>
+<li class="chapter" data-level="C" data-path="elementos-de-simulación-estadística.html"><a href="elementos-de-simulación-estadística.html"><i class="fa fa-check"></i><b>C</b> Elementos de simulación estadística</a>
+<ul>
+<li class="chapter" data-level="C.1" data-path="métodos-directos.html"><a href="métodos-directos.html"><i class="fa fa-check"></i><b>C.1</b> Métodos directos</a>
+<ul>
+<li class="chapter" data-level="C.1.1" data-path="métodos-directos.html"><a href="métodos-directos.html#método-de-la-transformación-uniforme"><i class="fa fa-check"></i><b>C.1.1</b> Método de la transformación uniforme</a></li>
+<li class="chapter" data-level="C.1.2" data-path="métodos-directos.html"><a href="métodos-directos.html#método-de-la-grilla"><i class="fa fa-check"></i><b>C.1.2</b> Método de la grilla</a></li>
+</ul></li>
+<li class="chapter" data-level="C.2" data-path="métodos-de-monte-carlo-vía-cadenas-de-markov.html"><a href="métodos-de-monte-carlo-vía-cadenas-de-markov.html"><i class="fa fa-check"></i><b>C.2</b> Métodos de Monte Carlo vía cadenas de Markov</a>
+<ul>
+<li class="chapter" data-level="C.2.1" data-path="métodos-de-monte-carlo-vía-cadenas-de-markov.html"><a href="métodos-de-monte-carlo-vía-cadenas-de-markov.html#el-muestreador-de-gibbs"><i class="fa fa-check"></i><b>C.2.1</b> El muestreador de Gibbs</a></li>
+<li class="chapter" data-level="C.2.2" data-path="métodos-de-monte-carlo-vía-cadenas-de-markov.html"><a href="métodos-de-monte-carlo-vía-cadenas-de-markov.html#el-algoritmo-de-metrópolis-hastings"><i class="fa fa-check"></i><b>C.2.2</b> El algoritmo de Metrópolis-Hastings</a></li>
+<li class="chapter" data-level="C.2.3" data-path="métodos-de-monte-carlo-vía-cadenas-de-markov.html"><a href="métodos-de-monte-carlo-vía-cadenas-de-markov.html#buenas-prácticas-en-la-aplicación-de-métodos-mcmc"><i class="fa fa-check"></i><b>C.2.3</b> Buenas prácticas en la aplicación de métodos MCMC</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="referencias.html"><a href="referencias.html"><i class="fa fa-check"></i>Referencias</a></li>
+<li class="divider"></li>
+<li><a Modelos Bayesianos con R y STAN</a></li>
+
+</ul>
+
+      </nav>
+    </div>
+
+    <div class="book-body">
+      <div class="body-inner">
+        <div class="book-header" role="navigation">
+          <h1>
+            <i class="fa fa-circle-o-notch fa-spin"></i><a href="./">Modelos Bayesianos con R y STAN</a>
+          </h1>
+        </div>
+
+        <div class="page-wrapper" tabindex="-1" role="main">
+          <div class="page-inner">
+
+            <section class="normal" id="section-">
+<div id="modelo-normal-con-media-desconocida-y-varianza-conocida" class="section level2" number="3.6">
+<h2><span class="header-section-number">3.6</span> Modelo Normal con media desconocida y varianza conocida</h2>
+<p>En esta sección se consideran datos que pueden ser descritos adecuadamente por medio de la distribución normal la cual, a diferencia de las anteriores distribuciones consideradas, tiene dos parámetros. En esta parte, se asume que la varianza teórica es conocida y el objetivo es estimar la media teórica. En el siguiente capítulo se considerará el caso general cuando ambos parámetros son desconocidos.</p>
+<p>Suponga que <span class="math inline">\(Y_1,\cdots,Y_n\)</span> son variables independientes e idénticamente distribuidos con distribución <span class="math inline">\(Normal(\theta,\sigma^2)\)</span> con <span class="math inline">\(\theta\)</span> desconocido pero <span class="math inline">\(\sigma^2\)</span> conocido. De esta forma, la función de verosimilitud de los datos está dada por</p>
+<p><span class="math display">\[\begin{align*}
+p(\mathbf{Y} \mid \theta)&amp;=\prod_{i=1}^n\frac{1}{\sqrt{2\pi\sigma^2}}\exp\left\{-\frac{1}{2\sigma^2}(y_i-\theta)^2\right\}I_\mathbb{R}(y)\\
+&amp;=(2\pi\sigma^2)^{-n/2}\exp\left\{-\frac{1}{2\sigma^2}\sum_{i=1}^n(y_i-\theta)^2\right\}
+\end{align*}\]</span></p>
+<p>Como el parámetro <span class="math inline">\(\theta\)</span> puede tomar cualquier valor en los reales, es posible asignarle una distribución previa <span class="math inline">\(\theta \sim Normal(\mu,\tau^2)\)</span>. Bajo este marco de referencia se tienen los siguientes resultados</p>
+
+<div class="proposition">
+<p><span id="prp:unnamed-chunk-67" class="proposition"><strong>Resultado 3.15  </strong></span>La distribución posterior del parámetro de interés <span class="math inline">\(\theta\)</span> sigue una distribución</p>
+<p><span class="math display">\[\begin{equation*}
+\theta|\mathbf{Y} \sim Normal(\mu_n,\tau^2_n).
+\end{equation*}\]</span></p>
+<p>En donde</p>
+<span class="math display" id="eq:TauSigman">\[\begin{equation}
+\tag{3.16}
+\mu_n=\frac{\frac{n}{\sigma^2}\bar{Y}+\frac{1}{\tau^2}\mu}{\frac{n}{\sigma^2}+\frac{1}{\tau^2}}
+\ \ \ \ \ \ \ \text{y} \ \ \ \ \ \ \
+\tau_n^2=\left(\frac{n}{\sigma^2}+\frac{1}{\tau^2}\right)^{-1}
+\end{equation}\]</span>
+</div>
+<p><br></p>
+
+<div class="proof">
+<p> <span class="proof"><em>Prueba. </em></span> <span class="math display">\[\begin{align*}
+p(\theta \mid \mathbf{Y})&amp;\propto p(\mathbf{Y} \mid \theta)p(\theta \mid \mu,\tau^2)\\
+&amp;\propto \exp\left\{-\frac{1}{2\sigma^2}\sum_{i=1}^n(y_i-\theta)^2-\frac{1}{2\tau^2}(\theta-\mu)^2\right\}\\
+&amp;= \exp\left\{-\frac{1}{2}\left[\frac{\sum_{i=1}^n(y_i-\theta)^2}{\sigma^2}+\frac{(\theta-\mu)^2}{\tau^2}\right]\right\}\\
+&amp;\propto \exp\left\{-\frac{1}{2}\left[\frac{n\theta^2}{\sigma^2}-\frac{2\theta\sum_{i=1}^ny_i}{\sigma^2}+\frac{\theta^2}{\tau^2}-\frac{2\theta\mu}{\tau^2}\right]\right\}\\
+&amp;= \exp\left\{-\frac{\theta^2}{2}\left[\frac{n}{\sigma^2}+\frac{1}{\tau^2}\right]+
+\theta\left[\frac{n\bar{y}}{\sigma^2}+\frac{\mu}{\tau^2}\right]\right\}\\
+&amp;= \exp\left\{-\frac{\theta^2}{2\tau^2_n}+\frac{\theta\mu_n}{\tau_n^2}\right\}\\
+&amp;= \exp\left\{-\frac{1}{2\tau^2_n}(\theta^2-2\theta\mu_n)\right\}\\
+&amp;\propto \exp\left\{-\frac{1}{2\tau^2_n}(\theta^2-2\theta\mu_n+\mu_n^2)\right\}\\
+&amp;= \exp\left\{-\frac{1}{2\tau^2_n}(\theta-\mu_n)^2\right\}
+\end{align*}\]</span></p>
+Por lo tanto, se encuentra una expresión idéntica a la función de distribución de una variable aleatoria con distribución <span class="math inline">\(Normal(\mu_n,\tau_n^2)\)</span>.
+</div>
+<p><br></p>
+<p>Observando la forma de <span class="math inline">\(\mu_n\)</span>, que corresponde a la estimación bayesiana del parámetro <span class="math inline">\(\theta\)</span>, podemos concluir que este es una combinación convexa entre el estimador clásico de máxima verosimlitud <span class="math inline">\(\hat{\theta}_C=\bar{y}\)</span> y el estimador previo <span class="math inline">\(\hat{\theta}_P=\mu\)</span>, puesto que:</p>
+<p><span class="math display">\[\begin{align*}
+\hat{\theta}_B=\mu_n&amp;=\frac{\frac{n}{\sigma^2}\bar{Y}+\frac{1}{\tau^2}\mu}{\frac{n}{\sigma^2}+\frac{1}{\tau^2}}\\
+&amp;=\frac{\frac{n}{\sigma^2}}{\frac{n}{\sigma^2}+\frac{1}{\tau^2}}\bar{Y}+\frac{\frac{1}{\tau^2}}{\frac{n}{\sigma^2}+\frac{1}{\tau^2}}\mu\\
+&amp;=\frac{\frac{n}{\sigma^2}}{\frac{n}{\sigma^2}+\frac{1}{\tau^2}}\hat{\theta}_C+\frac{\frac{1}{\tau^2}}{\frac{n}{\sigma^2}+\frac{1}{\tau^2}}\hat{\theta}_P
+\end{align*}\]</span></p>
+<p>De donde se puede concluir que, para una distribución previa fija, entre mayor sea el tamaño muestral <span class="math inline">\(n\)</span>, más peso tendrá el estimador clásico <span class="math inline">\(\hat{\theta}_C\)</span> en la estimación bayesiana. De la misma forma, para un conjunto fijo de datos <span class="math inline">\(\mathbf{Y}\)</span>, entre menor sea la varianza previa, <span class="math inline">\(\tau^2\)</span>, más certeza tenemos sobre la información previa y por consiguiente la estimación bayesiana <span class="math inline">\(\mu_n\)</span> se acercará más a la estimación previa. En la Figura <a href="#eq:ComparaNormal">(<strong>??</strong>)</a> se observa la función de densidad previa, función de verosimilitud y función de densidad posterior con <span class="math inline">\(\mu=5\)</span>, <span class="math inline">\(\tau^2=0.01\)</span>, <span class="math inline">\(\bar{y}=2\)</span>, <span class="math inline">\(\sigma^2=1\)</span> y <span class="math inline">\(n=5,10,50,200\)</span>. Podemos observar que a medida que el tamaño muestral <span class="math inline">\(n\)</span> aumente, la función de verosimilitud (vista como la función del parámetro <span class="math inline">\(\theta\)</span>) se vuelve más concentrada alrededor del valor de <span class="math inline">\(\bar{y}\)</span>, y a consecuencia, la función de densidad posterior de <span class="math inline">\(\theta\)</span> se sitúa más cercana a la función de verosimilitud, y la estimación bayesiana se acerca más a la estimación clásica <span class="math inline">\(\bar{y}\)</span>.</p>
+<div class="figure" style="text-align: center"><span id="fig:ComparaNormal"></span>
+<img src="3Uniparametricos_files/figure-html/ComparaNormal-1.svg" alt="Distribución previa, función de verosimilitud y distribución posterior del parámetro $\theta$ con $\mu=5$, $\tau^2=0.01$, $\bar{y}=2$, $\sigma^2=1$ y $n=5,10,50,200$." width="576" />
+<p class="caption">
+Figura 3.18: Distribución previa, función de verosimilitud y distribución posterior del parámetro <span class="math inline">\(\theta\)</span> con <span class="math inline">\(\mu=5\)</span>, <span class="math inline">\(\tau^2=0.01\)</span>, <span class="math inline">\(\bar{y}=2\)</span>, <span class="math inline">\(\sigma^2=1\)</span> y <span class="math inline">\(n=5,10,50,200\)</span>.
+</p>
+</div>
+<div id="distribución-previa-no-informativa-para-theta" class="section level3" number="3.6.1">
+<h3><span class="header-section-number">3.6.1</span> Distribución previa no informativa para <span class="math inline">\(\theta\)</span></h3>
+<p>Por otro lado, nótese que en el caso en donde se desconozca el comportamiento estructural de <span class="math inline">\(\theta\)</span>, es posible definir su distribución previa tan plana y vaga como sea posible. Para esto, basta con hacer tender al parámetro de precisión de la distribución previa hacia infinito. Es decir <span class="math inline">\(\tau^2 \longrightarrow \infty\)</span>, en este caso, la distribución previa de <span class="math inline">\(\theta\)</span> corresponde a una distribución impropia, <span class="math inline">\(p(\theta)\propto cte\)</span>. Se puede ver que bajo esta distribución previa, la distribución posterior tendería a una <span class="math inline">\(Normal(\bar{y},\sigma^2/n)\)</span>.</p>
+<p>La anterior idea intuitiva de usar la distribución previa <span class="math inline">\(p(\theta)\propto cte\)</span> para representar la falta de la información <em>a priori</em> corresponde a la distribución previa no informativa de Jeffreys, puesto que la información de Fisher del parámetro <span class="math inline">\(\theta\)</span> en una variable con distribución normal está dada por</p>
+<p><span class="math display">\[\begin{equation*}
+I(\theta)=1/\sigma^2
+\end{equation*}\]</span></p>
+<p>De donde se puede concluir que la previa no informativa de Jeffreys está dada por
+<span class="math display">\[\begin{equation*}
+p(\theta)\propto 1/\sigma\propto cte
+\end{equation*}\]</span></p>
+<p>Finalmente, es posible comparar los resultados inferenciales obtenidos con la previa no informativa de Jeffreys y el enfoque inferencial clásico en términos de la estimación puntual y el intervalo de credibilidad y de confianza. En cuanto a la estimación puntual, es claro que ambos enfoques conducen al mismo estimador <span class="math inline">\(\hat{\theta}=\bar{Y}\)</span>. Con respecto al intervalo para el parámetro <span class="math inline">\(\theta\)</span>, al usar el enfoque bayesiano con la previa no informativa de Jeffreys, el intervalo de credibilidad de <span class="math inline">\((1-\alpha)\times 100\%\)</span> está dado por los percentiles <span class="math inline">\(\alpha/2\)</span> y <span class="math inline">\(1-\alpha/2\)</span> de la distribución posterior de <span class="math inline">\(\theta\)</span>: <span class="math inline">\(Normal(\bar{y},\sigma^2/n)\)</span>. Al denotar estos percentiles como <span class="math inline">\(a\)</span> y <span class="math inline">\(b\)</span>, respectivamente.
+Por definición tenemos que, si <span class="math inline">\(X\sim N(\bar{y},\sigma^2/n)\)</span></p>
+<p><span class="math display">\[\begin{align*}
+\alpha/2&amp;=Pr(X&lt;a)\\
+&amp;=Pr(\frac{X-\bar{y}}{\sigma/\sqrt{n}}&lt;\frac{a-\bar{y}}{\sigma/\sqrt{n}})\\
+&amp;=Pr(Z &lt; \frac{a-\bar{y}}{\sigma/\sqrt{n}})
+\end{align*}\]</span></p>
+<p>Estos es, <span class="math inline">\(\frac{a-\bar{y}}{\sigma/\sqrt{n}}\)</span> es el percentil <span class="math inline">\(\alpha/2\)</span> de la distribución normal estándar <span class="math inline">\(z_{\alpha/2}\)</span> o equivalentemente <span class="math inline">\(-z_{1-\alpha/2}\)</span>. De esta forma, tenemos que <span class="math inline">\(a=\bar{y}-z_{1-\alpha/2}\ \sigma/\sqrt{n}\)</span>. Análogamente tenemos que <span class="math inline">\(b=\bar{y}+z_{1-\alpha/2}\ \sigma/\sqrt{n}\)</span>, y podemos concluir que un intervalo de credibilidad de <span class="math inline">\((1-\alpha)\times 100\%\)</span> está dada por <span class="math inline">\(\bar{y}\pm z_{1-\alpha/2}\ \sigma/\sqrt{n}\)</span>, el cual coincide con el intervalo de confianza para <span class="math inline">\(\theta\)</span> usando el enfoque de la inferencia clásica <span class="citation">(<a href="#ref-Zhang" role="doc-biblioref">Zhang y Gutiérrez 2010</a>)</span>.</p>
+</div>
+<div id="diferentes-formas-de-hallar-la-distribución-previa-para-theta" class="section level3" number="3.6.2">
+<h3><span class="header-section-number">3.6.2</span> Diferentes formas de hallar la distribución previa para <span class="math inline">\(\theta\)</span></h3>
+<p>En primer lugar, considere el caso para el cual la información previa se encuentra en un conjunto de datos <span class="math inline">\(x_1,\cdots,x_{m}\)</span> que corresponden a mediciones de la variable de estudio en otro punto del tiempo, en otro punto geográfico, o inclusive en otra población de estudio. En este caso, podemos tomar la media de la distribución previa <span class="math inline">\(\mu\)</span> como <span class="math inline">\(\bar{x}\)</span> y la varianza de la distribución previa <span class="math inline">\(\tau^2\)</span> como <span class="math inline">\(S^2_x\)</span>.</p>
+<p>En el caso en el que no se disponga de datos como información previa, sino que esta esté contenida en alguna estimación que se haya realizado anteriormente sobre <span class="math inline">\(\theta\)</span>. Por ejemplo, si se dispone de algún modelamiento estadístico que se haya hecho previamente sobre <span class="math inline">\(\theta\)</span>, es posible fácilmente obtener el valor estimado de <span class="math inline">\(\theta\)</span> y el error estándar de esta estimación y naturalmente estos dos valores serían los parámetros de la distribución previa: <span class="math inline">\(\mu\)</span> y <span class="math inline">\(\tau^2\)</span>.</p>
+<p>Finalmente, si la estimación previa de <span class="math inline">\(\theta\)</span> se presenta en forma de un intervalo; por ejemplo, si se sabe que un intervalo de confianza para <span class="math inline">\(\theta\)</span> es <span class="math inline">\((15.3,\ 24.7)\)</span>, entonces es posible definir a <span class="math inline">\(\mu\)</span> como el punto medio de este intervalo, es decir, <span class="math inline">\(\mu=20\)</span> y para escoger el valor de <span class="math inline">\(\tau^2\)</span> se tiene en cuenta que en muchas ramas de la estadística, un intervalo de confianza se puede aproximar por <span class="math inline">\(\hat{\theta}\pm 2\sqrt{var(\hat{\theta})}\)</span>. De esta forma, se puede definir <span class="math inline">\(\tau^2=\left(\frac{24.7-20}{2}\right)^2\approx5.5\)</span></p>
+</div>
+<div id="distribuciones-predictivas" class="section level3" number="3.6.3">
+<h3><span class="header-section-number">3.6.3</span> Distribuciones predictivas</h3>
+<p>Los siguientes resultados presentan las distribuciones predictivas previa y predictiva posterior para una observación o una nueva muestra.</p>
+
+<div class="proposition">
+<p><span id="prp:unnamed-chunk-69" class="proposition"><strong>Resultado 3.16  </strong></span>La distribución predictiva previa para una observación <span class="math inline">\(y\)</span> estáa dada por</p>
+<span class="math display">\[\begin{equation*}
+y \sim Normal (\mu, \tau^2+\sigma^2)
+\end{equation*}\]</span>
+</div>
+<p><br></p>
+
+<div class="proof">
+<p> <span class="proof"><em>Prueba. </em></span> De la definición de función de distribución predictiva se tiene que</p>
+<p><span class="math display">\[\begin{align*}
+p(Y)&amp;=\int p(Y \mid \theta)p(\theta \mid \mu,\tau^2)\ d\theta\\
+&amp;=\int_{-\infty}^{\infty} \frac{1}{\sqrt{2\pi\sigma^2}}\exp\left\{-\frac{1}{2\sigma^2}(y-\theta)^2\right\}
+\frac{1}{\sqrt{2\pi\tau^2}}\exp\left\{-\frac{1}{2\tau^2}(\theta-\mu)^2\right\}d\theta
+\end{align*}\]</span></p>
+<p><span class="citation"><a href="#ref-Berger" role="doc-biblioref">Berger</a> (<a href="#ref-Berger" role="doc-biblioref">1985</a>)</span> desarrolló las siguientes igualdades</p>
+<p><span class="math display">\[\begin{align*}
+&amp;\ \ \ \ \frac{1}{2}\left[\frac{(\theta-\mu)^2}{\tau^2}+\frac{(y-\theta)^2}{\sigma^2}\right]\\
+&amp;=\frac{1}{2}\left[\left(\frac{1}{\tau^2}+\frac{1}{\sigma^2}\right)\theta^2-2\left(\frac{\mu}{\tau^2}+\frac{y}{\sigma^2}\right)\theta+\left(\frac{\mu^2}{\tau^2}+\frac{y^2}{\sigma^2}\right)\right]\\
+&amp;=\frac{1}{2\tau_1^2}\left[\theta^2-2\tau_1^2\left(\frac{\mu}{\tau^2}+\frac{y}{\sigma^2}\right)\theta+\tau_1^4\left(\frac{\mu}{\tau^2}+\frac{y}{\sigma^2}\right)^2\right]+\frac{1}{2}\left(\frac{\mu^2}{\tau^2}+\frac{y^2}{\sigma^2}\right)-\frac{\tau_1^2}{2}\left(\frac{\mu}{\tau^2}+\frac{y}{\sigma^2}\right)^2\\
+&amp;=\frac{1}{2\tau_1^2}\left[\theta-\tau_1^2\left(\frac{\mu}{\tau^2}+\frac{y}{\sigma^2}\right)\right]^2+\frac{1}{2}\left[\left(\frac{1}{\sigma^2}-\frac{\tau_1^2}{\sigma^4}\right)y^2-2\frac{\mu\tau_1^2}{\tau^2\sigma^2}y+\left(\frac{\mu^2}{\tau^2}-\frac{\mu^2\tau_1^2}{\tau^4}\right)\right]\\
+&amp;=\frac{1}{2\tau_1^2}\left[\theta-\mu_1\right]^2+\frac{1}{2}\left[\frac{1}{\sigma^2+\tau^2}y^2-2\frac{\mu}{\sigma^2+\tau^2}y+\frac{\mu^2}{\sigma^2+\tau^2}\right]\\
+&amp;=\frac{1}{2\tau_1^2}\left[\theta-\mu_1\right]^2+\frac{1}{2(\sigma^2+\tau^2)}(y-\mu)^2
+\end{align*}\]</span></p>
+<p>Entonces</p>
+<span class="math display">\[\begin{align*}
+p(Y)&amp;=\int_{-\infty}^{\infty} \frac{1}{2\pi\sigma\tau}\exp\left\{-\frac{1}{2\tau_1^2}(\theta-\mu_1)^2\right\}
+\exp\left\{-\frac{1}{2(\tau^2+\sigma^2)}(y-\mu)^2\right\}d\theta\\
+&amp;= \frac{1}{\sqrt{2\pi\frac{\sigma^2\tau^2}{\tau_1^2}}}\exp\left\{-\frac{1}{2(\tau^2+\sigma^2)}(y-\mu)^2\right\}
+\int_{-\infty}^{\infty} \frac{1}{\sqrt{2\pi\tau_1^2}}\exp\left\{-\frac{1}{2\tau_1^2}(\theta-\mu_1)^2\right\}d\theta\\
+&amp;= \frac{1}{\sqrt{2\pi(\tau^2+\sigma^2)}}\exp\left\{-\frac{1}{2(\tau^2+\sigma^2)}(y-\mu)^2\right\}
+\end{align*}\]</span>
+</div>
+<p><br></p>
+<p>Una vez recolectados los datos <span class="math inline">\(\mathbf{Y}=\{Y_1,\cdots,Y_n\}\)</span>, se obtiene la distribución predictiva posterior dada en el siguiente resultado. La demostración es similar al del resultado anterior.</p>
+
+<div class="proposition">
+<span id="prp:unnamed-chunk-71" class="proposition"><strong>Resultado 3.17  </strong></span>La distribución predictiva posterior para una nueva observación <span class="math inline">\(\tilde{y}\)</span> es
+<span class="math display">\[\begin{equation*}
+\tilde{y} \mid \mathbf{Y} \sim Normal (\mu_n, \tau_n^2+\sigma^2)
+\end{equation*}\]</span>
+</div>
+<p><br></p>
+<p>En algunas situaciones, se quiere conocer el comportamiento probabilístico de más de una nueva observación, digamos <span class="math inline">\(Y_1^*,\cdots,Y_{n^*}^*\)</span>, en este caso, lo ideal sería obtener la distribución conjunta predictiva posterior de la nueva muestra, <span class="math inline">\(p(Y_1^*,\cdots,Y_{n^*}^*|\mathbf{Y})\)</span>. Sin embargo, esta distribución no es fácil de hallar, por lo que el énfasis se pondrá en la distribución predictiva posterior de la media de esta nueva muestra <span class="math inline">\(\bar{Y}^*\)</span>, la cual está dada en el siguiente resultado.</p>
+
+<div class="proposition">
+<p><span id="prp:PredNorm" class="proposition"><strong>Resultado 3.18  </strong></span>La distribución predictiva posterior para la media muestral <span class="math inline">\(\bar{Y}^*\)</span> de una nueva muestra es</p>
+<p><span class="math display">\[\begin{equation*}
+\bar{Y}^*|\mathbf{Y}\ \sim N\left(\mu_n, \frac{\sigma^2}{n^*}+\tau^2_n\right)
+\end{equation*}\]</span></p>
+donde <span class="math inline">\(\mu_n\)</span> y <span class="math inline">\(\tau^2_n\)</span> fueron definidos en <a href="modelo-normal-con-media-desconocida-y-varianza-conocida.html#eq:TauSigman">(3.16)</a>.
+</div>
+<p><br></p>
+
+<div class="proof">
+ <span class="proof"><em>Prueba. </em></span> <span class="math display">\[\begin{align*}
+p(\bar{Y}^*|\mathbf{Y})&amp;=\int_{-\infty}^\infty p(\bar{Y}^*|\theta)p(\theta|\mathbf{Y})\ d\theta\\
+&amp;=\int_{-\infty}^\infty (2\pi\frac{\sigma^2}{n^*})^{-1/2}\exp\left\{-\frac{n^*}{2\sigma^2}(\bar{y}^*-\theta)^2\right\}
+(2\pi\tau_n^2)^{-1/2}\exp\left\{-\frac{1}{2\tau_n^2}(\theta-\mu_n)^2\right\}\ d\theta\\
+&amp;=\int_{-\infty}^\infty (2\pi)^{-1}(\frac{\sigma^2}{n^*}\tau_n^2)^{-1/2}\exp\left\{-\frac{1}{2}\left[\frac{(\bar{y}^*-\theta)^2}{\sigma^2/n^*}+\frac{(\theta-\mu_n)^2}{\tau^2_n}\right]\right\}\ d\theta\\
+&amp;=\underbrace{\int_{-\infty}^\infty(2\pi\frac{1}{n^*/\sigma^2+1/\tau^2_n})^{-1/2}\exp\left\{-\frac{1}{2}\left(\frac{n^*}{\sigma^2}+\frac{1}{\tau^2_n}\right)\left(\theta-\frac{\bar{y}^*/(\sigma^2/n^*)+\mu_n/\tau^2_n}{n^*/\sigma^2+1/\tau^2_n}\right)^2\right\}\ d\theta}_{\text{igual a 1}}\\
+&amp;\ \ \ \ \ \ \ (2\pi)^{-1/2}(\frac{\sigma^2}{n^*}\tau_n^2)^{-1/2}(\frac{n^*}{\sigma^2}+\frac{1}{\tau^2_n})^{-1/2}\exp\left\{-\frac{1}{2(\sigma^2/n^*+\tau^2_n)}(\bar{y}^*-\mu_n)^2\right\}\\
+&amp;=(2\pi)^{-1/2}(\frac{\sigma^2}{n^*}\tau_n^2)^{-1/2}(\frac{n^*}{\sigma^2}+\frac{1}{\tau^2_n})^{-1/2}\exp\left\{-\frac{1}{2(\sigma^2/n^*+\tau^2_n)}(\bar{y}^*-\mu_n)^2\right\}\\
+&amp;=(2\pi)^{-1/2}(\frac{\sigma^2}{n^*}+\tau^2_n)^{-1/2}\exp\left\{-\frac{1}{2(\sigma^2/n^*+\tau^2_n)}(\bar{y}^*-\mu_n)^2\right\}
+\end{align*}\]</span>
+</div>
+<p><br></p>
+<p>Del anterior resultado, podemos ver que la esperanza de la distribución de <span class="math inline">\(\bar{Y}^*|\mathbf{Y}\)</span> es igual a la esperanza de <span class="math inline">\(\theta|\mathbf{Y}\)</span>. A diferencia de la varianza de <span class="math inline">\(\theta|\mathbf{Y}\)</span>, la varianza de <span class="math inline">\(\bar{Y}^*|\mathbf{Y}\)</span> tiene un componente adicional dado por <span class="math inline">\(\sigma^2/n^*\)</span>. De esta forma, existirán tres fuentes de incertidumbre al momento de pronosticar <span class="math inline">\(\bar{Y}^*\)</span>: la incertidumbre en la información previa, la incertidumbre en la muestra observada y la incertidumbre en la nueva muestra.</p>
+
+<div class="example">
+<p><span id="exm:unnamed-chunk-73" class="example"><strong>Ejemplo 3.10  </strong></span>En <span class="citation"><a href="#ref-Zhang" role="doc-biblioref">Zhang y Gutiérrez</a> (<a href="#ref-Zhang" role="doc-biblioref">2010</a>Ej. 2.3.6)</span>, se reportan datos sobre el grosor de láminas de vidrio templado de 3 cm. para controlar la calidad de una línea de producción. Estos datos son 3.56, 3.36, 2.99, 2.71, 3.31, 3.68, 2.78, 2.95, 2.82, 3.45, 3.42 y 3.15, con promedio de 3.18 cm. Suponga que, por especificaciones técnicas, se conoce que la varianza del grosor es de <span class="math inline">\(0.1 cm^2\)</span>. Por otro lado, como información previa, se conoce que en la última inspección de calidad el grosor promedio fue de 2.8 cm. con una desviación estándar de 0.23 cm.</p>
+<p>De la anterior información, se puede decir que el parámetro de interés <span class="math inline">\(\theta\)</span> sería el grosor promedio de las láminas. También podemos afirmar que <span class="math inline">\(\sigma^2=0.1cm^2\)</span>, <span class="math inline">\(\bar{y}=3.18cm\)</span>, <span class="math inline">\(n=12\)</span>, y los parámetros de la distribución previa estarían dados por <span class="math inline">\(\mu=2.8cm\)</span> y <span class="math inline">\(\tau=0.45cm\)</span>. De esta forma, podemos calcular los parámetros de la distribución posterior</p>
+<p><span class="math display">\[\begin{align*}
+\mu_n
+&amp;=\dfrac{\frac{12}{0.1}3.18+\frac{1}{0.23^2}2.8}{\frac{12}{0.1}+\frac{1}{0.23^2}}=3.13cm\\
+\tau^2_n
+&amp;=\left(\frac{12}{0.1}+\frac{1}{0.23^2}\right)^{-1}=0.007cm^2
+\end{align*}\]</span></p>
+<p>Entonces, la distribución posterior del grosor promedio será <span class="math inline">\(N(\mu_n=3.13cm,\ \tau^2_n=0.007cm^2)\)</span>. Es posible concluir que la estimación bayesiana del parámetro de interés corresponde a <span class="math inline">\(3.13cm\)</span>, mientras que para calcular un intervalo de credibilidad de 95% para el parámetro de interés, se debe calcular los percentiles 2.5% y 97.5% de la distribución posterior de <span class="math inline">\(\theta\)</span>, dados por <span class="math inline">\((2.966cm,\ 3.293cm)\)</span>.</p>
+A continuación se ilustra el uso de <code>STAN</code> para obtener la estimación bayesiana del parámetro <span class="math inline">\(\theta\)</span>.
+</div>
+<div class="sourceCode" id="cb61"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb61-1"><a href="modelo-normal-con-media-desconocida-y-varianza-conocida.html#cb61-1" aria-hidden="true" tabindex="-1"></a>NormalMedia <span class="ot">&lt;-</span> <span class="st">&#39;</span></span>
+<span id="cb61-2"><a href="modelo-normal-con-media-desconocida-y-varianza-conocida.html#cb61-2" aria-hidden="true" tabindex="-1"></a><span class="st">data {</span></span>
+<span id="cb61-3"><a href="modelo-normal-con-media-desconocida-y-varianza-conocida.html#cb61-3" aria-hidden="true" tabindex="-1"></a><span class="st">  int&lt;lower=0&gt; n;</span></span>
+<span id="cb61-4"><a href="modelo-normal-con-media-desconocida-y-varianza-conocida.html#cb61-4" aria-hidden="true" tabindex="-1"></a><span class="st">  real y[n];</span></span>
+<span id="cb61-5"><a href="modelo-normal-con-media-desconocida-y-varianza-conocida.html#cb61-5" aria-hidden="true" tabindex="-1"></a><span class="st">}</span></span>
+<span id="cb61-6"><a href="modelo-normal-con-media-desconocida-y-varianza-conocida.html#cb61-6" aria-hidden="true" tabindex="-1"></a><span class="st">parameters {</span></span>
+<span id="cb61-7"><a href="modelo-normal-con-media-desconocida-y-varianza-conocida.html#cb61-7" aria-hidden="true" tabindex="-1"></a><span class="st">  real theta;</span></span>
+<span id="cb61-8"><a href="modelo-normal-con-media-desconocida-y-varianza-conocida.html#cb61-8" aria-hidden="true" tabindex="-1"></a><span class="st">}</span></span>
+<span id="cb61-9"><a href="modelo-normal-con-media-desconocida-y-varianza-conocida.html#cb61-9" aria-hidden="true" tabindex="-1"></a><span class="st">model {</span></span>
+<span id="cb61-10"><a href="modelo-normal-con-media-desconocida-y-varianza-conocida.html#cb61-10" aria-hidden="true" tabindex="-1"></a><span class="st">  y ~ normal(theta, 0.1);</span></span>
+<span id="cb61-11"><a href="modelo-normal-con-media-desconocida-y-varianza-conocida.html#cb61-11" aria-hidden="true" tabindex="-1"></a><span class="st">  theta ~ normal(2.8, 0.23);</span></span>
+<span id="cb61-12"><a href="modelo-normal-con-media-desconocida-y-varianza-conocida.html#cb61-12" aria-hidden="true" tabindex="-1"></a><span class="st">}</span></span>
+<span id="cb61-13"><a href="modelo-normal-con-media-desconocida-y-varianza-conocida.html#cb61-13" aria-hidden="true" tabindex="-1"></a><span class="st">&#39;</span></span>
+<span id="cb61-14"><a href="modelo-normal-con-media-desconocida-y-varianza-conocida.html#cb61-14" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb61-15"><a href="modelo-normal-con-media-desconocida-y-varianza-conocida.html#cb61-15" aria-hidden="true" tabindex="-1"></a>n <span class="ot">&lt;-</span> <span class="dv">12</span></span>
+<span id="cb61-16"><a href="modelo-normal-con-media-desconocida-y-varianza-conocida.html#cb61-16" aria-hidden="true" tabindex="-1"></a>y <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="fl">3.56</span>, <span class="fl">3.36</span>, <span class="fl">2.99</span>, <span class="fl">2.71</span>, <span class="fl">3.31</span>, <span class="fl">3.68</span>, </span>
+<span id="cb61-17"><a href="modelo-normal-con-media-desconocida-y-varianza-conocida.html#cb61-17" aria-hidden="true" tabindex="-1"></a>       <span class="fl">2.78</span>, <span class="fl">2.95</span>, <span class="fl">2.82</span>, <span class="fl">3.45</span>, <span class="fl">3.42</span>, <span class="fl">3.15</span>)</span>
+<span id="cb61-18"><a href="modelo-normal-con-media-desconocida-y-varianza-conocida.html#cb61-18" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb61-19"><a href="modelo-normal-con-media-desconocida-y-varianza-conocida.html#cb61-19" aria-hidden="true" tabindex="-1"></a>sample_data <span class="ot">&lt;-</span> <span class="fu">list</span>(<span class="at">y =</span> y, <span class="at">n =</span> n)</span>
+<span id="cb61-20"><a href="modelo-normal-con-media-desconocida-y-varianza-conocida.html#cb61-20" aria-hidden="true" tabindex="-1"></a>NormalMfit <span class="ot">&lt;-</span> <span class="fu">stan</span>(<span class="at">model_code =</span> NormalMedia,</span>
+<span id="cb61-21"><a href="modelo-normal-con-media-desconocida-y-varianza-conocida.html#cb61-21" aria-hidden="true" tabindex="-1"></a>                   <span class="at">data =</span> sample_data, <span class="at">verbose =</span> <span class="cn">FALSE</span>)</span></code></pre></div>
+<p>Después de la convergencia del proceso inferencial, la estimación bayesiana de <span class="math inline">\(\theta\)</span> es 3.1745 cm, mientras que un intervalo de credibilidad del 95% es <span class="math inline">\((3.117 cm,\ 3.232 cm)\)</span>, resultados muy similares a lo obtenido calculando directamente <span class="math inline">\(\mu_n\)</span> y <span class="math inline">\(\tau^2_n\)</span>.</p>
+<div class="sourceCode" id="cb62"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb62-1"><a href="modelo-normal-con-media-desconocida-y-varianza-conocida.html#cb62-1" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(NormalMfit, <span class="at">digits =</span> <span class="dv">4</span>, </span>
+<span id="cb62-2"><a href="modelo-normal-con-media-desconocida-y-varianza-conocida.html#cb62-2" aria-hidden="true" tabindex="-1"></a>      <span class="at">pars =</span> <span class="st">&quot;theta&quot;</span>, <span class="at">probs =</span> <span class="fu">c</span>(<span class="fl">0.025</span>, <span class="fl">0.975</span>))</span></code></pre></div>
+<pre><code>## Inference for Stan model: 1a46eb2f3eff113b3e52c62bed60aed2.
+## 4 chains, each with iter=2000; warmup=1000; thin=1; 
+## post-warmup draws per chain=1000, total post-warmup draws=4000.
+## 
+##         mean se_mean     sd   2.5%  97.5% n_eff   Rhat
+## theta 3.1765   8e-04 0.0289 3.1195 3.2323  1426 1.0016
+## 
+## Samples were drawn using NUTS(diag_e) at Sun Jun  6 23:46:02 2021.
+## For each parameter, n_eff is a crude measure of effective sample size,
+## and Rhat is the potential scale reduction factor on split chains (at 
+## convergence, Rhat=1).</code></pre>
+<p>Las figuras <a href="modelo-normal-con-media-desconocida-y-varianza-conocida.html#fig:posNormalMStan">3.19</a> muestra la distribución posterior para este ejemplo, junto con la estimación puntual, correspondiente a la media.</p>
+<div class="sourceCode" id="cb64"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb64-1"><a href="modelo-normal-con-media-desconocida-y-varianza-conocida.html#cb64-1" aria-hidden="true" tabindex="-1"></a>bayesplot<span class="sc">::</span><span class="fu">mcmc_areas</span>(NormalMfit, <span class="at">pars =</span> <span class="st">&quot;theta&quot;</span>, </span>
+<span id="cb64-2"><a href="modelo-normal-con-media-desconocida-y-varianza-conocida.html#cb64-2" aria-hidden="true" tabindex="-1"></a>                      <span class="at">prob =</span> <span class="fl">0.95</span>)</span></code></pre></div>
+<div class="figure" style="text-align: center"><span id="fig:posNormalMStan"></span>
+<img src="3Uniparametricos_files/figure-html/posNormalMStan-1.svg" alt="Distribución posterior." width="576" />
+<p class="caption">
+Figura 3.19: Distribución posterior.
+</p>
+</div>
+<p>En el siguiente ejemplo se ilustra el uso de la distribución predictiva posterior.</p>
+
+<div class="example">
+<p><span id="exm:unnamed-chunk-76" class="example"><strong>Ejemplo 3.11  </strong></span>Suponga que la fábrica debe hacer un despacho de 8 láminas, y se quiere conocer sobre el grosor promedio del despacho <span class="math inline">\(\bar{y}^*\)</span>. Usando el resultado <a href="modelo-normal-con-media-desconocida-y-varianza-conocida.html#prp:PredNorm">3.18</a>, se tiene que la disribución de <span class="math inline">\(\bar{Y}^*\)</span> condicionado en los 12 datos observados está dada por</p>
+<p><span class="math display">\[\begin{equation*}
+\bar{Y}^*|\mathbf{Y}\ \sim N\left(\mu_n,\ \frac{\sigma^2}{n^*}+\tau^2_n\right) = N\left(3.13cm,\ \frac{0.1}{8}+0.007\right) = N(3.13cm,\ 0.0195cm^2)
+\end{equation*}\]</span></p>
+De esta forma, se puede afirmar que el grosor promedio del despacho es de 3.13cm con un intervalo del 95% dado por (2.85cm, 3.40cm). Nótese que el intervalo para <span class="math inline">\(\bar{Y}^{*}\)</span> es más ancho que el intervalo para <span class="math inline">\(\theta\)</span>, pues este tiene una varianza mayor a la varianza de la distribución posterior de <span class="math inline">\(\theta\)</span>.
+</div>
+
+</div>
+</div>
+<!-- </div> -->
+
+
+
+<h3>Referencias</h3>
+<div id="refs" class="references csl-bib-body hanging-indent">
+<div id="ref-Berger" class="csl-entry">
+Berger, J. O. 1985. <em>Statistical Decision Theory and Bayesian Analysis</em>. 2.ª ed. Springer.
+</div>
+<div id="ref-Zhang" class="csl-entry">
+Zhang, H., y H. A. Gutiérrez. 2010. <em>Teoría estadística. Aplicación y métodos.</em> Universidad Santo Tomás.
+</div>
+</div>
+            </section>
+
+          </div>
+        </div>
+      </div>
+<a href="modelo-exponencial.html" class="navigation navigation-prev " aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
+<a href="elementos-de-probabilidad.html" class="navigation navigation-next " aria-label="Next page"><i class="fa fa-angle-right"></i></a>
+    </div>
+  </div>
+<script src="libs/gitbook-2.6.7/js/app.min.js"></script>
+<script src="libs/gitbook-2.6.7/js/lunr.js"></script>
+<script src="libs/gitbook-2.6.7/js/clipboard.min.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-search.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-sharing.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-fontsettings.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-bookdown.js"></script>
+<script src="libs/gitbook-2.6.7/js/jquery.highlight.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-clipboard.js"></script>
+<script>
+gitbook.require(["gitbook"], function(gitbook) {
+gitbook.start({
+"sharing": {
+"github": true,
+"facebook": false,
+"twitter": true,
+"linkedin": false,
+"weibo": false,
+"instapaper": false,
+"vk": false,
+"whatsapp": false,
+"all": ["facebook", "twitter", "linkedin", "weibo", "instapaper"]
+},
+"fontsettings": {
+"theme": "white",
+"family": "sans",
+"size": 2
+},
+"edit": {
+"link": "https://github.com/psirusteam/bookdownBayesiano/3Uniparametricos.Rmd",
+"text": "Edit"
+},
+"history": {
+"link": null,
+"text": null
+},
+"view": {
+"link": null,
+"text": null
+},
+"download": ["ModelosBayesianos.pdf", "ModelosBayesianos.epub", "ModelosBayesianos.mobi"],
+"toc": {
+"collapse": "section"
+},
+"tconfig": null
+});
+});
+</script>
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    var src = "true";
+    if (src === "" || src === "true") src = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-MML-AM_CHTML";
+    if (location.protocol !== "file:")
+      if (/^https?:/.test(src))
+        src = src.replace(/^https?:/, '');
+    script.src = src;
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+</body>
+
+</html>

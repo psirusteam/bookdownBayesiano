@@ -9,7 +9,7 @@ link-citations: yes
 colorlinks: yes
 lot: yes
 lof: yes
-fontsize: 12pt
+fontsize: 10pt
 github-repo: psirusteam/bookdownBayesiano
 description: "Este es el repositorio del libro *Modelos Bayesianos con R y STAN*."
 knit: "bookdown::render_book"
@@ -31,7 +31,6 @@ header-includes:
 - \def\bphi{\boldsymbol \phi}
 - \def\bpi{\boldsymbol \pi}
 - \def\bxi{\boldsymbol \xi}
-- \DeclareSymbolFont{letters}{OT1}{cmr}{m}{n}
 # - \usepackage[spanish]{babel}
 lang: es
 linkcolor: blue

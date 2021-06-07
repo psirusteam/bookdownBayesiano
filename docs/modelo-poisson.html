@@ -197,6 +197,12 @@ div.csl-indent {
 <li class="chapter" data-level="3.3" data-path="modelo-binomial-negativo.html"><a href="modelo-binomial-negativo.html"><i class="fa fa-check"></i><b>3.3</b> Modelo Binomial negativo</a></li>
 <li class="chapter" data-level="3.4" data-path="modelo-poisson.html"><a href="modelo-poisson.html"><i class="fa fa-check"></i><b>3.4</b> Modelo Poisson</a></li>
 <li class="chapter" data-level="3.5" data-path="modelo-exponencial.html"><a href="modelo-exponencial.html"><i class="fa fa-check"></i><b>3.5</b> Modelo Exponencial</a></li>
+<li class="chapter" data-level="3.6" data-path="modelo-normal-con-media-desconocida-y-varianza-conocida.html"><a href="modelo-normal-con-media-desconocida-y-varianza-conocida.html"><i class="fa fa-check"></i><b>3.6</b> Modelo Normal con media desconocida y varianza conocida</a>
+<ul>
+<li class="chapter" data-level="3.6.1" data-path="modelo-normal-con-media-desconocida-y-varianza-conocida.html"><a href="modelo-normal-con-media-desconocida-y-varianza-conocida.html#distribución-previa-no-informativa-para-theta"><i class="fa fa-check"></i><b>3.6.1</b> Distribución previa no informativa para <span class="math inline">\(\theta\)</span></a></li>
+<li class="chapter" data-level="3.6.2" data-path="modelo-normal-con-media-desconocida-y-varianza-conocida.html"><a href="modelo-normal-con-media-desconocida-y-varianza-conocida.html#diferentes-formas-de-hallar-la-distribución-previa-para-theta"><i class="fa fa-check"></i><b>3.6.2</b> Diferentes formas de hallar la distribución previa para <span class="math inline">\(\theta\)</span></a></li>
+<li class="chapter" data-level="3.6.3" data-path="modelo-normal-con-media-desconocida-y-varianza-conocida.html"><a href="modelo-normal-con-media-desconocida-y-varianza-conocida.html#distribuciones-predictivas"><i class="fa fa-check"></i><b>3.6.3</b> Distribuciones predictivas</a></li>
+</ul></li>
 </ul></li>
 <li class="appendix"><span><b>Apéndice</b></span></li>
 <li class="chapter" data-level="A" data-path="elementos-de-probabilidad.html"><a href="elementos-de-probabilidad.html"><i class="fa fa-check"></i><b>A</b> Elementos de probabilidad</a>
@@ -432,16 +438,16 @@ p(\tilde{\mathbf{s}} \mid \mathbf{Y})=\frac{\Gamma(\tilde{s}+\sum_{i=1}^ny_i+0.5
 <p>Suponga que en una ciudad se quiere implementar una estrategia educativa para disminuir el número de accidentes de tránsito generados por manejar en estado de embriaguez. Para esto, se registraron durante diez días 30 días el número de accidentes de tránsito por ebriedad del conductor. Los datos para cada uno de los días son 22, 9, 9, 20, 10, 14, 11, 14, 11, 11, 19, 12, 8, 9, 16, 8, 13, 8, 14, 12, 14, 11, 14, 13, 11, 14, 13, 11, 7, 12.</p>
 Es posible modelar la variable aleatoria número de accidentes de tránsito en un día mediante una distribución de Poisson puesto que el promedio muestral y la varianza muestral de los datos son semejantes. Para este conjunto de datos, el promedio equivale a 12.33, mientras que la varianza es de 12.51. El histograma de los valores observados se puede ver en la figura <a href="modelo-poisson.html#fig:EjemPoisson1">3.11</a>.
 </div>
-<div class="figure"><span id="fig:EjemPoisson1"></span>
-<img src="3Uniparametricos_files/figure-html/EjemPoisson1-1.svg" alt="Histograma para los datos de accidentes de tránsito." width="672" />
+<div class="figure" style="text-align: center"><span id="fig:EjemPoisson1"></span>
+<img src="3Uniparametricos_files/figure-html/EjemPoisson1-1.svg" alt="Histograma para los datos de accidentes de tránsito." width="576" />
 <p class="caption">
 Figura 3.11: Histograma para los datos de accidentes de tránsito.
 </p>
 </div>
 <p>En primera instancia, es posible realizar un análisis no informativo, al formular una distribución previa de Jeffreys proporcional a <span class="math inline">\(\theta^{-1/2}\)</span>, para lo cual la distribución posterior será <span class="math inline">\(Gamma(\sum_{i=1}^n y_i+1/2, n)=Gamma(370.5, 30)\)</span>. Por lo tanto, un estimador de <span class="math inline">\(\theta\)</span> está dado por la media de la distribución posterior que es <span class="math inline">\(370.5/30=12.35\)</span>, muy cercano al valor del estimador de máxima verosimilitud correspondiente al promedio muestral. La figura <a href="modelo-poisson.html#fig:EjemPoisson2">3.12</a> (lado izquierdo) muestra el comportamiento de las distribuciones de Jeffreys y posterior para este ejemplo.</p>
 <p>Por otro lado, basándose en datos históricos, la alcaldía observó que, en el mismo periodo del año anterior, ocurrieron 37 accidentes en 9 días de observación. Luego, una distribución previa informativa<a href="#fn8" class="footnote-ref" id="fnref8"><sup>8</sup></a> está dada por <span class="math inline">\(Gamma(\alpha=38,\beta=9)\)</span>. Luego, apelando al resultado <a href="modelo-poisson.html#prp:ResPoissonPost">3.7</a>, la distribución posterior corresponde a una <span class="math inline">\(Gamma(370+38, 30+9)=Gamma(408, 39)\)</span>. Para este caso, un estimador de <span class="math inline">\(\theta\)</span> está dado por la media de la distribución posterior que es <span class="math inline">\(480/39=12.31\)</span>. La figura <a href="modelo-poisson.html#fig:EjemPoisson2">3.12</a> (lado derecho) muestra el comportamiento de las distribuciones previa (informativa) y posterior para este ejemplo.</p>
-<div class="figure"><span id="fig:EjemPoisson2"></span>
-<img src="3Uniparametricos_files/figure-html/EjemPoisson2-1.svg" alt="Distribución previa y distribución posterior para el ejemplo del tránsito con dos distribuciones previas diferentes (el lado izquierdo representa el caso cuando se usa la previa no informativa, el lado derecho la previa informativa)." width="672" />
+<div class="figure" style="text-align: center"><span id="fig:EjemPoisson2"></span>
+<img src="3Uniparametricos_files/figure-html/EjemPoisson2-1.svg" alt="Distribución previa y distribución posterior para el ejemplo del tránsito con dos distribuciones previas diferentes (el lado izquierdo representa el caso cuando se usa la previa no informativa, el lado derecho la previa informativa)." width="576" />
 <p class="caption">
 Figura 3.12: Distribución previa y distribución posterior para el ejemplo del tránsito con dos distribuciones previas diferentes (el lado izquierdo representa el caso cuando se usa la previa no informativa, el lado derecho la previa informativa).
 </p>
@@ -491,8 +497,8 @@ Figura 3.12: Distribución previa y distribución posterior para el ejemplo del 
 <p>Finalmente, podemos tener una aproximación de la esperanza de la variable <span class="math inline">\(\mathbf{\tilde{s}}\)</span> como</p>
 <div class="sourceCode" id="cb46"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb46-1"><a href="modelo-poisson.html#cb46-1" aria-hidden="true" tabindex="-1"></a><span class="fu">sum</span>(pre.NoInf.val <span class="sc">*</span> s.val)</span></code></pre></div>
 <pre><code>## [1] 12.35</code></pre>
-<div class="figure"><span id="fig:PredPostPoisson"></span>
-<img src="3Uniparametricos_files/figure-html/PredPostPoisson-1.svg" alt="Distribución predictiva posterior para $n^*=1$ para el ejemplo del tránsito." width="672" />
+<div class="figure" style="text-align: center"><span id="fig:PredPostPoisson"></span>
+<img src="3Uniparametricos_files/figure-html/PredPostPoisson-1.svg" alt="Distribución predictiva posterior para $n^*=1$ para el ejemplo del tránsito." width="576" />
 <p class="caption">
 Figura 3.13: Distribución predictiva posterior para <span class="math inline">\(n^*=1\)</span> para el ejemplo del tránsito.
 </p>
@@ -521,18 +527,18 @@ Figura 3.13: Distribución predictiva posterior para <span class="math inline">\
 ## 4 chains, each with iter=2000; warmup=1000; thin=1; 
 ## post-warmup draws per chain=1000, total post-warmup draws=4000.
 ## 
-##          mean se_mean  sd   2.5%   97.5% n_eff   Rhat
-## theta 10.4536  0.0127 0.5 9.5045 11.4422  1558 1.0006
+##          mean se_mean     sd  2.5%   97.5% n_eff   Rhat
+## theta 10.4414  0.0121 0.4941 9.471 11.4121  1654 1.0005
 ## 
-## Samples were drawn using NUTS(diag_e) at Sun Jun  6 17:28:22 2021.
+## Samples were drawn using NUTS(diag_e) at Sun Jun  6 23:44:44 2021.
 ## For each parameter, n_eff is a crude measure of effective sample size,
 ## and Rhat is the potential scale reduction factor on split chains (at 
 ## convergence, Rhat=1).</code></pre>
 <p>La figura <a href="modelo-poisson.html#fig:posPoissonStan">3.14</a> muestra la distribución posterior para este ejemplo, junto con la estimación puntual, correspondiente a la media.</p>
 <div class="sourceCode" id="cb51"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb51-1"><a href="modelo-poisson.html#cb51-1" aria-hidden="true" tabindex="-1"></a>bayesplot<span class="sc">::</span><span class="fu">mcmc_areas</span>(Poissonfit, <span class="at">pars =</span> <span class="st">&quot;theta&quot;</span>, </span>
 <span id="cb51-2"><a href="modelo-poisson.html#cb51-2" aria-hidden="true" tabindex="-1"></a>                      <span class="at">prob =</span> <span class="fl">0.95</span>)</span></code></pre></div>
-<div class="figure"><span id="fig:posPoissonStan"></span>
-<img src="3Uniparametricos_files/figure-html/posPoissonStan-1.svg" alt="Distribución posterior." width="672" />
+<div class="figure" style="text-align: center"><span id="fig:posPoissonStan"></span>
+<img src="3Uniparametricos_files/figure-html/posPoissonStan-1.svg" alt="Distribución posterior." width="576" />
 <p class="caption">
 Figura 3.14: Distribución posterior.
 </p>

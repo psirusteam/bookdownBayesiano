@@ -89,8 +89,8 @@ a los valores extremos del parámetro de interés y su característica de
 ser no informativa se representa en la simetría de la función alrededor
 del valor 0.5.
 
-<div class="figure">
-<img src="3Uniparametricos_files/figure-html/jefber1-1.svg" alt="Distribución previa no informativa de Jeffreys para el parámetro de una distribución Bernoulli" width="672" />
+<div class="figure" style="text-align: center">
+<img src="3Uniparametricos_files/figure-html/jefber1-1.svg" alt="Distribución previa no informativa de Jeffreys para el parámetro de una distribución Bernoulli" width="576" />
 <p class="caption">(\#fig:jefber1)Distribución previa no informativa de Jeffreys para el parámetro de una distribución Bernoulli</p>
 </div>
 
@@ -177,8 +177,8 @@ Sin embargo, si no se tuviese información previa como la suministrada por el es
 
 La figuras \@ref(fig:BernoEj1) muestra el comportamiento de las distribuciones previas y posteriores en ambos escenarios. Nótese que la distribución no informativa influye muy poco en el comportamiento de la distribución posterior.</div>\EndKnitrBlock{example}
 
-<div class="figure">
-<img src="3Uniparametricos_files/figure-html/BernoEj1-1.svg" alt="Distribuciones previas (línea punteada) y posteriores (línea sólida) para el ejemplo de las encuestas electorales." width="672" />
+<div class="figure" style="text-align: center">
+<img src="3Uniparametricos_files/figure-html/BernoEj1-1.svg" alt="Distribuciones previas (línea punteada) y posteriores (línea sólida) para el ejemplo de las encuestas electorales." width="576" />
 <p class="caption">(\#fig:BernoEj1)Distribuciones previas (línea punteada) y posteriores (línea sólida) para el ejemplo de las encuestas electorales.</p>
 </div>
 
@@ -254,9 +254,9 @@ print(Berfit, pars = "theta",
 ## post-warmup draws per chain=1000, total post-warmup draws=4000.
 ## 
 ##         mean se_mean     sd   2.5%  97.5% n_eff   Rhat
-## theta 0.5153   1e-04 0.0044 0.5065 0.5242  1437 1.0006
+## theta 0.5154   1e-04 0.0043 0.5065 0.5233  1478 1.0014
 ## 
-## Samples were drawn using NUTS(diag_e) at Sun Jun  6 17:25:56 2021.
+## Samples were drawn using NUTS(diag_e) at Sun Jun  6 23:41:45 2021.
 ## For each parameter, n_eff is a crude measure of effective sample size,
 ## and Rhat is the potential scale reduction factor on split chains (at 
 ## convergence, Rhat=1).
@@ -270,8 +270,8 @@ bayesplot::mcmc_areas(Berfit, pars = "theta",
                       prob = 0.95)
 ```
 
-<div class="figure">
-<img src="3Uniparametricos_files/figure-html/posBernoulliStan-1.svg" alt="Distribución posterior." width="672" />
+<div class="figure" style="text-align: center">
+<img src="3Uniparametricos_files/figure-html/posBernoulliStan-1.svg" alt="Distribución posterior." width="576" />
 <p class="caption">(\#fig:posBernoulliStan)Distribución posterior.</p>
 </div>
 
@@ -356,8 +356,8 @@ la variable aleatoria.] con máximo en $8/10$, entonces la distribución
 posterior estará centrada en $10/17$; es decir, la estimación bayesiana
 se encuentra situada entre la estimación previa y la estimación clásica.
 
-<div class="figure">
-<img src="3Uniparametricos_files/figure-html/beta3-1.svg" alt="Funciones de verosimilitud, previa y posterior para $\alpha=2$, $\beta=5$, $s=8$ y $n=10$." width="672" />
+<div class="figure" style="text-align: center">
+<img src="3Uniparametricos_files/figure-html/beta3-1.svg" alt="Funciones de verosimilitud, previa y posterior para $\alpha=2$, $\beta=5$, $s=8$ y $n=10$." width="576" />
 <p class="caption">(\#fig:beta3)Funciones de verosimilitud, previa y posterior para $\alpha=2$, $\beta=5$, $s=8$ y $n=10$.</p>
 </div>
 
@@ -375,8 +375,8 @@ clásica. En la figura \@ref(fig:betan) se muestra la estimación posterior de
 $\theta$, es evidente que a medida que el tamaño muestral $n$ aumenta,
 la estimación posterior se acerca más a la estimación clásica.
 
-<div class="figure">
-<img src="3Uniparametricos_files/figure-html/betan-1.svg" alt="Estimación posterior de $\theta$ para diferentes valores de $n$ y $s$ con $\alpha=\beta=5$." width="672" />
+<div class="figure" style="text-align: center">
+<img src="3Uniparametricos_files/figure-html/betan-1.svg" alt="Estimación posterior de $\theta$ para diferentes valores de $n$ y $s$ con $\alpha=\beta=5$." width="576" />
 <p class="caption">(\#fig:betan)Estimación posterior de $\theta$ para diferentes valores de $n$ y $s$ con $\alpha=\beta=5$.</p>
 </div>
 
@@ -746,10 +746,10 @@ print(Binfit, pars = "theta",
 ## 4 chains, each with iter=2000; warmup=1000; thin=1; 
 ## post-warmup draws per chain=1000, total post-warmup draws=4000.
 ## 
-##         mean se_mean     sd   2.5%  97.5% n_eff   Rhat
-## theta 0.2735   1e-04 0.0051 0.2638 0.2837  1448 1.0039
+##         mean se_mean     sd   2.5%  97.5% n_eff  Rhat
+## theta 0.2736   1e-04 0.0052 0.2633 0.2839  1611 1.001
 ## 
-## Samples were drawn using NUTS(diag_e) at Sun Jun  6 17:26:36 2021.
+## Samples were drawn using NUTS(diag_e) at Sun Jun  6 23:42:42 2021.
 ## For each parameter, n_eff is a crude measure of effective sample size,
 ## and Rhat is the potential scale reduction factor on split chains (at 
 ## convergence, Rhat=1).
@@ -763,8 +763,8 @@ bayesplot::mcmc_areas(Binfit, pars = "theta",
                       prob = 0.95)
 ```
 
-<div class="figure">
-<img src="3Uniparametricos_files/figure-html/posBinomialStan-1.svg" alt="Distribución posterior." width="672" />
+<div class="figure" style="text-align: center">
+<img src="3Uniparametricos_files/figure-html/posBinomialStan-1.svg" alt="Distribución posterior." width="576" />
 <p class="caption">(\#fig:posBinomialStan)Distribución posterior.</p>
 </div>
 
@@ -782,8 +782,8 @@ qbeta(c(0.025, 0.975), 2040, 5419)
 La figura \@ref(fig:BinomEj1) muestra el comportamiento de las distribuciones previa y posterior para este ejemplo. Nótese que, con un análisis frecuentista, se hubiese llegado a una estimación cercana de $\frac{1825}{6649}=0.274$. 
 
 
-<div class="figure">
-<img src="3Uniparametricos_files/figure-html/BinomEj1-1.svg" alt="Función de densidad previa y función de densidad posterior para el ejemplo de bateo." width="672" />
+<div class="figure" style="text-align: center">
+<img src="3Uniparametricos_files/figure-html/BinomEj1-1.svg" alt="Función de densidad previa y función de densidad posterior para el ejemplo de bateo." width="576" />
 <p class="caption">(\#fig:BinomEj1)Función de densidad previa y función de densidad posterior para el ejemplo de bateo.</p>
 </div>
 
@@ -825,8 +825,8 @@ which(predictiva==max(predictiva))
 
 La última línea del código computacional permite concluir que lo más probable es que el jugador realice 71 hits en 400 turnos al bate, cifra que no convence al entrenador para adquirir los servicios del jugador.
 
-<div class="figure">
-<img src="3Uniparametricos_files/figure-html/PredBinom-1.svg" alt="Función de densidad predictiva posterior para el jugador Max Alvis." width="672" />
+<div class="figure" style="text-align: center">
+<img src="3Uniparametricos_files/figure-html/PredBinom-1.svg" alt="Función de densidad predictiva posterior para el jugador Max Alvis." width="576" />
 <p class="caption">(\#fig:PredBinom)Función de densidad predictiva posterior para el jugador Max Alvis.</p>
 </div>
 
@@ -916,10 +916,10 @@ print(BNfit, pars = "theta",
 ## 4 chains, each with iter=2000; warmup=1000; thin=1; 
 ## post-warmup draws per chain=1000, total post-warmup draws=4000.
 ## 
-##        mean se_mean     sd   2.5% 97.5% n_eff   Rhat
-## theta 0.005   1e-04 0.0021 0.0017  0.01  1441 1.0018
+##         mean se_mean     sd   2.5%  97.5% n_eff   Rhat
+## theta 0.0049   1e-04 0.0021 0.0016 0.0099  1583 1.0009
 ## 
-## Samples were drawn using NUTS(diag_e) at Sun Jun  6 17:27:12 2021.
+## Samples were drawn using NUTS(diag_e) at Sun Jun  6 23:43:20 2021.
 ## For each parameter, n_eff is a crude measure of effective sample size,
 ## and Rhat is the potential scale reduction factor on split chains (at 
 ## convergence, Rhat=1).
@@ -1021,9 +1021,9 @@ print(BNfit2, pars = "theta",
 ## post-warmup draws per chain=1000, total post-warmup draws=4000.
 ## 
 ##         mean se_mean    sd   2.5% 97.5% n_eff   Rhat
-## theta 0.0051       0 4e-04 0.0043 0.006  1250 1.0031
+## theta 0.0052       0 4e-04 0.0044 0.006  1302 1.0032
 ## 
-## Samples were drawn using NUTS(diag_e) at Sun Jun  6 17:27:45 2021.
+## Samples were drawn using NUTS(diag_e) at Sun Jun  6 23:43:53 2021.
 ## For each parameter, n_eff is a crude measure of effective sample size,
 ## and Rhat is the potential scale reduction factor on split chains (at 
 ## convergence, Rhat=1).
@@ -1037,8 +1037,8 @@ bayesplot::mcmc_areas(BNfit2, pars = "theta",
                       prob = 0.95)
 ```
 
-<div class="figure">
-<img src="3Uniparametricos_files/figure-html/posBNStan-1.svg" alt="Distribución posterior." width="672" />
+<div class="figure" style="text-align: center">
+<img src="3Uniparametricos_files/figure-html/posBNStan-1.svg" alt="Distribución posterior." width="576" />
 <p class="caption">(\#fig:posBNStan)Distribución posterior.</p>
 </div>
 
@@ -1094,8 +1094,9 @@ sum(fun)
 ```
 ## [1] 0.9999994
 ```
-<div class="figure">
-<img src="3Uniparametricos_files/figure-html/jefber-1.svg" alt="Distribución predictiva posterior para el número de entrevistas necesarias para encontrar 5 pacientes." width="672" />
+
+<div class="figure" style="text-align: center">
+<img src="3Uniparametricos_files/figure-html/jefber-1.svg" alt="Distribución predictiva posterior para el número de entrevistas necesarias para encontrar 5 pacientes." width="576" />
 <p class="caption">(\#fig:jefber)Distribución predictiva posterior para el número de entrevistas necesarias para encontrar 5 pacientes.</p>
 </div>
 
@@ -1288,8 +1289,8 @@ Suponga que en una ciudad se quiere implementar una estrategia educativa para di
 Es posible modelar la variable aleatoria número de accidentes de tránsito en un día mediante una distribución de Poisson puesto que el promedio muestral y la varianza muestral de los datos son semejantes. Para este conjunto de datos, el promedio equivale a 12.33, mientras que la varianza es de 12.51. El histograma de los valores observados se puede ver en la figura \@ref(fig:EjemPoisson1).</div>\EndKnitrBlock{example}
 
 
-<div class="figure">
-<img src="3Uniparametricos_files/figure-html/EjemPoisson1-1.svg" alt="Histograma para los datos de accidentes de tránsito." width="672" />
+<div class="figure" style="text-align: center">
+<img src="3Uniparametricos_files/figure-html/EjemPoisson1-1.svg" alt="Histograma para los datos de accidentes de tránsito." width="576" />
 <p class="caption">(\#fig:EjemPoisson1)Histograma para los datos de accidentes de tránsito.</p>
 </div>
 
@@ -1297,8 +1298,8 @@ En primera instancia, es posible realizar un análisis no informativo, al formul
 
 Por otro lado, basándose en datos históricos, la alcaldía observó que, en el mismo periodo del año anterior, ocurrieron 37 accidentes en 9 días de observación. Luego, una distribución previa informativa^[En la práctica, se recomienda que los valores de los hiperparámetros $\alpha$ y $\beta$ correspondan a la suma del número de eventos más uno y número de observaciones, respectivamente.] está dada por $Gamma(\alpha=38,\beta=9)$. Luego, apelando al resultado \@ref(prp:ResPoissonPost), la distribución posterior corresponde a una $Gamma(370+38, 30+9)=Gamma(408, 39)$. Para este caso, un estimador de $\theta$ está dado por la media de la distribución posterior que es $480/39=12.31$. La figura \@ref(fig:EjemPoisson2) (lado derecho) muestra el comportamiento de las distribuciones previa (informativa) y posterior para este ejemplo.
 
-<div class="figure">
-<img src="3Uniparametricos_files/figure-html/EjemPoisson2-1.svg" alt="Distribución previa y distribución posterior para el ejemplo del tránsito con dos distribuciones previas diferentes (el lado izquierdo representa el caso cuando se usa la previa no informativa, el lado derecho la previa informativa)." width="672" />
+<div class="figure" style="text-align: center">
+<img src="3Uniparametricos_files/figure-html/EjemPoisson2-1.svg" alt="Distribución previa y distribución posterior para el ejemplo del tránsito con dos distribuciones previas diferentes (el lado izquierdo representa el caso cuando se usa la previa no informativa, el lado derecho la previa informativa)." width="576" />
 <p class="caption">(\#fig:EjemPoisson2)Distribución previa y distribución posterior para el ejemplo del tránsito con dos distribuciones previas diferentes (el lado izquierdo representa el caso cuando se usa la previa no informativa, el lado derecho la previa informativa).</p>
 </div>
 
@@ -1369,8 +1370,8 @@ sum(pre.NoInf.val * s.val)
 ```
 ## [1] 12.35
 ```
-<div class="figure">
-<img src="3Uniparametricos_files/figure-html/PredPostPoisson-1.svg" alt="Distribución predictiva posterior para $n^*=1$ para el ejemplo del tránsito." width="672" />
+<div class="figure" style="text-align: center">
+<img src="3Uniparametricos_files/figure-html/PredPostPoisson-1.svg" alt="Distribución predictiva posterior para $n^*=1$ para el ejemplo del tránsito." width="576" />
 <p class="caption">(\#fig:PredPostPoisson)Distribución predictiva posterior para $n^*=1$ para el ejemplo del tránsito.</p>
 </div>
 
@@ -1409,10 +1410,10 @@ print(Poissonfit, pars = "theta",
 ## 4 chains, each with iter=2000; warmup=1000; thin=1; 
 ## post-warmup draws per chain=1000, total post-warmup draws=4000.
 ## 
-##          mean se_mean  sd   2.5%   97.5% n_eff   Rhat
-## theta 10.4536  0.0127 0.5 9.5045 11.4422  1558 1.0006
+##          mean se_mean     sd  2.5%   97.5% n_eff   Rhat
+## theta 10.4414  0.0121 0.4941 9.471 11.4121  1654 1.0005
 ## 
-## Samples were drawn using NUTS(diag_e) at Sun Jun  6 17:28:22 2021.
+## Samples were drawn using NUTS(diag_e) at Sun Jun  6 23:44:44 2021.
 ## For each parameter, n_eff is a crude measure of effective sample size,
 ## and Rhat is the potential scale reduction factor on split chains (at 
 ## convergence, Rhat=1).
@@ -1426,8 +1427,8 @@ bayesplot::mcmc_areas(Poissonfit, pars = "theta",
                       prob = 0.95)
 ```
 
-<div class="figure">
-<img src="3Uniparametricos_files/figure-html/posPoissonStan-1.svg" alt="Distribución posterior." width="672" />
+<div class="figure" style="text-align: center">
+<img src="3Uniparametricos_files/figure-html/posPoissonStan-1.svg" alt="Distribución posterior." width="576" />
 <p class="caption">(\#fig:posPoissonStan)Distribución posterior.</p>
 </div>
 
@@ -1626,7 +1627,9 @@ Después de las iteraciones, los resultados de este código muestran una estimac
 
 
 ```r
-print(Expofit, digits = 4, pars = c("theta", "invtheta"))
+print(Expofit, digits = 4, 
+      pars = c("theta", "invtheta"),
+      probs = c(0.025, 0.975))
 ```
 
 ```
@@ -1634,14 +1637,11 @@ print(Expofit, digits = 4, pars = c("theta", "invtheta"))
 ## 4 chains, each with iter=2000; warmup=1000; thin=1; 
 ## post-warmup draws per chain=1000, total post-warmup draws=4000.
 ## 
-##              mean se_mean      sd     2.5%      25%      50%      75%    97.5%
-## theta      0.0027  0.0000  0.0003   0.0021   0.0024   0.0026   0.0029   0.0033
-## invtheta 382.7474  1.1865 47.1055 300.9592 350.1393 377.9283 410.6681 487.4307
-##          n_eff   Rhat
-## theta     1653 1.0015
-## invtheta  1576 1.0014
+##              mean se_mean      sd     2.5%    97.5% n_eff   Rhat
+## theta      0.0027  0.0000  0.0003   0.0021   0.0033  1634 0.9999
+## invtheta 381.9284  1.1482 46.7530 301.9569 483.5668  1658 0.9999
 ## 
-## Samples were drawn using NUTS(diag_e) at Sun Jun  6 17:29:01 2021.
+## Samples were drawn using NUTS(diag_e) at Sun Jun  6 23:45:23 2021.
 ## For each parameter, n_eff is a crude measure of effective sample size,
 ## and Rhat is the potential scale reduction factor on split chains (at 
 ## convergence, Rhat=1).
@@ -1655,8 +1655,8 @@ bayesplot::mcmc_areas(Expofit, pars = "theta",
                       prob = 0.95)
 ```
 
-<div class="figure">
-<img src="3Uniparametricos_files/figure-html/posExponencialStan1-1.svg" alt="Distribución posterior." width="672" />
+<div class="figure" style="text-align: center">
+<img src="3Uniparametricos_files/figure-html/posExponencialStan1-1.svg" alt="Distribución posterior." width="576" />
 <p class="caption">(\#fig:posExponencialStan1)Distribución posterior.</p>
 </div>
 
@@ -1666,8 +1666,8 @@ bayesplot::mcmc_areas(Expofit, pars = "invtheta",
                       prob = 0.95)
 ```
 
-<div class="figure">
-<img src="3Uniparametricos_files/figure-html/posExponencialStan2-1.svg" alt="Distribución posterior." width="672" />
+<div class="figure" style="text-align: center">
+<img src="3Uniparametricos_files/figure-html/posExponencialStan2-1.svg" alt="Distribución posterior." width="576" />
 <p class="caption">(\#fig:posExponencialStan2)Distribución posterior.</p>
 </div>
 
@@ -1702,10 +1702,286 @@ integrate(pred_exp, 0.0001, 10000)
 
 La distribución predictiva de esta función se puede visualizar en la Figura \@ref(fig:PredPostExpoEje), donde se puede ver que la mayor masa de la función se acumula alrededor de los 300 días. Usando el comando `integrate(pred_exp, 800, 10000)`, también se puede observar que la probabilidad de que en promedio los cinco pacientes sobrevivan más de 800 días es de 0.0264485.
 
-<div class="figure">
-<img src="3Uniparametricos_files/figure-html/PredPostExpoEje-1.svg" alt="Distribución predictiva posterior para el tiempo promedio de sobrevivencia de transplante de corazón." width="672" />
+<div class="figure" style="text-align: center">
+<img src="3Uniparametricos_files/figure-html/PredPostExpoEje-1.svg" alt="Distribución predictiva posterior para el tiempo promedio de sobrevivencia de transplante de corazón." width="576" />
 <p class="caption">(\#fig:PredPostExpoEje)Distribución predictiva posterior para el tiempo promedio de sobrevivencia de transplante de corazón.</p>
 </div>
+
+## Modelo Normal con media desconocida y varianza conocida
+
+En esta sección se consideran datos que pueden ser descritos adecuadamente por medio de la distribución normal la cual, a diferencia de las anteriores distribuciones consideradas, tiene dos parámetros. En esta parte, se asume que la varianza teórica es conocida y el objetivo es estimar la media teórica. En el siguiente capítulo se considerará el caso general cuando ambos parámetros son desconocidos.
+
+Suponga que $Y_1,\cdots,Y_n$ son variables independientes e idénticamente distribuidos con distribución $Normal(\theta,\sigma^2)$ con $\theta$ desconocido pero $\sigma^2$ conocido. De esta forma, la función de verosimilitud de los datos está dada por
+
+\begin{align*}
+p(\mathbf{Y} \mid \theta)&=\prod_{i=1}^n\frac{1}{\sqrt{2\pi\sigma^2}}\exp\left\{-\frac{1}{2\sigma^2}(y_i-\theta)^2\right\}I_\mathbb{R}(y)\\
+&=(2\pi\sigma^2)^{-n/2}\exp\left\{-\frac{1}{2\sigma^2}\sum_{i=1}^n(y_i-\theta)^2\right\}
+\end{align*}
+
+Como el parámetro $\theta$ puede tomar cualquier valor en los reales, es posible asignarle una distribución previa $\theta \sim Normal(\mu,\tau^2)$. Bajo este marco de referencia se tienen los siguientes resultados
+
+\BeginKnitrBlock{proposition}<div class="proposition"><span class="proposition" id="prp:unnamed-chunk-67"><strong>(\#prp:unnamed-chunk-67) </strong></span>La distribución posterior del parámetro de interés $\theta$ sigue una distribución
+
+\begin{equation*}
+\theta|\mathbf{Y} \sim Normal(\mu_n,\tau^2_n).
+\end{equation*}
+
+En donde
+
+\begin{equation}
+(\#eq:TauSigman)
+\mu_n=\frac{\frac{n}{\sigma^2}\bar{Y}+\frac{1}{\tau^2}\mu}{\frac{n}{\sigma^2}+\frac{1}{\tau^2}}
+\ \ \ \ \ \ \ \text{y} \ \ \ \ \ \ \
+\tau_n^2=\left(\frac{n}{\sigma^2}+\frac{1}{\tau^2}\right)^{-1}
+\end{equation}</div>\EndKnitrBlock{proposition}
+<br>
+
+\BeginKnitrBlock{proof}<div class="proof">\iffalse{} <span class="proof"><em>Prueba. </em></span>  \fi{}\begin{align*}
+p(\theta \mid \mathbf{Y})&\propto p(\mathbf{Y} \mid \theta)p(\theta \mid \mu,\tau^2)\\
+&\propto \exp\left\{-\frac{1}{2\sigma^2}\sum_{i=1}^n(y_i-\theta)^2-\frac{1}{2\tau^2}(\theta-\mu)^2\right\}\\
+&= \exp\left\{-\frac{1}{2}\left[\frac{\sum_{i=1}^n(y_i-\theta)^2}{\sigma^2}+\frac{(\theta-\mu)^2}{\tau^2}\right]\right\}\\
+&\propto \exp\left\{-\frac{1}{2}\left[\frac{n\theta^2}{\sigma^2}-\frac{2\theta\sum_{i=1}^ny_i}{\sigma^2}+\frac{\theta^2}{\tau^2}-\frac{2\theta\mu}{\tau^2}\right]\right\}\\
+&= \exp\left\{-\frac{\theta^2}{2}\left[\frac{n}{\sigma^2}+\frac{1}{\tau^2}\right]+
+\theta\left[\frac{n\bar{y}}{\sigma^2}+\frac{\mu}{\tau^2}\right]\right\}\\
+&= \exp\left\{-\frac{\theta^2}{2\tau^2_n}+\frac{\theta\mu_n}{\tau_n^2}\right\}\\
+&= \exp\left\{-\frac{1}{2\tau^2_n}(\theta^2-2\theta\mu_n)\right\}\\
+&\propto \exp\left\{-\frac{1}{2\tau^2_n}(\theta^2-2\theta\mu_n+\mu_n^2)\right\}\\
+&= \exp\left\{-\frac{1}{2\tau^2_n}(\theta-\mu_n)^2\right\}
+\end{align*}
+
+Por lo tanto, se encuentra una expresión idéntica a la función de distribución de una variable aleatoria con distribución $Normal(\mu_n,\tau_n^2)$.</div>\EndKnitrBlock{proof}
+<br>
+
+Observando la forma de $\mu_n$, que corresponde a la estimación bayesiana del parámetro $\theta$, podemos concluir que este es una combinación convexa entre el estimador clásico de máxima verosimlitud $\hat{\theta}_C=\bar{y}$ y el estimador previo $\hat{\theta}_P=\mu$, puesto que:
+
+\begin{align*}
+\hat{\theta}_B=\mu_n&=\frac{\frac{n}{\sigma^2}\bar{Y}+\frac{1}{\tau^2}\mu}{\frac{n}{\sigma^2}+\frac{1}{\tau^2}}\\
+&=\frac{\frac{n}{\sigma^2}}{\frac{n}{\sigma^2}+\frac{1}{\tau^2}}\bar{Y}+\frac{\frac{1}{\tau^2}}{\frac{n}{\sigma^2}+\frac{1}{\tau^2}}\mu\\
+&=\frac{\frac{n}{\sigma^2}}{\frac{n}{\sigma^2}+\frac{1}{\tau^2}}\hat{\theta}_C+\frac{\frac{1}{\tau^2}}{\frac{n}{\sigma^2}+\frac{1}{\tau^2}}\hat{\theta}_P
+\end{align*}
+
+De donde se puede concluir que, para una distribución previa fija, entre mayor sea el tamaño muestral $n$, más peso tendrá el estimador clásico $\hat{\theta}_C$ en la estimación bayesiana. De la misma forma, para un conjunto fijo de datos $\mathbf{Y}$, entre menor sea la varianza previa, $\tau^2$, más certeza tenemos sobre la información previa y por consiguiente la estimación bayesiana $\mu_n$ se acercará más a la estimación previa. En la Figura \@ref(eq:ComparaNormal) se observa la función de densidad previa, función de verosimilitud y función de densidad posterior con $\mu=5$, $\tau^2=0.01$, $\bar{y}=2$, $\sigma^2=1$ y $n=5,10,50,200$. Podemos observar que a medida que el tamaño muestral $n$ aumente, la función de verosimilitud (vista como la función del parámetro $\theta$) se vuelve más concentrada alrededor del valor de $\bar{y}$, y a consecuencia, la función de densidad posterior de $\theta$ se sitúa más cercana a la función de verosimilitud, y la estimación bayesiana se acerca más a la estimación clásica $\bar{y}$.
+
+<div class="figure" style="text-align: center">
+<img src="3Uniparametricos_files/figure-html/ComparaNormal-1.svg" alt="Distribución previa, función de verosimilitud y distribución posterior del parámetro $\theta$ con $\mu=5$, $\tau^2=0.01$, $\bar{y}=2$, $\sigma^2=1$ y $n=5,10,50,200$." width="576" />
+<p class="caption">(\#fig:ComparaNormal)Distribución previa, función de verosimilitud y distribución posterior del parámetro $\theta$ con $\mu=5$, $\tau^2=0.01$, $\bar{y}=2$, $\sigma^2=1$ y $n=5,10,50,200$.</p>
+</div>
+
+
+### Distribución previa no informativa para $\theta$
+
+Por otro lado, nótese que en el caso en donde se desconozca el comportamiento estructural de $\theta$, es posible definir su distribución previa tan plana y vaga como sea posible. Para esto, basta con hacer tender al parámetro de precisión de la distribución previa hacia infinito. Es decir $\tau^2 \longrightarrow \infty$, en este caso, la distribución previa de $\theta$ corresponde a una distribución impropia, $p(\theta)\propto cte$. Se puede ver que bajo esta distribución previa, la distribución posterior tendería a una $Normal(\bar{y},\sigma^2/n)$.
+
+La anterior idea intuitiva de usar la distribución previa $p(\theta)\propto cte$ para representar la falta de la información *a priori* corresponde a la distribución previa no informativa de Jeffreys, puesto que la información de Fisher del parámetro $\theta$ en una variable con distribución normal está dada por 
+
+\begin{equation*}
+I(\theta)=1/\sigma^2
+\end{equation*}
+
+De donde se puede concluir que la previa no informativa de Jeffreys está dada por 
+\begin{equation*}
+p(\theta)\propto 1/\sigma\propto cte
+\end{equation*}
+
+Finalmente, es posible comparar los resultados inferenciales obtenidos con la previa no informativa de Jeffreys y el enfoque inferencial clásico en términos de la estimación puntual y el intervalo de credibilidad y de confianza. En cuanto a la estimación puntual, es claro que ambos enfoques conducen al mismo estimador $\hat{\theta}=\bar{Y}$. Con respecto al intervalo para el parámetro $\theta$, al usar el enfoque bayesiano con la previa no informativa de Jeffreys, el intervalo de credibilidad de $(1-\alpha)\times 100\%$ está dado por los percentiles $\alpha/2$ y $1-\alpha/2$ de la distribución posterior de $\theta$: $Normal(\bar{y},\sigma^2/n)$. Al denotar estos percentiles como $a$ y $b$, respectivamente. 
+Por definición tenemos que, si $X\sim N(\bar{y},\sigma^2/n)$
+
+\begin{align*}
+\alpha/2&=Pr(X<a)\\
+&=Pr(\frac{X-\bar{y}}{\sigma/\sqrt{n}}<\frac{a-\bar{y}}{\sigma/\sqrt{n}})\\
+&=Pr(Z < \frac{a-\bar{y}}{\sigma/\sqrt{n}})
+\end{align*}
+
+Estos es, $\frac{a-\bar{y}}{\sigma/\sqrt{n}}$ es el percentil $\alpha/2$ de la distribución normal estándar $z_{\alpha/2}$ o equivalentemente $-z_{1-\alpha/2}$. De esta forma, tenemos que $a=\bar{y}-z_{1-\alpha/2}\ \sigma/\sqrt{n}$. Análogamente tenemos que $b=\bar{y}+z_{1-\alpha/2}\ \sigma/\sqrt{n}$, y podemos concluir que un intervalo de credibilidad de $(1-\alpha)\times 100\%$ está dada por $\bar{y}\pm z_{1-\alpha/2}\ \sigma/\sqrt{n}$, el cual coincide con el intervalo de confianza para $\theta$ usando el enfoque de la inferencia clásica [@Zhang].
+
+### Diferentes formas de hallar la distribución previa para $\theta$
+
+En primer lugar, considere el caso para el cual la información previa se encuentra en un conjunto de datos $x_1,\cdots,x_{m}$ que corresponden a mediciones de la variable de estudio en otro punto del tiempo, en otro punto geográfico, o inclusive en otra población de estudio. En este caso, podemos tomar la media de la distribución previa $\mu$ como $\bar{x}$ y la varianza de la distribución previa $\tau^2$ como $S^2_x$.
+
+En el caso en el que no se disponga de datos como información previa, sino que esta esté contenida en alguna estimación que se haya realizado anteriormente sobre $\theta$. Por ejemplo, si se dispone de algún modelamiento estadístico que se haya hecho previamente sobre $\theta$, es posible fácilmente obtener el valor estimado de $\theta$ y el error estándar de esta estimación y naturalmente estos dos valores serían los parámetros de la distribución previa: $\mu$ y $\tau^2$. 
+
+Finalmente, si la estimación previa de $\theta$ se presenta en forma de un intervalo; por ejemplo, si se sabe que un intervalo de confianza para $\theta$ es $(15.3,\ 24.7)$, entonces es posible definir a $\mu$ como el punto medio de este intervalo, es decir, $\mu=20$ y para escoger el valor de $\tau^2$ se tiene en cuenta que en muchas ramas de la estadística, un intervalo de confianza se puede aproximar por $\hat{\theta}\pm 2\sqrt{var(\hat{\theta})}$. De esta forma, se puede definir $\tau^2=\left(\frac{24.7-20}{2}\right)^2\approx5.5$
+
+### Distribuciones predictivas
+
+Los siguientes resultados presentan las distribuciones predictivas previa y predictiva posterior para una observación o una nueva muestra.
+
+\BeginKnitrBlock{proposition}<div class="proposition"><span class="proposition" id="prp:unnamed-chunk-69"><strong>(\#prp:unnamed-chunk-69) </strong></span>La distribución predictiva previa para una observación $y$ estáa dada por 
+
+\begin{equation*}
+y \sim Normal (\mu, \tau^2+\sigma^2)
+\end{equation*}</div>\EndKnitrBlock{proposition}
+<br>
+
+\BeginKnitrBlock{proof}<div class="proof">\iffalse{} <span class="proof"><em>Prueba. </em></span>  \fi{}De la definición de función de distribución predictiva se tiene que
+
+\begin{align*}
+p(Y)&=\int p(Y \mid \theta)p(\theta \mid \mu,\tau^2)\ d\theta\\
+&=\int_{-\infty}^{\infty} \frac{1}{\sqrt{2\pi\sigma^2}}\exp\left\{-\frac{1}{2\sigma^2}(y-\theta)^2\right\}
+\frac{1}{\sqrt{2\pi\tau^2}}\exp\left\{-\frac{1}{2\tau^2}(\theta-\mu)^2\right\}d\theta
+\end{align*}
+
+@Berger desarrolló las siguientes igualdades
+
+\begin{align*}
+&\ \ \ \ \frac{1}{2}\left[\frac{(\theta-\mu)^2}{\tau^2}+\frac{(y-\theta)^2}{\sigma^2}\right]\\
+&=\frac{1}{2}\left[\left(\frac{1}{\tau^2}+\frac{1}{\sigma^2}\right)\theta^2-2\left(\frac{\mu}{\tau^2}+\frac{y}{\sigma^2}\right)\theta+\left(\frac{\mu^2}{\tau^2}+\frac{y^2}{\sigma^2}\right)\right]\\
+&=\frac{1}{2\tau_1^2}\left[\theta^2-2\tau_1^2\left(\frac{\mu}{\tau^2}+\frac{y}{\sigma^2}\right)\theta+\tau_1^4\left(\frac{\mu}{\tau^2}+\frac{y}{\sigma^2}\right)^2\right]+\frac{1}{2}\left(\frac{\mu^2}{\tau^2}+\frac{y^2}{\sigma^2}\right)-\frac{\tau_1^2}{2}\left(\frac{\mu}{\tau^2}+\frac{y}{\sigma^2}\right)^2\\
+&=\frac{1}{2\tau_1^2}\left[\theta-\tau_1^2\left(\frac{\mu}{\tau^2}+\frac{y}{\sigma^2}\right)\right]^2+\frac{1}{2}\left[\left(\frac{1}{\sigma^2}-\frac{\tau_1^2}{\sigma^4}\right)y^2-2\frac{\mu\tau_1^2}{\tau^2\sigma^2}y+\left(\frac{\mu^2}{\tau^2}-\frac{\mu^2\tau_1^2}{\tau^4}\right)\right]\\
+&=\frac{1}{2\tau_1^2}\left[\theta-\mu_1\right]^2+\frac{1}{2}\left[\frac{1}{\sigma^2+\tau^2}y^2-2\frac{\mu}{\sigma^2+\tau^2}y+\frac{\mu^2}{\sigma^2+\tau^2}\right]\\
+&=\frac{1}{2\tau_1^2}\left[\theta-\mu_1\right]^2+\frac{1}{2(\sigma^2+\tau^2)}(y-\mu)^2
+\end{align*}
+
+Entonces
+
+\begin{align*}
+p(Y)&=\int_{-\infty}^{\infty} \frac{1}{2\pi\sigma\tau}\exp\left\{-\frac{1}{2\tau_1^2}(\theta-\mu_1)^2\right\}
+\exp\left\{-\frac{1}{2(\tau^2+\sigma^2)}(y-\mu)^2\right\}d\theta\\
+&= \frac{1}{\sqrt{2\pi\frac{\sigma^2\tau^2}{\tau_1^2}}}\exp\left\{-\frac{1}{2(\tau^2+\sigma^2)}(y-\mu)^2\right\}
+\int_{-\infty}^{\infty} \frac{1}{\sqrt{2\pi\tau_1^2}}\exp\left\{-\frac{1}{2\tau_1^2}(\theta-\mu_1)^2\right\}d\theta\\
+&= \frac{1}{\sqrt{2\pi(\tau^2+\sigma^2)}}\exp\left\{-\frac{1}{2(\tau^2+\sigma^2)}(y-\mu)^2\right\}
+\end{align*}</div>\EndKnitrBlock{proof}
+<br>
+
+Una vez recolectados los datos $\mathbf{Y}=\{Y_1,\cdots,Y_n\}$, se obtiene la distribución predictiva posterior dada en el siguiente resultado. La demostración es similar al del resultado anterior.
+
+\BeginKnitrBlock{proposition}<div class="proposition"><span class="proposition" id="prp:unnamed-chunk-71"><strong>(\#prp:unnamed-chunk-71) </strong></span>La distribución predictiva posterior para una nueva observación $\tilde{y}$ es
+\begin{equation*}
+\tilde{y} \mid \mathbf{Y} \sim Normal (\mu_n, \tau_n^2+\sigma^2)
+\end{equation*}</div>\EndKnitrBlock{proposition}
+<br>
+
+En algunas situaciones, se quiere conocer el comportamiento probabilístico de más de una nueva observación, digamos $Y_1^*,\cdots,Y_{n^*}^*$, en este caso, lo ideal sería obtener la distribución conjunta predictiva posterior de la nueva muestra, $p(Y_1^*,\cdots,Y_{n^*}^*|\mathbf{Y})$. Sin embargo, esta distribución no es fácil de hallar, por lo que el énfasis se pondrá en la distribución predictiva posterior de la media de esta nueva muestra $\bar{Y}^*$, la cual está dada en el siguiente resultado. 
+
+\BeginKnitrBlock{proposition}<div class="proposition"><span class="proposition" id="prp:PredNorm"><strong>(\#prp:PredNorm) </strong></span>La distribución predictiva posterior para la media muestral $\bar{Y}^*$ de una nueva muestra es 
+
+\begin{equation*}
+\bar{Y}^*|\mathbf{Y}\ \sim N\left(\mu_n, \frac{\sigma^2}{n^*}+\tau^2_n\right)
+\end{equation*}
+
+donde $\mu_n$ y $\tau^2_n$ fueron definidos en \@ref(eq:TauSigman).</div>\EndKnitrBlock{proposition}
+<br>
+
+\BeginKnitrBlock{proof}<div class="proof">\iffalse{} <span class="proof"><em>Prueba. </em></span>  \fi{}\begin{align*}
+p(\bar{Y}^*|\mathbf{Y})&=\int_{-\infty}^\infty p(\bar{Y}^*|\theta)p(\theta|\mathbf{Y})\ d\theta\\
+&=\int_{-\infty}^\infty (2\pi\frac{\sigma^2}{n^*})^{-1/2}\exp\left\{-\frac{n^*}{2\sigma^2}(\bar{y}^*-\theta)^2\right\}
+(2\pi\tau_n^2)^{-1/2}\exp\left\{-\frac{1}{2\tau_n^2}(\theta-\mu_n)^2\right\}\ d\theta\\
+&=\int_{-\infty}^\infty (2\pi)^{-1}(\frac{\sigma^2}{n^*}\tau_n^2)^{-1/2}\exp\left\{-\frac{1}{2}\left[\frac{(\bar{y}^*-\theta)^2}{\sigma^2/n^*}+\frac{(\theta-\mu_n)^2}{\tau^2_n}\right]\right\}\ d\theta\\
+&=\underbrace{\int_{-\infty}^\infty(2\pi\frac{1}{n^*/\sigma^2+1/\tau^2_n})^{-1/2}\exp\left\{-\frac{1}{2}\left(\frac{n^*}{\sigma^2}+\frac{1}{\tau^2_n}\right)\left(\theta-\frac{\bar{y}^*/(\sigma^2/n^*)+\mu_n/\tau^2_n}{n^*/\sigma^2+1/\tau^2_n}\right)^2\right\}\ d\theta}_{\text{igual a 1}}\\
+&\ \ \ \ \ \ \ (2\pi)^{-1/2}(\frac{\sigma^2}{n^*}\tau_n^2)^{-1/2}(\frac{n^*}{\sigma^2}+\frac{1}{\tau^2_n})^{-1/2}\exp\left\{-\frac{1}{2(\sigma^2/n^*+\tau^2_n)}(\bar{y}^*-\mu_n)^2\right\}\\
+&=(2\pi)^{-1/2}(\frac{\sigma^2}{n^*}\tau_n^2)^{-1/2}(\frac{n^*}{\sigma^2}+\frac{1}{\tau^2_n})^{-1/2}\exp\left\{-\frac{1}{2(\sigma^2/n^*+\tau^2_n)}(\bar{y}^*-\mu_n)^2\right\}\\
+&=(2\pi)^{-1/2}(\frac{\sigma^2}{n^*}+\tau^2_n)^{-1/2}\exp\left\{-\frac{1}{2(\sigma^2/n^*+\tau^2_n)}(\bar{y}^*-\mu_n)^2\right\}
+\end{align*}</div>\EndKnitrBlock{proof}
+<br>
+
+Del anterior resultado, podemos ver que la esperanza de la distribución de $\bar{Y}^*|\mathbf{Y}$ es igual a la esperanza de $\theta|\mathbf{Y}$. A diferencia de la varianza de $\theta|\mathbf{Y}$, la varianza de $\bar{Y}^*|\mathbf{Y}$ tiene un componente adicional dado por $\sigma^2/n^*$. De esta forma, existirán tres fuentes de incertidumbre al momento de pronosticar $\bar{Y}^*$: la incertidumbre en la información previa, la incertidumbre en la muestra observada y la incertidumbre en la nueva muestra.
+
+\BeginKnitrBlock{example}<div class="example"><span class="example" id="exm:unnamed-chunk-73"><strong>(\#exm:unnamed-chunk-73) </strong></span>En @Zhang[Ej. 2.3.6], se reportan datos sobre el grosor de láminas de vidrio templado de 3 cm. para controlar la calidad de una línea de producción. Estos datos son 3.56, 3.36, 2.99, 2.71, 3.31, 3.68, 2.78, 2.95, 2.82, 3.45, 3.42 y 3.15, con promedio de 3.18 cm. Suponga que, por especificaciones técnicas, se conoce que la varianza del grosor es de $0.1 cm^2$. Por otro lado, como información previa, se conoce que en la última inspección de calidad el grosor promedio fue de 2.8 cm. con una desviación estándar de 0.23 cm.
+
+De la anterior información, se puede decir que el parámetro de interés $\theta$ sería el grosor promedio de las láminas. También podemos afirmar que $\sigma^2=0.1cm^2$, $\bar{y}=3.18cm$, $n=12$, y los parámetros de la distribución previa estarían dados por $\mu=2.8cm$ y $\tau=0.45cm$. De esta forma, podemos calcular los parámetros de la distribución posterior
+
+\begin{align*}
+\mu_n
+&=\dfrac{\frac{12}{0.1}3.18+\frac{1}{0.23^2}2.8}{\frac{12}{0.1}+\frac{1}{0.23^2}}=3.13cm\\
+\tau^2_n
+&=\left(\frac{12}{0.1}+\frac{1}{0.23^2}\right)^{-1}=0.007cm^2
+\end{align*}
+
+Entonces, la distribución posterior del grosor promedio será $N(\mu_n=3.13cm,\ \tau^2_n=0.007cm^2)$. Es posible concluir que la estimación bayesiana del parámetro de interés corresponde a $3.13cm$, mientras que para calcular un intervalo de credibilidad de 95% para el parámetro de interés, se debe calcular los percentiles 2.5% y 97.5% de la distribución posterior de $\theta$, dados por $(2.966cm,\ 3.293cm)$.
+
+A continuación se ilustra el uso de `STAN` para obtener la estimación bayesiana del parámetro $\theta$.</div>\EndKnitrBlock{example}
+
+
+
+```r
+NormalMedia <- '
+data {
+  int<lower=0> n;
+  real y[n];
+}
+parameters {
+  real theta;
+}
+model {
+  y ~ normal(theta, 0.1);
+  theta ~ normal(2.8, 0.23);
+}
+'
+
+n <- 12
+y <- c(3.56, 3.36, 2.99, 2.71, 3.31, 3.68, 
+       2.78, 2.95, 2.82, 3.45, 3.42, 3.15)
+
+sample_data <- list(y = y, n = n)
+NormalMfit <- stan(model_code = NormalMedia,
+                   data = sample_data, verbose = FALSE)
+```
+
+
+Después de la convergencia del proceso inferencial, la estimación bayesiana de $\theta$ es 3.1745 cm, mientras que un intervalo de credibilidad del 95\% es $(3.117 cm,\ 3.232 cm)$, resultados muy similares a lo obtenido calculando directamente $\mu_n$ y $\tau^2_n$. 
+
+
+```r
+print(NormalMfit, digits = 4, 
+      pars = "theta", probs = c(0.025, 0.975))
+```
+
+```
+## Inference for Stan model: 1a46eb2f3eff113b3e52c62bed60aed2.
+## 4 chains, each with iter=2000; warmup=1000; thin=1; 
+## post-warmup draws per chain=1000, total post-warmup draws=4000.
+## 
+##         mean se_mean     sd   2.5%  97.5% n_eff   Rhat
+## theta 3.1765   8e-04 0.0289 3.1195 3.2323  1426 1.0016
+## 
+## Samples were drawn using NUTS(diag_e) at Sun Jun  6 23:46:02 2021.
+## For each parameter, n_eff is a crude measure of effective sample size,
+## and Rhat is the potential scale reduction factor on split chains (at 
+## convergence, Rhat=1).
+```
+
+Las figuras \@ref(fig:posNormalMStan) muestra la distribución posterior para este ejemplo, junto con la estimación puntual, correspondiente a la media. 
+
+
+```r
+bayesplot::mcmc_areas(NormalMfit, pars = "theta", 
+                      prob = 0.95)
+```
+
+<div class="figure" style="text-align: center">
+<img src="3Uniparametricos_files/figure-html/posNormalMStan-1.svg" alt="Distribución posterior." width="576" />
+<p class="caption">(\#fig:posNormalMStan)Distribución posterior.</p>
+</div>
+
+En el siguiente ejemplo se ilustra el uso de la distribución predictiva posterior. 
+
+\BeginKnitrBlock{example}<div class="example"><span class="example" id="exm:unnamed-chunk-76"><strong>(\#exm:unnamed-chunk-76) </strong></span>Suponga que la fábrica debe hacer un despacho de 8 láminas, y se quiere conocer sobre el grosor promedio del despacho $\bar{y}^*$. Usando el resultado \@ref(prp:PredNorm), se tiene que la disribución de $\bar{Y}^*$ condicionado en los 12 datos observados está dada por 
+
+\begin{equation*}
+\bar{Y}^*|\mathbf{Y}\ \sim N\left(\mu_n,\ \frac{\sigma^2}{n^*}+\tau^2_n\right) = N\left(3.13cm,\ \frac{0.1}{8}+0.007\right) = N(3.13cm,\ 0.0195cm^2)
+\end{equation*}
+
+De esta forma, se puede afirmar que el grosor promedio del despacho es de 3.13cm con un intervalo del 95% dado por (2.85cm, 3.40cm). Nótese que el intervalo para $\bar{Y}^{*}$ es más ancho que el intervalo para $\theta$, pues este tiene una varianza mayor a la varianza de la distribución posterior de $\theta$.</div>\EndKnitrBlock{example}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

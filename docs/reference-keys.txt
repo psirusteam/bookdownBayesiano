@@ -85,6 +85,15 @@ fig:posExponencialStan1
 fig:posExponencialStan2
 exm:unnamed-chunk-65
 fig:PredPostExpoEje
+prp:unnamed-chunk-67
+eq:TauSigman
+fig:ComparaNormal
+prp:unnamed-chunk-69
+prp:unnamed-chunk-71
+prp:PredNorm
+exm:unnamed-chunk-73
+fig:posNormalMStan
+exm:unnamed-chunk-76
 prp:unnamed-chunk-2
 def:unnamed-chunk-3
 prp:unnamed-chunk-4
@@ -185,6 +194,10 @@ modelo-binomial
 modelo-binomial-negativo
 modelo-poisson
 modelo-exponencial
+modelo-normal-con-media-desconocida-y-varianza-conocida
+distribución-previa-no-informativa-para-theta
+diferentes-formas-de-hallar-la-distribución-previa-para-theta
+distribuciones-predictivas
 elementos-de-probabilidad
 distribuciones-discretas
 distribución-uniforme-discreta

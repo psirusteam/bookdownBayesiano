@@ -32,7 +32,7 @@
   
   
 <link rel="prev" href="modelo-poisson.html"/>
-<link rel="next" href="elementos-de-probabilidad.html"/>
+<link rel="next" href="modelo-normal-con-media-desconocida-y-varianza-conocida.html"/>
 <script src="libs/header-attrs-2.8/header-attrs.js"></script>
 <script src="libs/jquery-2.2.3/jquery.min.js"></script>
 <link href="libs/gitbook-2.6.7/css/style.css" rel="stylesheet" />
@@ -197,6 +197,12 @@ div.csl-indent {
 <li class="chapter" data-level="3.3" data-path="modelo-binomial-negativo.html"><a href="modelo-binomial-negativo.html"><i class="fa fa-check"></i><b>3.3</b> Modelo Binomial negativo</a></li>
 <li class="chapter" data-level="3.4" data-path="modelo-poisson.html"><a href="modelo-poisson.html"><i class="fa fa-check"></i><b>3.4</b> Modelo Poisson</a></li>
 <li class="chapter" data-level="3.5" data-path="modelo-exponencial.html"><a href="modelo-exponencial.html"><i class="fa fa-check"></i><b>3.5</b> Modelo Exponencial</a></li>
+<li class="chapter" data-level="3.6" data-path="modelo-normal-con-media-desconocida-y-varianza-conocida.html"><a href="modelo-normal-con-media-desconocida-y-varianza-conocida.html"><i class="fa fa-check"></i><b>3.6</b> Modelo Normal con media desconocida y varianza conocida</a>
+<ul>
+<li class="chapter" data-level="3.6.1" data-path="modelo-normal-con-media-desconocida-y-varianza-conocida.html"><a href="modelo-normal-con-media-desconocida-y-varianza-conocida.html#distribución-previa-no-informativa-para-theta"><i class="fa fa-check"></i><b>3.6.1</b> Distribución previa no informativa para <span class="math inline">\(\theta\)</span></a></li>
+<li class="chapter" data-level="3.6.2" data-path="modelo-normal-con-media-desconocida-y-varianza-conocida.html"><a href="modelo-normal-con-media-desconocida-y-varianza-conocida.html#diferentes-formas-de-hallar-la-distribución-previa-para-theta"><i class="fa fa-check"></i><b>3.6.2</b> Diferentes formas de hallar la distribución previa para <span class="math inline">\(\theta\)</span></a></li>
+<li class="chapter" data-level="3.6.3" data-path="modelo-normal-con-media-desconocida-y-varianza-conocida.html"><a href="modelo-normal-con-media-desconocida-y-varianza-conocida.html#distribuciones-predictivas"><i class="fa fa-check"></i><b>3.6.3</b> Distribuciones predictivas</a></li>
+</ul></li>
 </ul></li>
 <li class="appendix"><span><b>Apéndice</b></span></li>
 <li class="chapter" data-level="A" data-path="elementos-de-probabilidad.html"><a href="elementos-de-probabilidad.html"><i class="fa fa-check"></i><b>A</b> Elementos de probabilidad</a>
@@ -562,35 +568,34 @@ p(\bar{Y}^*|\mathbf{Y})=\frac{1}{\bar{Y}^*Beta(n,n^*)}\left(\frac{\sum_{i=1}^ny_
 <span id="cb54-19"><a href="modelo-exponencial.html#cb54-19" aria-hidden="true" tabindex="-1"></a>Expofit <span class="ot">&lt;-</span> <span class="fu">stan</span>(<span class="at">model_code =</span> Exponencial,</span>
 <span id="cb54-20"><a href="modelo-exponencial.html#cb54-20" aria-hidden="true" tabindex="-1"></a>                <span class="at">data =</span> sample_data, <span class="at">verbose =</span> <span class="cn">FALSE</span>)</span></code></pre></div>
 <p>Después de las iteraciones, los resultados de este código muestran una estimación para <span class="math inline">\(\theta\)</span> de 0.0026 con un intervalo de credibilidad de (0.00208, 0.00332). Para la media <span class="math inline">\(1/\theta\)</span>, se tiene una estimación puntual de 381.4 con un intervalo de credibilidad de (302.2, 485.8). La mediana se estimó en 376.8 días de sobrevivencia.</p>
-<div class="sourceCode" id="cb55"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb55-1"><a href="modelo-exponencial.html#cb55-1" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(Expofit, <span class="at">digits =</span> <span class="dv">4</span>, <span class="at">pars =</span> <span class="fu">c</span>(<span class="st">&quot;theta&quot;</span>, <span class="st">&quot;invtheta&quot;</span>))</span></code></pre></div>
+<div class="sourceCode" id="cb55"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb55-1"><a href="modelo-exponencial.html#cb55-1" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(Expofit, <span class="at">digits =</span> <span class="dv">4</span>, </span>
+<span id="cb55-2"><a href="modelo-exponencial.html#cb55-2" aria-hidden="true" tabindex="-1"></a>      <span class="at">pars =</span> <span class="fu">c</span>(<span class="st">&quot;theta&quot;</span>, <span class="st">&quot;invtheta&quot;</span>),</span>
+<span id="cb55-3"><a href="modelo-exponencial.html#cb55-3" aria-hidden="true" tabindex="-1"></a>      <span class="at">probs =</span> <span class="fu">c</span>(<span class="fl">0.025</span>, <span class="fl">0.975</span>))</span></code></pre></div>
 <pre><code>## Inference for Stan model: 1e6dccb88d5f711b516d61c512b5ced4.
 ## 4 chains, each with iter=2000; warmup=1000; thin=1; 
 ## post-warmup draws per chain=1000, total post-warmup draws=4000.
 ## 
-##              mean se_mean      sd     2.5%      25%      50%      75%    97.5%
-## theta      0.0027  0.0000  0.0003   0.0021   0.0024   0.0026   0.0029   0.0033
-## invtheta 382.7474  1.1865 47.1055 300.9592 350.1393 377.9283 410.6681 487.4307
-##          n_eff   Rhat
-## theta     1653 1.0015
-## invtheta  1576 1.0014
+##              mean se_mean      sd     2.5%    97.5% n_eff   Rhat
+## theta      0.0027  0.0000  0.0003   0.0021   0.0033  1634 0.9999
+## invtheta 381.9284  1.1482 46.7530 301.9569 483.5668  1658 0.9999
 ## 
-## Samples were drawn using NUTS(diag_e) at Sun Jun  6 17:29:01 2021.
+## Samples were drawn using NUTS(diag_e) at Sun Jun  6 23:45:23 2021.
 ## For each parameter, n_eff is a crude measure of effective sample size,
 ## and Rhat is the potential scale reduction factor on split chains (at 
 ## convergence, Rhat=1).</code></pre>
 <p>Las figuras <a href="modelo-exponencial.html#fig:posExponencialStan1">3.15</a> y <a href="modelo-exponencial.html#fig:posExponencialStan2">3.16</a> muestra la distribución posterior para este ejemplo, junto con la estimación puntual, correspondiente a la media.</p>
 <div class="sourceCode" id="cb57"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb57-1"><a href="modelo-exponencial.html#cb57-1" aria-hidden="true" tabindex="-1"></a>bayesplot<span class="sc">::</span><span class="fu">mcmc_areas</span>(Expofit, <span class="at">pars =</span> <span class="st">&quot;theta&quot;</span>, </span>
 <span id="cb57-2"><a href="modelo-exponencial.html#cb57-2" aria-hidden="true" tabindex="-1"></a>                      <span class="at">prob =</span> <span class="fl">0.95</span>)</span></code></pre></div>
-<div class="figure"><span id="fig:posExponencialStan1"></span>
-<img src="3Uniparametricos_files/figure-html/posExponencialStan1-1.svg" alt="Distribución posterior." width="672" />
+<div class="figure" style="text-align: center"><span id="fig:posExponencialStan1"></span>
+<img src="3Uniparametricos_files/figure-html/posExponencialStan1-1.svg" alt="Distribución posterior." width="576" />
 <p class="caption">
 Figura 3.15: Distribución posterior.
 </p>
 </div>
 <div class="sourceCode" id="cb58"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb58-1"><a href="modelo-exponencial.html#cb58-1" aria-hidden="true" tabindex="-1"></a>bayesplot<span class="sc">::</span><span class="fu">mcmc_areas</span>(Expofit, <span class="at">pars =</span> <span class="st">&quot;invtheta&quot;</span>, </span>
 <span id="cb58-2"><a href="modelo-exponencial.html#cb58-2" aria-hidden="true" tabindex="-1"></a>                      <span class="at">prob =</span> <span class="fl">0.95</span>)</span></code></pre></div>
-<div class="figure"><span id="fig:posExponencialStan2"></span>
-<img src="3Uniparametricos_files/figure-html/posExponencialStan2-1.svg" alt="Distribución posterior." width="672" />
+<div class="figure" style="text-align: center"><span id="fig:posExponencialStan2"></span>
+<img src="3Uniparametricos_files/figure-html/posExponencialStan2-1.svg" alt="Distribución posterior." width="576" />
 <p class="caption">
 Figura 3.16: Distribución posterior.
 </p>
@@ -618,18 +623,13 @@ El cálculo de esta función predictiva se puede llevar a cabo con el siguiente 
 <span id="cb59-12"><a href="modelo-exponencial.html#cb59-12" aria-hidden="true" tabindex="-1"></a><span class="fu">integrate</span>(pred_exp, <span class="fl">0.0001</span>, <span class="dv">10000</span>)</span></code></pre></div>
 <pre><code>## 1 with absolute error &lt; 3.2e-10</code></pre>
 <p>La distribución predictiva de esta función se puede visualizar en la Figura <a href="modelo-exponencial.html#fig:PredPostExpoEje">3.17</a>, donde se puede ver que la mayor masa de la función se acumula alrededor de los 300 días. Usando el comando <code>integrate(pred_exp, 800, 10000)</code>, también se puede observar que la probabilidad de que en promedio los cinco pacientes sobrevivan más de 800 días es de 0.0264485.</p>
-<div class="figure"><span id="fig:PredPostExpoEje"></span>
-<img src="3Uniparametricos_files/figure-html/PredPostExpoEje-1.svg" alt="Distribución predictiva posterior para el tiempo promedio de sobrevivencia de transplante de corazón." width="672" />
+<div class="figure" style="text-align: center"><span id="fig:PredPostExpoEje"></span>
+<img src="3Uniparametricos_files/figure-html/PredPostExpoEje-1.svg" alt="Distribución predictiva posterior para el tiempo promedio de sobrevivencia de transplante de corazón." width="576" />
 <p class="caption">
 Figura 3.17: Distribución predictiva posterior para el tiempo promedio de sobrevivencia de transplante de corazón.
 </p>
 </div>
-
 </div>
-<!-- </div> -->
-
-
-
 <h3>Referencias</h3>
 <div id="refs" class="references csl-bib-body hanging-indent">
 <div id="ref-survi" class="csl-entry">
@@ -645,7 +645,7 @@ Therneau, T., y T. Lumley. 2011. <em>survival: Survival analysis, including pena
         </div>
       </div>
 <a href="modelo-poisson.html" class="navigation navigation-prev " aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
-<a href="elementos-de-probabilidad.html" class="navigation navigation-next " aria-label="Next page"><i class="fa fa-angle-right"></i></a>
+<a href="modelo-normal-con-media-desconocida-y-varianza-conocida.html" class="navigation navigation-next " aria-label="Next page"><i class="fa fa-angle-right"></i></a>
     </div>
   </div>
 <script src="libs/gitbook-2.6.7/js/app.min.js"></script>

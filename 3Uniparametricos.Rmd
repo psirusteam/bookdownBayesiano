@@ -1,7 +1,11 @@
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(warning = FALSE, 
                       message = FALSE,
-                      cache = TRUE)
+                      cache = TRUE,
+                      fig.width=6, 
+                      fig.height=4,
+                      fig.align="center") 
+
 library(rstan)
 library(printr)
 library(knitr)
@@ -1058,6 +1062,7 @@ for(y in 5:5000){
 
 sum(fun)
 ```
+
 ```{r, jefber, echo = FALSE, fig.cap="Distribución predictiva posterior para el número de entrevistas necesarias para encontrar 5 pacientes."}
 func <- data.frame(time = 5:5000, y = fun)
  ggplot(func, aes(time, y)) + 
@@ -1620,7 +1625,9 @@ Expofit <- stan(model_code = Exponencial,
 Después de las iteraciones, los resultados de este código muestran una estimación para	 $\theta$ de 0.0026 con un intervalo de credibilidad de (0.00208, 0.00332). Para la media $1/\theta$, se tiene una estimación puntual de 381.4 con un intervalo de credibilidad de (302.2, 485.8). La mediana se estimó en 376.8 días de sobrevivencia.
 
 ```{r}
-print(Expofit, digits = 4, pars = c("theta", "invtheta"))
+print(Expofit, digits = 4, 
+      pars = c("theta", "invtheta"),
+      probs = c(0.025, 0.975))
 ```
 
 Las figuras \@ref(fig:posExponencialStan1) y \@ref(fig:posExponencialStan2) muestra la distribución posterior para este ejemplo, junto con la estimación puntual, correspondiente a la media. 
@@ -1670,6 +1677,381 @@ ggplot(data = data.frame(x = 0),
   ylab("Densidad predictiva") + 
   stat_function(fun = pred_exp) + xlim(0.01,1500)
 ```
+
+## Modelo Normal con media desconocida y varianza conocida
+
+En esta sección se consideran datos que pueden ser descritos adecuadamente por medio de la distribución normal la cual, a diferencia de las anteriores distribuciones consideradas, tiene dos parámetros. En esta parte, se asume que la varianza teórica es conocida y el objetivo es estimar la media teórica. En el siguiente capítulo se considerará el caso general cuando ambos parámetros son desconocidos.
+
+Suponga que $Y_1,\cdots,Y_n$ son variables independientes e idénticamente distribuidos con distribución $Normal(\theta,\sigma^2)$ con $\theta$ desconocido pero $\sigma^2$ conocido. De esta forma, la función de verosimilitud de los datos está dada por
+
+\begin{align*}
+p(\mathbf{Y} \mid \theta)&=\prod_{i=1}^n\frac{1}{\sqrt{2\pi\sigma^2}}\exp\left\{-\frac{1}{2\sigma^2}(y_i-\theta)^2\right\}I_\mathbb{R}(y)\\
+&=(2\pi\sigma^2)^{-n/2}\exp\left\{-\frac{1}{2\sigma^2}\sum_{i=1}^n(y_i-\theta)^2\right\}
+\end{align*}
+
+Como el parámetro $\theta$ puede tomar cualquier valor en los reales, es posible asignarle una distribución previa $\theta \sim Normal(\mu,\tau^2)$. Bajo este marco de referencia se tienen los siguientes resultados
+
+```{proposition}
+La distribución posterior del parámetro de interés $\theta$ sigue una distribución
+
+\begin{equation*}
+\theta|\mathbf{Y} \sim Normal(\mu_n,\tau^2_n).
+\end{equation*}
+
+En donde
+
+\begin{equation}
+(\#eq:TauSigman)
+\mu_n=\frac{\frac{n}{\sigma^2}\bar{Y}+\frac{1}{\tau^2}\mu}{\frac{n}{\sigma^2}+\frac{1}{\tau^2}}
+\ \ \ \ \ \ \ \text{y} \ \ \ \ \ \ \
+\tau_n^2=\left(\frac{n}{\sigma^2}+\frac{1}{\tau^2}\right)^{-1}
+\end{equation}
+``` 
+<br>
+
+```{proof}
+\begin{align*}
+p(\theta \mid \mathbf{Y})&\propto p(\mathbf{Y} \mid \theta)p(\theta \mid \mu,\tau^2)\\
+&\propto \exp\left\{-\frac{1}{2\sigma^2}\sum_{i=1}^n(y_i-\theta)^2-\frac{1}{2\tau^2}(\theta-\mu)^2\right\}\\
+&= \exp\left\{-\frac{1}{2}\left[\frac{\sum_{i=1}^n(y_i-\theta)^2}{\sigma^2}+\frac{(\theta-\mu)^2}{\tau^2}\right]\right\}\\
+&\propto \exp\left\{-\frac{1}{2}\left[\frac{n\theta^2}{\sigma^2}-\frac{2\theta\sum_{i=1}^ny_i}{\sigma^2}+\frac{\theta^2}{\tau^2}-\frac{2\theta\mu}{\tau^2}\right]\right\}\\
+&= \exp\left\{-\frac{\theta^2}{2}\left[\frac{n}{\sigma^2}+\frac{1}{\tau^2}\right]+
+\theta\left[\frac{n\bar{y}}{\sigma^2}+\frac{\mu}{\tau^2}\right]\right\}\\
+&= \exp\left\{-\frac{\theta^2}{2\tau^2_n}+\frac{\theta\mu_n}{\tau_n^2}\right\}\\
+&= \exp\left\{-\frac{1}{2\tau^2_n}(\theta^2-2\theta\mu_n)\right\}\\
+&\propto \exp\left\{-\frac{1}{2\tau^2_n}(\theta^2-2\theta\mu_n+\mu_n^2)\right\}\\
+&= \exp\left\{-\frac{1}{2\tau^2_n}(\theta-\mu_n)^2\right\}
+\end{align*}
+
+Por lo tanto, se encuentra una expresión idéntica a la función de distribución de una variable aleatoria con distribución $Normal(\mu_n,\tau_n^2)$.
+``` 
+<br>
+
+Observando la forma de $\mu_n$, que corresponde a la estimación bayesiana del parámetro $\theta$, podemos concluir que este es una combinación convexa entre el estimador clásico de máxima verosimlitud $\hat{\theta}_C=\bar{y}$ y el estimador previo $\hat{\theta}_P=\mu$, puesto que:
+
+\begin{align*}
+\hat{\theta}_B=\mu_n&=\frac{\frac{n}{\sigma^2}\bar{Y}+\frac{1}{\tau^2}\mu}{\frac{n}{\sigma^2}+\frac{1}{\tau^2}}\\
+&=\frac{\frac{n}{\sigma^2}}{\frac{n}{\sigma^2}+\frac{1}{\tau^2}}\bar{Y}+\frac{\frac{1}{\tau^2}}{\frac{n}{\sigma^2}+\frac{1}{\tau^2}}\mu\\
+&=\frac{\frac{n}{\sigma^2}}{\frac{n}{\sigma^2}+\frac{1}{\tau^2}}\hat{\theta}_C+\frac{\frac{1}{\tau^2}}{\frac{n}{\sigma^2}+\frac{1}{\tau^2}}\hat{\theta}_P
+\end{align*}
+
+De donde se puede concluir que, para una distribución previa fija, entre mayor sea el tamaño muestral $n$, más peso tendrá el estimador clásico $\hat{\theta}_C$ en la estimación bayesiana. De la misma forma, para un conjunto fijo de datos $\mathbf{Y}$, entre menor sea la varianza previa, $\tau^2$, más certeza tenemos sobre la información previa y por consiguiente la estimación bayesiana $\mu_n$ se acercará más a la estimación previa. En la Figura \@ref(eq:ComparaNormal) se observa la función de densidad previa, función de verosimilitud y función de densidad posterior con $\mu=5$, $\tau^2=0.01$, $\bar{y}=2$, $\sigma^2=1$ y $n=5,10,50,200$. Podemos observar que a medida que el tamaño muestral $n$ aumente, la función de verosimilitud (vista como la función del parámetro $\theta$) se vuelve más concentrada alrededor del valor de $\bar{y}$, y a consecuencia, la función de densidad posterior de $\theta$ se sitúa más cercana a la función de verosimilitud, y la estimación bayesiana se acerca más a la estimación clásica $\bar{y}$.
+
+```{r ComparaNormal, fig.cap="Distribución previa, función de verosimilitud y distribución posterior del parámetro $\\theta$ con $\\mu=5$, $\\tau^2=0.01$, $\\bar{y}=2$, $\\sigma^2=1$ y $n=5,10,50,200$.", echo=FALSE}
+
+mu <- 5
+tau2 <- 0.01
+n <- c(5, 10, 50, 200)
+sigma2 <- 1
+y.bar <- 2
+mu.n <- ((n/sigma2) * y.bar + mu/tau2)/(n/sigma2 + 1/tau2)
+tau2.n <- (n/sigma2 + 1/tau2)^(-1)
+
+previa <- function(x){
+	dnorm(x, mu, sqrt(tau2))
+}
+verosi1 <- function(x){
+	(2 * pi * sigma2)^(- n[1]/2) *
+    exp(- (n[1] * x^2 - 2 * n[1] * y.bar * x)/(2 * sigma2))
+}
+veros1 <- function(x){
+	verosi1(x)/integrate(verosi1, -20, 20)$value 
+}
+posterior1 <- function(x){
+	dnorm(x, mu.n[1], sqrt(tau2.n[1]))
+}
+verosi2 <- function(x){
+	(2 * pi * sigma2)^(- n[2]/2) *
+    exp(- (n[2] * x^2 - 2 * n[2] * y.bar * x)/(2 * sigma2))
+}
+veros2 <- function(x){
+	verosi2(x)/integrate(verosi2, -20, 20)$value
+}
+posterior2 <- function(x){
+	dnorm(x, mu.n[2], sqrt(tau2.n[2]))
+}
+verosi3 <- function(x){
+	(2 * pi * sigma2)^(- n[3]/2) *
+    exp(- (n[3] * x^2 - 2 * n[3] * y.bar * x)/(2 * sigma2))
+}
+veros3 <- function(x){
+	verosi3(x)/integrate(verosi3, -20, 20)$value
+}
+posterior3 <- function(x){
+	dnorm(x, mu.n[3], sqrt(tau2.n[3]))
+}
+verosi4 <- function(x){
+	(2 * pi * sigma2)^(- n[4]/2) *
+    exp(- (n[4] * x^2 - 2 * n[4] * y.bar * x)/(2 * sigma2))
+}
+veros4 <- function(x){
+	verosi4(x)/integrate(verosi4, -20, 20)$value
+}
+posterior4 <- function(x){
+	dnorm(x, mu.n[4], sqrt(tau2.n[4]))
+}
+
+p <- ggplot(data = data.frame(x = 0), 
+            mapping = aes(x = x)) + 
+  ylab("") + xlab("theta")
+
+p1 <- p + 
+  stat_function(stat = "function", fun = previa, 
+                mapping = aes(linetype = "dashed")) +
+  stat_function(stat = "function", fun = posterior1, 
+        mapping = aes(linetype = "solid")) +
+  stat_function(stat = "function", fun = veros1, 
+        mapping = aes(linetype = "dotdash")) +
+  xlim(1, 6) + ggtitle("n=5") + 
+  theme(legend.position = "none")
+
+p2 <- p + 
+  stat_function(stat="function", fun = previa, 
+                mapping = aes(linetype = "dashed")) + 
+	stat_function(stat = "function", fun = posterior2, 
+	              mapping = aes(linetype = "solid")) +
+  stat_function(stat = "function", fun = veros2, 
+                mapping = aes(linetype = "dotdash")) +
+  xlim(1, 6) + ggtitle("n=10") +
+  scale_linetype_manual(name = "",
+  values = c("solid","dashed","dotdash"),
+  label=c("Previa","Verosimilitud","Posterior")) +
+  theme(legend.text = element_text(size = 10))
+
+p3 <- p + 
+  stat_function(stat = "function", fun = previa, 
+                mapping = aes(linetype="dashed")) +
+  stat_function(stat = "function", fun = posterior3, 
+                mapping = aes(linetype="solid")) +
+  stat_function(stat = "function", fun = veros3, 
+                mapping = aes(linetype="dotdash")) +
+  xlim(1, 6) + ggtitle("n=50") +
+  theme(legend.position="none")
+
+p4 <- p + 
+  stat_function(stat = "function", fun = previa, 
+                mapping = aes(linetype = "dashed")) +
+	stat_function(stat = "function", fun = posterior4, 
+	              mapping = aes(linetype = "solid")) +
+  stat_function(stat = "function", fun = veros4, 
+                mapping = aes(linetype = "dotdash")) +
+  xlim(1, 6) + ggtitle("n=200") +
+  scale_linetype_manual(name = "",
+  values=c("solid","dashed","dotdash"),
+	label=c("Previa","Verosimilitud","Posterior")) +
+  theme(legend.text = element_text(size=10))
+		
+library(patchwork)
+(p1 + p2) / (p3 + p4)
+```
+
+
+### Distribución previa no informativa para $\theta$
+
+Por otro lado, nótese que en el caso en donde se desconozca el comportamiento estructural de $\theta$, es posible definir su distribución previa tan plana y vaga como sea posible. Para esto, basta con hacer tender al parámetro de precisión de la distribución previa hacia infinito. Es decir $\tau^2 \longrightarrow \infty$, en este caso, la distribución previa de $\theta$ corresponde a una distribución impropia, $p(\theta)\propto cte$. Se puede ver que bajo esta distribución previa, la distribución posterior tendería a una $Normal(\bar{y},\sigma^2/n)$.
+
+La anterior idea intuitiva de usar la distribución previa $p(\theta)\propto cte$ para representar la falta de la información *a priori* corresponde a la distribución previa no informativa de Jeffreys, puesto que la información de Fisher del parámetro $\theta$ en una variable con distribución normal está dada por 
+
+\begin{equation*}
+I(\theta)=1/\sigma^2
+\end{equation*}
+
+De donde se puede concluir que la previa no informativa de Jeffreys está dada por 
+\begin{equation*}
+p(\theta)\propto 1/\sigma\propto cte
+\end{equation*}
+
+Finalmente, es posible comparar los resultados inferenciales obtenidos con la previa no informativa de Jeffreys y el enfoque inferencial clásico en términos de la estimación puntual y el intervalo de credibilidad y de confianza. En cuanto a la estimación puntual, es claro que ambos enfoques conducen al mismo estimador $\hat{\theta}=\bar{Y}$. Con respecto al intervalo para el parámetro $\theta$, al usar el enfoque bayesiano con la previa no informativa de Jeffreys, el intervalo de credibilidad de $(1-\alpha)\times 100\%$ está dado por los percentiles $\alpha/2$ y $1-\alpha/2$ de la distribución posterior de $\theta$: $Normal(\bar{y},\sigma^2/n)$. Al denotar estos percentiles como $a$ y $b$, respectivamente. 
+Por definición tenemos que, si $X\sim N(\bar{y},\sigma^2/n)$
+
+\begin{align*}
+\alpha/2&=Pr(X<a)\\
+&=Pr(\frac{X-\bar{y}}{\sigma/\sqrt{n}}<\frac{a-\bar{y}}{\sigma/\sqrt{n}})\\
+&=Pr(Z < \frac{a-\bar{y}}{\sigma/\sqrt{n}})
+\end{align*}
+
+Estos es, $\frac{a-\bar{y}}{\sigma/\sqrt{n}}$ es el percentil $\alpha/2$ de la distribución normal estándar $z_{\alpha/2}$ o equivalentemente $-z_{1-\alpha/2}$. De esta forma, tenemos que $a=\bar{y}-z_{1-\alpha/2}\ \sigma/\sqrt{n}$. Análogamente tenemos que $b=\bar{y}+z_{1-\alpha/2}\ \sigma/\sqrt{n}$, y podemos concluir que un intervalo de credibilidad de $(1-\alpha)\times 100\%$ está dada por $\bar{y}\pm z_{1-\alpha/2}\ \sigma/\sqrt{n}$, el cual coincide con el intervalo de confianza para $\theta$ usando el enfoque de la inferencia clásica [@Zhang].
+
+### Diferentes formas de hallar la distribución previa para $\theta$
+
+En primer lugar, considere el caso para el cual la información previa se encuentra en un conjunto de datos $x_1,\cdots,x_{m}$ que corresponden a mediciones de la variable de estudio en otro punto del tiempo, en otro punto geográfico, o inclusive en otra población de estudio. En este caso, podemos tomar la media de la distribución previa $\mu$ como $\bar{x}$ y la varianza de la distribución previa $\tau^2$ como $S^2_x$.
+
+En el caso en el que no se disponga de datos como información previa, sino que esta esté contenida en alguna estimación que se haya realizado anteriormente sobre $\theta$. Por ejemplo, si se dispone de algún modelamiento estadístico que se haya hecho previamente sobre $\theta$, es posible fácilmente obtener el valor estimado de $\theta$ y el error estándar de esta estimación y naturalmente estos dos valores serían los parámetros de la distribución previa: $\mu$ y $\tau^2$. 
+
+Finalmente, si la estimación previa de $\theta$ se presenta en forma de un intervalo; por ejemplo, si se sabe que un intervalo de confianza para $\theta$ es $(15.3,\ 24.7)$, entonces es posible definir a $\mu$ como el punto medio de este intervalo, es decir, $\mu=20$ y para escoger el valor de $\tau^2$ se tiene en cuenta que en muchas ramas de la estadística, un intervalo de confianza se puede aproximar por $\hat{\theta}\pm 2\sqrt{var(\hat{\theta})}$. De esta forma, se puede definir $\tau^2=\left(\frac{24.7-20}{2}\right)^2\approx5.5$
+
+### Distribuciones predictivas
+
+Los siguientes resultados presentan las distribuciones predictivas previa y predictiva posterior para una observación o una nueva muestra.
+
+```{proposition}
+La distribución predictiva previa para una observación $y$ estáa dada por 
+
+\begin{equation*}
+y \sim Normal (\mu, \tau^2+\sigma^2)
+\end{equation*}
+``` 
+<br>
+
+```{proof}
+De la definición de función de distribución predictiva se tiene que
+
+\begin{align*}
+p(Y)&=\int p(Y \mid \theta)p(\theta \mid \mu,\tau^2)\ d\theta\\
+&=\int_{-\infty}^{\infty} \frac{1}{\sqrt{2\pi\sigma^2}}\exp\left\{-\frac{1}{2\sigma^2}(y-\theta)^2\right\}
+\frac{1}{\sqrt{2\pi\tau^2}}\exp\left\{-\frac{1}{2\tau^2}(\theta-\mu)^2\right\}d\theta
+\end{align*}
+
+@Berger desarrolló las siguientes igualdades
+
+\begin{align*}
+&\ \ \ \ \frac{1}{2}\left[\frac{(\theta-\mu)^2}{\tau^2}+\frac{(y-\theta)^2}{\sigma^2}\right]\\
+&=\frac{1}{2}\left[\left(\frac{1}{\tau^2}+\frac{1}{\sigma^2}\right)\theta^2-2\left(\frac{\mu}{\tau^2}+\frac{y}{\sigma^2}\right)\theta+\left(\frac{\mu^2}{\tau^2}+\frac{y^2}{\sigma^2}\right)\right]\\
+&=\frac{1}{2\tau_1^2}\left[\theta^2-2\tau_1^2\left(\frac{\mu}{\tau^2}+\frac{y}{\sigma^2}\right)\theta+\tau_1^4\left(\frac{\mu}{\tau^2}+\frac{y}{\sigma^2}\right)^2\right]+\frac{1}{2}\left(\frac{\mu^2}{\tau^2}+\frac{y^2}{\sigma^2}\right)-\frac{\tau_1^2}{2}\left(\frac{\mu}{\tau^2}+\frac{y}{\sigma^2}\right)^2\\
+&=\frac{1}{2\tau_1^2}\left[\theta-\tau_1^2\left(\frac{\mu}{\tau^2}+\frac{y}{\sigma^2}\right)\right]^2+\frac{1}{2}\left[\left(\frac{1}{\sigma^2}-\frac{\tau_1^2}{\sigma^4}\right)y^2-2\frac{\mu\tau_1^2}{\tau^2\sigma^2}y+\left(\frac{\mu^2}{\tau^2}-\frac{\mu^2\tau_1^2}{\tau^4}\right)\right]\\
+&=\frac{1}{2\tau_1^2}\left[\theta-\mu_1\right]^2+\frac{1}{2}\left[\frac{1}{\sigma^2+\tau^2}y^2-2\frac{\mu}{\sigma^2+\tau^2}y+\frac{\mu^2}{\sigma^2+\tau^2}\right]\\
+&=\frac{1}{2\tau_1^2}\left[\theta-\mu_1\right]^2+\frac{1}{2(\sigma^2+\tau^2)}(y-\mu)^2
+\end{align*}
+
+Entonces
+
+\begin{align*}
+p(Y)&=\int_{-\infty}^{\infty} \frac{1}{2\pi\sigma\tau}\exp\left\{-\frac{1}{2\tau_1^2}(\theta-\mu_1)^2\right\}
+\exp\left\{-\frac{1}{2(\tau^2+\sigma^2)}(y-\mu)^2\right\}d\theta\\
+&= \frac{1}{\sqrt{2\pi\frac{\sigma^2\tau^2}{\tau_1^2}}}\exp\left\{-\frac{1}{2(\tau^2+\sigma^2)}(y-\mu)^2\right\}
+\int_{-\infty}^{\infty} \frac{1}{\sqrt{2\pi\tau_1^2}}\exp\left\{-\frac{1}{2\tau_1^2}(\theta-\mu_1)^2\right\}d\theta\\
+&= \frac{1}{\sqrt{2\pi(\tau^2+\sigma^2)}}\exp\left\{-\frac{1}{2(\tau^2+\sigma^2)}(y-\mu)^2\right\}
+\end{align*}
+``` 
+<br>
+
+Una vez recolectados los datos $\mathbf{Y}=\{Y_1,\cdots,Y_n\}$, se obtiene la distribución predictiva posterior dada en el siguiente resultado. La demostración es similar al del resultado anterior.
+
+```{proposition}
+La distribución predictiva posterior para una nueva observación $\tilde{y}$ es
+\begin{equation*}
+\tilde{y} \mid \mathbf{Y} \sim Normal (\mu_n, \tau_n^2+\sigma^2)
+\end{equation*}
+``` 
+<br>
+
+En algunas situaciones, se quiere conocer el comportamiento probabilístico de más de una nueva observación, digamos $Y_1^*,\cdots,Y_{n^*}^*$, en este caso, lo ideal sería obtener la distribución conjunta predictiva posterior de la nueva muestra, $p(Y_1^*,\cdots,Y_{n^*}^*|\mathbf{Y})$. Sin embargo, esta distribución no es fácil de hallar, por lo que el énfasis se pondrá en la distribución predictiva posterior de la media de esta nueva muestra $\bar{Y}^*$, la cual está dada en el siguiente resultado. 
+
+```{proposition, PredNorm}
+La distribución predictiva posterior para la media muestral $\bar{Y}^*$ de una nueva muestra es 
+
+\begin{equation*}
+\bar{Y}^*|\mathbf{Y}\ \sim N\left(\mu_n, \frac{\sigma^2}{n^*}+\tau^2_n\right)
+\end{equation*}
+
+donde $\mu_n$ y $\tau^2_n$ fueron definidos en \@ref(eq:TauSigman).
+``` 
+<br>
+
+```{proof}
+\begin{align*}
+p(\bar{Y}^*|\mathbf{Y})&=\int_{-\infty}^\infty p(\bar{Y}^*|\theta)p(\theta|\mathbf{Y})\ d\theta\\
+&=\int_{-\infty}^\infty (2\pi\frac{\sigma^2}{n^*})^{-1/2}\exp\left\{-\frac{n^*}{2\sigma^2}(\bar{y}^*-\theta)^2\right\}
+(2\pi\tau_n^2)^{-1/2}\exp\left\{-\frac{1}{2\tau_n^2}(\theta-\mu_n)^2\right\}\ d\theta\\
+&=\int_{-\infty}^\infty (2\pi)^{-1}(\frac{\sigma^2}{n^*}\tau_n^2)^{-1/2}\exp\left\{-\frac{1}{2}\left[\frac{(\bar{y}^*-\theta)^2}{\sigma^2/n^*}+\frac{(\theta-\mu_n)^2}{\tau^2_n}\right]\right\}\ d\theta\\
+&=\underbrace{\int_{-\infty}^\infty(2\pi\frac{1}{n^*/\sigma^2+1/\tau^2_n})^{-1/2}\exp\left\{-\frac{1}{2}\left(\frac{n^*}{\sigma^2}+\frac{1}{\tau^2_n}\right)\left(\theta-\frac{\bar{y}^*/(\sigma^2/n^*)+\mu_n/\tau^2_n}{n^*/\sigma^2+1/\tau^2_n}\right)^2\right\}\ d\theta}_{\text{igual a 1}}\\
+&\ \ \ \ \ \ \ (2\pi)^{-1/2}(\frac{\sigma^2}{n^*}\tau_n^2)^{-1/2}(\frac{n^*}{\sigma^2}+\frac{1}{\tau^2_n})^{-1/2}\exp\left\{-\frac{1}{2(\sigma^2/n^*+\tau^2_n)}(\bar{y}^*-\mu_n)^2\right\}\\
+&=(2\pi)^{-1/2}(\frac{\sigma^2}{n^*}\tau_n^2)^{-1/2}(\frac{n^*}{\sigma^2}+\frac{1}{\tau^2_n})^{-1/2}\exp\left\{-\frac{1}{2(\sigma^2/n^*+\tau^2_n)}(\bar{y}^*-\mu_n)^2\right\}\\
+&=(2\pi)^{-1/2}(\frac{\sigma^2}{n^*}+\tau^2_n)^{-1/2}\exp\left\{-\frac{1}{2(\sigma^2/n^*+\tau^2_n)}(\bar{y}^*-\mu_n)^2\right\}
+\end{align*}
+``` 
+<br>
+
+Del anterior resultado, podemos ver que la esperanza de la distribución de $\bar{Y}^*|\mathbf{Y}$ es igual a la esperanza de $\theta|\mathbf{Y}$. A diferencia de la varianza de $\theta|\mathbf{Y}$, la varianza de $\bar{Y}^*|\mathbf{Y}$ tiene un componente adicional dado por $\sigma^2/n^*$. De esta forma, existirán tres fuentes de incertidumbre al momento de pronosticar $\bar{Y}^*$: la incertidumbre en la información previa, la incertidumbre en la muestra observada y la incertidumbre en la nueva muestra.
+
+```{example}
+En @Zhang[Ej. 2.3.6], se reportan datos sobre el grosor de láminas de vidrio templado de 3 cm. para controlar la calidad de una línea de producción. Estos datos son 3.56, 3.36, 2.99, 2.71, 3.31, 3.68, 2.78, 2.95, 2.82, 3.45, 3.42 y 3.15, con promedio de 3.18 cm. Suponga que, por especificaciones técnicas, se conoce que la varianza del grosor es de $0.1 cm^2$. Por otro lado, como información previa, se conoce que en la última inspección de calidad el grosor promedio fue de 2.8 cm. con una desviación estándar de 0.23 cm.
+
+De la anterior información, se puede decir que el parámetro de interés $\theta$ sería el grosor promedio de las láminas. También podemos afirmar que $\sigma^2=0.1cm^2$, $\bar{y}=3.18cm$, $n=12$, y los parámetros de la distribución previa estarían dados por $\mu=2.8cm$ y $\tau=0.45cm$. De esta forma, podemos calcular los parámetros de la distribución posterior
+
+\begin{align*}
+\mu_n
+&=\dfrac{\frac{12}{0.1}3.18+\frac{1}{0.23^2}2.8}{\frac{12}{0.1}+\frac{1}{0.23^2}}=3.13cm\\
+\tau^2_n
+&=\left(\frac{12}{0.1}+\frac{1}{0.23^2}\right)^{-1}=0.007cm^2
+\end{align*}
+
+Entonces, la distribución posterior del grosor promedio será $N(\mu_n=3.13cm,\ \tau^2_n=0.007cm^2)$. Es posible concluir que la estimación bayesiana del parámetro de interés corresponde a $3.13cm$, mientras que para calcular un intervalo de credibilidad de 95% para el parámetro de interés, se debe calcular los percentiles 2.5% y 97.5% de la distribución posterior de $\theta$, dados por $(2.966cm,\ 3.293cm)$.
+
+A continuación se ilustra el uso de `STAN` para obtener la estimación bayesiana del parámetro $\theta$.
+```
+
+
+```{r, results='hide'}
+NormalMedia <- '
+data {
+  int<lower=0> n;
+  real y[n];
+}
+parameters {
+  real theta;
+}
+model {
+  y ~ normal(theta, 0.1);
+  theta ~ normal(2.8, 0.23);
+}
+'
+
+n <- 12
+y <- c(3.56, 3.36, 2.99, 2.71, 3.31, 3.68, 
+       2.78, 2.95, 2.82, 3.45, 3.42, 3.15)
+
+sample_data <- list(y = y, n = n)
+NormalMfit <- stan(model_code = NormalMedia,
+                   data = sample_data, verbose = FALSE)
+```
+
+
+Después de la convergencia del proceso inferencial, la estimación bayesiana de $\theta$ es 3.1745 cm, mientras que un intervalo de credibilidad del 95\% es $(3.117 cm,\ 3.232 cm)$, resultados muy similares a lo obtenido calculando directamente $\mu_n$ y $\tau^2_n$. 
+
+```{r}
+print(NormalMfit, digits = 4, 
+      pars = "theta", probs = c(0.025, 0.975))
+```
+
+Las figuras \@ref(fig:posNormalMStan) muestra la distribución posterior para este ejemplo, junto con la estimación puntual, correspondiente a la media. 
+
+```{r, posNormalMStan, fig.cap="Distribución posterior."}
+bayesplot::mcmc_areas(NormalMfit, pars = "theta", 
+                      prob = 0.95)
+```
+
+En el siguiente ejemplo se ilustra el uso de la distribución predictiva posterior. 
+
+```{example}
+Suponga que la fábrica debe hacer un despacho de 8 láminas, y se quiere conocer sobre el grosor promedio del despacho $\bar{y}^*$. Usando el resultado \@ref(prp:PredNorm), se tiene que la disribución de $\bar{Y}^*$ condicionado en los 12 datos observados está dada por 
+
+\begin{equation*}
+\bar{Y}^*|\mathbf{Y}\ \sim N\left(\mu_n,\ \frac{\sigma^2}{n^*}+\tau^2_n\right) = N\left(3.13cm,\ \frac{0.1}{8}+0.007\right) = N(3.13cm,\ 0.0195cm^2)
+\end{equation*}
+
+De esta forma, se puede afirmar que el grosor promedio del despacho es de 3.13cm con un intervalo del 95% dado por (2.85cm, 3.40cm). Nótese que el intervalo para $\bar{Y}^{*}$ es más ancho que el intervalo para $\theta$, pues este tiene una varianza mayor a la varianza de la distribución posterior de $\theta$.
+```
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

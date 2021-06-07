@@ -197,6 +197,12 @@ div.csl-indent {
 <li class="chapter" data-level="3.3" data-path="modelo-binomial-negativo.html"><a href="modelo-binomial-negativo.html"><i class="fa fa-check"></i><b>3.3</b> Modelo Binomial negativo</a></li>
 <li class="chapter" data-level="3.4" data-path="modelo-poisson.html"><a href="modelo-poisson.html"><i class="fa fa-check"></i><b>3.4</b> Modelo Poisson</a></li>
 <li class="chapter" data-level="3.5" data-path="modelo-exponencial.html"><a href="modelo-exponencial.html"><i class="fa fa-check"></i><b>3.5</b> Modelo Exponencial</a></li>
+<li class="chapter" data-level="3.6" data-path="modelo-normal-con-media-desconocida-y-varianza-conocida.html"><a href="modelo-normal-con-media-desconocida-y-varianza-conocida.html"><i class="fa fa-check"></i><b>3.6</b> Modelo Normal con media desconocida y varianza conocida</a>
+<ul>
+<li class="chapter" data-level="3.6.1" data-path="modelo-normal-con-media-desconocida-y-varianza-conocida.html"><a href="modelo-normal-con-media-desconocida-y-varianza-conocida.html#distribución-previa-no-informativa-para-theta"><i class="fa fa-check"></i><b>3.6.1</b> Distribución previa no informativa para <span class="math inline">\(\theta\)</span></a></li>
+<li class="chapter" data-level="3.6.2" data-path="modelo-normal-con-media-desconocida-y-varianza-conocida.html"><a href="modelo-normal-con-media-desconocida-y-varianza-conocida.html#diferentes-formas-de-hallar-la-distribución-previa-para-theta"><i class="fa fa-check"></i><b>3.6.2</b> Diferentes formas de hallar la distribución previa para <span class="math inline">\(\theta\)</span></a></li>
+<li class="chapter" data-level="3.6.3" data-path="modelo-normal-con-media-desconocida-y-varianza-conocida.html"><a href="modelo-normal-con-media-desconocida-y-varianza-conocida.html#distribuciones-predictivas"><i class="fa fa-check"></i><b>3.6.3</b> Distribuciones predictivas</a></li>
+</ul></li>
 </ul></li>
 <li class="appendix"><span><b>Apéndice</b></span></li>
 <li class="chapter" data-level="A" data-path="elementos-de-probabilidad.html"><a href="elementos-de-probabilidad.html"><i class="fa fa-check"></i><b>A</b> Elementos de probabilidad</a>
@@ -341,8 +347,8 @@ una distribución previa concentrada en <span class="math inline">\(2/7\)</span>
 verosimilitud<a href="#fn5" class="footnote-ref" id="fnref5"><sup>5</sup></a> con máximo en <span class="math inline">\(8/10\)</span>, entonces la distribución
 posterior estará centrada en <span class="math inline">\(10/17\)</span>; es decir, la estimación bayesiana
 se encuentra situada entre la estimación previa y la estimación clásica.</p>
-<div class="figure"><span id="fig:beta3"></span>
-<img src="3Uniparametricos_files/figure-html/beta3-1.svg" alt="Funciones de verosimilitud, previa y posterior para $\alpha=2$, $\beta=5$, $s=8$ y $n=10$." width="672" />
+<div class="figure" style="text-align: center"><span id="fig:beta3"></span>
+<img src="3Uniparametricos_files/figure-html/beta3-1.svg" alt="Funciones de verosimilitud, previa y posterior para $\alpha=2$, $\beta=5$, $s=8$ y $n=10$." width="576" />
 <p class="caption">
 Figura 3.4: Funciones de verosimilitud, previa y posterior para <span class="math inline">\(\alpha=2\)</span>, <span class="math inline">\(\beta=5\)</span>, <span class="math inline">\(s=8\)</span> y <span class="math inline">\(n=10\)</span>.
 </p>
@@ -359,8 +365,8 @@ posterior de <span class="math inline">\(\theta\)</span> estará más concentrad
 clásica. En la figura <a href="modelo-binomial.html#fig:betan">3.5</a> se muestra la estimación posterior de
 <span class="math inline">\(\theta\)</span>, es evidente que a medida que el tamaño muestral <span class="math inline">\(n\)</span> aumenta,
 la estimación posterior se acerca más a la estimación clásica.</p>
-<div class="figure"><span id="fig:betan"></span>
-<img src="3Uniparametricos_files/figure-html/betan-1.svg" alt="Estimación posterior de $\theta$ para diferentes valores de $n$ y $s$ con $\alpha=\beta=5$." width="672" />
+<div class="figure" style="text-align: center"><span id="fig:betan"></span>
+<img src="3Uniparametricos_files/figure-html/betan-1.svg" alt="Estimación posterior de $\theta$ para diferentes valores de $n$ y $s$ con $\alpha=\beta=5$." width="576" />
 <p class="caption">
 Figura 3.5: Estimación posterior de <span class="math inline">\(\theta\)</span> para diferentes valores de <span class="math inline">\(n\)</span> y <span class="math inline">\(s\)</span> con <span class="math inline">\(\alpha=\beta=5\)</span>.
 </p>
@@ -809,18 +815,18 @@ S_i\sim Binomial (n_i,\theta) \ \ \ \ \ \ \ \ \ i=1,\ldots,18.
 ## 4 chains, each with iter=2000; warmup=1000; thin=1; 
 ## post-warmup draws per chain=1000, total post-warmup draws=4000.
 ## 
-##         mean se_mean     sd   2.5%  97.5% n_eff   Rhat
-## theta 0.2735   1e-04 0.0051 0.2638 0.2837  1448 1.0039
+##         mean se_mean     sd   2.5%  97.5% n_eff  Rhat
+## theta 0.2736   1e-04 0.0052 0.2633 0.2839  1611 1.001
 ## 
-## Samples were drawn using NUTS(diag_e) at Sun Jun  6 17:26:36 2021.
+## Samples were drawn using NUTS(diag_e) at Sun Jun  6 23:42:42 2021.
 ## For each parameter, n_eff is a crude measure of effective sample size,
 ## and Rhat is the potential scale reduction factor on split chains (at 
 ## convergence, Rhat=1).</code></pre>
 <p>La figura <a href="modelo-binomial.html#fig:posBinomialStan">3.6</a> muestra la distribución posterior para este ejemplo, junto con la estimación puntual, correspondiente a la media.</p>
 <div class="sourceCode" id="cb26"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb26-1"><a href="modelo-binomial.html#cb26-1" aria-hidden="true" tabindex="-1"></a>bayesplot<span class="sc">::</span><span class="fu">mcmc_areas</span>(Binfit, <span class="at">pars =</span> <span class="st">&quot;theta&quot;</span>, </span>
 <span id="cb26-2"><a href="modelo-binomial.html#cb26-2" aria-hidden="true" tabindex="-1"></a>                      <span class="at">prob =</span> <span class="fl">0.95</span>)</span></code></pre></div>
-<div class="figure"><span id="fig:posBinomialStan"></span>
-<img src="3Uniparametricos_files/figure-html/posBinomialStan-1.svg" alt="Distribución posterior." width="672" />
+<div class="figure" style="text-align: center"><span id="fig:posBinomialStan"></span>
+<img src="3Uniparametricos_files/figure-html/posBinomialStan-1.svg" alt="Distribución posterior." width="576" />
 <p class="caption">
 Figura 3.6: Distribución posterior.
 </p>
@@ -829,8 +835,8 @@ Figura 3.6: Distribución posterior.
 <div class="sourceCode" id="cb27"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb27-1"><a href="modelo-binomial.html#cb27-1" aria-hidden="true" tabindex="-1"></a><span class="fu">qbeta</span>(<span class="fu">c</span>(<span class="fl">0.025</span>, <span class="fl">0.975</span>), <span class="dv">2040</span>, <span class="dv">5419</span>)</span></code></pre></div>
 <pre><code>## [1] 0.2634379 0.2836674</code></pre>
 <p>La figura <a href="modelo-binomial.html#fig:BinomEj1">3.7</a> muestra el comportamiento de las distribuciones previa y posterior para este ejemplo. Nótese que, con un análisis frecuentista, se hubiese llegado a una estimación cercana de <span class="math inline">\(\frac{1825}{6649}=0.274\)</span>.</p>
-<div class="figure"><span id="fig:BinomEj1"></span>
-<img src="3Uniparametricos_files/figure-html/BinomEj1-1.svg" alt="Función de densidad previa y función de densidad posterior para el ejemplo de bateo." width="672" />
+<div class="figure" style="text-align: center"><span id="fig:BinomEj1"></span>
+<img src="3Uniparametricos_files/figure-html/BinomEj1-1.svg" alt="Función de densidad previa y función de densidad posterior para el ejemplo de bateo." width="576" />
 <p class="caption">
 Figura 3.7: Función de densidad previa y función de densidad posterior para el ejemplo de bateo.
 </p>
@@ -858,8 +864,8 @@ Para resolver este cuestionamiento, es conveniente recurrir a la función predic
 <div class="sourceCode" id="cb31"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb31-1"><a href="modelo-binomial.html#cb31-1" aria-hidden="true" tabindex="-1"></a><span class="fu">which</span>(predictiva<span class="sc">==</span><span class="fu">max</span>(predictiva))</span></code></pre></div>
 <pre><code>## [1] 71</code></pre>
 <p>La última línea del código computacional permite concluir que lo más probable es que el jugador realice 71 hits en 400 turnos al bate, cifra que no convence al entrenador para adquirir los servicios del jugador.</p>
-<div class="figure"><span id="fig:PredBinom"></span>
-<img src="3Uniparametricos_files/figure-html/PredBinom-1.svg" alt="Función de densidad predictiva posterior para el jugador Max Alvis." width="672" />
+<div class="figure" style="text-align: center"><span id="fig:PredBinom"></span>
+<img src="3Uniparametricos_files/figure-html/PredBinom-1.svg" alt="Función de densidad predictiva posterior para el jugador Max Alvis." width="576" />
 <p class="caption">
 Figura 3.8: Función de densidad predictiva posterior para el jugador Max Alvis.
 </p>
