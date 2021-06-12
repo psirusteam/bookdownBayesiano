@@ -1,5 +1,7 @@
 # Antes de comenzar {-}
 
+![Tomado de *BayesAna*](https://i0.wp.com/anabelforte.com/wp-content/uploads/2020/07/4.gif)
+
 ## Cuestionamientos sobre el enfoque bayesiano {-}
 
 @GelmanObjections presenta algunos de los cuestionamientos que algunos estadísticos anti-bayesianos han argumentado en contra de este paradigma que, sin lugar a dudas, ha proporcionado una valiosa herramienta de modelación en la ciencia contemporanea. Revisemos algunos de estos argumentos: 

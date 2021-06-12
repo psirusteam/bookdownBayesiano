@@ -55,5 +55,6 @@ output:
 # Prefacio {-}
 
 
-<!-- ![Creative Commons License](https://mirrors.creativecommons.org/presskit/buttons/88x31/png/by-nc-sa.png)   -->
-The online version of this book is licensed under the [Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International License](http://creativecommons.org/licenses/by-nc-sa/4.0/). You can purchase a hardcopy from [Chapman & Hall](https://www.crcpress.com/product/isbn/9781138700109) or Amazon.
+![Creative Commons License](https://mirrors.creativecommons.org/presskit/buttons/88x31/png/by-nc-sa.png)
+
+La versión online de este libro estáa licenciaada bajo una [Licencia Internacinal de Creative Commons para compartir con atribución no comercial 4.0](http://creativecommons.org/licenses/by-nc-sa/4.0/). 

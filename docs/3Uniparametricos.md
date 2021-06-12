@@ -2012,7 +2012,7 @@ p(\sigma^2|\alpha,\beta)
 &\propto \frac{1}{\sigma^2}
 \end{align*}
 
-La cual coincide con la distribución previa de Jeffreys. De esta forma, para que la distribución previa sea propia (integral definida de la función de densidad), se escogen valores cercanos a cero, pero no nulos; por ejemplo $\alpha = 0.001, \ \ \beta = 0.001$. La figura \@ref(eq:jefgammainv) muestra la densidad previa no informativa para el parámetro de interés.
+La cual coincide con la distribución previa de Jeffreys. De esta forma, para que la distribución previa sea propia (integral definida de la función de densidad), se escogen valores cercanos a cero, pero no nulos; por ejemplo $\alpha = 0.001, \ \ \beta = 0.001$. La figura \@ref(fig:jefgammainv) muestra la densidad previa no informativa para el parámetro de interés.
 
 <div class="figure" style="text-align: center">
 <img src="3Uniparametricos_files/figure-html/jefgammainv-1.svg" alt="Distribución previa no informativa para la varianza de una distribución Normal" width="576" />

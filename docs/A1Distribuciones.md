@@ -4,7 +4,10 @@
 
 # Elementos de probabilidad
 
-ss
+![Tomado de *Answering Questions with Data*](
+https://www.crumplab.com/statistics/gifs/sampleHistUnif-1.gif)
+
+
 
 ## Distribuciones discretas
 

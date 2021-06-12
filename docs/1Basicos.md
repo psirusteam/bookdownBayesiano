@@ -1,6 +1,9 @@
 
 # Tópicos básicos
 
+![Tomado del Stata Blog](
+https://blog.stata.com/wp-content/uploads/2016/11/video2.gif)
+
 ## Teoría de la decisión
 
 El problema estadístico de estimar un parámetro se puede ver dentro del contexto de la teoría de decisión: la estimación que proveemos, sea en el ámbito de la estadística clásica o la estadística bayesiana, depende de los datos muestrales, $\mathbf{X}$, de tal forma que si éstos cambian, la estimación también cambia. De esta manera, el proceso de estimación puede ser representado como una función que toma un conjunto de datos muestrales y los convierte en una estimación ($A(\mathbf{X})$ o simplemente $A$) del parámetro de interés. En la teoría de decisión, la anterior función se conoce como una regla de decisión.

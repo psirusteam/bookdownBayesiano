@@ -153,7 +153,7 @@
 
 \title{Modelos Bayesianos con R y STAN}
 \author{Andrés Gutiérrez - Hanwen Zhang}
-\date{2021-06-06}
+\date{2021-06-12}
 
 \usepackage{amsthm}
 \newtheorem{theorem}{Teorema}[chapter]
@@ -1666,9 +1666,12 @@ ser no informativa se representa en la simetría de la función alrededor
 del valor 0.5.
 
 \begin{figure}
-\centering
-\includegraphics{3Uniparametricos_files/figure-latex/jefber1-1.pdf}
-\caption{\label{fig:jefber1}Distribución previa no informativa de Jeffreys para el parámetro de una distribución Bernoulli}
+
+{\centering \includegraphics{3Uniparametricos_files/figure-latex/jefber1-1} 
+
+}
+
+\caption{Distribución previa no informativa de Jeffreys para el parámetro de una distribución Bernoulli}\label{fig:jefber1}
 \end{figure}
 
 \begin{proposition}
@@ -1771,9 +1774,12 @@ La figuras \ref{fig:BernoEj1} muestra el comportamiento de las distribuciones pr
 \end{example}
 
 \begin{figure}
-\centering
-\includegraphics{3Uniparametricos_files/figure-latex/BernoEj1-1.pdf}
-\caption{\label{fig:BernoEj1}Distribuciones previas (línea punteada) y posteriores (línea sólida) para el ejemplo de las encuestas electorales.}
+
+{\centering \includegraphics{3Uniparametricos_files/figure-latex/BernoEj1-1} 
+
+}
+
+\caption{Distribuciones previas (línea punteada) y posteriores (línea sólida) para el ejemplo de las encuestas electorales.}\label{fig:BernoEj1}
 \end{figure}
 
 Utilizando el siguiente código en R, es posible conocer los intervalos
@@ -1853,9 +1859,9 @@ La siguiente salida de \texttt{STAN} permite conocer la estimación bayesiana po
 ## post-warmup draws per chain=1000, total post-warmup draws=4000.
 ## 
 ##         mean se_mean     sd   2.5%  97.5% n_eff   Rhat
-## theta 0.5154   1e-04 0.0045 0.5063 0.5243  1372 1.0011
+## theta 0.5152   1e-04 0.0046 0.5059 0.5242  1258 1.0018
 ## 
-## Samples were drawn using NUTS(diag_e) at Sun Jun  6 22:58:53 2021.
+## Samples were drawn using NUTS(diag_e) at Sat Jun 12 11:55:22 2021.
 ## For each parameter, n_eff is a crude measure of effective sample size,
 ## and Rhat is the potential scale reduction factor on split chains (at 
 ## convergence, Rhat=1).
@@ -1871,9 +1877,12 @@ La figura \ref{fig:posBernoulliStan} muestra la distribución posterior para est
 \end{Shaded}
 
 \begin{figure}
-\centering
-\includegraphics{3Uniparametricos_files/figure-latex/posBernoulliStan-1.pdf}
-\caption{\label{fig:posBernoulliStan}Distribución posterior.}
+
+{\centering \includegraphics{3Uniparametricos_files/figure-latex/posBernoulliStan-1} 
+
+}
+
+\caption{Distribución posterior.}\label{fig:posBernoulliStan}
 \end{figure}
 
 \hypertarget{modelo-binomial}{%
@@ -1960,9 +1969,12 @@ posterior estará centrada en \(10/17\); es decir, la estimación bayesiana
 se encuentra situada entre la estimación previa y la estimación clásica.
 
 \begin{figure}
-\centering
-\includegraphics{3Uniparametricos_files/figure-latex/beta3-1.pdf}
-\caption{\label{fig:beta3}Funciones de verosimilitud, previa y posterior para \(\alpha=2\), \(\beta=5\), \(s=8\) y \(n=10\).}
+
+{\centering \includegraphics{3Uniparametricos_files/figure-latex/beta3-1} 
+
+}
+
+\caption{Funciones de verosimilitud, previa y posterior para $\alpha=2$, $\beta=5$, $s=8$ y $n=10$.}\label{fig:beta3}
 \end{figure}
 
 Por otro lado, entre más grande sea el tamaño muestral \(n\), más
@@ -1980,9 +1992,12 @@ clásica. En la figura \ref{fig:betan} se muestra la estimación posterior de
 la estimación posterior se acerca más a la estimación clásica.
 
 \begin{figure}
-\centering
-\includegraphics{3Uniparametricos_files/figure-latex/betan-1.pdf}
-\caption{\label{fig:betan}Estimación posterior de \(\theta\) para diferentes valores de \(n\) y \(s\) con \(\alpha=\beta=5\).}
+
+{\centering \includegraphics{3Uniparametricos_files/figure-latex/betan-1} 
+
+}
+
+\caption{Estimación posterior de $\theta$ para diferentes valores de $n$ y $s$ con $\alpha=\beta=5$.}\label{fig:betan}
 \end{figure}
 
 Anteriormente, se comentó que se acostumbra a escoger los parámetros
@@ -2390,10 +2405,10 @@ La siguiente salida de \texttt{STAN} permite conocer la estimación bayesiana po
 ## 4 chains, each with iter=2000; warmup=1000; thin=1; 
 ## post-warmup draws per chain=1000, total post-warmup draws=4000.
 ## 
-##         mean se_mean     sd   2.5% 97.5% n_eff  Rhat
-## theta 0.2736   1e-04 0.0052 0.2636 0.284  1237 1.001
+##         mean se_mean     sd   2.5%  97.5% n_eff   Rhat
+## theta 0.2737   1e-04 0.0051 0.2635 0.2832  1567 1.0022
 ## 
-## Samples were drawn using NUTS(diag_e) at Sun Jun  6 22:59:29 2021.
+## Samples were drawn using NUTS(diag_e) at Sat Jun 12 11:55:56 2021.
 ## For each parameter, n_eff is a crude measure of effective sample size,
 ## and Rhat is the potential scale reduction factor on split chains (at 
 ## convergence, Rhat=1).
@@ -2409,9 +2424,12 @@ La figura \ref{fig:posBinomialStan} muestra la distribución posterior para este
 \end{Shaded}
 
 \begin{figure}
-\centering
-\includegraphics{3Uniparametricos_files/figure-latex/posBinomialStan-1.pdf}
-\caption{\label{fig:posBinomialStan}Distribución posterior.}
+
+{\centering \includegraphics{3Uniparametricos_files/figure-latex/posBinomialStan-1} 
+
+}
+
+\caption{Distribución posterior.}\label{fig:posBinomialStan}
 \end{figure}
 
 Por otro lado, el mismo intervalo de credibilidad del 95\% correspondiente se puede hallar mediante el siguiente código computacional de \texttt{R}.
@@ -2429,9 +2447,12 @@ Por otro lado, el mismo intervalo de credibilidad del 95\% correspondiente se pu
 La figura \ref{fig:BinomEj1} muestra el comportamiento de las distribuciones previa y posterior para este ejemplo. Nótese que, con un análisis frecuentista, se hubiese llegado a una estimación cercana de \(\frac{1825}{6649}=0.274\).
 
 \begin{figure}
-\centering
-\includegraphics{3Uniparametricos_files/figure-latex/BinomEj1-1.pdf}
-\caption{\label{fig:BinomEj1}Función de densidad previa y función de densidad posterior para el ejemplo de bateo.}
+
+{\centering \includegraphics{3Uniparametricos_files/figure-latex/BinomEj1-1} 
+
+}
+
+\caption{Función de densidad previa y función de densidad posterior para el ejemplo de bateo.}\label{fig:BinomEj1}
 \end{figure}
 
 Es posible analizar este conjunto de datos desde otra perspectiva al suponer que los jugadores no constituyen una muestra aleatoria y cada uno de ellos tiene un promedio de bateo diferente. Sin embargo, este análisis se deja como ejercicio en un capítulo posterior.
@@ -2477,9 +2498,12 @@ Para resolver este cuestionamiento, es conveniente recurrir a la función predic
 La última línea del código computacional permite concluir que lo más probable es que el jugador realice 71 hits en 400 turnos al bate, cifra que no convence al entrenador para adquirir los servicios del jugador.
 
 \begin{figure}
-\centering
-\includegraphics{3Uniparametricos_files/figure-latex/PredBinom-1.pdf}
-\caption{\label{fig:PredBinom}Función de densidad predictiva posterior para el jugador Max Alvis.}
+
+{\centering \includegraphics{3Uniparametricos_files/figure-latex/PredBinom-1} 
+
+}
+
+\caption{Función de densidad predictiva posterior para el jugador Max Alvis.}\label{fig:PredBinom}
 \end{figure}
 
 \hypertarget{modelo-binomial-negativo}{%
@@ -2576,10 +2600,10 @@ La siguiente salida de \texttt{STAN} permite conocer la estimación bayesiana po
 ## 4 chains, each with iter=2000; warmup=1000; thin=1; 
 ## post-warmup draws per chain=1000, total post-warmup draws=4000.
 ## 
-##        mean se_mean     sd   2.5%  97.5% n_eff   Rhat
-## theta 0.005   1e-04 0.0021 0.0018 0.0101  1348 1.0005
+##        mean se_mean     sd   2.5%  97.5% n_eff Rhat
+## theta 0.005   1e-04 0.0022 0.0018 0.0102  1178    1
 ## 
-## Samples were drawn using NUTS(diag_e) at Sun Jun  6 23:00:02 2021.
+## Samples were drawn using NUTS(diag_e) at Sat Jun 12 11:56:29 2021.
 ## For each parameter, n_eff is a crude measure of effective sample size,
 ## and Rhat is the potential scale reduction factor on split chains (at 
 ## convergence, Rhat=1).
@@ -2689,10 +2713,10 @@ Después de cinco mil iteraciones, la salida del anterior código muestra la est
 ## 4 chains, each with iter=2000; warmup=1000; thin=1; 
 ## post-warmup draws per chain=1000, total post-warmup draws=4000.
 ## 
-##         mean se_mean    sd   2.5%  97.5% n_eff   Rhat
-## theta 0.0051       0 4e-04 0.0044 0.0059  1629 1.0007
+##         mean se_mean    sd   2.5% 97.5% n_eff   Rhat
+## theta 0.0052       0 4e-04 0.0044 0.006  1313 1.0015
 ## 
-## Samples were drawn using NUTS(diag_e) at Sun Jun  6 23:00:32 2021.
+## Samples were drawn using NUTS(diag_e) at Sat Jun 12 11:57:00 2021.
 ## For each parameter, n_eff is a crude measure of effective sample size,
 ## and Rhat is the potential scale reduction factor on split chains (at 
 ## convergence, Rhat=1).
@@ -2708,9 +2732,12 @@ La figura \ref{fig:posBNStan} muestra la distribución posterior para este ejemp
 \end{Shaded}
 
 \begin{figure}
-\centering
-\includegraphics{3Uniparametricos_files/figure-latex/posBNStan-1.pdf}
-\caption{\label{fig:posBNStan}Distribución posterior.}
+
+{\centering \includegraphics{3Uniparametricos_files/figure-latex/posBNStan-1} 
+
+}
+
+\caption{Distribución posterior.}\label{fig:posBNStan}
 \end{figure}
 
 Una vez observados los datos actuales y encontrada la distribución posterior, se puede encontrar la distribución predictiva posterior de una nueva variable con distribución binomial negativa. Es decir, se puede definir el mecanismo probabilístico para el número de ensayos necesarios para encontrar \(\tilde{k}\) éxitos.
@@ -2772,9 +2799,12 @@ Con los siguientes códigos se puede calcular la anterior función predictiva.
 \end{verbatim}
 
 \begin{figure}
-\centering
-\includegraphics{3Uniparametricos_files/figure-latex/jefber-1.pdf}
-\caption{\label{fig:jefber}Distribución predictiva posterior para el número de entrevistas necesarias para encontrar 5 pacientes.}
+
+{\centering \includegraphics{3Uniparametricos_files/figure-latex/jefber-1} 
+
+}
+
+\caption{Distribución predictiva posterior para el número de entrevistas necesarias para encontrar 5 pacientes.}\label{fig:jefber}
 \end{figure}
 
 Se puede ver que el número de entrevistas que tiene mayor probabilidad asociadas es el valor 768, usando el comando \texttt{which(fun\ ==\ max(fun))}. También, se puede observar que la probabilidad de que en menos de 500 entrevistas se encuentren los 5 pacientes es de solo el 0.1200985 usando el comando \texttt{sum(fun{[}1:(500\ -\ 4){]})}
@@ -2976,9 +3006,12 @@ Es posible modelar la variable aleatoria número de accidentes de tránsito en u
 \end{example}
 
 \begin{figure}
-\centering
-\includegraphics{3Uniparametricos_files/figure-latex/EjemPoisson1-1.pdf}
-\caption{\label{fig:EjemPoisson1}Histograma para los datos de accidentes de tránsito.}
+
+{\centering \includegraphics{3Uniparametricos_files/figure-latex/EjemPoisson1-1} 
+
+}
+
+\caption{Histograma para los datos de accidentes de tránsito.}\label{fig:EjemPoisson1}
 \end{figure}
 
 En primera instancia, es posible realizar un análisis no informativo, al formular una distribución previa de Jeffreys proporcional a \(\theta^{-1/2}\), para lo cual la distribución posterior será \(Gamma(\sum_{i=1}^n y_i+1/2, n)=Gamma(370.5, 30)\). Por lo tanto, un estimador de \(\theta\) está dado por la media de la distribución posterior que es \(370.5/30=12.35\), muy cercano al valor del estimador de máxima verosimilitud correspondiente al promedio muestral. La figura \ref{fig:EjemPoisson2} (lado izquierdo) muestra el comportamiento de las distribuciones de Jeffreys y posterior para este ejemplo.
@@ -2986,9 +3019,12 @@ En primera instancia, es posible realizar un análisis no informativo, al formul
 Por otro lado, basándose en datos históricos, la alcaldía observó que, en el mismo periodo del año anterior, ocurrieron 37 accidentes en 9 días de observación. Luego, una distribución previa informativa\footnote{En la práctica, se recomienda que los valores de los hiperparámetros \(\alpha\) y \(\beta\) correspondan a la suma del número de eventos más uno y número de observaciones, respectivamente.} está dada por \(Gamma(\alpha=38,\beta=9)\). Luego, apelando al resultado \ref{prp:ResPoissonPost}, la distribución posterior corresponde a una \(Gamma(370+38, 30+9)=Gamma(408, 39)\). Para este caso, un estimador de \(\theta\) está dado por la media de la distribución posterior que es \(480/39=12.31\). La figura \ref{fig:EjemPoisson2} (lado derecho) muestra el comportamiento de las distribuciones previa (informativa) y posterior para este ejemplo.
 
 \begin{figure}
-\centering
-\includegraphics{3Uniparametricos_files/figure-latex/EjemPoisson2-1.pdf}
-\caption{\label{fig:EjemPoisson2}Distribución previa y distribución posterior para el ejemplo del tránsito con dos distribuciones previas diferentes (el lado izquierdo representa el caso cuando se usa la previa no informativa, el lado derecho la previa informativa).}
+
+{\centering \includegraphics{3Uniparametricos_files/figure-latex/EjemPoisson2-1} 
+
+}
+
+\caption{Distribución previa y distribución posterior para el ejemplo del tránsito con dos distribuciones previas diferentes (el lado izquierdo representa el caso cuando se usa la previa no informativa, el lado derecho la previa informativa).}\label{fig:EjemPoisson2}
 \end{figure}
 
 A continuación se examina la distribución predictiva. En la figura \ref{fig:PredPostPoisson} se grafica la distribución predictiva para una nueva observación cuando se usa la previa no informativa y la previa informativa. Los códigos para el cálculo cuando se usan ambas distribuciones previas es como sigue:
@@ -3064,9 +3100,12 @@ Finalmente, podemos tener una aproximación de la esperanza de la variable \(\ma
 \end{verbatim}
 
 \begin{figure}
-\centering
-\includegraphics{3Uniparametricos_files/figure-latex/PredPostPoisson-1.pdf}
-\caption{\label{fig:PredPostPoisson}Distribución predictiva posterior para \(n^*=1\) para el ejemplo del tránsito.}
+
+{\centering \includegraphics{3Uniparametricos_files/figure-latex/PredPostPoisson-1} 
+
+}
+
+\caption{Distribución predictiva posterior para $n^*=1$ para el ejemplo del tránsito.}\label{fig:PredPostPoisson}
 \end{figure}
 
 A continuación se presenta el código computacional para realizar la inferencia bayesiana en \texttt{STAN} utilizando la distribución previa predictiva.
@@ -3107,9 +3146,9 @@ Después de converger, la salida del anterior código muestra la estimación pun
 ## post-warmup draws per chain=1000, total post-warmup draws=4000.
 ## 
 ##          mean se_mean     sd   2.5%   97.5% n_eff   Rhat
-## theta 10.4693  0.0141 0.5203 9.4702 11.4988  1354 1.0011
+## theta 10.4569  0.0137 0.5083 9.4805 11.4915  1384 1.0019
 ## 
-## Samples were drawn using NUTS(diag_e) at Sun Jun  6 23:01:08 2021.
+## Samples were drawn using NUTS(diag_e) at Sat Jun 12 11:57:36 2021.
 ## For each parameter, n_eff is a crude measure of effective sample size,
 ## and Rhat is the potential scale reduction factor on split chains (at 
 ## convergence, Rhat=1).
@@ -3125,9 +3164,12 @@ La figura \ref{fig:posPoissonStan} muestra la distribución posterior para este 
 \end{Shaded}
 
 \begin{figure}
-\centering
-\includegraphics{3Uniparametricos_files/figure-latex/posPoissonStan-1.pdf}
-\caption{\label{fig:posPoissonStan}Distribución posterior.}
+
+{\centering \includegraphics{3Uniparametricos_files/figure-latex/posPoissonStan-1} 
+
+}
+
+\caption{Distribución posterior.}\label{fig:posPoissonStan}
 \end{figure}
 
 \hypertarget{modelo-exponencial}{%
@@ -3360,10 +3402,10 @@ Después de las iteraciones, los resultados de este código muestran una estimac
 ## post-warmup draws per chain=1000, total post-warmup draws=4000.
 ## 
 ##              mean se_mean      sd     2.5%    97.5% n_eff   Rhat
-## theta      0.0027  0.0000  0.0003   0.0021   0.0033  1650 1.0006
-## invtheta 380.1508  1.1179 44.8930 299.0849 474.4765  1613 1.0008
+## theta      0.0027  0.0000  0.0003   0.0020   0.0033  1274 1.0068
+## invtheta 382.3398  1.3155 46.8971 303.2639 488.2924  1271 1.0077
 ## 
-## Samples were drawn using NUTS(diag_e) at Sun Jun  6 23:01:44 2021.
+## Samples were drawn using NUTS(diag_e) at Sat Jun 12 11:58:06 2021.
 ## For each parameter, n_eff is a crude measure of effective sample size,
 ## and Rhat is the potential scale reduction factor on split chains (at 
 ## convergence, Rhat=1).
@@ -3379,9 +3421,12 @@ Las figuras \ref{fig:posExponencialStan1} y \ref{fig:posExponencialStan2} muestr
 \end{Shaded}
 
 \begin{figure}
-\centering
-\includegraphics{3Uniparametricos_files/figure-latex/posExponencialStan1-1.pdf}
-\caption{\label{fig:posExponencialStan1}Distribución posterior.}
+
+{\centering \includegraphics{3Uniparametricos_files/figure-latex/posExponencialStan1-1} 
+
+}
+
+\caption{Distribución posterior.}\label{fig:posExponencialStan1}
 \end{figure}
 
 \begin{Shaded}
@@ -3392,9 +3437,12 @@ Las figuras \ref{fig:posExponencialStan1} y \ref{fig:posExponencialStan2} muestr
 \end{Shaded}
 
 \begin{figure}
-\centering
-\includegraphics{3Uniparametricos_files/figure-latex/posExponencialStan2-1.pdf}
-\caption{\label{fig:posExponencialStan2}Distribución posterior.}
+
+{\centering \includegraphics{3Uniparametricos_files/figure-latex/posExponencialStan2-1} 
+
+}
+
+\caption{Distribución posterior.}\label{fig:posExponencialStan2}
 \end{figure}
 
 \begin{example}
@@ -3432,13 +3480,16 @@ El cálculo de esta función predictiva se puede llevar a cabo con el siguiente 
 La distribución predictiva de esta función se puede visualizar en la Figura \ref{fig:PredPostExpoEje}, donde se puede ver que la mayor masa de la función se acumula alrededor de los 300 días. Usando el comando \texttt{integrate(pred\_exp,\ 800,\ 10000)}, también se puede observar que la probabilidad de que en promedio los cinco pacientes sobrevivan más de 800 días es de 0.026448474057506.
 
 \begin{figure}
-\centering
-\includegraphics{3Uniparametricos_files/figure-latex/PredPostExpoEje-1.pdf}
-\caption{\label{fig:PredPostExpoEje}Distribución predictiva posterior para el tiempo promedio de sobrevivencia de transplante de corazón.}
+
+{\centering \includegraphics{3Uniparametricos_files/figure-latex/PredPostExpoEje-1} 
+
+}
+
+\caption{Distribución predictiva posterior para el tiempo promedio de sobrevivencia de transplante de corazón.}\label{fig:PredPostExpoEje}
 \end{figure}
 
-\hypertarget{modelo-normal-con-media-desconocida-y-varianza-conocida}{%
-\section{Modelo Normal con media desconocida y varianza conocida}\label{modelo-normal-con-media-desconocida-y-varianza-conocida}}
+\hypertarget{modelo-normal-con-media-desconocida}{%
+\section{Modelo Normal con media desconocida}\label{modelo-normal-con-media-desconocida}}
 
 En esta sección se consideran datos que pueden ser descritos adecuadamente por medio de la distribución normal la cual, a diferencia de las anteriores distribuciones consideradas, tiene dos parámetros. En esta parte, se asume que la varianza teórica es conocida y el objetivo es estimar la media teórica. En el siguiente capítulo se considerará el caso general cuando ambos parámetros son desconocidos.
 
@@ -3496,9 +3547,12 @@ Observando la forma de \(\mu_n\), que corresponde a la estimación bayesiana del
 De donde se puede concluir que, para una distribución previa fija, entre mayor sea el tamaño muestral \(n\), más peso tendrá el estimador clásico \(\hat{\theta}_C\) en la estimación bayesiana. De la misma forma, para un conjunto fijo de datos \(\mathbf{Y}\), entre menor sea la varianza previa, \(\tau^2\), más certeza tenemos sobre la información previa y por consiguiente la estimación bayesiana \(\mu_n\) se acercará más a la estimación previa. En la Figura \eqref{eq:ComparaNormal} se observa la función de densidad previa, función de verosimilitud y función de densidad posterior con \(\mu=5\), \(\tau^2=0.01\), \(\bar{y}=2\), \(\sigma^2=1\) y \(n=5,10,50,200\). Podemos observar que a medida que el tamaño muestral \(n\) aumente, la función de verosimilitud (vista como la función del parámetro \(\theta\)) se vuelve más concentrada alrededor del valor de \(\bar{y}\), y a consecuencia, la función de densidad posterior de \(\theta\) se sitúa más cercana a la función de verosimilitud, y la estimación bayesiana se acerca más a la estimación clásica \(\bar{y}\).
 
 \begin{figure}
-\centering
-\includegraphics{3Uniparametricos_files/figure-latex/ComparaNormal-1.pdf}
-\caption{\label{fig:ComparaNormal}Distribución previa, función de verosimilitud y distribución posterior del parámetro \(\theta\) con \(\mu=5\), \(\tau^2=0.01\), \(\bar{y}=2\), \(\sigma^2=1\) y \(n=5,10,50,200\).}
+
+{\centering \includegraphics{3Uniparametricos_files/figure-latex/ComparaNormal-1} 
+
+}
+
+\caption{Distribución previa, función de verosimilitud y distribución posterior del parámetro $\theta$ con $\mu=5$, $\tau^2=0.01$, $\bar{y}=2$, $\sigma^2=1$ y $n=5,10,50,200$.}\label{fig:ComparaNormal}
 \end{figure}
 
 \hypertarget{distribuciuxf3n-previa-no-informativa-para-theta}{%
@@ -3674,10 +3728,10 @@ Después de la convergencia del proceso inferencial, la estimación bayesiana de
 ## 4 chains, each with iter=2000; warmup=1000; thin=1; 
 ## post-warmup draws per chain=1000, total post-warmup draws=4000.
 ## 
-##         mean se_mean     sd   2.5%  97.5% n_eff  Rhat
-## theta 3.1758   9e-04 0.0298 3.1174 3.2342  1144 1.006
+##         mean se_mean     sd   2.5%  97.5% n_eff   Rhat
+## theta 3.1757   8e-04 0.0285 3.1192 3.2311  1349 1.0003
 ## 
-## Samples were drawn using NUTS(diag_e) at Sun Jun  6 23:02:19 2021.
+## Samples were drawn using NUTS(diag_e) at Sat Jun 12 11:58:37 2021.
 ## For each parameter, n_eff is a crude measure of effective sample size,
 ## and Rhat is the potential scale reduction factor on split chains (at 
 ## convergence, Rhat=1).
@@ -3693,9 +3747,12 @@ Las figuras \ref{fig:posNormalMStan} muestra la distribución posterior para est
 \end{Shaded}
 
 \begin{figure}
-\centering
-\includegraphics{3Uniparametricos_files/figure-latex/posNormalMStan-1.pdf}
-\caption{\label{fig:posNormalMStan}Distribución posterior.}
+
+{\centering \includegraphics{3Uniparametricos_files/figure-latex/posNormalMStan-1} 
+
+}
+
+\caption{Distribución posterior.}\label{fig:posNormalMStan}
 \end{figure}
 
 En el siguiente ejemplo se ilustra el uso de la distribución predictiva posterior.
@@ -3709,6 +3766,258 @@ En el siguiente ejemplo se ilustra el uso de la distribución predictiva posteri
 
 De esta forma, se puede afirmar que el grosor promedio del despacho es de 3.13cm con un intervalo del 95\% dado por (2.85cm, 3.40cm). Nótese que el intervalo para \(\bar{Y}^{*}\) es más ancho que el intervalo para \(\theta\), pues este tiene una varianza mayor a la varianza de la distribución posterior de \(\theta\).
 \end{example}
+
+\hypertarget{modelo-normal-con-varianza-desconocida}{%
+\section{Modelo normal con varianza desconocida}\label{modelo-normal-con-varianza-desconocida}}
+
+En esta sección se presentan los fundamentos necesario para realizar inferencia bayesiana en un modelo normal para el cual sí se conoce la media, pero no su varianza. En casi todas las aplicaciones prácticas, es común que ambos parámetros sean desconocidos. Sin embargo, estas secciones servirán de base teórica para desarrollar modelos más complejos. Supóngase además que se cuenta con información previa, la cual puede basarse sin pérdida de generalidad en observaciones anteriores de alguna muestra de tamaño \(n_0\) cuya varianza estimada fue \(\sigma^2_0\).
+
+En este orden de ideas, y siguiendo la argumentación de las secciones anteriores, dado que la varianza de la distribución es un parámetro que toma valores positivos únicamente, es plausible plantear que su distribución previa sea
+\begin{equation*}
+\sigma^2 \sim Inversa-Gamma(n_0/2, n_0\sigma^2_0/2)
+\end{equation*}
+
+Siguiendo la regla de Bayes, y después de factorizar convenientemente, se encuentra el siguiente resultado que muestra que la distribución posterior es conjugada con respecto a la previa.
+
+\begin{proposition}
+\protect\hypertarget{prp:unnamed-chunk-77}{}{\label{prp:unnamed-chunk-77} }La distribución posterior condicional de \(\sigma^2\) es
+\begin{equation}
+\sigma^2  \mid  \theta, \mathbf{Y} \sim Inversa-Gamma\left(\dfrac{n_0+n}{2},\dfrac{v_0}{2}\right)
+\end{equation}
+con \(v_0=n_0\sigma^2_0+(n-1)S^2+n(\bar{y}-\theta)^2\).
+\end{proposition}
+
+A continuación se presenta un ejemplo de modelación de la varianza en una distribución normal. Como se vió en los anteriores resultados, la distribución previa conjugada toma la forma de una Gamma-inversa, sin embargo el investigador debe sopesar las ventajas de considerar esta distribución, puesto que las características del modelo bayesiano no sólo recaen en la definición de la verosimilitud, sino también en la estructura de la distribución previa. Es decir, en algunas ocasiones es mejor ponderar las bondades predictivas y de ajuste de los modelos, antes que escoger una distribución conjugada. Por ejemplo, \citet{GelmanVariance2006} presentan diferentes opciones de distribuciones previas para modelar la varianza; sin embargo, el desarrollo teórico de estas otras posibles escogencias necesitan de herramientas metodológicas que se considerarán en los posteriores capítulos.
+
+\begin{example}
+\protect\hypertarget{exm:8escuelas}{}{\label{exm:8escuelas} }\citet[ , sección 5.5.]{Gelman95} presentan un estudio realizado para analizar los efectos de algunos programas de entrenamiento especial en preparación para una prueba estandariza de opción múltiple llamada \emph{SAT}, la cual es utilizada por las universidades para tomar decisiones con respecto a la adminsión de sus estudiantes. Quienes presenten mejores puntuaciones tienen una mayor probabilidad de ser admitidos para cursas sus estudios de educación superior.
+
+Las puntuaciones del \emph{SAT} pueden variar entre 200 y 800, con una media de 500 y una desviación estándar de 100. Los exámenes SAT están diseñados para reflejar los conocimientos adquiridos y las habilidades desarrolladas durante muchos años de educación. Sin embargo, cada una de las ocho escuelas en este estudio consideró que su programa de entrenamiento a corto plazo fue muy exitoso para aumentar los puntajes de la prueba. Además, no había ninguna razón previa para creer que alguno de los ocho programas fuera más efectivo que cualquier otro o que algunos fueran más similares en efecto entre sí que cualquier otro.
+
+La variable de interés en este ejemplo es el efecto del programa de entrenamiento en ocho escuelas secuendarias. Este efecto se define como la diferencia entre el puntaje promedio de la escuela con el promedio de la escala de la prueba (500 puntos). Además, en una administración especial de la prueba para en ocho escuelas secundarias. La figura \ref{fig:hist8escuelas} muestra la distribución de los datos observados.
+\end{example}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{Escuelas }\OtherTok{\textless{}{-}} \FunctionTok{data.frame}\NormalTok{(}
+  \AttributeTok{row.names=}\FunctionTok{c}\NormalTok{(}\StringTok{"A"}\NormalTok{, }\StringTok{"B"}\NormalTok{, }\StringTok{"C"}\NormalTok{, }\StringTok{"D"}\NormalTok{, }\StringTok{"E"}\NormalTok{, }\StringTok{"F"}\NormalTok{, }\StringTok{"G"}\NormalTok{, }\StringTok{"H"}\NormalTok{),}
+  \AttributeTok{efecto =} \FunctionTok{c}\NormalTok{(}\FloatTok{28.39}\NormalTok{, }\FloatTok{7.94}\NormalTok{, }\SpecialCharTok{{-}}\FloatTok{2.75}\NormalTok{, }\FloatTok{6.82}\NormalTok{,}
+             \SpecialCharTok{{-}}\FloatTok{0.64}\NormalTok{, }\FloatTok{0.63}\NormalTok{, }\FloatTok{18.01}\NormalTok{, }\FloatTok{12.16}\NormalTok{))}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{figure}
+
+{\centering \includegraphics{3Uniparametricos_files/figure-latex/hist8escuelas-1} 
+
+}
+
+\caption{Histograma de los efectos en las ocho escuelas.}\label{fig:hist8escuelas}
+\end{figure}
+
+En el siguiente apartado se hará uso de \texttt{STAN} para realizar la inferencia bayesiana del parámetro de interés. Aunque, como ya se vio en las secciones anteriores, es posible utilizar simplemente \texttt{R}, acudiendo a los percentiles de la distribución posterior. Para este ejemplo, no se asume un conocimiento específico del fenómeno en la distribución previa. Por consiguiente se definirán parámetros no informativos sobre la distribución previa.
+
+Notando la forma funcional de la distribución Gamma-inversa, al hacer que sus parámetros tomen valores muy pequeños \((\alpha \rightarrow \infty, \ \ \beta \rightarrow \infty)\) se tiene que
+
+\begin{align*}
+p(\sigma^2|\alpha,\beta) 
+&\propto (\sigma^2)^{-\alpha-1}
+\exp(-\frac{\beta}{\sigma^2}) \\
+&\propto \frac{1}{\sigma^2}
+\end{align*}
+
+La cual coincide con la distribución previa de Jeffreys. De esta forma, para que la distribución previa sea propia (integral definida de la función de densidad), se escogen valores cercanos a cero, pero no nulos; por ejemplo \(\alpha = 0.001, \ \ \beta = 0.001\). La figura \ref{fig:jefgammainv} muestra la densidad previa no informativa para el parámetro de interés.
+
+\begin{figure}
+
+{\centering \includegraphics{3Uniparametricos_files/figure-latex/jefgammainv-1} 
+
+}
+
+\caption{Distribución previa no informativa para la varianza de una distribución Normal}\label{fig:jefgammainv}
+\end{figure}
+
+Es posible notar que esta distribución provee un intervalo de confianza del 95\% entre 176079526 e infinito. Por lo que se puede concluir que hay una muy baja probabilidad de que el parámetro tome valores muy bajos o muy altos. Por ejemplo, \(Pr(\sigma^2 < 10) = 0.00859688\).
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{library}\NormalTok{(pscl)}
+\FunctionTok{sapply}\NormalTok{(}\FunctionTok{c}\NormalTok{(}\FloatTok{0.025}\NormalTok{, }\FloatTok{0.975}\NormalTok{), }
+       \ControlFlowTok{function}\NormalTok{(x) }\FunctionTok{qigamma}\NormalTok{(x, }\FloatTok{0.001}\NormalTok{, }\FloatTok{0.001}\NormalTok{))}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## [1] 176079526       Inf
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{pigamma}\NormalTok{(}\DecValTok{10}\NormalTok{, }\FloatTok{0.001}\NormalTok{, }\FloatTok{0.001}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## [1] 0.00859688
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{NormalVar }\OtherTok{\textless{}{-}} \StringTok{\textquotesingle{}}
+\StringTok{data \{}
+\StringTok{  int\textless{}lower=0\textgreater{} n;}
+\StringTok{  real mu;}
+\StringTok{  real y[n];}
+\StringTok{\}}
+\StringTok{parameters \{}
+\StringTok{  real sigma;}
+\StringTok{\}}
+\StringTok{transformed parameters \{}
+\StringTok{  real sigma2;}
+\StringTok{  sigma2 = pow(sigma, 2);}
+\StringTok{\}}
+\StringTok{model \{}
+\StringTok{  y \textasciitilde{} normal(mu, sigma);}
+\StringTok{  sigma \textasciitilde{} inv\_gamma(0.001, 0.001);}
+\StringTok{\}}
+\StringTok{generated quantities \{}
+\StringTok{  real y\_test[n];}
+\StringTok{  for(i in 1:n) \{}
+\StringTok{    y\_test[i] = normal\_rng(mu, sigma);}
+\StringTok{  \}}
+\StringTok{\}}
+\StringTok{\textquotesingle{}}
+
+\NormalTok{sample\_data }\OtherTok{\textless{}{-}} \FunctionTok{list}\NormalTok{(}\AttributeTok{y =}\NormalTok{ Escuelas}\SpecialCharTok{$}\NormalTok{efecto, }
+                    \AttributeTok{n =} \FunctionTok{nrow}\NormalTok{(Escuelas),}
+                    \AttributeTok{mu =} \FunctionTok{mean}\NormalTok{(Escuelas}\SpecialCharTok{$}\NormalTok{efecto))}
+\NormalTok{NormalVfit }\OtherTok{\textless{}{-}} \FunctionTok{stan}\NormalTok{(}\AttributeTok{model\_code =}\NormalTok{ NormalVar,}
+                   \AttributeTok{data =}\NormalTok{ sample\_data, }\AttributeTok{verbose =} \ConstantTok{FALSE}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+Después de la convergencia del proceso inferencial, la estimación bayesiana de \(\sigma^2\) es 10.8, y de \(\sigma^2\) es 127.7 cm. De la misma forma, un intervalo de credibilidad del 95\% para la desviación estándar es \((6.659,\ 19.172)\).
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{print}\NormalTok{(NormalVfit, }\AttributeTok{digits =} \DecValTok{4}\NormalTok{, }
+      \AttributeTok{pars =} \FunctionTok{c}\NormalTok{(}\StringTok{"sigma"}\NormalTok{, }\StringTok{"sigma2"}\NormalTok{), }\AttributeTok{probs =} \FunctionTok{c}\NormalTok{(}\FloatTok{0.025}\NormalTok{, }\FloatTok{0.975}\NormalTok{))}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## Inference for Stan model: db1d737f5b63e0b7dcdc9498c360b64f.
+## 4 chains, each with iter=2000; warmup=1000; thin=1; 
+## post-warmup draws per chain=1000, total post-warmup draws=4000.
+## 
+##            mean se_mean      sd    2.5%    97.5% n_eff   Rhat
+## sigma   11.0309  0.1266  3.2905  6.6896  19.1047   676 1.0006
+## sigma2 132.5059  3.8417 92.0712 44.7509 364.9883   574 1.0011
+## 
+## Samples were drawn using NUTS(diag_e) at Sat Jun 12 11:59:09 2021.
+## For each parameter, n_eff is a crude measure of effective sample size,
+## and Rhat is the potential scale reduction factor on split chains (at 
+## convergence, Rhat=1).
+\end{verbatim}
+
+Las figuras \ref{fig:posNormalVStan} muestra la distribución posterior para este ejemplo, junto con la estimación puntual, correspondiente a la desviación estándar.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{bayesplot}\SpecialCharTok{::}\FunctionTok{mcmc\_areas}\NormalTok{(NormalVfit, }\AttributeTok{pars =} \StringTok{"sigma"}\NormalTok{, }
+                      \AttributeTok{prob =} \FloatTok{0.95}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{figure}
+
+{\centering \includegraphics{3Uniparametricos_files/figure-latex/posNormalVStan-1} 
+
+}
+
+\caption{Distribución posterior.}\label{fig:posNormalVStan}
+\end{figure}
+
+En cualquier caso, es posible sugerir mejores distribuciones no informativas eligiendo apropiadamente un límite superior \(U\) y uno inferior \(L\) en lugar de parámetros \(\alpha\) y \(\beta\) en la distribución Gamma-inversa. Por lo general, los límites se pueden establecer con bastante facilidad luego de un poco de reflexión sobre lo que \(\sigma^2\) realmente significa en el mundo real. Por ejemplo, si fuese el error en algún tipo de cantidad física, \(L\) no puede ser más pequeño que el tamaño de un átomo, o el tamaño más pequeño que pueda observar en su experimento. Es más, \(U\) no podría ser más grande que la tierra (o el sol si se quisiera ser realmente conservador). De esta manera, una forma de mantener las propiedades de invariancia, es definir \(\nu \sim \mathrm{Uniform}(\ln(L),\ln(U))\) para que \(\sigma\sim \exp(U(\ln(L),\ln(U))\). El siguiente código en \texttt{STAN} permite establecer esta opción inferencial.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{NormalVar2 }\OtherTok{\textless{}{-}} \StringTok{\textquotesingle{}}
+\StringTok{data \{}
+\StringTok{  int\textless{}lower = 0\textgreater{} n;}
+\StringTok{  real mu;}
+\StringTok{  real y[n];}
+\StringTok{\}}
+\StringTok{parameters \{}
+\StringTok{  real \textless{}lower = 0\textgreater{} nu;}
+\StringTok{\}}
+\StringTok{transformed parameters \{}
+\StringTok{  real sigma;}
+\StringTok{  real sigma2;}
+\StringTok{  sigma = exp(nu);}
+\StringTok{  sigma2 = pow(sigma, 2);}
+\StringTok{\}}
+\StringTok{model \{}
+\StringTok{  y \textasciitilde{} normal(mu, sigma);}
+\StringTok{  nu \textasciitilde{} uniform(0.5, 20);}
+\StringTok{\}}
+\StringTok{generated quantities \{}
+\StringTok{  real y\_test[n];}
+\StringTok{  for(i in 1:n) \{}
+\StringTok{    y\_test[i] = normal\_rng(mu, sigma);}
+\StringTok{  \}}
+\StringTok{\}}
+\StringTok{\textquotesingle{}}
+
+\NormalTok{sample\_data }\OtherTok{\textless{}{-}} \FunctionTok{list}\NormalTok{(}\AttributeTok{y =}\NormalTok{ Escuelas}\SpecialCharTok{$}\NormalTok{efecto, }
+                    \AttributeTok{n =} \FunctionTok{nrow}\NormalTok{(Escuelas),}
+                    \AttributeTok{mu =} \FunctionTok{mean}\NormalTok{(Escuelas}\SpecialCharTok{$}\NormalTok{efecto))}
+\NormalTok{NormalVfit2 }\OtherTok{\textless{}{-}} \FunctionTok{stan}\NormalTok{(}\AttributeTok{model\_code =}\NormalTok{ NormalVar2,}
+                   \AttributeTok{data =}\NormalTok{ sample\_data, }\AttributeTok{verbose =} \ConstantTok{FALSE}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+Después de la convergencia del proceso inferencial, la estimación bayesiana de \(\sigma^2\) es 10.8, y de \(\sigma^2\) es 128.2 cm. De la misma forma, un intervalo de credibilidad del 95\% para la desviación estándar es \((6.596,\ 18.795)\).
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{print}\NormalTok{(NormalVfit2, }\AttributeTok{digits =} \DecValTok{4}\NormalTok{, }
+      \AttributeTok{pars =} \FunctionTok{c}\NormalTok{(}\StringTok{"sigma"}\NormalTok{, }\StringTok{"sigma2"}\NormalTok{), }\AttributeTok{probs =} \FunctionTok{c}\NormalTok{(}\FloatTok{0.025}\NormalTok{, }\FloatTok{0.975}\NormalTok{))}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## Inference for Stan model: 9fedbb4c644064e4fdb958182968aebc.
+## 4 chains, each with iter=2000; warmup=1000; thin=1; 
+## post-warmup draws per chain=1000, total post-warmup draws=4000.
+## 
+##            mean se_mean      sd    2.5%    97.5% n_eff   Rhat
+## sigma   10.9169  0.0718  3.0243  6.7415  18.2841  1773 1.0003
+## sigma2 128.3234  1.8823 80.9997 45.4484 334.3090  1852 1.0002
+## 
+## Samples were drawn using NUTS(diag_e) at Sat Jun 12 11:59:38 2021.
+## For each parameter, n_eff is a crude measure of effective sample size,
+## and Rhat is the potential scale reduction factor on split chains (at 
+## convergence, Rhat=1).
+\end{verbatim}
+
+Las figuras \ref{fig:posNormalVStan2} muestra la distribución posterior para este ejemplo, junto con la estimación puntual, correspondiente a la desviación estándar.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{bayesplot}\SpecialCharTok{::}\FunctionTok{mcmc\_areas}\NormalTok{(NormalVfit2, }\AttributeTok{pars =} \StringTok{"sigma"}\NormalTok{, }
+                      \AttributeTok{prob =} \FloatTok{0.95}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{figure}
+
+{\centering \includegraphics{3Uniparametricos_files/figure-latex/posNormalVStan2-1} 
+
+}
+
+\caption{Distribución posterior.}\label{fig:posNormalVStan2}
+\end{figure}
 
 \hypertarget{appendix-apuxe9ndice}{%
 \appendix}
