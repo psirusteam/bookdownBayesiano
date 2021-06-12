@@ -1707,7 +1707,7 @@ La distribución predictiva de esta función se puede visualizar en la Figura \@
 <p class="caption">(\#fig:PredPostExpoEje)Distribución predictiva posterior para el tiempo promedio de sobrevivencia de transplante de corazón.</p>
 </div>
 
-## Modelo Normal con media desconocida y varianza conocida
+## Modelo Normal con media desconocida
 
 En esta sección se consideran datos que pueden ser descritos adecuadamente por medio de la distribución normal la cual, a diferencia de las anteriores distribuciones consideradas, tiene dos parámetros. En esta parte, se asume que la varianza teórica es conocida y el objetivo es estimar la media teórica. En el siguiente capítulo se considerará el caso general cuando ambos parámetros son desconocidos.
 
@@ -1963,25 +1963,227 @@ En el siguiente ejemplo se ilustra el uso de la distribución predictiva posteri
 
 De esta forma, se puede afirmar que el grosor promedio del despacho es de 3.13cm con un intervalo del 95% dado por (2.85cm, 3.40cm). Nótese que el intervalo para $\bar{Y}^{*}$ es más ancho que el intervalo para $\theta$, pues este tiene una varianza mayor a la varianza de la distribución posterior de $\theta$.</div>\EndKnitrBlock{example}
 
+## Modelo normal con varianza desconocida
+
+En esta sección se presentan los fundamentos necesario para realizar inferencia bayesiana en un modelo normal para el cual sí se conoce la media, pero no su varianza. En casi todas las aplicaciones prácticas, es común que ambos parámetros sean desconocidos. Sin embargo, estas secciones servirán de base teórica para desarrollar modelos más complejos. Supóngase además que se cuenta con información previa, la cual puede basarse sin pérdida de generalidad en observaciones anteriores de alguna muestra de tamaño $n_0$ cuya varianza estimada fue $\sigma^2_0$.
+
+En este orden de ideas, y siguiendo la argumentación de las secciones anteriores, dado que la varianza de la distribución es un parámetro que toma valores positivos únicamente, es plausible plantear que su distribución previa sea
+\begin{equation*}
+\sigma^2 \sim Inversa-Gamma(n_0/2, n_0\sigma^2_0/2)
+\end{equation*}
+
+Siguiendo la regla de Bayes, y después de factorizar convenientemente, se encuentra el siguiente resultado que muestra que la distribución posterior es conjugada con respecto a la previa. 
+
+\BeginKnitrBlock{proposition}<div class="proposition"><span class="proposition" id="prp:unnamed-chunk-77"><strong>(\#prp:unnamed-chunk-77) </strong></span>La distribución posterior condicional de $\sigma^2$ es 
+\begin{equation}
+\sigma^2  \mid  \theta, \mathbf{Y} \sim Inversa-Gamma\left(\dfrac{n_0+n}{2},\dfrac{v_0}{2}\right)
+\end{equation}
+con $v_0=n_0\sigma^2_0+(n-1)S^2+n(\bar{y}-\theta)^2$.</div>\EndKnitrBlock{proposition}
+
+A continuación se presenta un ejemplo de modelación de la varianza en una distribución normal. Como se vió en los anteriores resultados, la distribución previa conjugada toma la forma de una Gamma-inversa, sin embargo el investigador debe sopesar las ventajas de considerar esta distribución, puesto que las características del modelo bayesiano no sólo recaen en la definición de la verosimilitud, sino también en la estructura de la distribución previa. Es decir, en algunas ocasiones es mejor ponderar las bondades predictivas y de ajuste de los modelos, antes que escoger una distribución conjugada. Por ejemplo, @GelmanVariance2006 presentan diferentes opciones de distribuciones previas para modelar la varianza; sin embargo, el desarrollo teórico de estas otras posibles escogencias necesitan de herramientas metodológicas que se considerarán en los posteriores capítulos.
+
+\BeginKnitrBlock{example}<div class="example"><span class="example" id="exm:8escuelas"><strong>(\#exm:8escuelas) </strong></span>@Gelman95[ , sección 5.5.] presentan un estudio realizado para analizar los efectos de algunos programas de entrenamiento especial en preparación para una prueba estandariza de opción múltiple llamada *SAT*, la cual es utilizada por las universidades para tomar decisiones con respecto a la adminsión de sus estudiantes. Quienes presenten mejores puntuaciones tienen una mayor probabilidad de ser admitidos para cursas sus estudios de educación superior. 
+
+Las puntuaciones del *SAT* pueden variar entre 200 y 800, con una media de 500 y una desviación estándar de 100. Los exámenes SAT están diseñados para reflejar los conocimientos adquiridos y las habilidades desarrolladas durante muchos años de educación. Sin embargo, cada una de las ocho escuelas en este estudio consideró que su programa de entrenamiento a corto plazo fue muy exitoso para aumentar los puntajes de la prueba. Además, no había ninguna razón previa para creer que alguno de los ocho programas fuera más efectivo que cualquier otro o que algunos fueran más similares en efecto entre sí que cualquier otro.
+
+La variable de interés en este ejemplo es el efecto del programa de entrenamiento en ocho escuelas secuendarias. Este efecto se define como la diferencia entre el puntaje promedio de la escuela con el promedio de la escala de la prueba (500 puntos). Además,  en una administración especial de la prueba para en ocho escuelas secundarias. La figura \@ref(fig:hist8escuelas) muestra la distribución de los datos observados.</div>\EndKnitrBlock{example}
+
+
+```r
+Escuelas <- data.frame(
+  row.names=c("A", "B", "C", "D", "E", "F", "G", "H"),
+  efecto = c(28.39, 7.94, -2.75, 6.82,
+             -0.64, 0.63, 18.01, 12.16))
+```
+
+<div class="figure" style="text-align: center">
+<img src="3Uniparametricos_files/figure-html/hist8escuelas-1.svg" alt="Histograma de los efectos en las ocho escuelas." width="576" />
+<p class="caption">(\#fig:hist8escuelas)Histograma de los efectos en las ocho escuelas.</p>
+</div>
+
+En el siguiente apartado se hará uso de `STAN` para realizar la inferencia bayesiana del parámetro de interés. Aunque, como ya se vio en las secciones anteriores, es posible utilizar simplemente `R`, acudiendo a los percentiles de la distribución posterior. Para este ejemplo, no se asume un conocimiento específico del fenómeno en la distribución previa. Por consiguiente se definirán parámetros no informativos sobre la distribución previa. 
+
+Notando la forma funcional de la distribución Gamma-inversa, al hacer que sus parámetros tomen valores muy pequeños $(\alpha \rightarrow \infty, \ \ \beta  \rightarrow \infty)$ se tiene que 
+
+\begin{align*}
+p(\sigma^2|\alpha,\beta) 
+&\propto (\sigma^2)^{-\alpha-1}
+\exp(-\frac{\beta}{\sigma^2}) \\
+&\propto \frac{1}{\sigma^2}
+\end{align*}
+
+La cual coincide con la distribución previa de Jeffreys. De esta forma, para que la distribución previa sea propia (integral definida de la función de densidad), se escogen valores cercanos a cero, pero no nulos; por ejemplo $\alpha = 0.001, \ \ \beta = 0.001$. La figura \@ref(eq:jefgammainv) muestra la densidad previa no informativa para el parámetro de interés.
+
+<div class="figure" style="text-align: center">
+<img src="3Uniparametricos_files/figure-html/jefgammainv-1.svg" alt="Distribución previa no informativa para la varianza de una distribución Normal" width="576" />
+<p class="caption">(\#fig:jefgammainv)Distribución previa no informativa para la varianza de una distribución Normal</p>
+</div>
+
+Es posible notar que esta distribución provee un intervalo de confianza del 95% entre 176079526 e infinito. Por lo que se puede concluir que hay una muy baja probabilidad de que el parámetro tome valores muy bajos o muy altos. Por ejemplo, $Pr(\sigma^2 < 10) = 0.00859688$.
+
+
+```r
+library(pscl)
+sapply(c(0.025, 0.975), 
+       function(x) qigamma(x, 0.001, 0.001))
+```
+
+```
+## [1] 176079526       Inf
+```
+
+```r
+pigamma(10, 0.001, 0.001)
+```
+
+```
+## [1] 0.00859688
+```
+
+
+```r
+NormalVar <- '
+data {
+  int<lower=0> n;
+  real mu;
+  real y[n];
+}
+parameters {
+  real sigma;
+}
+transformed parameters {
+  real sigma2;
+  sigma2 = pow(sigma, 2);
+}
+model {
+  y ~ normal(mu, sigma);
+  sigma ~ inv_gamma(0.001, 0.001);
+}
+generated quantities {
+  real y_test[n];
+  for(i in 1:n) {
+    y_test[i] = normal_rng(mu, sigma);
+  }
+}
+'
+
+sample_data <- list(y = Escuelas$efecto, 
+                    n = nrow(Escuelas),
+                    mu = mean(Escuelas$efecto))
+NormalVfit <- stan(model_code = NormalVar,
+                   data = sample_data, verbose = FALSE)
+```
+
+Después de la convergencia del proceso inferencial, la estimación bayesiana de $\sigma^2$ es 10.8, y de $\sigma^2$ es 127.7 cm. De la misma forma, un intervalo de credibilidad del 95\% para la desviación estándar es $(6.659,\ 19.172)$. 
+
+
+```r
+print(NormalVfit, digits = 4, 
+      pars = c("sigma", "sigma2"), probs = c(0.025, 0.975))
+```
+
+```
+## Inference for Stan model: db1d737f5b63e0b7dcdc9498c360b64f.
+## 4 chains, each with iter=2000; warmup=1000; thin=1; 
+## post-warmup draws per chain=1000, total post-warmup draws=4000.
+## 
+##            mean se_mean      sd    2.5%    97.5% n_eff  Rhat
+## sigma   10.9047   0.116  3.1332  6.6574  18.8534   730 1.014
+## sigma2 128.7262   3.116 82.6527 44.3207 355.4494   704 1.016
+## 
+## Samples were drawn using NUTS(diag_e) at Sat Jun 12 11:27:49 2021.
+## For each parameter, n_eff is a crude measure of effective sample size,
+## and Rhat is the potential scale reduction factor on split chains (at 
+## convergence, Rhat=1).
+```
+
+Las figuras \@ref(fig:posNormalVStan) muestra la distribución posterior para este ejemplo, junto con la estimación puntual, correspondiente a la desviación estándar. 
+
+
+```r
+bayesplot::mcmc_areas(NormalVfit, pars = "sigma", 
+                      prob = 0.95)
+```
+
+<div class="figure" style="text-align: center">
+<img src="3Uniparametricos_files/figure-html/posNormalVStan-1.svg" alt="Distribución posterior." width="576" />
+<p class="caption">(\#fig:posNormalVStan)Distribución posterior.</p>
+</div>
+
+
+En cualquier caso, es posible sugerir mejores distribuciones no informativas eligiendo apropiadamente un límite superior $U$ y uno inferior $L$ en lugar de parámetros $\alpha$ y $\beta$ en la distribución Gamma-inversa. Por lo general, los límites se pueden establecer con bastante facilidad luego de un poco de reflexión sobre lo que $\sigma^2$ realmente significa en el mundo real. Por ejemplo, si fuese el error en algún tipo de cantidad física, $L$ no puede ser más pequeño que el tamaño de un átomo, o el tamaño más pequeño que pueda observar en su experimento. Es más, $U$ no podría ser más grande que la tierra (o el sol si se quisiera ser realmente conservador). De esta manera, una forma de mantener las propiedades de invariancia, es definir $\nu \sim \mathrm{Uniform}(\ln(L),\ln(U))$ para que $\sigma\sim \exp(U(\ln(L),\ln(U))$. El siguiente código en `STAN` permite establecer esta opción inferencial.
 
 
 
+```r
+NormalVar2 <- '
+data {
+  int<lower = 0> n;
+  real mu;
+  real y[n];
+}
+parameters {
+  real <lower = 0> nu;
+}
+transformed parameters {
+  real sigma;
+  real sigma2;
+  sigma = exp(nu);
+  sigma2 = pow(sigma, 2);
+}
+model {
+  y ~ normal(mu, sigma);
+  nu ~ uniform(0.5, 20);
+}
+generated quantities {
+  real y_test[n];
+  for(i in 1:n) {
+    y_test[i] = normal_rng(mu, sigma);
+  }
+}
+'
+
+sample_data <- list(y = Escuelas$efecto, 
+                    n = nrow(Escuelas),
+                    mu = mean(Escuelas$efecto))
+NormalVfit2 <- stan(model_code = NormalVar2,
+                   data = sample_data, verbose = FALSE)
+```
+
+Después de la convergencia del proceso inferencial, la estimación bayesiana de $\sigma^2$ es 10.8, y de $\sigma^2$ es 128.2 cm. De la misma forma, un intervalo de credibilidad del 95\% para la desviación estándar es $(6.596,\ 18.795)$. 
 
 
+```r
+print(NormalVfit2, digits = 4, 
+      pars = c("sigma", "sigma2"), probs = c(0.025, 0.975))
+```
+
+```
+## Inference for Stan model: 9fedbb4c644064e4fdb958182968aebc.
+## 4 chains, each with iter=2000; warmup=1000; thin=1; 
+## post-warmup draws per chain=1000, total post-warmup draws=4000.
+## 
+##            mean se_mean       sd    2.5%    97.5% n_eff   Rhat
+## sigma   10.9963  0.0896   3.3723  6.6836  18.8918  1417 1.0000
+## sigma2 132.2874  2.7314 103.1860 44.6711 356.9005  1427 1.0003
+## 
+## Samples were drawn using NUTS(diag_e) at Sat Jun 12 11:43:07 2021.
+## For each parameter, n_eff is a crude measure of effective sample size,
+## and Rhat is the potential scale reduction factor on split chains (at 
+## convergence, Rhat=1).
+```
+
+Las figuras \@ref(fig:posNormalVStan2) muestra la distribución posterior para este ejemplo, junto con la estimación puntual, correspondiente a la desviación estándar. 
 
 
+```r
+bayesplot::mcmc_areas(NormalVfit2, pars = "sigma", 
+                      prob = 0.95)
+```
 
-
-
-
-
-
-
-
-
-
-
-
-
+<div class="figure" style="text-align: center">
+<img src="3Uniparametricos_files/figure-html/posNormalVStan2-1.svg" alt="Distribución posterior." width="576" />
+<p class="caption">(\#fig:posNormalVStan2)Distribución posterior.</p>
+</div>
 
 

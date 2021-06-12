@@ -94,6 +94,12 @@ prp:PredNorm
 exm:unnamed-chunk-73
 fig:posNormalMStan
 exm:unnamed-chunk-76
+prp:unnamed-chunk-77
+exm:8escuelas
+fig:hist8escuelas
+fig:jefgammainv
+fig:posNormalVStan
+fig:posNormalVStan2
 prp:unnamed-chunk-2
 def:unnamed-chunk-3
 prp:unnamed-chunk-4
@@ -194,10 +200,11 @@ modelo-binomial
 modelo-binomial-negativo
 modelo-poisson
 modelo-exponencial
-modelo-normal-con-media-desconocida-y-varianza-conocida
+modelo-normal-con-media-desconocida
 distribución-previa-no-informativa-para-theta
 diferentes-formas-de-hallar-la-distribución-previa-para-theta
 distribuciones-predictivas
+modelo-normal-con-varianza-desconocida
 elementos-de-probabilidad
 distribuciones-discretas
 distribución-uniforme-discreta
