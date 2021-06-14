@@ -4,11 +4,11 @@
 
   <meta charset="utf-8" />
   <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-  <title>1.3 Teorema de Bayes | Modelos Bayesianos con R y STAN</title>
+  <title>4.1 Normal univariada con media y varianza desconocida | Modelos Bayesianos con R y STAN</title>
   <meta name="description" content="Este es el repositorio del libro Modelos Bayesianos con R y STAN." />
   <meta name="generator" content="bookdown 0.22 and GitBook 2.6.7" />
 
-  <meta property="og:title" content="1.3 Teorema de Bayes | Modelos Bayesianos con R y STAN" />
+  <meta property="og:title" content="4.1 Normal univariada con media y varianza desconocida | Modelos Bayesianos con R y STAN" />
   <meta property="og:type" content="book" />
   
   
@@ -16,7 +16,7 @@
   <meta name="github-repo" content="psirusteam/bookdownBayesiano" />
 
   <meta name="twitter:card" content="summary" />
-  <meta name="twitter:title" content="1.3 Teorema de Bayes | Modelos Bayesianos con R y STAN" />
+  <meta name="twitter:title" content="4.1 Normal univariada con media y varianza desconocida | Modelos Bayesianos con R y STAN" />
   
   <meta name="twitter:description" content="Este es el repositorio del libro Modelos Bayesianos con R y STAN." />
   
@@ -31,8 +31,8 @@
   <meta name="apple-mobile-web-app-status-bar-style" content="black" />
   
   
-<link rel="prev" href="algunos-resultados-de-probabilidad.html"/>
-<link rel="next" href="inferencia-bayesiana.html"/>
+<link rel="prev" href="modelos-multiparamétricos.html"/>
+<link rel="next" href="elementos-de-probabilidad.html"/>
 <script src="libs/header-attrs-2.8/header-attrs.js"></script>
 <script src="libs/jquery-2.2.3/jquery.min.js"></script>
 <link href="libs/gitbook-2.6.7/css/style.css" rel="stylesheet" />
@@ -207,9 +207,9 @@ div.csl-indent {
 </ul></li>
 <li class="chapter" data-level="4" data-path="modelos-multiparamétricos.html"><a href="modelos-multiparamétricos.html"><i class="fa fa-check"></i><b>4</b> Modelos multiparamétricos</a>
 <ul>
-<li class="chapter" data-level="4.1" data-path="modelo-normal-con-media-y-varianza-desconocida.html"><a href="modelo-normal-con-media-y-varianza-desconocida.html"><i class="fa fa-check"></i><b>4.1</b> Modelo Normal con media y varianza desconocida</a>
+<li class="chapter" data-level="4.1" data-path="normal-univariada-con-media-y-varianza-desconocida.html"><a href="normal-univariada-con-media-y-varianza-desconocida.html"><i class="fa fa-check"></i><b>4.1</b> Normal univariada con media y varianza desconocida</a>
 <ul>
-<li class="chapter" data-level="4.1.1" data-path="modelo-normal-con-media-y-varianza-desconocida.html"><a href="modelo-normal-con-media-y-varianza-desconocida.html#parámetros-independientes"><i class="fa fa-check"></i><b>4.1.1</b> Parámetros independientes</a></li>
+<li class="chapter" data-level="4.1.1" data-path="normal-univariada-con-media-y-varianza-desconocida.html"><a href="normal-univariada-con-media-y-varianza-desconocida.html#parámetros-independientes"><i class="fa fa-check"></i><b>4.1.1</b> Parámetros independientes</a></li>
 </ul></li>
 </ul></li>
 <li class="appendix"><span><b>Apéndice</b></span></li>
@@ -285,266 +285,126 @@ div.csl-indent {
           <div class="page-inner">
 
             <section class="normal" id="section-">
-<div id="teorema-de-bayes" class="section level2" number="1.3">
-<h2><span class="header-section-number">1.3</span> Teorema de Bayes</h2>
-<p>Desde la revolución estadística de Pearson y Fisher, la inferencia
-estadística busca encontrar los valores que parametrizan a la
-distribución desconocida de los datos. El primer enfoque, propuesto por
-Pearson, afirmaba que si era posible observar a la variable de interés
-en todos y cada uno de los individuos de una población, entonces era
-posible calcular los parámetros de la distribución de la variable de
-interés; por otro lado, si solo se tenía acceso a una muestra
-representativa, entonces era posible calcular una estimación de tales
-parámetros. Sin embargo, Fisher discrepó de tales argumentos, asumiendo
-que las observaciones están sujetas a un error de medición y por lo
-tanto, así se tuviese acceso a toda la población, sería imposible calcular
-los parámetros de la distribución de la variable de interés.</p>
-<p>Del planteamiento de Fisher resultaron una multitud de métodos
-estadísticos para la estimación de los parámetros poblacionales. Es
-decir, si la distribución de <span class="math inline">\(\mathbf{Y}\)</span> está parametrizada por
-<span class="math inline">\(\boldsymbol \theta=(\theta_1,\ldots,\theta_K)\)</span>, <span class="math inline">\(\boldsymbol \theta\in \Theta\)</span> con <span class="math inline">\(\Theta\)</span>
-el espacio paramétrico inducido por el comportamiento de la variable de
-interés, el objetivo de la teoría estadística inferencial es calcular
-una estimación <span class="math inline">\(\hat{\boldsymbol \theta}\)</span> del parámetro <span class="math inline">\(\boldsymbol \theta\)</span>, por medio de los
-datos observados. En este enfoque, los parámetros se consideran
-cantidades fijas y constantes. Sin embargo, en la última mitad del siglo
-XX, algunos investigadores estadísticos comenzaron a reflexionar acerca
-de la naturaleza de <span class="math inline">\(\boldsymbol \theta\)</span> y enfocaron la inferencia estadística de
-una manera distinta: <em>asumiendo que la distribución de la variable de
-interés está condicionada a valores específicos de los parámetros</em>. Es
-decir, en términos de notación, si la variable de interés es
-<span class="math inline">\(\mathbf{Y}\)</span>, su distribución condicionada a los parámetros toma la
-siguiente forma <span class="math inline">\(p(\mathbf{Y} \mid \boldsymbol \theta)\)</span>. Esto implica claramente
-que en este nuevo enfoque la naturaleza de los parámetros no es
-constante.</p>
-<p>En términos de inferencia para <span class="math inline">\(\boldsymbol \theta\)</span>, es necesario encontrar la
-distribución de los parámetros condicionada a la observación de los
-datos. Para este fin, es necesario definir la distribución conjunta de
-la variable de interés con el vector de parámetros.
-<span class="math display">\[\begin{equation*}
-p(\boldsymbol \theta,\mathbf{Y})=p(\boldsymbol \theta)p(\mathbf{Y} \mid \boldsymbol \theta)
+<div id="normal-univariada-con-media-y-varianza-desconocida" class="section level2" number="4.1">
+<h2><span class="header-section-number">4.1</span> Normal univariada con media y varianza desconocida</h2>
+<p>Supongamos que se dispone de realizaciones de un conjunto de variables independientes e idénticamente distribuidas <span class="math inline">\(Y_1,\cdots,Y_n\sim N(\theta,\sigma^2)\)</span>. Cuando se desconoce tanto la media como la varianza de la distribución es necesario plantear diversos enfoques y situarse en el más conveniente, según el contexto del problema. En términos de la asignación de las distribuciones previas para <span class="math inline">\(\theta\)</span> y <span class="math inline">\(\sigma^2\)</span> es posible:</p>
+<ul>
+<li>Suponer que la distribución previa <span class="math inline">\(p(\theta)\)</span> es independiente de la distribución previa <span class="math inline">\(p(\sigma^2)\)</span> y que ambas distribuciones son informativas.</li>
+<li>Suponer que la distribución previa <span class="math inline">\(p(\theta)\)</span> es independiente de la distribución previa <span class="math inline">\(p(\sigma^2)\)</span> y que ambas distribuciones son no informativas.</li>
+<li>Suponer que la distribución previa para <span class="math inline">\(\theta\)</span> depende de <span class="math inline">\(\sigma^2\)</span> y escribirla como <span class="math inline">\(p(\theta \mid \sigma^2)\)</span>, mientras que la distribución previa de <span class="math inline">\(\sigma^2\)</span> no depende de <span class="math inline">\(\theta\)</span> y se puede escribir como <span class="math inline">\(p(\sigma^2)\)</span>.</li>
+</ul>
+<p>A continuación, analizamos cada uno de estos planteamientos, y desarrollamos los resultados necesarios para la estimación de <span class="math inline">\(\theta\)</span> y <span class="math inline">\(\sigma^2\)</span>.</p>
+<div id="parámetros-independientes" class="section level3" number="4.1.1">
+<h3><span class="header-section-number">4.1.1</span> Parámetros independientes</h3>
+<p>El primer enfoque que consideraremos para el análisis de los parámetros de interés <span class="math inline">\(\theta\)</span> y <span class="math inline">\(\sigma^2\)</span> en una distribución normal univariada es aquel que supone que las distribuciones previas de cada uno de ellos son independientes, pero al mismo tiempo informativas.  afirma que este supuesto de independencia es atractivo en problemas para los cuales la información previa para <span class="math inline">\(\theta\)</span> no toma la forma de un número fijo de observaciones con varianza <span class="math inline">\(\sigma^2\)</span>. Adicionalmente, este supuesto de independencia es coherente con el hecho de que en la teoría clásica de estimación los estimadores insesgados de varianza mínima de <span class="math inline">\(\theta\)</span> y <span class="math inline">\(\sigma^2\)</span> son independientes <span class="citation">(<a href="#ref-Zhang" role="doc-biblioref">Zhang y Gutiérrez 2010</a>, Sección 2.4)</span></p>
+<p>En este orden de ideas, y siguiendo la argumentación del capítulo anterior, la distribución previa para el parámetro <span class="math inline">\(\theta\)</span> será</p>
+<p><span class="math display">\[\begin{equation*}
+\theta \sim Normal(\mu,\tau^2)
 \end{equation*}\]</span></p>
-<p>A la distribución <span class="math inline">\(p(\boldsymbol \theta)\)</span> se le conoce con el nombre de
-distribución <em>previa</em> y en ella se enmarcan todas y cada una de las
-creencias que se tienen acerca del comportamiento estocástico del vector
-de parámetros antes de que ocurra la recolección de los datos; <span class="math inline">\(p(\mathbf{Y} \mid \boldsymbol \theta)\)</span> es la distribución de muestreo,
-verosimilitud o distribución de los datos. Por otro lado, la
-distribución del vector de parámetros condicionada a los datos
-observados está dada por</p>
-<p><span class="math display" id="eq:Bayes">\[\begin{equation}
-\tag{1.1}
-p(\boldsymbol \theta\mid \mathbf{Y})=\frac{p(\boldsymbol \theta,\mathbf{Y})}{p(\mathbf{Y})}=\frac{p(\boldsymbol \theta)p(\mathbf{Y} \mid \boldsymbol \theta)}{p(\mathbf{Y})}
+<p>Y la distribución previa para el parámetro <span class="math inline">\(\sigma^2\)</span> será
+<span class="math display">\[\begin{equation*}
+\sigma^2 \sim Inversa-Gamma(n_0/2,n_0\sigma^2_0/2)
+\end{equation*}\]</span></p>
+<p>Asumiendo independencia previa, la distribución previa conjunta estará dada por</p>
+<p><span class="math display">\[\begin{equation}
+p(\theta,\sigma^2)\propto (\sigma^2)^{-n_0/2-1}\exp\left\{-\dfrac{n_0\sigma^2_0}{2\sigma^2}\right\}
+\exp\left\{-\frac{1}{2\tau^2}(\theta-\mu)^2\right\}
 \end{equation}\]</span></p>
-<p>A la distribución <span class="math inline">\(p(\boldsymbol \theta\mid \mathbf{Y})\)</span> se le conoce con el
-nombre de distribución <em>posterior</em> y en ella se enmarcan las
-creencias actualizadas acerca del comportamiento estocástico del vector
-de parámetros teniendo en cuenta los datos observados <span class="math inline">\(\mathbf{Y}\)</span>.
-Nótese que la expresión <a href="teorema-de-bayes.html#eq:Bayes">(1.1)</a> se compone de una fracción cuyo
-denominador no depende del vector de parámetros y considerando a los
-datos observados como fijos, corresponde a una constante y puede ser
-obviada. Por lo tanto, otra representación de la regla de Bayes está
-dada por</p>
-<p><span class="math display" id="eq:Bayes1">\[\begin{align}
-\tag{1.2}
-p(\boldsymbol \theta\mid \mathbf{Y})\propto p(\mathbf{Y} \mid \boldsymbol \theta)p(\boldsymbol \theta)
-\end{align}\]</span></p>
-<p><span class="citation"><a href="#ref-Gelman03" role="doc-biblioref">A. Gelman et al.</a> (<a href="#ref-Gelman03" role="doc-biblioref">2003</a>)</span> menciona que esta expresión se conoce como la
-distribución <em>posterior no-normalizada</em> y encierra el núcleo
-técnico de la inferencia bayesiana. La constante <span class="math inline">\(p(\mathbf{Y})\)</span>
-faltante en la expresión <a href="teorema-de-bayes.html#eq:Bayes1">(1.2)</a> se da a continuación.</p>
+<p>Una vez que se conoce la forma estructural de la distribución previa conjunta, es posible establecer la distribución posterior conjunta puesto que la verosimilitud de los datos, <span class="math inline">\(p(\mathbf{Y} \mid \theta,\sigma^2)\)</span>, está dada por la expresión <a href="modelo-normal-con-media-desconocida.html#eq:veronormal">(3.16)</a> y</p>
+<p><span class="math display">\[\begin{equation*}
+p(\theta,\sigma^2 \mid \mathbf{Y})\propto p(\mathbf{Y} \mid \theta,\sigma^2)p(\theta,\sigma^2)
+\end{equation*}\]</span></p>
 
 <div class="proposition">
-<span id="prp:Res131" class="proposition"><strong>Resultado 1.4  </strong></span>La expresión <span class="math inline">\(p(\mathbf{Y})\)</span> corresponde a una constante <span class="math inline">\(k\)</span> tal que
-<span class="math display">\[\begin{equation*}
-k=p(\mathbf{Y})=E_{\boldsymbol \theta}[p(Y \mid \boldsymbol \theta)]
-\end{equation*}\]</span>
+<p><span id="prp:unnamed-chunk-1" class="proposition"><strong>Resultado 3.1  </strong></span>La distribución posterior conjunta de los parámetros de interés está dada por</p>
+<span class="math display">\[\begin{align}
+p(\theta,\sigma^2 \mid \mathbf{Y})&amp;\propto (\sigma^2)^{-(n+n_0)/2-1} \notag \\
+&amp;\times
+\exp\left\{-\frac{1}{2\sigma^2}\left[n_0\sigma^2_0+(n-1)S^2+n(\bar{y}-\theta)^2\right]-\frac{1}{2\tau^2}(\theta-\mu)^2\right\}
+\end{align}\]</span>
 </div>
 <p><br></p>
 
 <div class="proof">
- <span class="proof"><em>Prueba. </em></span> Nótese que
-<span class="math display">\[\begin{equation*}
-k=p(\mathbf{Y})=\int p(\mathbf{Y},\boldsymbol \theta)\ d\boldsymbol \theta=\int p(\boldsymbol \theta)p(\mathbf{Y} \mid \boldsymbol \theta)\ d\boldsymbol \theta.
-\end{equation*}\]</span>
-entonces
+ <span class="proof"><em>Prueba. </em></span> Tenemos que
 <span class="math display">\[\begin{align*}
-k&amp;=\int p(\mathbf{Y} \mid \boldsymbol \theta)p(\boldsymbol \theta)\ d\boldsymbol \theta\\
-&amp;=E_{\boldsymbol \theta}[p(Y \mid \boldsymbol \theta)]
+p(\theta,\sigma^2 \mid \mathbf{Y})&amp;\propto p(\mathbf{Y} \mid \theta,\sigma^2)p(\theta,\sigma^2)\\
+&amp;\propto(\sigma^2)^{-n/2}\exp\left\{-\frac{1}{2\sigma^2}\sum_{i=1}^n(y_i-\theta)^2\right\}(\sigma^2)^{-n_0/2-1}\exp\left\{-\dfrac{n_0\sigma^2_0}{2\sigma^2}\right\}
+\exp\left\{-\frac{1}{2\tau^2}(\theta-\mu)^2\right\} \\
+&amp;=(\sigma^2)^{-(n+n_0)/2-1}\exp\left\{-\frac{1}{2\sigma^2}\left[n_0\sigma^2_0+\sum_{i=1}^n(y_i-\theta)^2\right]-\frac{1}{2\tau^2}(\theta-\mu)^2\right\}\\
+&amp;\propto (\sigma^2)^{-(n+n_0)/2-1}\exp\left\{-\frac{1}{2\sigma^2}\left[n_0\sigma^2_0+(n-1)S^2+n(\bar{y}-\theta)^2\right]-\frac{1}{2\tau^2}(\theta-\mu)^2\right\}
 \end{align*}\]</span>
+donde la última expresión se obtiene al sumar y restar <span class="math inline">\(\bar{y}\)</span> dentro de <span class="math inline">\((y_i-\theta)^2\)</span>.
 </div>
 <p><br></p>
-<p>Curiosamente, el reverendo Thomas Bayes nunca publicó este resultado,
-sino que después de su fallecimiento, su amigo el filósofo Richard
-Price, encontró los escritos dentro de sus pertenencias, y éstos fueron
-publicados en el 1764 en
-<em>Philosophical Transactions of the Royal Society of London</em>. Aunque
-el teorema de Bayes fue nombrado en honor de Thomas Bayes, es casi
-seguro que él mismo no sospechaba del gran impacto de su resultado. De hecho, aproximadamente una década más tarde, Pierre-Simon Laplace también descrubrió el mismo principio, y dedicó gran parte de su vida extendiéndolo y formalizándolo. Más aún, él analizó grandes volumenes de datos relacionados a los nacimientos en diferentes paises para confirmar esta teoría, y sentó las bases de la estadística bayesiana.</p>
-<p>A continuación se presenta un ejemplo simple de este sencillo pero
-poderoso teorema.</p>
-
-<div class="example">
-<p><span id="exm:unnamed-chunk-11" class="example"><strong>Ejemplo 1.4  </strong></span>Suponga que una fábrica del sector industrial produce bolígrafos y que la producción está a cargo de tres máquinas. La primera máquina produce el 50% del total de bolígrafos en el año, la segunda máquina produce el 30% y la última maquina produce el restante 20%. Por supuesto, esta producción esta sujeta al error y por tanto, basados en la experiencia, es posible reconocer que, de los artículos producidos por la primera máquina, el 5% resultan defectuosos; de los artículos producidos por la segunda máquina, el 2% resultan defectuosos y, de los artículos producidos por la última máquina, el 6% resultan defectuosos.</p>
-<p>Una pregunta natural que surge es acerca de la probabilidad de selección de un artículo defectuoso y para responder a esta pregunta con rigurosidad de probabilística es necesario enfocar la atención en los tópicos básicos que dejamos atrás. En primer lugar, el experimento en cuestión es la selección de un bolígrafo. Para este experimento, una terna <span class="math inline">\((\Omega, \mathfrak{F}, P)\)</span>,<a href="#fn1" class="footnote-ref" id="fnref1"><sup>1</sup></a> llamada comúnmente espacio de medida o espacio de probabilidad, está dada por</p>
-<ol style="list-style-type: decimal">
-<li>El espacio muestral: <span class="math inline">\(\Omega=\{\text{defectuoso}, \text{No defectouso}\}\)</span></li>
-<li>La <span class="math inline">\(\sigma\)</span>-álgebra: <span class="math inline">\(\mathfrak{F}=\{\Omega, \phi, \{\text{Defectuoso}\}, \{\text{No Defectuoso}\}\}\)</span></li>
-<li>La función de probabilidad:
-<span class="math display">\[\begin{align*}
-  p: \mathfrak{F} &amp;\longrightarrow [0,1]\\
-  \Omega &amp;\longrightarrow 1\\
-  \phi &amp;\longrightarrow 0\\
-  \{Defectuoso\}&amp;\longrightarrow P(D)\\
-  \{No Defectuoso\}&amp;\longrightarrow 1-P(D)
-  \end{align*}\]</span>
-en donde, acudiendo al teorema de probabilidad total, se define
-<span class="math display">\[\begin{equation*}
-  p(D)=p(D \mid M1)P(M1)+p(D \mid M2)P(M2)+p(D \mid M3)P(M3)
-  \end{equation*}\]</span></li>
-</ol>
-<p>Sin embargo, también es posible plantearse otro tipo de preguntas que sirven para calibrar el proceso de producción de artículos defectuosos. Por ejemplo, cabe preguntarse acerca de la probabilidad de que, habiendo seleccionado un artículo defectuoso, éste provenga de la primera máquina<a href="#fn2" class="footnote-ref" id="fnref2"><sup>2</sup></a>. En esta ocasión, el experimento ha cambiado y ahora se trata de seleccionar un artículo defectuoso y para responder a tal cuestionamiento, se debe establecer rigurosamente el espacio de probabilidad que puede estar dado por</p>
-<ol style="list-style-type: decimal">
-<li>El espacio muestral: <span class="math inline">\(\Omega=\{M1, M2, M3 \}\)</span></li>
-<li>La <span class="math inline">\(\sigma\)</span>-álgebra: <span class="math inline">\(\mathfrak{F}^+=\{\Omega, \phi, \{M1\}, \{M2,M3\}\}\)</span></li>
-<li>La función de probabilidad:
-<span class="math display">\[\begin{align*}
-  p: \mathfrak{F}^+ &amp;\longrightarrow [0,1]\\
-  \Omega &amp;\longrightarrow 1\\
-  \phi &amp;\longrightarrow 0\\
-  \{M1\}&amp;\longrightarrow p(M1 \mid D)\\
-  \{M2,M3\}&amp;\longrightarrow 1-p(M1 \mid D)
-  \end{align*}\]</span>
-en donde, acudiendo a la probabilidad condicional, se define
-<span class="math display">\[\begin{equation*}
-  p(M1 \mid D)=\frac{p(D \mid M1)P(M1)}{p(D \mid M1)P(M1)+p(D \mid M2)P(M2)+p(D \mid M3)P(M3)}
-  \end{equation*}\]</span></li>
-</ol>
-<p>La anterior función de probabilidad se conoce con el nombre de regla de probabilidad de Bayes y, aparte de ser el baluarte de la mayoría de investigaciones estadísticas que se plantean hoy en día, ha sido la piedra de tropiezo de muchos investigadores radicales que trataron de estigmatizar este enfoque tildando a sus seguidores de mediocres matemáticos y pobres probabilistas afirmando que la regla de probabilidad de Bayes es sólo un artilugio diseñado para divertirse en el tablero.</p>
-Pues bien, la interpretación de la regla de bayes se puede realizar en el sentido de actualización de la estructura probabilística que gobierna el experimento. Y esta actualización tiene mucho sentido práctico cuando se cae en la cuenta de que la vida real está llena de calibradores y que las situaciones generadas son consecuencia de algún cambio estructural. De esta forma, el conocimiento de la probabilidad de que el artículo sea producido por la primera máquina se actualiza al conocer que este artículo particular es defectuoso y de esta manera calibra la estructura aleatoria que existe detrás del contexto de la fábrica de bolígrafos. Aparte de servir para resolver problemas como el anteriormente mencionado, la regla de bayes ha marcado el comienzo de un nuevo enfoque de análisis de datos, no solamente porque hace explícitas las relaciones causales entre los procesos aleatorios, sino también porque facilita la inferencia estadística y la interpretación de los resultados.
-</div>
-<p><br></p>
-<p>En el campo de la medicina, también se ha visto un gran número de la
-aplicación del teorema de Bayes. A continuación se enuncia uno de ellos:</p>
-
-<div class="example">
-<p><span id="exm:unnamed-chunk-12" class="example"><strong>Ejemplo 1.5  </strong></span>El Grupo de Trabajo de Servicios Preventivos de los Estados Unidos (USPSTF) hizo unas nuevas y controversiales recomendaciones <a href="https://www.uspreventiveservicestaskforce.org/uspstf/recommendation/breast-cancer-screening">recomendaciones</a> sobre la detección del cáncer de mama dentro de los cuales no recomienda el examen de la mamografía en mujeres entre 40 y 49 años de edad, afirmando que la práctica bienal de este examen debe ser una decisión individual según el contexto particular de la paciente. Por otro lado, la USPSTF sí recomienda tal práctica de forma bienal en grupos de mujeres de entre 50 y 74 años de edad, puesto que no encontró suficiente evidencia de beneficio o daño adicional en realizar este examen en mujeres mayores a los 74 años. Además, también recomendó <em>no</em> realizar auto exámanes de senos, contrario a las recomendaciones y consejos que da la mayoría de los profesionales y organizaciones de la salud, incluyendo la <em>Amerian Cancer Society</em>. Como información adicional, se sabe que:</p>
-<ul>
-<li>Los expertos estiman que un 12.3% de las mujeres desarrollan formas invasivas del cáncer de mama durante la vida.</li>
-<li>La probabilidad de que una mujer desarrolle el cáncer de mama entre los 40 y los 49 años de edad es 1 en 69, y esta probabilidad aumenta a medida que envejezca, de tal forma que llega a ser de 1 en 38 en mujeres de entre 50 y 59 años.</li>
-<li>El cáncer de mama es más difícil de detectar en mujeres jóvenes puesto que el tejido mamario es más denso y fibroso. Los expertos estiman que la tasa de un falso positivo es de 97.8 por cada 1000 mujeres de 40 y 49 años, y esta tasa disminuye a 86.6 por cada 1000 mujeres entre 50 y 59 años.</li>
-<li>La tasa de un falso negativo es de 1 por cada 1000 mujeres de 40 y 49 años, y es de 1.1 por cada 1000 mujeres entre 50 y 59 años.</li>
-</ul>
-<p>Resumiendo las anteriores afirmaciones, tenemos las siguientes probabilidades</p>
-<table>
-<thead>
-<tr class="header">
-<th>Probabilidad</th>
-<th>40 - 49</th>
-<th>50 - 59 años</th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td>Cáncer</td>
-<td>1/69=0.01449</td>
-<td>1/38=0.02632</td>
-</tr>
-<tr class="even">
-<td>No cáncer</td>
-<td>68/69=0.9855</td>
-<td>37/38=0.97368</td>
-</tr>
-<tr class="odd">
-<td>Positivo <span class="math inline">\(\mid\)</span> No cáncer</td>
-<td>0.0978</td>
-<td>0.0866</td>
-</tr>
-<tr class="even">
-<td>Negativo <span class="math inline">\(\mid\)</span> No cáncer</td>
-<td>0.9022</td>
-<td>0.9134</td>
-</tr>
-<tr class="odd">
-<td>Positivo <span class="math inline">\(\mid\)</span> Cáncer</td>
-<td>0.999</td>
-<td>0.9989</td>
-</tr>
-<tr class="even">
-<td>Negativo <span class="math inline">\(\mid\)</span> Cáncer</td>
-<td>0.001</td>
-<td>0.0011</td>
-</tr>
-</tbody>
-</table>
-<p>Utilizando la regla de Bayes, se puede calcular las siguientes probabilidades para mujeres de 40 y 49 años:
-<span class="math display">\[\begin{align*}
-P(\text{Cáncer}|\text{Positivo})&amp;=\frac{P(\text{Positivo}|\text{Cáncer})P(\text{Cáncer})}{P(\text{Positivo}|\text{Cáncer})P(\text{Cáncer})+P(\text{Positivo}|\text{No cáncer})P(\text{No cáncer})}\\
-&amp;=\frac{0.999*0.01449}{0.999*0.01449+0.0978*0.9855}\\
-&amp;=0.1305
-\end{align*}\]</span></p>
+<p>Nótese que la distribución posterior conjunta no tiene una forma estructural conocida y por lo tanto no es posible realizar el método de integración analítica para obtener una constante de integración <span class="citation">(<a href="#ref-Migon" role="doc-biblioref">Migon y Gamerman 1999</a>)</span>. Sin embargo, sí es posible obtener las distribuciones condicionales posteriores de <span class="math inline">\(\theta\)</span> y de <span class="math inline">\(\sigma^2\)</span>, notando que</p>
 <p><span class="math display">\[\begin{align*}
-P(\text{Cáncer}|\text{Negativo})&amp;=\frac{P(\text{Negativo}|\text{Cáncer})P(\text{Cáncer})}{P(\text{Negativo}|\text{Cáncer})P(\text{Cáncer})+P(\text{Negativo}|\text{No cáncer})P(\text{No cáncer})}\\
-&amp;=\frac{0.001*0.01449}{0.001*0.01449+0.9022*0.9855}\\
-&amp;=0.0000163
+p(\theta \mid \sigma^2,\mathbf{Y})\propto p(\theta,\underbrace{\sigma^2}_{fijo} \mid \mathbf{Y})
+\ \ \ \ \ \ \ \ \ \text{y} \ \ \ \ \ \ \ \ \ \
+p(\sigma^2 \mid \theta,\mathbf{Y})\propto p(\underbrace{\theta}_{fijo},\sigma^2 \mid \mathbf{Y})
 \end{align*}\]</span></p>
-<p>Similarmente, se puede calcular estas dos probabilidades para las mujeres de 50 y 59 años.</p>
-<table>
-<thead>
-<tr class="header">
-<th>Probabilidad</th>
-<th>40 - 49 años</th>
-<th>50 - 59 años</th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td>Cáncer <span class="math inline">\(\mid\)</span> Positivo</td>
-<td>0.1305985</td>
-<td>0.23769</td>
-</tr>
-<tr class="even">
-<td>No cáncer <span class="math inline">\(\mid\)</span> Positivo</td>
-<td>0.8694223</td>
-<td>0.7623123</td>
-</tr>
-<tr class="odd">
-<td>Cáncer <span class="math inline">\(\mid\)</span> Negativo</td>
-<td>0.0000163</td>
-<td>0.0000326</td>
-</tr>
-<tr class="even">
-<td>No cáncer <span class="math inline">\(\mid\)</span> Negativo</td>
-<td>0.9999837</td>
-<td>0.9999674</td>
-</tr>
-</tbody>
-</table>
-Los anteriores resultados muestran cómo cambia la probabilidad de tener cáncer al condicionar en los resultados de la pruebe. Entre estos valores se puede ver que, con un resultado positivo en el examen, la probabilidad de tener efectivamente el cáncer es aproximadamente diez puntos porcentuales más bajo en mujeres de edad de 40 y 49 años, de donde se puede sustentar la recomendación de no efectuar este examen en mujeres de este rango de edad.
+<p>Es decir, para encontrar la distribución posterior condicional de <span class="math inline">\(\theta | \sigma^2\)</span>, se utiliza la distribución posterior conjunta y los términos que no dependan de <span class="math inline">\(\theta\)</span> se incorporan en la constante de proporcionalidad. El mismo razonamiento se aplica para encontrar la distribución posterior condicional de <span class="math inline">\(\sigma^2 | \theta\)</span>.</p>
+
+<div class="proposition">
+<p><span id="prp:unnamed-chunk-3" class="proposition"><strong>Resultado 2.2  </strong></span>La distribución posterior condicional de <span class="math inline">\(\theta\)</span> es</p>
+<p><span class="math display" id="eq:PostThetaGibbs">\[\begin{equation}
+\tag{4.1}
+\theta  \mid  \sigma^2,\mathbf{Y} \sim Normal(\mu_n,\tau_n^2)
+\end{equation}\]</span></p>
+<p>En donde las expresiones para <span class="math inline">\(\mu_n\)</span> y <span class="math inline">\(\tau_n^2\)</span> están dadas por <a href="modelo-normal-con-media-desconocida.html#eq:TauSigman">(3.17)</a>. Por otro lado, la distribución posterior condicional de <span class="math inline">\(\sigma^2\)</span> es</p>
+<p><span class="math display" id="eq:PostSigma2Gibbs">\[\begin{equation}
+\tag{4.2}
+\sigma^2  \mid  \theta,\mathbf{Y} \sim Inversa-Gamma\left(\dfrac{n_0+n}{2},\dfrac{v_0}{2}\right)
+\end{equation}\]</span></p>
+con <span class="math inline">\(v_0=n_0\sigma^2_0+(n-1)S^2+n(\bar{y}-\theta)^2\)</span>.
 </div>
 <p><br></p>
 
+<div class="proof">
+<p> <span class="proof"><em>Prueba. </em></span> Acudiendo a la distribución posterior conjunta, e incorporando los términos que no dependen de <span class="math inline">\(\theta\)</span> en la constante de proporcionalidad, se tiene que</p>
+<p><span class="math display">\[\begin{align*}
+p(\theta \mid \sigma^2,\mathbf{Y})&amp;\propto \exp\left\{-\frac{n}{2\sigma^2}(\bar{y}-\theta)^2-\frac{1}{2\tau^2}(\theta-\mu)^2\right\}
+\end{align*}\]</span></p>
+Completando los cuadrados se encuentra una expresión idéntica a la función de distribución de una variable aleatoria con distribución <span class="math inline">\(Normal(\mu_n, \tau^2_n)\)</span>. Similarmente, después de un desarrollo algebraico breve, se tiene la distribución posterior condicional de <span class="math inline">\(\sigma^2\)</span>.
+</div>
+<p><br></p>
+<p>Una vez encontradas las distribuciones posteriores condicionales de <span class="math inline">\(\theta\)</span> y <span class="math inline">\(\sigma^2\)</span>, es posible obtener la estimación puntual de estos parámetros usando métodos de Montecarlo, específicamente el muestreo de Gibbs que, en el contexto de este capítulo, se resume en los siguientes pasos:</p>
+<ol style="list-style-type: decimal">
+<li>Fijar un valor inicial para <span class="math inline">\(\theta\)</span>, denotado por <span class="math inline">\(\theta_{(1)}\)</span>.</li>
+<li>Simular un valor de la distribución de <span class="math inline">\(\sigma^2|\theta,\mathbf{Y}\)</span> en <a href="normal-univariada-con-media-y-varianza-desconocida.html#eq:PostSigma2Gibbs">(4.2)</a>. Nótese que el parámetro <span class="math inline">\(v_0\)</span>, que depende de <span class="math inline">\(\theta\)</span>, debe ser reemplazado por <span class="math inline">\(\theta_{(1)}\)</span> del paso anterior. Este valor simulado se denotará como <span class="math inline">\(\sigma^2_{(1)}\)</span>.</li>
+<li>Simular un valor de la distribución de <span class="math inline">\(\theta|\sigma^2,\mathbf{Y}\)</span> en <a href="normal-univariada-con-media-y-varianza-desconocida.html#eq:PostThetaGibbs">(4.1)</a>. Nótese que en <span class="math inline">\(\mu_n\)</span> y <span class="math inline">\(\tau^2_n\)</span> se debe reemplazar <span class="math inline">\(\sigma^2\)</span> por <span class="math inline">\(\sigma^2_{(1)}\)</span>. Este valor simulado se denotará como <span class="math inline">\(\theta_{(2)}\)</span>.</li>
+<li>Repetir los pasos (2) y (3) hasta completar un número de iteraciones suficientes para alcanzar la convergencia en ambos parámetros.</li>
+</ol>
+<p>Después de ejecutar el muestreo de Gibbs, se eliminan los primeros valores simulados para descartar la influencia del valor inicial; además, posiblemente se deba efectuar la fase  para eliminar las correlaciones que pueden estar presentes en las cadenas generadas. Posterior, se tienen los valores finales simulados de las distribuciones de <span class="math inline">\(\theta\)</span> y <span class="math inline">\(\sigma^2\)</span>, de los cuales se podrán calcular las estimaciones respectivas, además de estimar los intervalos de credibilidad resultantes de los percentiles muestrales de los valores simulados.</p>
+<p>En cuanto a la distribución predictiva para una nueva observación <span class="math inline">\(\tilde{y}\)</span>, esta está dada por la siguiente expresión
+<span class="math display">\[\begin{equation*}
+p(\tilde{y}\mid\mathbf{Y})=\int_0^\infty\int_{-\infty}^\infty p(\tilde{y}\mid\theta,\ \sigma^2)p(\theta,\ \sigma^2\mid\mathbf{Y})d\theta\ d\sigma^2
+\end{equation*}\]</span></p>
+<p>Hallar esta distribución de forma exacta no es fácil, y podemos optar por conocer el comportamiento probabilístico de <span class="math inline">\(\tilde{y}\)</span> por medio de la simulación estadística. Tal como se explicó en el capítulo anterior, se debe simular en primer lugar valores de <span class="math inline">\(\theta\)</span> y de <span class="math inline">\(\sigma^2\)</span> de la distribución posterior <span class="math inline">\(p(\theta,\ \sigma^2\mid\mathbf{Y})\)</span> - usando el muestreo de Gibbs - y posteriormente, valores de <span class="math inline">\(\tilde{y}\)</span> de la distribución <span class="math inline">\(p(\tilde{y}\mid\theta,\ \sigma^2)\)</span>.</p>
+<p>Por otro lado, si se quiere conocer el comportamiento de una nueva muestra aleatoria <span class="math inline">\(Y_1^{*},\cdots,Y_{n^*}^{*}\)</span>, es posible hacerlo por medio de la distribución predictiva de la media <span class="math inline">\(\bar{Y}^*\)</span>, simulando en primer lugar valores de <span class="math inline">\(\theta\)</span> y de <span class="math inline">\(\sigma^2\)</span> de la distribución posterior <span class="math inline">\(p(\theta,\ \sigma^2\mid\mathbf{Y})\)</span> - usando el muestreo de Gibbs - y posteriormente valores de <span class="math inline">\(\bar{Y}^*\)</span> de la distribución <span class="math inline">\(N(\theta,\frac{\sigma^2}{n^*})\)</span>.</p>
+
+</div>
 </div>
 <!-- </div> -->
+
+
+
 <h3>Referencias</h3>
 <div id="refs" class="references csl-bib-body hanging-indent">
-<div id="ref-Gelman03" class="csl-entry">
-———. 2003. <em>Bayesian Data Analysis</em>. 2.ª ed. Chapman; Hall/CRC.
+<div id="ref-Migon" class="csl-entry">
+Migon, H. S., y D. Gamerman. 1999. <em>Statistical Inference: An Integrated Approach</em>. Arnold.
 </div>
+<div id="ref-Zhang" class="csl-entry">
+Zhang, H., y H. A. Gutiérrez. 2010. <em>Teoría estadística. Aplicación y métodos.</em> Universidad Santo Tomás.
 </div>
-<div class="footnotes">
-<hr />
-<ol start="1">
-<li id="fn1"><p><span class="math inline">\(\Omega\)</span> denota el conjunto de todos lo posibles resultados del experimento, <span class="math inline">\(\mathfrak{F}\)</span> denota una <span class="math inline">\(\sigma\)</span>-álgebra y <span class="math inline">\(P\)</span> hace referencia ana medida de probabilidad propiamente definida.<a href="teorema-de-bayes.html#fnref1" class="footnote-back">↩︎</a></p></li>
-<li id="fn2"><p>Por supuesto que la pregunta también es válida al indagar por la probabilidad de que habiendo seleccionado un artículo defectuoso, éste provenga de la segunda o tercera máquina.<a href="teorema-de-bayes.html#fnref2" class="footnote-back">↩︎</a></p></li>
-</ol>
 </div>
             </section>
 
           </div>
         </div>
       </div>
-<a href="algunos-resultados-de-probabilidad.html" class="navigation navigation-prev " aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
-<a href="inferencia-bayesiana.html" class="navigation navigation-next " aria-label="Next page"><i class="fa fa-angle-right"></i></a>
+<a href="modelos-multiparamétricos.html" class="navigation navigation-prev " aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
+<a href="elementos-de-probabilidad.html" class="navigation navigation-next " aria-label="Next page"><i class="fa fa-angle-right"></i></a>
     </div>
   </div>
 <script src="libs/gitbook-2.6.7/js/app.min.js"></script>
@@ -576,7 +436,7 @@ gitbook.start({
 "size": 2
 },
 "edit": {
-"link": "https://github.com/psirusteam/bookdownBayesiano/1Basicos.Rmd",
+"link": "https://github.com/psirusteam/bookdownBayesiano/4Multiparametricos.Rmd",
 "text": "Edit"
 },
 "history": {

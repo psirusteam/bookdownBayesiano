@@ -85,6 +85,7 @@ fig:posExponencialStan1
 fig:posExponencialStan2
 exm:unnamed-chunk-65
 fig:PredPostExpoEje
+eq:veronormal
 prp:unnamed-chunk-67
 eq:TauSigman
 fig:ComparaNormal
@@ -100,6 +101,8 @@ fig:hist8escuelas
 fig:jefgammainv
 fig:posNormalVStan
 fig:posNormalVStan2
+eq:PostThetaGibbs
+eq:PostSigma2Gibbs
 prp:unnamed-chunk-2
 def:unnamed-chunk-3
 prp:unnamed-chunk-4
@@ -205,6 +208,9 @@ distribución-previa-no-informativa-para-theta
 diferentes-formas-de-hallar-la-distribución-previa-para-theta
 distribuciones-predictivas
 modelo-normal-con-varianza-desconocida
+modelos-multiparamétricos
+modelo-normal-con-media-y-varianza-desconocida
+parámetros-independientes
 elementos-de-probabilidad
 distribuciones-discretas
 distribución-uniforme-discreta

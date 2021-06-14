@@ -10,6 +10,7 @@ rmd_files: [
   "1Basicos.Rmd",
   "2Inferencia.Rmd",
   "3Uniparametricos.Rmd",
+  "4Multiparametricos.Rmd",
   
   "A1Distribuciones.Rmd",
   "A2Inferencia.Rmd",

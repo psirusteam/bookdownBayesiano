@@ -24,7 +24,7 @@
 <meta name="author" content="Andrés Gutiérrez - Hanwen Zhang" />
 
 
-<meta name="date" content="2021-06-12" />
+<meta name="date" content="2021-06-13" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
@@ -205,6 +205,13 @@ div.csl-indent {
 </ul></li>
 <li class="chapter" data-level="3.7" data-path="modelo-normal-con-varianza-desconocida.html"><a href="modelo-normal-con-varianza-desconocida.html"><i class="fa fa-check"></i><b>3.7</b> Modelo normal con varianza desconocida</a></li>
 </ul></li>
+<li class="chapter" data-level="4" data-path="modelos-multiparamétricos.html"><a href="modelos-multiparamétricos.html"><i class="fa fa-check"></i><b>4</b> Modelos multiparamétricos</a>
+<ul>
+<li class="chapter" data-level="4.1" data-path="modelo-normal-con-media-y-varianza-desconocida.html"><a href="modelo-normal-con-media-y-varianza-desconocida.html"><i class="fa fa-check"></i><b>4.1</b> Modelo Normal con media y varianza desconocida</a>
+<ul>
+<li class="chapter" data-level="4.1.1" data-path="modelo-normal-con-media-y-varianza-desconocida.html"><a href="modelo-normal-con-media-y-varianza-desconocida.html#parámetros-independientes"><i class="fa fa-check"></i><b>4.1.1</b> Parámetros independientes</a></li>
+</ul></li>
+</ul></li>
 <li class="appendix"><span><b>Apéndice</b></span></li>
 <li class="chapter" data-level="A" data-path="elementos-de-probabilidad.html"><a href="elementos-de-probabilidad.html"><i class="fa fa-check"></i><b>A</b> Elementos de probabilidad</a>
 <ul>
@@ -282,10 +289,11 @@ div.csl-indent {
 <h2><span class="header-section-number">3.6</span> Modelo Normal con media desconocida</h2>
 <p>En esta sección se consideran datos que pueden ser descritos adecuadamente por medio de la distribución normal la cual, a diferencia de las anteriores distribuciones consideradas, tiene dos parámetros. En esta parte, se asume que la varianza teórica es conocida y el objetivo es estimar la media teórica. En el siguiente capítulo se considerará el caso general cuando ambos parámetros son desconocidos.</p>
 <p>Suponga que <span class="math inline">\(Y_1,\cdots,Y_n\)</span> son variables independientes e idénticamente distribuidos con distribución <span class="math inline">\(Normal(\theta,\sigma^2)\)</span> con <span class="math inline">\(\theta\)</span> desconocido pero <span class="math inline">\(\sigma^2\)</span> conocido. De esta forma, la función de verosimilitud de los datos está dada por</p>
-<p><span class="math display">\[\begin{align*}
+<p><span class="math display" id="eq:veronormal">\[\begin{align}
+\tag{3.16}
 p(\mathbf{Y} \mid \theta)&amp;=\prod_{i=1}^n\frac{1}{\sqrt{2\pi\sigma^2}}\exp\left\{-\frac{1}{2\sigma^2}(y_i-\theta)^2\right\}I_\mathbb{R}(y)\\
 &amp;=(2\pi\sigma^2)^{-n/2}\exp\left\{-\frac{1}{2\sigma^2}\sum_{i=1}^n(y_i-\theta)^2\right\}
-\end{align*}\]</span></p>
+\end{align}\]</span></p>
 <p>Como el parámetro <span class="math inline">\(\theta\)</span> puede tomar cualquier valor en los reales, es posible asignarle una distribución previa <span class="math inline">\(\theta \sim Normal(\mu,\tau^2)\)</span>. Bajo este marco de referencia se tienen los siguientes resultados</p>
 
 <div class="proposition">
@@ -295,7 +303,7 @@ p(\mathbf{Y} \mid \theta)&amp;=\prod_{i=1}^n\frac{1}{\sqrt{2\pi\sigma^2}}\exp\le
 \end{equation*}\]</span></p>
 <p>En donde</p>
 <span class="math display" id="eq:TauSigman">\[\begin{equation}
-\tag{3.16}
+\tag{3.17}
 \mu_n=\frac{\frac{n}{\sigma^2}\bar{Y}+\frac{1}{\tau^2}\mu}{\frac{n}{\sigma^2}+\frac{1}{\tau^2}}
 \ \ \ \ \ \ \ \text{y} \ \ \ \ \ \ \
 \tau_n^2=\left(\frac{n}{\sigma^2}+\frac{1}{\tau^2}\right)^{-1}
@@ -412,7 +420,7 @@ p(Y)&amp;=\int_{-\infty}^{\infty} \frac{1}{2\pi\sigma\tau}\exp\left\{-\frac{1}{2
 <p><span class="math display">\[\begin{equation*}
 \bar{Y}^*|\mathbf{Y}\ \sim N\left(\mu_n, \frac{\sigma^2}{n^*}+\tau^2_n\right)
 \end{equation*}\]</span></p>
-donde <span class="math inline">\(\mu_n\)</span> y <span class="math inline">\(\tau^2_n\)</span> fueron definidos en <a href="modelo-normal-con-media-desconocida.html#eq:TauSigman">(3.16)</a>.
+donde <span class="math inline">\(\mu_n\)</span> y <span class="math inline">\(\tau^2_n\)</span> fueron definidos en <a href="modelo-normal-con-media-desconocida.html#eq:TauSigman">(3.17)</a>.
 </div>
 <p><br></p>
 

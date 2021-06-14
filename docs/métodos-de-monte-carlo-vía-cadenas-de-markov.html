@@ -24,7 +24,7 @@
 <meta name="author" content="Andrés Gutiérrez - Hanwen Zhang" />
 
 
-<meta name="date" content="2021-06-12" />
+<meta name="date" content="2021-06-13" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
@@ -205,6 +205,13 @@ div.csl-indent {
 </ul></li>
 <li class="chapter" data-level="3.7" data-path="modelo-normal-con-varianza-desconocida.html"><a href="modelo-normal-con-varianza-desconocida.html"><i class="fa fa-check"></i><b>3.7</b> Modelo normal con varianza desconocida</a></li>
 </ul></li>
+<li class="chapter" data-level="4" data-path="modelos-multiparamétricos.html"><a href="modelos-multiparamétricos.html"><i class="fa fa-check"></i><b>4</b> Modelos multiparamétricos</a>
+<ul>
+<li class="chapter" data-level="4.1" data-path="modelo-normal-con-media-y-varianza-desconocida.html"><a href="modelo-normal-con-media-y-varianza-desconocida.html"><i class="fa fa-check"></i><b>4.1</b> Modelo Normal con media y varianza desconocida</a>
+<ul>
+<li class="chapter" data-level="4.1.1" data-path="modelo-normal-con-media-y-varianza-desconocida.html"><a href="modelo-normal-con-media-y-varianza-desconocida.html#parámetros-independientes"><i class="fa fa-check"></i><b>4.1.1</b> Parámetros independientes</a></li>
+</ul></li>
+</ul></li>
 <li class="appendix"><span><b>Apéndice</b></span></li>
 <li class="chapter" data-level="A" data-path="elementos-de-probabilidad.html"><a href="elementos-de-probabilidad.html"><i class="fa fa-check"></i><b>A</b> Elementos de probabilidad</a>
 <ul>
@@ -278,9 +285,9 @@ div.csl-indent {
           <div class="page-inner">
 
             <section class="normal" id="section-">
-<div id="métodos-de-monte-carlo-vía-cadenas-de-markov" class="section level2" number="6.2">
+<div id="métodos-de-monte-carlo-vía-cadenas-de-markov" class="section level2" number="7.2">
 <h2><span class="header-section-number">C.2</span> Métodos de Monte Carlo vía cadenas de Markov</h2>
-<div id="el-muestreador-de-gibbs" class="section level3" number="6.2.1">
+<div id="el-muestreador-de-gibbs" class="section level3" number="7.2.1">
 <h3><span class="header-section-number">C.2.1</span> El muestreador de Gibbs</h3>
 <p>Tal como lo afirma <span class="citation"><a href="#ref-Pena2002" role="doc-biblioref">Peña</a> (<a href="#ref-Pena2002" role="doc-biblioref">2002</a>)</span>, este procedimiento es apropiado para obtener muestras de una distribución
 conjunta cuando es fácil muestrear de las distribuciones condicionadas. El algoritmo se implementa asumiendo que <span class="math inline">\(\boldsymbol \theta_i=(\theta^{(1)}_i, . . . , \theta^{(d)}_i)\)</span> representa a los valores actuales de <span class="math inline">\(\boldsymbol \theta\)</span>. Entonces <span class="math inline">\(\boldsymbol \theta_{i+1}\)</span> se obtiene así:</p>
@@ -499,7 +506,7 @@ Figura C.10: Densidades posteriores generadas con el muestreador de Gibbs.
 </p>
 </div>
 </div>
-<div id="el-algoritmo-de-metrópolis-hastings" class="section level3" number="6.2.2">
+<div id="el-algoritmo-de-metrópolis-hastings" class="section level3" number="7.2.2">
 <h3><span class="header-section-number">C.2.2</span> El algoritmo de Metrópolis-Hastings</h3>
 <p>Este algoritmo se basa en proponer un nuevo punto de acuerdo a una función de densidad adecuada y aceptar este nuevo valor propuesto con una probabilidad que depende del punto actual, del nuevo punto y de la densidad de la cual fue propuesto el nuevo punto.</p>
 <p>Suponga que deseamos simular valores de una distribución multivariada <span class="math inline">\(p(\theta \mid y)\)</span>. Sea la función de densidad propuesta <span class="math inline">\(q(\theta, \theta&#39;)\)</span>, una función de densidad de probabilidad arbitraria que
@@ -587,7 +594,7 @@ Figura C.11: Autocorrelación y autocorrelación parcial para las cadenas simula
 </p>
 </div>
 </div>
-<div id="buenas-prácticas-en-la-aplicación-de-métodos-mcmc" class="section level3" number="6.2.3">
+<div id="buenas-prácticas-en-la-aplicación-de-métodos-mcmc" class="section level3" number="7.2.3">
 <h3><span class="header-section-number">C.2.3</span> Buenas prácticas en la aplicación de métodos MCMC</h3>
 <p>Dado que una gran parte de la inferencia bayesiana está ligada a la programación e implementación de los métodos MCMC para realizar inferencias posteriores de los parámetros de interés, se sugiere seguir el razonamiento y recomendaciones de <span class="citation"><a href="#ref-GelShir2010" role="doc-biblioref">A. Gelman y Shirley</a> (<a href="#ref-GelShir2010" role="doc-biblioref">2010</a>)</span>, que puede ser resumido en los siguientes ítemes para cada parámetro de interés:</p>
 <ol style="list-style-type: decimal">

@@ -1,7 +1,7 @@
 --- 
 title: "Modelos Bayesianos con R y STAN"
 author: "Andrés Gutiérrez - Hanwen Zhang"
-date: "2021-06-12"
+date: "2021-06-13"
 documentclass: book
 bibliography: [book.bib]
 biblio-style: apalike
@@ -50,10 +50,7 @@ output:
 
 
 
-
-
 # Prefacio {-}
-
 
 ![Creative Commons License](https://mirrors.creativecommons.org/presskit/buttons/88x31/png/by-nc-sa.png)
 

@@ -24,7 +24,7 @@
 <meta name="author" content="Andrés Gutiérrez - Hanwen Zhang" />
 
 
-<meta name="date" content="2021-06-12" />
+<meta name="date" content="2021-06-13" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
@@ -205,6 +205,13 @@ div.csl-indent {
 </ul></li>
 <li class="chapter" data-level="3.7" data-path="modelo-normal-con-varianza-desconocida.html"><a href="modelo-normal-con-varianza-desconocida.html"><i class="fa fa-check"></i><b>3.7</b> Modelo normal con varianza desconocida</a></li>
 </ul></li>
+<li class="chapter" data-level="4" data-path="modelos-multiparamétricos.html"><a href="modelos-multiparamétricos.html"><i class="fa fa-check"></i><b>4</b> Modelos multiparamétricos</a>
+<ul>
+<li class="chapter" data-level="4.1" data-path="modelo-normal-con-media-y-varianza-desconocida.html"><a href="modelo-normal-con-media-y-varianza-desconocida.html"><i class="fa fa-check"></i><b>4.1</b> Modelo Normal con media y varianza desconocida</a>
+<ul>
+<li class="chapter" data-level="4.1.1" data-path="modelo-normal-con-media-y-varianza-desconocida.html"><a href="modelo-normal-con-media-y-varianza-desconocida.html#parámetros-independientes"><i class="fa fa-check"></i><b>4.1.1</b> Parámetros independientes</a></li>
+</ul></li>
+</ul></li>
 <li class="appendix"><span><b>Apéndice</b></span></li>
 <li class="chapter" data-level="A" data-path="elementos-de-probabilidad.html"><a href="elementos-de-probabilidad.html"><i class="fa fa-check"></i><b>A</b> Elementos de probabilidad</a>
 <ul>
@@ -278,9 +285,9 @@ div.csl-indent {
           <div class="page-inner">
 
             <section class="normal" id="section-">
-<div id="métodos-directos" class="section level2" number="6.1">
+<div id="métodos-directos" class="section level2" number="7.1">
 <h2><span class="header-section-number">C.1</span> Métodos directos</h2>
-<div id="método-de-la-transformación-uniforme" class="section level3" number="6.1.1">
+<div id="método-de-la-transformación-uniforme" class="section level3" number="7.1.1">
 <h3><span class="header-section-number">C.1.1</span> Método de la transformación uniforme</h3>
 <p>Al momento de la simulación estocástica de observaciones provenientes de alguna distribución de interés, la distribución uniforme es quizás la más usada y la más importante. El siguiente resultado adaptado de <span class="citation"><a href="#ref-Casella" role="doc-biblioref">Robert y Casella</a> (<a href="#ref-Casella" role="doc-biblioref">1999</a>)</span> así lo confirma.</p>
 
@@ -322,7 +329,7 @@ Figura C.1: Histograma de observaciones con distribución exponencial
 </p>
 </div>
 </div>
-<div id="método-de-la-grilla" class="section level3" number="6.1.2">
+<div id="método-de-la-grilla" class="section level3" number="7.1.2">
 <h3><span class="header-section-number">C.1.2</span> Método de la grilla</h3>
 <p>Existen distribuciones de probabilidad cuya forma estructural es muy compleja. Mas aún, existen distribuciones de probabilidad conocidas para las cuales la inversa de la función de de densidad acumulativa es difícil de solucionar analíticamente. En los anteriores casos, el método analítico dado por el teorema de la transformación integral de probabilidad no siempre resulta efectivo. Sin embargo, es posible realizar una variante, manteniendo el espíritu de la anterior técnica.</p>
 <p>El presente método utiliza una distribución discreta para aproximar cualquier tipo de distribución (discreta o continua) sin importar su nivel de complejidad. El algoritmo que enmarca este método se da a continuación:</p>
