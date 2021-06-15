@@ -5,3 +5,8 @@ rstan
 printr
 knitr
 thematic
+patchwork
+coda
+MASS
+MCMCpack
+dplyr

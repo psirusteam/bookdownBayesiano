@@ -24,7 +24,7 @@
 <meta name="author" content="Andrés Gutiérrez - Hanwen Zhang" />
 
 
-<meta name="date" content="2021-06-13" />
+<meta name="date" content="2021-06-15" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
@@ -375,13 +375,147 @@ Completando los cuadrados se encuentra una expresión idéntica a la función de
 <li>Simular un valor de la distribución de <span class="math inline">\(\theta|\sigma^2,\mathbf{Y}\)</span> en <a href="modelo-normal-con-media-y-varianza-desconocida.html#eq:PostThetaGibbs">(4.1)</a>. Nótese que en <span class="math inline">\(\mu_n\)</span> y <span class="math inline">\(\tau^2_n\)</span> se debe reemplazar <span class="math inline">\(\sigma^2\)</span> por <span class="math inline">\(\sigma^2_{(1)}\)</span>. Este valor simulado se denotará como <span class="math inline">\(\theta_{(2)}\)</span>.</li>
 <li>Repetir los pasos (2) y (3) hasta completar un número de iteraciones suficientes para alcanzar la convergencia en ambos parámetros.</li>
 </ol>
-<p>Después de ejecutar el muestreo de Gibbs, se eliminan los primeros valores simulados para descartar la influencia del valor inicial; además, posiblemente se deba efectuar la fase  para eliminar las correlaciones que pueden estar presentes en las cadenas generadas. Posterior, se tienen los valores finales simulados de las distribuciones de <span class="math inline">\(\theta\)</span> y <span class="math inline">\(\sigma^2\)</span>, de los cuales se podrán calcular las estimaciones respectivas, además de estimar los intervalos de credibilidad resultantes de los percentiles muestrales de los valores simulados.</p>
+<p>Después de ejecutar el muestreo de Gibbs, se eliminan los primeros valores simulados para descartar la influencia del valor inicial; además, posiblemente se deba efectuar la fase de <em>thinning</em> para eliminar las correlaciones que pueden estar presentes en las cadenas generadas. Posteriormente, se obtendrán los valores finales simulados de las distribuciones de <span class="math inline">\(\theta\)</span> y <span class="math inline">\(\sigma^2\)</span>, con los cuales se podrá calcular las estimaciones respectivas, además de estimar los intervalos de credibilidad resultantes con los percentiles muestrales de los valores simulados.</p>
 <p>En cuanto a la distribución predictiva para una nueva observación <span class="math inline">\(\tilde{y}\)</span>, esta está dada por la siguiente expresión
 <span class="math display">\[\begin{equation*}
 p(\tilde{y}\mid\mathbf{Y})=\int_0^\infty\int_{-\infty}^\infty p(\tilde{y}\mid\theta,\ \sigma^2)p(\theta,\ \sigma^2\mid\mathbf{Y})d\theta\ d\sigma^2
 \end{equation*}\]</span></p>
 <p>Hallar esta distribución de forma exacta no es fácil, y podemos optar por conocer el comportamiento probabilístico de <span class="math inline">\(\tilde{y}\)</span> por medio de la simulación estadística. Tal como se explicó en el capítulo anterior, se debe simular en primer lugar valores de <span class="math inline">\(\theta\)</span> y de <span class="math inline">\(\sigma^2\)</span> de la distribución posterior <span class="math inline">\(p(\theta,\ \sigma^2\mid\mathbf{Y})\)</span> - usando el muestreo de Gibbs - y posteriormente, valores de <span class="math inline">\(\tilde{y}\)</span> de la distribución <span class="math inline">\(p(\tilde{y}\mid\theta,\ \sigma^2)\)</span>.</p>
 <p>Por otro lado, si se quiere conocer el comportamiento de una nueva muestra aleatoria <span class="math inline">\(Y_1^{*},\cdots,Y_{n^*}^{*}\)</span>, es posible hacerlo por medio de la distribución predictiva de la media <span class="math inline">\(\bar{Y}^*\)</span>, simulando en primer lugar valores de <span class="math inline">\(\theta\)</span> y de <span class="math inline">\(\sigma^2\)</span> de la distribución posterior <span class="math inline">\(p(\theta,\ \sigma^2\mid\mathbf{Y})\)</span> - usando el muestreo de Gibbs - y posteriormente valores de <span class="math inline">\(\bar{Y}^*\)</span> de la distribución <span class="math inline">\(N(\theta,\frac{\sigma^2}{n^*})\)</span>.</p>
+
+<div class="example">
+<p><span id="exm:EjeRenal" class="example"><strong>Ejemplo 4.1  </strong></span><span class="citation"><a href="#ref-Efronims" role="doc-biblioref">Efron</a> (<a href="#ref-Efronims" role="doc-biblioref">2010</a>)</span> consideró un conjunto de datos que muestran la función renal de 157 individuos que se sometieron a una prueba médica exhaustiva en un hospital. Los resultados de la prueba renal están en un intervalo de -6 puntos a 4 puntos. Entre más alto sea el resultado, se concluye que el riñón del individuo es más sano. Nótese que estas pruebas son importantes para predecir el comportamiento de un riñón donado a un paciente con problemas renales.</p>
+<p>En principio, es de interés para el investigador conocer la media y la dispersión de estos datos, para poder analizar a fondo la situación de los pacientes que esperan un transplante. Dado que se trata de una primera aproximación, se prefiere utilizar distribuciones previas no informativas para los parámetros de la media y varianza. Lo anterior se logra en <code>STAN</code> definiendo las distribuciones previas de <code>theta ~ normal(0, 10000)</code> y de <code>sigma2 ~ inv_gamma(0.001, 0.001)</code>. De esta forma, la distribución previa de <span class="math inline">\(\theta\)</span> está centrada en cero, pero con una varianza muy grande al igual que la distribución de la varianza, los cuales representan distribuciones previas no informativas.</p>
+El siguiente código en <code>STAN</code> muestra cómo se lleva a cabo la inferencia.
+</div>
+<div class="sourceCode" id="cb78"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb78-1"><a href="modelo-normal-con-media-y-varianza-desconocida.html#cb78-1" aria-hidden="true" tabindex="-1"></a>NormalMeanVar <span class="ot">&lt;-</span> <span class="st">&#39;</span></span>
+<span id="cb78-2"><a href="modelo-normal-con-media-y-varianza-desconocida.html#cb78-2" aria-hidden="true" tabindex="-1"></a><span class="st">data {</span></span>
+<span id="cb78-3"><a href="modelo-normal-con-media-y-varianza-desconocida.html#cb78-3" aria-hidden="true" tabindex="-1"></a><span class="st">  int&lt;lower=0&gt; n;</span></span>
+<span id="cb78-4"><a href="modelo-normal-con-media-y-varianza-desconocida.html#cb78-4" aria-hidden="true" tabindex="-1"></a><span class="st">  real y[n];</span></span>
+<span id="cb78-5"><a href="modelo-normal-con-media-y-varianza-desconocida.html#cb78-5" aria-hidden="true" tabindex="-1"></a><span class="st">}</span></span>
+<span id="cb78-6"><a href="modelo-normal-con-media-y-varianza-desconocida.html#cb78-6" aria-hidden="true" tabindex="-1"></a><span class="st">parameters {</span></span>
+<span id="cb78-7"><a href="modelo-normal-con-media-y-varianza-desconocida.html#cb78-7" aria-hidden="true" tabindex="-1"></a><span class="st">  real sigma;</span></span>
+<span id="cb78-8"><a href="modelo-normal-con-media-y-varianza-desconocida.html#cb78-8" aria-hidden="true" tabindex="-1"></a><span class="st">  real theta;</span></span>
+<span id="cb78-9"><a href="modelo-normal-con-media-y-varianza-desconocida.html#cb78-9" aria-hidden="true" tabindex="-1"></a><span class="st">}</span></span>
+<span id="cb78-10"><a href="modelo-normal-con-media-y-varianza-desconocida.html#cb78-10" aria-hidden="true" tabindex="-1"></a><span class="st">transformed parameters {</span></span>
+<span id="cb78-11"><a href="modelo-normal-con-media-y-varianza-desconocida.html#cb78-11" aria-hidden="true" tabindex="-1"></a><span class="st">  real sigma2;</span></span>
+<span id="cb78-12"><a href="modelo-normal-con-media-y-varianza-desconocida.html#cb78-12" aria-hidden="true" tabindex="-1"></a><span class="st">  sigma2 = pow(sigma, 2);</span></span>
+<span id="cb78-13"><a href="modelo-normal-con-media-y-varianza-desconocida.html#cb78-13" aria-hidden="true" tabindex="-1"></a><span class="st">}</span></span>
+<span id="cb78-14"><a href="modelo-normal-con-media-y-varianza-desconocida.html#cb78-14" aria-hidden="true" tabindex="-1"></a><span class="st">model {</span></span>
+<span id="cb78-15"><a href="modelo-normal-con-media-y-varianza-desconocida.html#cb78-15" aria-hidden="true" tabindex="-1"></a><span class="st">  y ~ normal(theta, sigma);</span></span>
+<span id="cb78-16"><a href="modelo-normal-con-media-y-varianza-desconocida.html#cb78-16" aria-hidden="true" tabindex="-1"></a><span class="st">  theta ~ normal(0, 1000);</span></span>
+<span id="cb78-17"><a href="modelo-normal-con-media-y-varianza-desconocida.html#cb78-17" aria-hidden="true" tabindex="-1"></a><span class="st">  sigma2 ~ inv_gamma(0.001, 0.001);</span></span>
+<span id="cb78-18"><a href="modelo-normal-con-media-y-varianza-desconocida.html#cb78-18" aria-hidden="true" tabindex="-1"></a><span class="st">}</span></span>
+<span id="cb78-19"><a href="modelo-normal-con-media-y-varianza-desconocida.html#cb78-19" aria-hidden="true" tabindex="-1"></a><span class="st">&#39;</span></span>
+<span id="cb78-20"><a href="modelo-normal-con-media-y-varianza-desconocida.html#cb78-20" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb78-21"><a href="modelo-normal-con-media-y-varianza-desconocida.html#cb78-21" aria-hidden="true" tabindex="-1"></a>y <span class="ot">&lt;-</span> <span class="fu">c</span>( <span class="fl">1.69045085</span>, <span class="sc">-</span><span class="fl">1.41076082</span>, <span class="sc">-</span><span class="fl">0.27909483</span>, </span>
+<span id="cb78-22"><a href="modelo-normal-con-media-y-varianza-desconocida.html#cb78-22" aria-hidden="true" tabindex="-1"></a>       <span class="sc">-</span><span class="fl">0.91387987</span>,  <span class="fl">3.21868429</span>, <span class="sc">-</span><span class="fl">1.47282460</span>, </span>
+<span id="cb78-23"><a href="modelo-normal-con-media-y-varianza-desconocida.html#cb78-23" aria-hidden="true" tabindex="-1"></a>       <span class="sc">-</span><span class="fl">0.96524353</span>, <span class="sc">-</span><span class="fl">2.45084934</span>,  <span class="fl">1.03838153</span>, </span>
+<span id="cb78-24"><a href="modelo-normal-con-media-y-varianza-desconocida.html#cb78-24" aria-hidden="true" tabindex="-1"></a>        <span class="fl">1.79928679</span>,  <span class="fl">0.97826621</span>,  <span class="fl">0.67463830</span>, </span>
+<span id="cb78-25"><a href="modelo-normal-con-media-y-varianza-desconocida.html#cb78-25" aria-hidden="true" tabindex="-1"></a>       <span class="sc">-</span><span class="fl">1.08665864</span>, <span class="sc">-</span><span class="fl">0.00509027</span>,  <span class="fl">0.43708128</span>)</span>
+<span id="cb78-26"><a href="modelo-normal-con-media-y-varianza-desconocida.html#cb78-26" aria-hidden="true" tabindex="-1"></a>n <span class="ot">&lt;-</span> <span class="fu">length</span>(y)</span>
+<span id="cb78-27"><a href="modelo-normal-con-media-y-varianza-desconocida.html#cb78-27" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb78-28"><a href="modelo-normal-con-media-y-varianza-desconocida.html#cb78-28" aria-hidden="true" tabindex="-1"></a>sample_data <span class="ot">&lt;-</span> <span class="fu">list</span>(<span class="at">y =</span> y,</span>
+<span id="cb78-29"><a href="modelo-normal-con-media-y-varianza-desconocida.html#cb78-29" aria-hidden="true" tabindex="-1"></a>                    <span class="at">n =</span> n)</span>
+<span id="cb78-30"><a href="modelo-normal-con-media-y-varianza-desconocida.html#cb78-30" aria-hidden="true" tabindex="-1"></a>NormalMVfit <span class="ot">&lt;-</span> <span class="fu">stan</span>(<span class="at">model_code =</span> NormalMeanVar,</span>
+<span id="cb78-31"><a href="modelo-normal-con-media-y-varianza-desconocida.html#cb78-31" aria-hidden="true" tabindex="-1"></a>                   <span class="at">data =</span> sample_data, <span class="at">verbose =</span> <span class="cn">FALSE</span>)</span></code></pre></div>
+<div class="sourceCode" id="cb79"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb79-1"><a href="modelo-normal-con-media-y-varianza-desconocida.html#cb79-1" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(NormalMVfit, <span class="at">digits =</span> <span class="dv">4</span>, </span>
+<span id="cb79-2"><a href="modelo-normal-con-media-y-varianza-desconocida.html#cb79-2" aria-hidden="true" tabindex="-1"></a>      <span class="at">pars =</span> <span class="fu">c</span>(<span class="st">&quot;theta&quot;</span>, <span class="st">&quot;sigma&quot;</span>, <span class="st">&quot;sigma2&quot;</span>), <span class="at">probs =</span> <span class="fu">c</span>(<span class="fl">0.025</span>, <span class="fl">0.975</span>))</span></code></pre></div>
+<pre><code>## Inference for Stan model: de363179728705eed697c67cf38b3332.
+## 4 chains, each with iter=2000; warmup=1000; thin=1; 
+## post-warmup draws per chain=1000, total post-warmup draws=4000.
+## 
+##          mean se_mean     sd    2.5%  97.5% n_eff   Rhat
+## theta  0.0773  0.0089 0.4111 -0.7173 0.8999  2137 1.0004
+## sigma  1.5517  0.0083 0.3157  1.0826 2.3188  1441 1.0021
+## sigma2 2.5073  0.0321 1.1161  1.1721 5.3768  1208 1.0025
+## 
+## Samples were drawn using NUTS(diag_e) at Mon Jun 14 23:55:14 2021.
+## For each parameter, n_eff is a crude measure of effective sample size,
+## and Rhat is the potential scale reduction factor on split chains (at 
+## convergence, Rhat=1).</code></pre>
+<p>Después de ejecutar las iteraciones necesarias, la salida del anterior código muestra una estimación puntual para la esperanza de <span class="math inline">\(Y\)</span> de 0.09 con un intervalo de credibilidad del 95% dado por (-0.71, 0.91). Por otro lado, la estimación puntual de la desviación estándar de <span class="math inline">\(Y\)</span> es de 1.55 con un intervalo de credibilidad del 95% dado por (1.09, 2.31).</p>
+<p>Las figuras <a href="modelo-normal-con-media-y-varianza-desconocida.html#fig:posNormalMVStan2">4.1</a> muestra la distribución posterior para este ejemplo, junto con la estimación puntual, correspondiente a la desviación estándar.</p>
+<div class="figure" style="text-align: center"><span id="fig:posNormalMVStan2"></span>
+<img src="4Multiparametricos_files/figure-html/posNormalMVStan2-1.svg" alt="Distribuciones posteriores." width="576" />
+<p class="caption">
+Figura 4.1: Distribuciones posteriores.
+</p>
+</div>
+<p>A continuación se ilustra el uso de <code>R</code> en la programación de un algoritmo de Gibbs para los datos del ejemplo anterior. Se recalca que se utiliza la librería <code>MCMCpack</code> <span class="citation">(<a href="#ref-MCMCpack" role="doc-biblioref">Martin, Quinn, y Park 2011</a>)</span> para generar las realizaciones de la distribución Inversa-Gamma.</p>
+<div class="sourceCode" id="cb81"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb81-1"><a href="modelo-normal-con-media-y-varianza-desconocida.html#cb81-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(MCMCpack)</span>
+<span id="cb81-2"><a href="modelo-normal-con-media-y-varianza-desconocida.html#cb81-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb81-3"><a href="modelo-normal-con-media-y-varianza-desconocida.html#cb81-3" aria-hidden="true" tabindex="-1"></a><span class="co">#parametros previos de theta</span></span>
+<span id="cb81-4"><a href="modelo-normal-con-media-y-varianza-desconocida.html#cb81-4" aria-hidden="true" tabindex="-1"></a>mu <span class="ot">&lt;-</span> <span class="dv">0</span></span>
+<span id="cb81-5"><a href="modelo-normal-con-media-y-varianza-desconocida.html#cb81-5" aria-hidden="true" tabindex="-1"></a>tau2 <span class="ot">&lt;-</span> <span class="dv">1000</span></span>
+<span id="cb81-6"><a href="modelo-normal-con-media-y-varianza-desconocida.html#cb81-6" aria-hidden="true" tabindex="-1"></a><span class="co">#parametros previos de sigma2</span></span>
+<span id="cb81-7"><a href="modelo-normal-con-media-y-varianza-desconocida.html#cb81-7" aria-hidden="true" tabindex="-1"></a>a <span class="ot">&lt;-</span> <span class="fl">0.001</span></span>
+<span id="cb81-8"><a href="modelo-normal-con-media-y-varianza-desconocida.html#cb81-8" aria-hidden="true" tabindex="-1"></a>b <span class="ot">&lt;-</span> <span class="fl">0.001</span></span>
+<span id="cb81-9"><a href="modelo-normal-con-media-y-varianza-desconocida.html#cb81-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb81-10"><a href="modelo-normal-con-media-y-varianza-desconocida.html#cb81-10" aria-hidden="true" tabindex="-1"></a>nsim <span class="ot">&lt;-</span> <span class="dv">5000</span></span>
+<span id="cb81-11"><a href="modelo-normal-con-media-y-varianza-desconocida.html#cb81-11" aria-hidden="true" tabindex="-1"></a>theta.pos <span class="ot">&lt;-</span> <span class="fu">rep</span>(<span class="cn">NA</span>, nsim)</span>
+<span id="cb81-12"><a href="modelo-normal-con-media-y-varianza-desconocida.html#cb81-12" aria-hidden="true" tabindex="-1"></a>sigma2.pos <span class="ot">&lt;-</span> <span class="fu">rep</span>(<span class="cn">NA</span>, nsim)</span>
+<span id="cb81-13"><a href="modelo-normal-con-media-y-varianza-desconocida.html#cb81-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb81-14"><a href="modelo-normal-con-media-y-varianza-desconocida.html#cb81-14" aria-hidden="true" tabindex="-1"></a><span class="co"># Valor inicial de theta</span></span>
+<span id="cb81-15"><a href="modelo-normal-con-media-y-varianza-desconocida.html#cb81-15" aria-hidden="true" tabindex="-1"></a>theta.pos[<span class="dv">1</span>] <span class="ot">&lt;-</span> <span class="dv">0</span></span>
+<span id="cb81-16"><a href="modelo-normal-con-media-y-varianza-desconocida.html#cb81-16" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb81-17"><a href="modelo-normal-con-media-y-varianza-desconocida.html#cb81-17" aria-hidden="true" tabindex="-1"></a><span class="co">#parametros posteriores de sigma2   </span></span>
+<span id="cb81-18"><a href="modelo-normal-con-media-y-varianza-desconocida.html#cb81-18" aria-hidden="true" tabindex="-1"></a>a.n <span class="ot">&lt;-</span> a <span class="sc">+</span> n<span class="sc">/</span><span class="dv">2</span></span>
+<span id="cb81-19"><a href="modelo-normal-con-media-y-varianza-desconocida.html#cb81-19" aria-hidden="true" tabindex="-1"></a>b.n <span class="ot">&lt;-</span> b <span class="sc">+</span> ((n <span class="sc">-</span> <span class="dv">1</span>) <span class="sc">*</span> <span class="fu">var</span>(y) <span class="sc">+</span> n <span class="sc">*</span> (<span class="fu">mean</span>(y) <span class="sc">-</span> theta.pos[<span class="dv">1</span>]))<span class="sc">/</span><span class="dv">2</span></span>
+<span id="cb81-20"><a href="modelo-normal-con-media-y-varianza-desconocida.html#cb81-20" aria-hidden="true" tabindex="-1"></a><span class="co">#simulacion de la distribucion posterior condicional de theta</span></span>
+<span id="cb81-21"><a href="modelo-normal-con-media-y-varianza-desconocida.html#cb81-21" aria-hidden="true" tabindex="-1"></a>sigma2.pos[<span class="dv">1</span>] <span class="ot">&lt;-</span> <span class="fu">rinvgamma</span>(<span class="dv">1</span>, a.n, b.n)</span>
+<span id="cb81-22"><a href="modelo-normal-con-media-y-varianza-desconocida.html#cb81-22" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb81-23"><a href="modelo-normal-con-media-y-varianza-desconocida.html#cb81-23" aria-hidden="true" tabindex="-1"></a><span class="do">#####################</span></span>
+<span id="cb81-24"><a href="modelo-normal-con-media-y-varianza-desconocida.html#cb81-24" aria-hidden="true" tabindex="-1"></a><span class="co"># Muestreo de Gibbs #</span></span>
+<span id="cb81-25"><a href="modelo-normal-con-media-y-varianza-desconocida.html#cb81-25" aria-hidden="true" tabindex="-1"></a><span class="do">#####################</span></span>
+<span id="cb81-26"><a href="modelo-normal-con-media-y-varianza-desconocida.html#cb81-26" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb81-27"><a href="modelo-normal-con-media-y-varianza-desconocida.html#cb81-27" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span>(i <span class="cf">in</span> <span class="dv">2</span><span class="sc">:</span>nsim){</span>
+<span id="cb81-28"><a href="modelo-normal-con-media-y-varianza-desconocida.html#cb81-28" aria-hidden="true" tabindex="-1"></a>  <span class="co">#parametros posteriores de theta  </span></span>
+<span id="cb81-29"><a href="modelo-normal-con-media-y-varianza-desconocida.html#cb81-29" aria-hidden="true" tabindex="-1"></a>  tau2.n <span class="ot">&lt;-</span> <span class="dv">1</span> <span class="sc">/</span> ((n<span class="sc">/</span>sigma2.pos[i <span class="sc">-</span> <span class="dv">1</span>]) <span class="sc">+</span> (<span class="dv">1</span><span class="sc">/</span>tau2))</span>
+<span id="cb81-30"><a href="modelo-normal-con-media-y-varianza-desconocida.html#cb81-30" aria-hidden="true" tabindex="-1"></a>  mu.n <span class="ot">&lt;-</span> tau2.n <span class="sc">*</span> (<span class="fu">mean</span>(y) <span class="sc">*</span> (n<span class="sc">/</span>sigma2.pos[i <span class="sc">-</span> <span class="dv">1</span>]) <span class="sc">+</span> mu<span class="sc">/</span>tau2)</span>
+<span id="cb81-31"><a href="modelo-normal-con-media-y-varianza-desconocida.html#cb81-31" aria-hidden="true" tabindex="-1"></a>  <span class="co">#simulacion de la distribucion posterior condicional de theta</span></span>
+<span id="cb81-32"><a href="modelo-normal-con-media-y-varianza-desconocida.html#cb81-32" aria-hidden="true" tabindex="-1"></a>  theta.pos[i] <span class="ot">&lt;-</span> <span class="fu">rnorm</span>(<span class="dv">1</span>, <span class="at">mean=</span>mu.n, <span class="at">sd=</span><span class="fu">sqrt</span>(tau2.n))</span>
+<span id="cb81-33"><a href="modelo-normal-con-media-y-varianza-desconocida.html#cb81-33" aria-hidden="true" tabindex="-1"></a>  <span class="co">#parametros posteriores de sigma2 </span></span>
+<span id="cb81-34"><a href="modelo-normal-con-media-y-varianza-desconocida.html#cb81-34" aria-hidden="true" tabindex="-1"></a>  a.n <span class="ot">&lt;-</span> a <span class="sc">+</span> n<span class="sc">/</span><span class="dv">2</span></span>
+<span id="cb81-35"><a href="modelo-normal-con-media-y-varianza-desconocida.html#cb81-35" aria-hidden="true" tabindex="-1"></a>  b.n <span class="ot">&lt;-</span> b <span class="sc">+</span> ((n <span class="sc">-</span> <span class="dv">1</span>) <span class="sc">*</span> <span class="fu">var</span>(y) <span class="sc">+</span> n <span class="sc">*</span> (<span class="fu">mean</span>(y) <span class="sc">-</span> theta.pos[i])) <span class="sc">/</span> <span class="dv">2</span></span>
+<span id="cb81-36"><a href="modelo-normal-con-media-y-varianza-desconocida.html#cb81-36" aria-hidden="true" tabindex="-1"></a>  <span class="co">#simulacion de la distribucion posterior condicional de theta</span></span>
+<span id="cb81-37"><a href="modelo-normal-con-media-y-varianza-desconocida.html#cb81-37" aria-hidden="true" tabindex="-1"></a>  sigma2.pos[i] <span class="ot">&lt;-</span> <span class="fu">rinvgamma</span>(<span class="dv">1</span>, a.n, b.n)</span>
+<span id="cb81-38"><a href="modelo-normal-con-media-y-varianza-desconocida.html#cb81-38" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div>
+<div class="sourceCode" id="cb82"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb82-1"><a href="modelo-normal-con-media-y-varianza-desconocida.html#cb82-1" aria-hidden="true" tabindex="-1"></a><span class="fu">mean</span>(theta.pos)</span></code></pre></div>
+<pre><code>## [1] 0.08134119</code></pre>
+<div class="sourceCode" id="cb84"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb84-1"><a href="modelo-normal-con-media-y-varianza-desconocida.html#cb84-1" aria-hidden="true" tabindex="-1"></a><span class="fu">quantile</span>(theta.pos, <span class="fu">c</span>(<span class="fl">0.025</span>, <span class="fl">0.975</span>))</span></code></pre></div>
+<pre><code>##       2.5%      97.5% 
+## -0.7351317  0.8825539</code></pre>
+<div class="sourceCode" id="cb86"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb86-1"><a href="modelo-normal-con-media-y-varianza-desconocida.html#cb86-1" aria-hidden="true" tabindex="-1"></a><span class="fu">mean</span>(<span class="fu">sqrt</span>(sigma2.pos))</span></code></pre></div>
+<pre><code>## [1] 1.54241</code></pre>
+<div class="sourceCode" id="cb88"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb88-1"><a href="modelo-normal-con-media-y-varianza-desconocida.html#cb88-1" aria-hidden="true" tabindex="-1"></a><span class="fu">quantile</span>(<span class="fu">sqrt</span>(sigma2.pos), <span class="fu">c</span>(<span class="fl">0.025</span>, <span class="fl">0.975</span>))</span></code></pre></div>
+<pre><code>##     2.5%    97.5% 
+## 1.020166 2.347198</code></pre>
+<p>De donde podemos concluir que los resultados de este algoritmo de Gibbs coinciden con la estimación puntual para la esperanza de <span class="math inline">\(Y\)</span>, su desviación estándar, y sus intervalos de credibilidad del 95%, obtenidos con <code>STAN</code>.</p>
+<div class="figure" style="text-align: center"><span id="fig:plotsNormalMV"></span>
+<img src="4Multiparametricos_files/figure-html/plotsNormalMV-1.svg" alt="Convergencia de las distribuciones posteriores y diagramas de la función de autocorrelación en las cadenas." width="768" />
+<p class="caption">
+Figura 4.2: Convergencia de las distribuciones posteriores y diagramas de la función de autocorrelación en las cadenas.
+</p>
+</div>
+<p>Las figuras <a href="modelo-normal-con-media-y-varianza-desconocida.html#fig:plotsNormalMV">4.2</a> muestran que la convergencia de las cadenas es inmediata y que además no existen correlaciones importantes en los valores simulados de <span class="math inline">\(\theta\)</span> y <span class="math inline">\(\sigma^2\)</span>. Por tanto, se concluye que se pueden utilizar directamente estos valores para la obtención de las estimaciones. Finalmente se ilustra la forma de obtener la distribución predictiva para el promedio muestral de 5 nuevos pacientes.</p>
+<div class="sourceCode" id="cb90"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb90-1"><a href="modelo-normal-con-media-y-varianza-desconocida.html#cb90-1" aria-hidden="true" tabindex="-1"></a>n.ast <span class="ot">&lt;-</span> <span class="dv">5</span></span>
+<span id="cb90-2"><a href="modelo-normal-con-media-y-varianza-desconocida.html#cb90-2" aria-hidden="true" tabindex="-1"></a>y.bar <span class="ot">&lt;-</span> <span class="fu">c</span>()</span>
+<span id="cb90-3"><a href="modelo-normal-con-media-y-varianza-desconocida.html#cb90-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb90-4"><a href="modelo-normal-con-media-y-varianza-desconocida.html#cb90-4" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span>(i <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span>(nsim<span class="sc">/</span><span class="dv">2</span>)){</span>
+<span id="cb90-5"><a href="modelo-normal-con-media-y-varianza-desconocida.html#cb90-5" aria-hidden="true" tabindex="-1"></a>  y.bar[i] <span class="ot">&lt;-</span> <span class="fu">rnorm</span>(<span class="dv">1</span>,</span>
+<span id="cb90-6"><a href="modelo-normal-con-media-y-varianza-desconocida.html#cb90-6" aria-hidden="true" tabindex="-1"></a>                    theta.pos[i <span class="sc">+</span> nsim<span class="sc">/</span><span class="dv">2</span>],</span>
+<span id="cb90-7"><a href="modelo-normal-con-media-y-varianza-desconocida.html#cb90-7" aria-hidden="true" tabindex="-1"></a>                    <span class="fu">sqrt</span>(sigma2.pos[i <span class="sc">+</span> nsim<span class="sc">/</span><span class="dv">2</span>]<span class="sc">/</span>n.ast))</span>
+<span id="cb90-8"><a href="modelo-normal-con-media-y-varianza-desconocida.html#cb90-8" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb90-9"><a href="modelo-normal-con-media-y-varianza-desconocida.html#cb90-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb90-10"><a href="modelo-normal-con-media-y-varianza-desconocida.html#cb90-10" aria-hidden="true" tabindex="-1"></a><span class="fu">mean</span>(y.bar)</span></code></pre></div>
+<pre><code>## [1] 0.1030324</code></pre>
+<div class="sourceCode" id="cb92"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb92-1"><a href="modelo-normal-con-media-y-varianza-desconocida.html#cb92-1" aria-hidden="true" tabindex="-1"></a><span class="fu">sd</span>(y.bar)</span></code></pre></div>
+<pre><code>## [1] 0.7967851</code></pre>
+<div class="sourceCode" id="cb94"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb94-1"><a href="modelo-normal-con-media-y-varianza-desconocida.html#cb94-1" aria-hidden="true" tabindex="-1"></a><span class="fu">quantile</span>(y.bar,<span class="fu">c</span>(<span class="fl">0.025</span>,<span class="fl">0.975</span>))</span></code></pre></div>
+<pre><code>##      2.5%     97.5% 
+## -1.514231  1.553076</code></pre>
+<p>Podemos ver que se espera que el promedio de las pruebas en 5 nuevos pacientes es de 0.1030324, con un intervalo de credibilidad del 95% que es mucho más ancho que el de <span class="math inline">\(\theta\)</span>, pues naturalmente <span class="math inline">\(\bar{Y}\)</span> tiene mayor incertidumbre que los parámetros del modelo; además, el tamaño de nuevos datos es de cinco, el cual es pequeño y hace que el pronóstico para <span class="math inline">\(\bar{Y}^*\)</span> no sea muy preciso.</p>
 
 </div>
 </div>
@@ -391,6 +525,12 @@ p(\tilde{y}\mid\mathbf{Y})=\int_0^\infty\int_{-\infty}^\infty p(\tilde{y}\mid\th
 
 <h3>Referencias</h3>
 <div id="refs" class="references csl-bib-body hanging-indent">
+<div id="ref-Efronims" class="csl-entry">
+Efron, B. 2010. <em><span>Large-Scale Inference. Empirical Bayes Methods for Estimation, Testing, and Prediction</span></em>. Cambridge University Press.
+</div>
+<div id="ref-MCMCpack" class="csl-entry">
+Martin, Andrew D., Kevin M. Quinn, y Jong Hee Park. 2011. <span>«<span>MCMCpack</span>: Markov Chain Monte Carlo in <span>R</span>»</span>. <em>Journal of Statistical Software</em> 42 (9): 22. <a href="http://www.jstatsoft.org/v42/i09/">http://www.jstatsoft.org/v42/i09/</a>.
+</div>
 <div id="ref-Migon" class="csl-entry">
 Migon, H. S., y D. Gamerman. 1999. <em>Statistical Inference: An Integrated Approach</em>. Arnold.
 </div>

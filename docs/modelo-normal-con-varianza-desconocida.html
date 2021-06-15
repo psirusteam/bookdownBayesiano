@@ -24,7 +24,7 @@
 <meta name="author" content="Andrés Gutiérrez - Hanwen Zhang" />
 
 
-<meta name="date" content="2021-06-13" />
+<meta name="date" content="2021-06-15" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
@@ -355,7 +355,7 @@ Figura 3.21: Distribución previa no informativa para la varianza de una distrib
 <span id="cb70-13"><a href="modelo-normal-con-varianza-desconocida.html#cb70-13" aria-hidden="true" tabindex="-1"></a><span class="st">}</span></span>
 <span id="cb70-14"><a href="modelo-normal-con-varianza-desconocida.html#cb70-14" aria-hidden="true" tabindex="-1"></a><span class="st">model {</span></span>
 <span id="cb70-15"><a href="modelo-normal-con-varianza-desconocida.html#cb70-15" aria-hidden="true" tabindex="-1"></a><span class="st">  y ~ normal(mu, sigma);</span></span>
-<span id="cb70-16"><a href="modelo-normal-con-varianza-desconocida.html#cb70-16" aria-hidden="true" tabindex="-1"></a><span class="st">  sigma ~ inv_gamma(0.001, 0.001);</span></span>
+<span id="cb70-16"><a href="modelo-normal-con-varianza-desconocida.html#cb70-16" aria-hidden="true" tabindex="-1"></a><span class="st">  sigma2 ~ inv_gamma(0.001, 0.001);</span></span>
 <span id="cb70-17"><a href="modelo-normal-con-varianza-desconocida.html#cb70-17" aria-hidden="true" tabindex="-1"></a><span class="st">}</span></span>
 <span id="cb70-18"><a href="modelo-normal-con-varianza-desconocida.html#cb70-18" aria-hidden="true" tabindex="-1"></a><span class="st">generated quantities {</span></span>
 <span id="cb70-19"><a href="modelo-normal-con-varianza-desconocida.html#cb70-19" aria-hidden="true" tabindex="-1"></a><span class="st">  real y_test[n];</span></span>

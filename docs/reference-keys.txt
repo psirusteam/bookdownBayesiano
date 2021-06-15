@@ -103,6 +103,9 @@ fig:posNormalVStan
 fig:posNormalVStan2
 eq:PostThetaGibbs
 eq:PostSigma2Gibbs
+exm:EjeRenal
+fig:posNormalMVStan2
+fig:plotsNormalMV
 prp:unnamed-chunk-2
 def:unnamed-chunk-3
 prp:unnamed-chunk-4

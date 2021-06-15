@@ -2127,7 +2127,7 @@ transformed parameters {
 }
 model {
   y ~ normal(mu, sigma);
-  sigma ~ inv_gamma(0.001, 0.001);
+  sigma2 ~ inv_gamma(0.001, 0.001);
 }
 generated quantities {
   real y_test[n];
