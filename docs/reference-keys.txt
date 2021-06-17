@@ -1,3 +1,4 @@
+fig:unnamed-chunk-1
 exm:unnamed-chunk-1
 exm:unnamed-chunk-2
 exm:unnamed-chunk-3
@@ -106,17 +107,20 @@ eq:PostSigma2Gibbs
 exm:EjeRenal
 fig:posNormalMVStan2
 fig:plotsNormalMV
+prp:unnamed-chunk-10
+prp:unnamed-chunk-12
+eq:desarro1
+prp:unnamed-chunk-14
+prp:PosterSigma2IG
+prp:PosThetaTnoestandar
 prp:unnamed-chunk-2
 def:unnamed-chunk-3
 prp:unnamed-chunk-4
 def:unnamed-chunk-5
 prp:unnamed-chunk-6
 def:unnamed-chunk-7
-prp:unnamed-chunk-10
 def:unnamed-chunk-11
-prp:unnamed-chunk-12
 def:unnamed-chunk-13
-prp:unnamed-chunk-14
 prp:unnamed-chunk-15
 def:unnamed-chunk-16
 prp:unnamed-chunk-17
@@ -214,6 +218,7 @@ modelo-normal-con-varianza-desconocida
 modelos-multiparamétricos
 modelo-normal-con-media-y-varianza-desconocida
 parámetros-independientes
+parámetros-dependientes
 elementos-de-probabilidad
 distribuciones-discretas
 distribución-uniforme-discreta

@@ -66,7 +66,11 @@ thematic_on(
 ```
 
 # Prefacio {-}
-
-![Creative Commons License](https://mirrors.creativecommons.org/presskit/buttons/88x31/png/by-nc-sa.png)
+```{r results = 'asis', out.width="100px", fig.cap="Licencia de Creative Commons", echo=FALSE}
+download.file(url = "https://mirrors.creativecommons.org/presskit/buttons/88x31/png/by-nc-sa.png",
+          destfile = "Pics/CClicence.png",
+          mode = 'wb')
+knitr::include_graphics(path = "Pics/CClicence.png")
+```
 
 La versión online de este libro estáa licenciaada bajo una [Licencia Internacinal de Creative Commons para compartir con atribución no comercial 4.0](http://creativecommons.org/licenses/by-nc-sa/4.0/). 

@@ -1,7 +1,7 @@
 --- 
 title: "Modelos Bayesianos con R y STAN"
 author: "Andrés Gutiérrez - Hanwen Zhang"
-date: "2021-06-15"
+date: "2021-06-16"
 documentclass: book
 bibliography: [book.bib]
 biblio-style: apalike
@@ -51,7 +51,9 @@ output:
 
 
 # Prefacio {-}
-
-![Creative Commons License](https://mirrors.creativecommons.org/presskit/buttons/88x31/png/by-nc-sa.png)
+<div class="figure">
+<img src="Pics/CClicence.png" alt="Licencia de Creative Commons" width="100px" />
+<p class="caption">(\#fig:unnamed-chunk-1)Licencia de Creative Commons</p>
+</div>
 
 La versión online de este libro estáa licenciaada bajo una [Licencia Internacinal de Creative Commons para compartir con atribución no comercial 4.0](http://creativecommons.org/licenses/by-nc-sa/4.0/). 

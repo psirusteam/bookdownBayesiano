@@ -1,6 +1,11 @@
+
+
 # Antes de comenzar {-}
 
-![Tomado de *BayesAna*](https://i0.wp.com/anabelforte.com/wp-content/uploads/2020/07/4.gif)
+<div class="figure">
+<img src="Pics/fig1.png" alt="Tomado de *BayesAna*" width="600px" />
+<p class="caption">(\#fig:unnamed-chunk-1)Tomado de *BayesAna*</p>
+</div>
 
 ## Cuestionamientos sobre el enfoque bayesiano {-}
 
