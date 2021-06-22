@@ -24,7 +24,7 @@
 <meta name="author" content="Andrés Gutiérrez - Hanwen Zhang" />
 
 
-<meta name="date" content="2021-06-16" />
+<meta name="date" content="2021-06-21" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
@@ -211,6 +211,8 @@ div.csl-indent {
 <ul>
 <li class="chapter" data-level="4.1.1" data-path="modelo-normal-con-media-y-varianza-desconocida.html"><a href="modelo-normal-con-media-y-varianza-desconocida.html#parámetros-independientes"><i class="fa fa-check"></i><b>4.1.1</b> Parámetros independientes</a></li>
 <li class="chapter" data-level="4.1.2" data-path="modelo-normal-con-media-y-varianza-desconocida.html"><a href="modelo-normal-con-media-y-varianza-desconocida.html#parámetros-dependientes"><i class="fa fa-check"></i><b>4.1.2</b> Parámetros dependientes</a></li>
+<li class="chapter" data-level="4.1.3" data-path="modelo-normal-con-media-y-varianza-desconocida.html"><a href="modelo-normal-con-media-y-varianza-desconocida.html#parámetros-no-informativos"><i class="fa fa-check"></i><b>4.1.3</b> Parámetros no informativos</a></li>
+<li class="chapter" data-level="4.1.4" data-path="modelo-normal-con-media-y-varianza-desconocida.html"><a href="modelo-normal-con-media-y-varianza-desconocida.html#distribución-predictiva"><i class="fa fa-check"></i><b>4.1.4</b> Distribución predictiva</a></li>
 </ul></li>
 </ul></li>
 <li class="appendix"><span><b>Apéndice</b></span></li>
@@ -316,13 +318,13 @@ F^{-1}(u)=-\frac{\ln(1-u)}{\theta}
 \end{equation*}\]</span></p>
 entrega una forma diáfana para la simulación de una observación con distribución exponencial. Para simular una muestra de <span class="math inline">\(n\)</span> observaciones, simplemente se repite el anterior procedimiento <span class="math inline">\(n\)</span> veces. En <code>R</code>, el código necesario para la simulación de una muestra de tamaño 1000 proveniente de una distribución exponencial con parámetro <span class="math inline">\(\theta=5\)</span> es
 </div>
-<div class="sourceCode" id="cb114"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb114-1"><a href="métodos-directos.html#cb114-1" aria-hidden="true" tabindex="-1"></a>theta <span class="ot">&lt;-</span> <span class="dv">5</span></span>
-<span id="cb114-2"><a href="métodos-directos.html#cb114-2" aria-hidden="true" tabindex="-1"></a>u <span class="ot">&lt;-</span> <span class="fu">runif</span>(<span class="dv">1000</span>)</span>
-<span id="cb114-3"><a href="métodos-directos.html#cb114-3" aria-hidden="true" tabindex="-1"></a>rexpo <span class="ot">&lt;-</span> <span class="fu">log</span>(<span class="dv">1</span> <span class="sc">-</span> u)<span class="sc">/</span>(<span class="sc">-</span>theta)</span>
-<span id="cb114-4"><a href="métodos-directos.html#cb114-4" aria-hidden="true" tabindex="-1"></a><span class="dv">1</span><span class="sc">/</span><span class="fu">mean</span>(rexpo)</span></code></pre></div>
+<div class="sourceCode" id="cb116"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb116-1"><a href="métodos-directos.html#cb116-1" aria-hidden="true" tabindex="-1"></a>theta <span class="ot">&lt;-</span> <span class="dv">5</span></span>
+<span id="cb116-2"><a href="métodos-directos.html#cb116-2" aria-hidden="true" tabindex="-1"></a>u <span class="ot">&lt;-</span> <span class="fu">runif</span>(<span class="dv">1000</span>)</span>
+<span id="cb116-3"><a href="métodos-directos.html#cb116-3" aria-hidden="true" tabindex="-1"></a>rexpo <span class="ot">&lt;-</span> <span class="fu">log</span>(<span class="dv">1</span> <span class="sc">-</span> u)<span class="sc">/</span>(<span class="sc">-</span>theta)</span>
+<span id="cb116-4"><a href="métodos-directos.html#cb116-4" aria-hidden="true" tabindex="-1"></a><span class="dv">1</span><span class="sc">/</span><span class="fu">mean</span>(rexpo)</span></code></pre></div>
 <pre><code>## [1] 4.934724</code></pre>
-<div class="sourceCode" id="cb116"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb116-1"><a href="métodos-directos.html#cb116-1" aria-hidden="true" tabindex="-1"></a><span class="fu">hist</span>(rexpo, <span class="at">freq =</span> <span class="cn">FALSE</span>)</span>
-<span id="cb116-2"><a href="métodos-directos.html#cb116-2" aria-hidden="true" tabindex="-1"></a><span class="fu">lines</span>(<span class="fu">density</span>(rexpo), <span class="at">col =</span> <span class="dv">2</span>)</span></code></pre></div>
+<div class="sourceCode" id="cb118"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb118-1"><a href="métodos-directos.html#cb118-1" aria-hidden="true" tabindex="-1"></a><span class="fu">hist</span>(rexpo, <span class="at">freq =</span> <span class="cn">FALSE</span>)</span>
+<span id="cb118-2"><a href="métodos-directos.html#cb118-2" aria-hidden="true" tabindex="-1"></a><span class="fu">lines</span>(<span class="fu">density</span>(rexpo), <span class="at">col =</span> <span class="dv">2</span>)</span></code></pre></div>
 <div class="figure"><span id="fig:unnamed-chunk-5"></span>
 <img src="A3Simulacion_files/figure-html/unnamed-chunk-5-1.svg" alt="Histograma de observaciones con distribución exponencial" width="672" />
 <p class="caption">
@@ -364,14 +366,14 @@ P(F(x_k)&lt; U \leq F(x_{k+1}))&amp;=F(x_{k+1})-F(x_{k})\\
 <div class="example">
 <span id="exm:unnamed-chunk-6" class="example"><strong>Ejemplo B.1  </strong></span>El siguiente código computacional permite utilizar el método de la grilla para simular mil valores provenientes de una distribución exponencial con parámetro <span class="math inline">\(\theta = 5\)</span>.
 </div>
-<div class="sourceCode" id="cb117"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb117-1"><a href="métodos-directos.html#cb117-1" aria-hidden="true" tabindex="-1"></a>theta <span class="ot">&lt;-</span> <span class="dv">5</span></span>
-<span id="cb117-2"><a href="métodos-directos.html#cb117-2" aria-hidden="true" tabindex="-1"></a>x.grid <span class="ot">&lt;-</span> <span class="fu">seq</span>(<span class="dv">0</span>, <span class="dv">100</span>, <span class="at">by=</span><span class="fl">0.01</span>)</span>
-<span id="cb117-3"><a href="métodos-directos.html#cb117-3" aria-hidden="true" tabindex="-1"></a>p.exp <span class="ot">&lt;-</span> theta <span class="sc">*</span> <span class="fu">exp</span>(<span class="sc">-</span>theta <span class="sc">*</span> x.grid)</span>
-<span id="cb117-4"><a href="métodos-directos.html#cb117-4" aria-hidden="true" tabindex="-1"></a>r.exp <span class="ot">&lt;-</span> <span class="fu">sample</span>(x.grid, <span class="dv">1000</span>, <span class="at">prob =</span> p.exp, <span class="at">replace =</span> T)</span>
-<span id="cb117-5"><a href="métodos-directos.html#cb117-5" aria-hidden="true" tabindex="-1"></a><span class="dv">1</span><span class="sc">/</span><span class="fu">mean</span>(r.exp)</span></code></pre></div>
+<div class="sourceCode" id="cb119"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb119-1"><a href="métodos-directos.html#cb119-1" aria-hidden="true" tabindex="-1"></a>theta <span class="ot">&lt;-</span> <span class="dv">5</span></span>
+<span id="cb119-2"><a href="métodos-directos.html#cb119-2" aria-hidden="true" tabindex="-1"></a>x.grid <span class="ot">&lt;-</span> <span class="fu">seq</span>(<span class="dv">0</span>, <span class="dv">100</span>, <span class="at">by=</span><span class="fl">0.01</span>)</span>
+<span id="cb119-3"><a href="métodos-directos.html#cb119-3" aria-hidden="true" tabindex="-1"></a>p.exp <span class="ot">&lt;-</span> theta <span class="sc">*</span> <span class="fu">exp</span>(<span class="sc">-</span>theta <span class="sc">*</span> x.grid)</span>
+<span id="cb119-4"><a href="métodos-directos.html#cb119-4" aria-hidden="true" tabindex="-1"></a>r.exp <span class="ot">&lt;-</span> <span class="fu">sample</span>(x.grid, <span class="dv">1000</span>, <span class="at">prob =</span> p.exp, <span class="at">replace =</span> T)</span>
+<span id="cb119-5"><a href="métodos-directos.html#cb119-5" aria-hidden="true" tabindex="-1"></a><span class="dv">1</span><span class="sc">/</span><span class="fu">mean</span>(r.exp)</span></code></pre></div>
 <pre><code>## [1] 5.086211</code></pre>
-<div class="sourceCode" id="cb119"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb119-1"><a href="métodos-directos.html#cb119-1" aria-hidden="true" tabindex="-1"></a><span class="fu">hist</span>(r.exp, <span class="at">freq =</span> <span class="cn">FALSE</span>)</span>
-<span id="cb119-2"><a href="métodos-directos.html#cb119-2" aria-hidden="true" tabindex="-1"></a><span class="fu">lines</span>(<span class="fu">density</span>(rexpo), <span class="at">col =</span> <span class="dv">2</span>)</span></code></pre></div>
+<div class="sourceCode" id="cb121"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb121-1"><a href="métodos-directos.html#cb121-1" aria-hidden="true" tabindex="-1"></a><span class="fu">hist</span>(r.exp, <span class="at">freq =</span> <span class="cn">FALSE</span>)</span>
+<span id="cb121-2"><a href="métodos-directos.html#cb121-2" aria-hidden="true" tabindex="-1"></a><span class="fu">lines</span>(<span class="fu">density</span>(rexpo), <span class="at">col =</span> <span class="dv">2</span>)</span></code></pre></div>
 <div class="figure"><span id="fig:unnamed-chunk-7"></span>
 <img src="A3Simulacion_files/figure-html/unnamed-chunk-7-1.svg" alt="Histograma de observaciones con distribución exponencial" width="672" />
 <p class="caption">
@@ -382,29 +384,29 @@ Figura C.2: Histograma de observaciones con distribución exponencial
 <div class="example">
 <span id="exm:unnamed-chunk-8" class="example"><strong>Ejemplo C.2  </strong></span>De la misma manera, el método de la grilla permite simular valores de un distribución discreta. El siguiente código computacional permite utilizar el método de la grilla para simular mil valores provenientes de una distribución Poisson con parámetro <span class="math inline">\(\theta = 2\)</span>.
 </div>
-<div class="sourceCode" id="cb120"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb120-1"><a href="métodos-directos.html#cb120-1" aria-hidden="true" tabindex="-1"></a>p.poisson <span class="ot">&lt;-</span><span class="cf">function</span>(theta, x.grid){</span>
-<span id="cb120-2"><a href="métodos-directos.html#cb120-2" aria-hidden="true" tabindex="-1"></a>  N <span class="ot">&lt;-</span> <span class="fu">length</span>(x.grid)</span>
-<span id="cb120-3"><a href="métodos-directos.html#cb120-3" aria-hidden="true" tabindex="-1"></a>  res <span class="ot">&lt;-</span> <span class="fu">rep</span>(<span class="cn">NA</span>, N)</span>
-<span id="cb120-4"><a href="métodos-directos.html#cb120-4" aria-hidden="true" tabindex="-1"></a>  <span class="cf">for</span>(k <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span>N){</span>
-<span id="cb120-5"><a href="métodos-directos.html#cb120-5" aria-hidden="true" tabindex="-1"></a>    P1 <span class="ot">&lt;-</span> <span class="fu">exp</span>(<span class="sc">-</span>theta) <span class="sc">*</span> theta<span class="sc">^</span>(x.grid[k])</span>
-<span id="cb120-6"><a href="métodos-directos.html#cb120-6" aria-hidden="true" tabindex="-1"></a>    P2 <span class="ot">&lt;-</span> <span class="fu">factorial</span>(x.grid[k])</span>
-<span id="cb120-7"><a href="métodos-directos.html#cb120-7" aria-hidden="true" tabindex="-1"></a>    res[k] <span class="ot">&lt;-</span> P1<span class="sc">/</span>P2</span>
-<span id="cb120-8"><a href="métodos-directos.html#cb120-8" aria-hidden="true" tabindex="-1"></a>  }</span>
-<span id="cb120-9"><a href="métodos-directos.html#cb120-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">return</span>(res)</span>
-<span id="cb120-10"><a href="métodos-directos.html#cb120-10" aria-hidden="true" tabindex="-1"></a>}</span>
-<span id="cb120-11"><a href="métodos-directos.html#cb120-11" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb120-12"><a href="métodos-directos.html#cb120-12" aria-hidden="true" tabindex="-1"></a>theta <span class="ot">&lt;-</span> <span class="dv">2</span></span>
-<span id="cb120-13"><a href="métodos-directos.html#cb120-13" aria-hidden="true" tabindex="-1"></a>x.grid <span class="ot">&lt;-</span> <span class="fu">seq</span>(<span class="dv">0</span>, <span class="dv">100</span>, <span class="at">by =</span> <span class="dv">1</span>)</span>
-<span id="cb120-14"><a href="métodos-directos.html#cb120-14" aria-hidden="true" tabindex="-1"></a>f.x <span class="ot">&lt;-</span> <span class="fu">p.poisson</span>(theta, x.grid)</span>
-<span id="cb120-15"><a href="métodos-directos.html#cb120-15" aria-hidden="true" tabindex="-1"></a>p.x <span class="ot">&lt;-</span> f.x<span class="sc">/</span><span class="fu">sum</span>(f.x)</span>
-<span id="cb120-16"><a href="métodos-directos.html#cb120-16" aria-hidden="true" tabindex="-1"></a><span class="fu">sum</span>(p.x)</span></code></pre></div>
+<div class="sourceCode" id="cb122"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb122-1"><a href="métodos-directos.html#cb122-1" aria-hidden="true" tabindex="-1"></a>p.poisson <span class="ot">&lt;-</span><span class="cf">function</span>(theta, x.grid){</span>
+<span id="cb122-2"><a href="métodos-directos.html#cb122-2" aria-hidden="true" tabindex="-1"></a>  N <span class="ot">&lt;-</span> <span class="fu">length</span>(x.grid)</span>
+<span id="cb122-3"><a href="métodos-directos.html#cb122-3" aria-hidden="true" tabindex="-1"></a>  res <span class="ot">&lt;-</span> <span class="fu">rep</span>(<span class="cn">NA</span>, N)</span>
+<span id="cb122-4"><a href="métodos-directos.html#cb122-4" aria-hidden="true" tabindex="-1"></a>  <span class="cf">for</span>(k <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span>N){</span>
+<span id="cb122-5"><a href="métodos-directos.html#cb122-5" aria-hidden="true" tabindex="-1"></a>    P1 <span class="ot">&lt;-</span> <span class="fu">exp</span>(<span class="sc">-</span>theta) <span class="sc">*</span> theta<span class="sc">^</span>(x.grid[k])</span>
+<span id="cb122-6"><a href="métodos-directos.html#cb122-6" aria-hidden="true" tabindex="-1"></a>    P2 <span class="ot">&lt;-</span> <span class="fu">factorial</span>(x.grid[k])</span>
+<span id="cb122-7"><a href="métodos-directos.html#cb122-7" aria-hidden="true" tabindex="-1"></a>    res[k] <span class="ot">&lt;-</span> P1<span class="sc">/</span>P2</span>
+<span id="cb122-8"><a href="métodos-directos.html#cb122-8" aria-hidden="true" tabindex="-1"></a>  }</span>
+<span id="cb122-9"><a href="métodos-directos.html#cb122-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">return</span>(res)</span>
+<span id="cb122-10"><a href="métodos-directos.html#cb122-10" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb122-11"><a href="métodos-directos.html#cb122-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb122-12"><a href="métodos-directos.html#cb122-12" aria-hidden="true" tabindex="-1"></a>theta <span class="ot">&lt;-</span> <span class="dv">2</span></span>
+<span id="cb122-13"><a href="métodos-directos.html#cb122-13" aria-hidden="true" tabindex="-1"></a>x.grid <span class="ot">&lt;-</span> <span class="fu">seq</span>(<span class="dv">0</span>, <span class="dv">100</span>, <span class="at">by =</span> <span class="dv">1</span>)</span>
+<span id="cb122-14"><a href="métodos-directos.html#cb122-14" aria-hidden="true" tabindex="-1"></a>f.x <span class="ot">&lt;-</span> <span class="fu">p.poisson</span>(theta, x.grid)</span>
+<span id="cb122-15"><a href="métodos-directos.html#cb122-15" aria-hidden="true" tabindex="-1"></a>p.x <span class="ot">&lt;-</span> f.x<span class="sc">/</span><span class="fu">sum</span>(f.x)</span>
+<span id="cb122-16"><a href="métodos-directos.html#cb122-16" aria-hidden="true" tabindex="-1"></a><span class="fu">sum</span>(p.x)</span></code></pre></div>
 <pre><code>## [1] 1</code></pre>
-<div class="sourceCode" id="cb122"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb122-1"><a href="métodos-directos.html#cb122-1" aria-hidden="true" tabindex="-1"></a>rpois <span class="ot">&lt;-</span> <span class="fu">sample</span>(x.grid, <span class="dv">1000</span>, <span class="at">prob=</span>p.x, <span class="at">replace =</span> T)</span>
-<span id="cb122-2"><a href="métodos-directos.html#cb122-2" aria-hidden="true" tabindex="-1"></a><span class="fu">mean</span>(rpois)</span></code></pre></div>
+<div class="sourceCode" id="cb124"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb124-1"><a href="métodos-directos.html#cb124-1" aria-hidden="true" tabindex="-1"></a>rpois <span class="ot">&lt;-</span> <span class="fu">sample</span>(x.grid, <span class="dv">1000</span>, <span class="at">prob=</span>p.x, <span class="at">replace =</span> T)</span>
+<span id="cb124-2"><a href="métodos-directos.html#cb124-2" aria-hidden="true" tabindex="-1"></a><span class="fu">mean</span>(rpois)</span></code></pre></div>
 <pre><code>## [1] 2.005</code></pre>
-<div class="sourceCode" id="cb124"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb124-1"><a href="métodos-directos.html#cb124-1" aria-hidden="true" tabindex="-1"></a><span class="fu">var</span>(rpois)</span></code></pre></div>
+<div class="sourceCode" id="cb126"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb126-1"><a href="métodos-directos.html#cb126-1" aria-hidden="true" tabindex="-1"></a><span class="fu">var</span>(rpois)</span></code></pre></div>
 <pre><code>## [1] 1.910886</code></pre>
-<div class="sourceCode" id="cb126"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb126-1"><a href="métodos-directos.html#cb126-1" aria-hidden="true" tabindex="-1"></a><span class="fu">hist</span>(rpois, <span class="at">freq =</span> <span class="cn">FALSE</span>)</span></code></pre></div>
+<div class="sourceCode" id="cb128"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb128-1"><a href="métodos-directos.html#cb128-1" aria-hidden="true" tabindex="-1"></a><span class="fu">hist</span>(rpois, <span class="at">freq =</span> <span class="cn">FALSE</span>)</span></code></pre></div>
 <div class="figure"><span id="fig:unnamed-chunk-9"></span>
 <img src="A3Simulacion_files/figure-html/unnamed-chunk-9-1.svg" alt="Histograma de observaciones con distribución Poisson" width="672" />
 <p class="caption">
@@ -415,31 +417,31 @@ Figura C.3: Histograma de observaciones con distribución Poisson
 <div class="example">
 <span id="exm:unnamed-chunk-10" class="example"><strong>Ejemplo C.3  </strong></span>El método de la grilla también puede utilizarse para simular observaciones de una distribución biparamétrica, univariada y continua. El siguiente código computacional permite utilizar el método de la grilla para simular mil valores provenientes de una distribución Gamma con parámetros <span class="math inline">\(\theta = 4\)</span>, <span class="math inline">\(\beta = 2\)</span>.
 </div>
-<div class="sourceCode" id="cb127"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb127-1"><a href="métodos-directos.html#cb127-1" aria-hidden="true" tabindex="-1"></a>p.gamma <span class="ot">&lt;-</span> <span class="cf">function</span>(a, b, x.grid){</span>
-<span id="cb127-2"><a href="métodos-directos.html#cb127-2" aria-hidden="true" tabindex="-1"></a>  N <span class="ot">&lt;-</span><span class="fu">length</span>(x.grid)</span>
-<span id="cb127-3"><a href="métodos-directos.html#cb127-3" aria-hidden="true" tabindex="-1"></a>  res <span class="ot">&lt;-</span> <span class="fu">rep</span>(<span class="cn">NA</span>, N)</span>
-<span id="cb127-4"><a href="métodos-directos.html#cb127-4" aria-hidden="true" tabindex="-1"></a>  <span class="cf">for</span>(k <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span>N){</span>
-<span id="cb127-5"><a href="métodos-directos.html#cb127-5" aria-hidden="true" tabindex="-1"></a>    P1 <span class="ot">&lt;-</span> (b<span class="sc">^</span>a)<span class="sc">/</span><span class="fu">gamma</span>(a)</span>
-<span id="cb127-6"><a href="métodos-directos.html#cb127-6" aria-hidden="true" tabindex="-1"></a>    P2 <span class="ot">&lt;-</span> x.grid[k]<span class="sc">^</span>(a <span class="sc">-</span> <span class="dv">1</span>)</span>
-<span id="cb127-7"><a href="métodos-directos.html#cb127-7" aria-hidden="true" tabindex="-1"></a>    P3 <span class="ot">&lt;-</span> <span class="fu">exp</span>(<span class="sc">-</span>b <span class="sc">*</span> x.grid[k])</span>
-<span id="cb127-8"><a href="métodos-directos.html#cb127-8" aria-hidden="true" tabindex="-1"></a>    res[k] <span class="ot">&lt;-</span> P1<span class="sc">*</span>P2<span class="sc">*</span>P3</span>
-<span id="cb127-9"><a href="métodos-directos.html#cb127-9" aria-hidden="true" tabindex="-1"></a>  }</span>
-<span id="cb127-10"><a href="métodos-directos.html#cb127-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">return</span>(res)</span>
-<span id="cb127-11"><a href="métodos-directos.html#cb127-11" aria-hidden="true" tabindex="-1"></a>}</span>
-<span id="cb127-12"><a href="métodos-directos.html#cb127-12" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb127-13"><a href="métodos-directos.html#cb127-13" aria-hidden="true" tabindex="-1"></a>alpha <span class="ot">&lt;-</span> <span class="dv">4</span></span>
-<span id="cb127-14"><a href="métodos-directos.html#cb127-14" aria-hidden="true" tabindex="-1"></a>beta <span class="ot">&lt;-</span> <span class="dv">2</span></span>
-<span id="cb127-15"><a href="métodos-directos.html#cb127-15" aria-hidden="true" tabindex="-1"></a>x.grid <span class="ot">&lt;-</span> <span class="fu">seq</span>(<span class="dv">0</span>, <span class="dv">100</span>, <span class="at">by =</span> <span class="fl">0.1</span>)</span>
-<span id="cb127-16"><a href="métodos-directos.html#cb127-16" aria-hidden="true" tabindex="-1"></a>f.x <span class="ot">&lt;-</span> <span class="fu">p.gamma</span>(alpha, beta, x.grid)</span>
-<span id="cb127-17"><a href="métodos-directos.html#cb127-17" aria-hidden="true" tabindex="-1"></a>p.x <span class="ot">&lt;-</span> f.x <span class="sc">/</span> <span class="fu">sum</span>(f.x)</span>
-<span id="cb127-18"><a href="métodos-directos.html#cb127-18" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb127-19"><a href="métodos-directos.html#cb127-19" aria-hidden="true" tabindex="-1"></a>rgamma <span class="ot">&lt;-</span> <span class="fu">sample</span>(x.grid, <span class="dv">1000</span>, <span class="at">prob =</span> p.x, <span class="at">replace =</span> T)</span>
-<span id="cb127-20"><a href="métodos-directos.html#cb127-20" aria-hidden="true" tabindex="-1"></a><span class="fu">mean</span>(rgamma)</span></code></pre></div>
+<div class="sourceCode" id="cb129"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb129-1"><a href="métodos-directos.html#cb129-1" aria-hidden="true" tabindex="-1"></a>p.gamma <span class="ot">&lt;-</span> <span class="cf">function</span>(a, b, x.grid){</span>
+<span id="cb129-2"><a href="métodos-directos.html#cb129-2" aria-hidden="true" tabindex="-1"></a>  N <span class="ot">&lt;-</span><span class="fu">length</span>(x.grid)</span>
+<span id="cb129-3"><a href="métodos-directos.html#cb129-3" aria-hidden="true" tabindex="-1"></a>  res <span class="ot">&lt;-</span> <span class="fu">rep</span>(<span class="cn">NA</span>, N)</span>
+<span id="cb129-4"><a href="métodos-directos.html#cb129-4" aria-hidden="true" tabindex="-1"></a>  <span class="cf">for</span>(k <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span>N){</span>
+<span id="cb129-5"><a href="métodos-directos.html#cb129-5" aria-hidden="true" tabindex="-1"></a>    P1 <span class="ot">&lt;-</span> (b<span class="sc">^</span>a)<span class="sc">/</span><span class="fu">gamma</span>(a)</span>
+<span id="cb129-6"><a href="métodos-directos.html#cb129-6" aria-hidden="true" tabindex="-1"></a>    P2 <span class="ot">&lt;-</span> x.grid[k]<span class="sc">^</span>(a <span class="sc">-</span> <span class="dv">1</span>)</span>
+<span id="cb129-7"><a href="métodos-directos.html#cb129-7" aria-hidden="true" tabindex="-1"></a>    P3 <span class="ot">&lt;-</span> <span class="fu">exp</span>(<span class="sc">-</span>b <span class="sc">*</span> x.grid[k])</span>
+<span id="cb129-8"><a href="métodos-directos.html#cb129-8" aria-hidden="true" tabindex="-1"></a>    res[k] <span class="ot">&lt;-</span> P1<span class="sc">*</span>P2<span class="sc">*</span>P3</span>
+<span id="cb129-9"><a href="métodos-directos.html#cb129-9" aria-hidden="true" tabindex="-1"></a>  }</span>
+<span id="cb129-10"><a href="métodos-directos.html#cb129-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">return</span>(res)</span>
+<span id="cb129-11"><a href="métodos-directos.html#cb129-11" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb129-12"><a href="métodos-directos.html#cb129-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb129-13"><a href="métodos-directos.html#cb129-13" aria-hidden="true" tabindex="-1"></a>alpha <span class="ot">&lt;-</span> <span class="dv">4</span></span>
+<span id="cb129-14"><a href="métodos-directos.html#cb129-14" aria-hidden="true" tabindex="-1"></a>beta <span class="ot">&lt;-</span> <span class="dv">2</span></span>
+<span id="cb129-15"><a href="métodos-directos.html#cb129-15" aria-hidden="true" tabindex="-1"></a>x.grid <span class="ot">&lt;-</span> <span class="fu">seq</span>(<span class="dv">0</span>, <span class="dv">100</span>, <span class="at">by =</span> <span class="fl">0.1</span>)</span>
+<span id="cb129-16"><a href="métodos-directos.html#cb129-16" aria-hidden="true" tabindex="-1"></a>f.x <span class="ot">&lt;-</span> <span class="fu">p.gamma</span>(alpha, beta, x.grid)</span>
+<span id="cb129-17"><a href="métodos-directos.html#cb129-17" aria-hidden="true" tabindex="-1"></a>p.x <span class="ot">&lt;-</span> f.x <span class="sc">/</span> <span class="fu">sum</span>(f.x)</span>
+<span id="cb129-18"><a href="métodos-directos.html#cb129-18" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb129-19"><a href="métodos-directos.html#cb129-19" aria-hidden="true" tabindex="-1"></a>rgamma <span class="ot">&lt;-</span> <span class="fu">sample</span>(x.grid, <span class="dv">1000</span>, <span class="at">prob =</span> p.x, <span class="at">replace =</span> T)</span>
+<span id="cb129-20"><a href="métodos-directos.html#cb129-20" aria-hidden="true" tabindex="-1"></a><span class="fu">mean</span>(rgamma)</span></code></pre></div>
 <pre><code>## [1] 1.9978</code></pre>
-<div class="sourceCode" id="cb129"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb129-1"><a href="métodos-directos.html#cb129-1" aria-hidden="true" tabindex="-1"></a><span class="fu">var</span>(rgamma)</span></code></pre></div>
+<div class="sourceCode" id="cb131"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb131-1"><a href="métodos-directos.html#cb131-1" aria-hidden="true" tabindex="-1"></a><span class="fu">var</span>(rgamma)</span></code></pre></div>
 <pre><code>## [1] 1.014189</code></pre>
-<div class="sourceCode" id="cb131"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb131-1"><a href="métodos-directos.html#cb131-1" aria-hidden="true" tabindex="-1"></a><span class="fu">hist</span>(rgamma, <span class="at">freq =</span> F)</span>
-<span id="cb131-2"><a href="métodos-directos.html#cb131-2" aria-hidden="true" tabindex="-1"></a><span class="fu">lines</span>(<span class="fu">density</span>(rgamma), <span class="at">col =</span> <span class="dv">2</span>)</span></code></pre></div>
+<div class="sourceCode" id="cb133"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb133-1"><a href="métodos-directos.html#cb133-1" aria-hidden="true" tabindex="-1"></a><span class="fu">hist</span>(rgamma, <span class="at">freq =</span> F)</span>
+<span id="cb133-2"><a href="métodos-directos.html#cb133-2" aria-hidden="true" tabindex="-1"></a><span class="fu">lines</span>(<span class="fu">density</span>(rgamma), <span class="at">col =</span> <span class="dv">2</span>)</span></code></pre></div>
 <div class="figure"><span id="fig:unnamed-chunk-11"></span>
 <img src="A3Simulacion_files/figure-html/unnamed-chunk-11-1.svg" alt="Histograma de observaciones con distribución Gamma." width="672" />
 <p class="caption">
@@ -451,56 +453,56 @@ Figura C.4: Histograma de observaciones con distribución Gamma.
 <span id="exm:unnamed-chunk-12" class="example"><strong>Ejemplo 1.5  </strong></span>Para comprobar el poder de este método de simulación, se presenta el siguiente código que permite simular valores de una distribución multiparamétrica, bivariada y continua. En particular, se simulan valores de la distribución Normal multivariante con vector de medias <span class="math inline">\(\boldsymbol \mu= (2, 4)&#39;\)</span> y matriz de varianzas covarianzas
 <span class="math inline">\(\boldsymbol \Sigma= \begin{bmatrix} 25 &amp; 30 \\ 30 &amp; 16 \end{bmatrix}\)</span>
 </div>
-<div class="sourceCode" id="cb132"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb132-1"><a href="métodos-directos.html#cb132-1" aria-hidden="true" tabindex="-1"></a>p.normal2 <span class="ot">&lt;-</span> <span class="cf">function</span>(mu, Sigma, x, y){</span>
-<span id="cb132-2"><a href="métodos-directos.html#cb132-2" aria-hidden="true" tabindex="-1"></a>  P1  <span class="ot">&lt;-</span> <span class="dv">1</span><span class="sc">/</span>(<span class="dv">2</span> <span class="sc">*</span> pi)</span>
-<span id="cb132-3"><a href="métodos-directos.html#cb132-3" aria-hidden="true" tabindex="-1"></a>  P2  <span class="ot">&lt;-</span> <span class="dv">1</span><span class="sc">/</span><span class="fu">sqrt</span>(<span class="fu">det</span>(Sigma))</span>
-<span id="cb132-4"><a href="métodos-directos.html#cb132-4" aria-hidden="true" tabindex="-1"></a>  P3a <span class="ot">&lt;-</span> <span class="fu">t</span>((<span class="fu">c</span>(x, y) <span class="sc">-</span> mu)) <span class="sc">%*%</span> <span class="fu">solve</span>(Sigma) <span class="sc">%*%</span> (<span class="fu">c</span>(x, y) <span class="sc">-</span> mu)</span>
-<span id="cb132-5"><a href="métodos-directos.html#cb132-5" aria-hidden="true" tabindex="-1"></a>  P3  <span class="ot">&lt;-</span> <span class="fu">exp</span>((<span class="sc">-</span><span class="dv">1</span><span class="sc">/</span><span class="dv">2</span>) <span class="sc">*</span> P3a)</span>
-<span id="cb132-6"><a href="métodos-directos.html#cb132-6" aria-hidden="true" tabindex="-1"></a>  res <span class="ot">&lt;-</span> P1 <span class="sc">*</span> P2 <span class="sc">*</span> P3</span>
-<span id="cb132-7"><a href="métodos-directos.html#cb132-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">return</span>(res)</span>
-<span id="cb132-8"><a href="métodos-directos.html#cb132-8" aria-hidden="true" tabindex="-1"></a>}</span>
-<span id="cb132-9"><a href="métodos-directos.html#cb132-9" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb132-10"><a href="métodos-directos.html#cb132-10" aria-hidden="true" tabindex="-1"></a>grilla <span class="ot">&lt;-</span> <span class="cf">function</span>(a, b){</span>
-<span id="cb132-11"><a href="métodos-directos.html#cb132-11" aria-hidden="true" tabindex="-1"></a>  A <span class="ot">&lt;-</span> <span class="fu">seq</span>(<span class="dv">1</span><span class="sc">:</span><span class="fu">length</span>(a))</span>
-<span id="cb132-12"><a href="métodos-directos.html#cb132-12" aria-hidden="true" tabindex="-1"></a>  unoA <span class="ot">&lt;-</span> <span class="fu">rep</span>(<span class="dv">1</span>, <span class="fu">length</span>(A))</span>
-<span id="cb132-13"><a href="métodos-directos.html#cb132-13" aria-hidden="true" tabindex="-1"></a>  B <span class="ot">&lt;-</span> <span class="fu">seq</span>(<span class="dv">1</span><span class="sc">:</span><span class="fu">length</span>(b))</span>
-<span id="cb132-14"><a href="métodos-directos.html#cb132-14" aria-hidden="true" tabindex="-1"></a>  unoB <span class="ot">&lt;-</span> <span class="fu">rep</span>(<span class="dv">1</span>, <span class="fu">length</span>(B))</span>
-<span id="cb132-15"><a href="métodos-directos.html#cb132-15" aria-hidden="true" tabindex="-1"></a>  P1 <span class="ot">&lt;-</span> <span class="fu">kronecker</span>(A, unoB)</span>
-<span id="cb132-16"><a href="métodos-directos.html#cb132-16" aria-hidden="true" tabindex="-1"></a>  P2 <span class="ot">&lt;-</span> <span class="fu">kronecker</span>(unoA, B)</span>
-<span id="cb132-17"><a href="métodos-directos.html#cb132-17" aria-hidden="true" tabindex="-1"></a>  grid <span class="ot">&lt;-</span> <span class="fu">cbind</span>(a[P1], b[P2])</span>
-<span id="cb132-18"><a href="métodos-directos.html#cb132-18" aria-hidden="true" tabindex="-1"></a>  <span class="fu">return</span>(grid)</span>
-<span id="cb132-19"><a href="métodos-directos.html#cb132-19" aria-hidden="true" tabindex="-1"></a>}</span>
-<span id="cb132-20"><a href="métodos-directos.html#cb132-20" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb132-21"><a href="métodos-directos.html#cb132-21" aria-hidden="true" tabindex="-1"></a>mu1 <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="dv">2</span>, <span class="dv">4</span>)</span>
-<span id="cb132-22"><a href="métodos-directos.html#cb132-22" aria-hidden="true" tabindex="-1"></a>Sigma1 <span class="ot">&lt;-</span> <span class="fu">matrix</span>(<span class="fu">c</span>(<span class="dv">25</span>, <span class="dv">10</span>, <span class="dv">10</span>, <span class="dv">16</span>), <span class="at">nrow=</span><span class="dv">2</span>)</span>
-<span id="cb132-23"><a href="métodos-directos.html#cb132-23" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb132-24"><a href="métodos-directos.html#cb132-24" aria-hidden="true" tabindex="-1"></a>x.grid <span class="ot">&lt;-</span> <span class="fu">seq</span>(mu1[<span class="dv">1</span>] <span class="sc">-</span> <span class="dv">3</span> <span class="sc">*</span> <span class="fu">sqrt</span>(Sigma1[<span class="dv">1</span>, <span class="dv">1</span>]),</span>
-<span id="cb132-25"><a href="métodos-directos.html#cb132-25" aria-hidden="true" tabindex="-1"></a>              mu1[<span class="dv">1</span>] <span class="sc">+</span> <span class="dv">3</span> <span class="sc">*</span> <span class="fu">sqrt</span>(Sigma1[<span class="dv">1</span>, <span class="dv">1</span>]),</span>
-<span id="cb132-26"><a href="métodos-directos.html#cb132-26" aria-hidden="true" tabindex="-1"></a>              <span class="at">by =</span> <span class="fl">0.5</span>)</span>
-<span id="cb132-27"><a href="métodos-directos.html#cb132-27" aria-hidden="true" tabindex="-1"></a>y.grid <span class="ot">&lt;-</span> <span class="fu">seq</span>(mu1[<span class="dv">2</span>] <span class="sc">-</span> <span class="dv">3</span> <span class="sc">*</span> <span class="fu">sqrt</span>(Sigma1[<span class="dv">2</span>, <span class="dv">2</span>]),</span>
-<span id="cb132-28"><a href="métodos-directos.html#cb132-28" aria-hidden="true" tabindex="-1"></a>              mu1[<span class="dv">2</span>] <span class="sc">+</span> <span class="dv">3</span> <span class="sc">*</span> <span class="fu">sqrt</span>(Sigma1[<span class="dv">2</span>, <span class="dv">2</span>]),</span>
-<span id="cb132-29"><a href="métodos-directos.html#cb132-29" aria-hidden="true" tabindex="-1"></a>              <span class="at">by =</span> <span class="fl">0.5</span>)</span>
-<span id="cb132-30"><a href="métodos-directos.html#cb132-30" aria-hidden="true" tabindex="-1"></a>xy.grid <span class="ot">&lt;-</span> <span class="fu">grilla</span>(x.grid, y.grid)</span>
-<span id="cb132-31"><a href="métodos-directos.html#cb132-31" aria-hidden="true" tabindex="-1"></a>N.grid <span class="ot">&lt;-</span> <span class="fu">dim</span>(xy.grid)[<span class="dv">1</span>]</span>
-<span id="cb132-32"><a href="métodos-directos.html#cb132-32" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb132-33"><a href="métodos-directos.html#cb132-33" aria-hidden="true" tabindex="-1"></a>f.xy <span class="ot">&lt;-</span> <span class="fu">rep</span>(<span class="cn">NA</span>, N.grid)</span>
-<span id="cb132-34"><a href="métodos-directos.html#cb132-34" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span>(j <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span>N.grid){</span>
-<span id="cb132-35"><a href="métodos-directos.html#cb132-35" aria-hidden="true" tabindex="-1"></a>  f.xy[j] <span class="ot">&lt;-</span> <span class="fu">p.normal2</span>(mu1, Sigma1, </span>
-<span id="cb132-36"><a href="métodos-directos.html#cb132-36" aria-hidden="true" tabindex="-1"></a>                       xy.grid[j, <span class="dv">1</span>], </span>
-<span id="cb132-37"><a href="métodos-directos.html#cb132-37" aria-hidden="true" tabindex="-1"></a>                       xy.grid[j, <span class="dv">2</span>])</span>
-<span id="cb132-38"><a href="métodos-directos.html#cb132-38" aria-hidden="true" tabindex="-1"></a>}</span>
-<span id="cb132-39"><a href="métodos-directos.html#cb132-39" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb132-40"><a href="métodos-directos.html#cb132-40" aria-hidden="true" tabindex="-1"></a>p.xy <span class="ot">&lt;-</span> <span class="fu">as.vector</span>(f.xy<span class="sc">/</span><span class="fu">sum</span>(f.xy))</span>
-<span id="cb132-41"><a href="métodos-directos.html#cb132-41" aria-hidden="true" tabindex="-1"></a><span class="fu">sum</span>(p.xy)</span></code></pre></div>
+<div class="sourceCode" id="cb134"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb134-1"><a href="métodos-directos.html#cb134-1" aria-hidden="true" tabindex="-1"></a>p.normal2 <span class="ot">&lt;-</span> <span class="cf">function</span>(mu, Sigma, x, y){</span>
+<span id="cb134-2"><a href="métodos-directos.html#cb134-2" aria-hidden="true" tabindex="-1"></a>  P1  <span class="ot">&lt;-</span> <span class="dv">1</span><span class="sc">/</span>(<span class="dv">2</span> <span class="sc">*</span> pi)</span>
+<span id="cb134-3"><a href="métodos-directos.html#cb134-3" aria-hidden="true" tabindex="-1"></a>  P2  <span class="ot">&lt;-</span> <span class="dv">1</span><span class="sc">/</span><span class="fu">sqrt</span>(<span class="fu">det</span>(Sigma))</span>
+<span id="cb134-4"><a href="métodos-directos.html#cb134-4" aria-hidden="true" tabindex="-1"></a>  P3a <span class="ot">&lt;-</span> <span class="fu">t</span>((<span class="fu">c</span>(x, y) <span class="sc">-</span> mu)) <span class="sc">%*%</span> <span class="fu">solve</span>(Sigma) <span class="sc">%*%</span> (<span class="fu">c</span>(x, y) <span class="sc">-</span> mu)</span>
+<span id="cb134-5"><a href="métodos-directos.html#cb134-5" aria-hidden="true" tabindex="-1"></a>  P3  <span class="ot">&lt;-</span> <span class="fu">exp</span>((<span class="sc">-</span><span class="dv">1</span><span class="sc">/</span><span class="dv">2</span>) <span class="sc">*</span> P3a)</span>
+<span id="cb134-6"><a href="métodos-directos.html#cb134-6" aria-hidden="true" tabindex="-1"></a>  res <span class="ot">&lt;-</span> P1 <span class="sc">*</span> P2 <span class="sc">*</span> P3</span>
+<span id="cb134-7"><a href="métodos-directos.html#cb134-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">return</span>(res)</span>
+<span id="cb134-8"><a href="métodos-directos.html#cb134-8" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb134-9"><a href="métodos-directos.html#cb134-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb134-10"><a href="métodos-directos.html#cb134-10" aria-hidden="true" tabindex="-1"></a>grilla <span class="ot">&lt;-</span> <span class="cf">function</span>(a, b){</span>
+<span id="cb134-11"><a href="métodos-directos.html#cb134-11" aria-hidden="true" tabindex="-1"></a>  A <span class="ot">&lt;-</span> <span class="fu">seq</span>(<span class="dv">1</span><span class="sc">:</span><span class="fu">length</span>(a))</span>
+<span id="cb134-12"><a href="métodos-directos.html#cb134-12" aria-hidden="true" tabindex="-1"></a>  unoA <span class="ot">&lt;-</span> <span class="fu">rep</span>(<span class="dv">1</span>, <span class="fu">length</span>(A))</span>
+<span id="cb134-13"><a href="métodos-directos.html#cb134-13" aria-hidden="true" tabindex="-1"></a>  B <span class="ot">&lt;-</span> <span class="fu">seq</span>(<span class="dv">1</span><span class="sc">:</span><span class="fu">length</span>(b))</span>
+<span id="cb134-14"><a href="métodos-directos.html#cb134-14" aria-hidden="true" tabindex="-1"></a>  unoB <span class="ot">&lt;-</span> <span class="fu">rep</span>(<span class="dv">1</span>, <span class="fu">length</span>(B))</span>
+<span id="cb134-15"><a href="métodos-directos.html#cb134-15" aria-hidden="true" tabindex="-1"></a>  P1 <span class="ot">&lt;-</span> <span class="fu">kronecker</span>(A, unoB)</span>
+<span id="cb134-16"><a href="métodos-directos.html#cb134-16" aria-hidden="true" tabindex="-1"></a>  P2 <span class="ot">&lt;-</span> <span class="fu">kronecker</span>(unoA, B)</span>
+<span id="cb134-17"><a href="métodos-directos.html#cb134-17" aria-hidden="true" tabindex="-1"></a>  grid <span class="ot">&lt;-</span> <span class="fu">cbind</span>(a[P1], b[P2])</span>
+<span id="cb134-18"><a href="métodos-directos.html#cb134-18" aria-hidden="true" tabindex="-1"></a>  <span class="fu">return</span>(grid)</span>
+<span id="cb134-19"><a href="métodos-directos.html#cb134-19" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb134-20"><a href="métodos-directos.html#cb134-20" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb134-21"><a href="métodos-directos.html#cb134-21" aria-hidden="true" tabindex="-1"></a>mu1 <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="dv">2</span>, <span class="dv">4</span>)</span>
+<span id="cb134-22"><a href="métodos-directos.html#cb134-22" aria-hidden="true" tabindex="-1"></a>Sigma1 <span class="ot">&lt;-</span> <span class="fu">matrix</span>(<span class="fu">c</span>(<span class="dv">25</span>, <span class="dv">10</span>, <span class="dv">10</span>, <span class="dv">16</span>), <span class="at">nrow=</span><span class="dv">2</span>)</span>
+<span id="cb134-23"><a href="métodos-directos.html#cb134-23" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb134-24"><a href="métodos-directos.html#cb134-24" aria-hidden="true" tabindex="-1"></a>x.grid <span class="ot">&lt;-</span> <span class="fu">seq</span>(mu1[<span class="dv">1</span>] <span class="sc">-</span> <span class="dv">3</span> <span class="sc">*</span> <span class="fu">sqrt</span>(Sigma1[<span class="dv">1</span>, <span class="dv">1</span>]),</span>
+<span id="cb134-25"><a href="métodos-directos.html#cb134-25" aria-hidden="true" tabindex="-1"></a>              mu1[<span class="dv">1</span>] <span class="sc">+</span> <span class="dv">3</span> <span class="sc">*</span> <span class="fu">sqrt</span>(Sigma1[<span class="dv">1</span>, <span class="dv">1</span>]),</span>
+<span id="cb134-26"><a href="métodos-directos.html#cb134-26" aria-hidden="true" tabindex="-1"></a>              <span class="at">by =</span> <span class="fl">0.5</span>)</span>
+<span id="cb134-27"><a href="métodos-directos.html#cb134-27" aria-hidden="true" tabindex="-1"></a>y.grid <span class="ot">&lt;-</span> <span class="fu">seq</span>(mu1[<span class="dv">2</span>] <span class="sc">-</span> <span class="dv">3</span> <span class="sc">*</span> <span class="fu">sqrt</span>(Sigma1[<span class="dv">2</span>, <span class="dv">2</span>]),</span>
+<span id="cb134-28"><a href="métodos-directos.html#cb134-28" aria-hidden="true" tabindex="-1"></a>              mu1[<span class="dv">2</span>] <span class="sc">+</span> <span class="dv">3</span> <span class="sc">*</span> <span class="fu">sqrt</span>(Sigma1[<span class="dv">2</span>, <span class="dv">2</span>]),</span>
+<span id="cb134-29"><a href="métodos-directos.html#cb134-29" aria-hidden="true" tabindex="-1"></a>              <span class="at">by =</span> <span class="fl">0.5</span>)</span>
+<span id="cb134-30"><a href="métodos-directos.html#cb134-30" aria-hidden="true" tabindex="-1"></a>xy.grid <span class="ot">&lt;-</span> <span class="fu">grilla</span>(x.grid, y.grid)</span>
+<span id="cb134-31"><a href="métodos-directos.html#cb134-31" aria-hidden="true" tabindex="-1"></a>N.grid <span class="ot">&lt;-</span> <span class="fu">dim</span>(xy.grid)[<span class="dv">1</span>]</span>
+<span id="cb134-32"><a href="métodos-directos.html#cb134-32" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb134-33"><a href="métodos-directos.html#cb134-33" aria-hidden="true" tabindex="-1"></a>f.xy <span class="ot">&lt;-</span> <span class="fu">rep</span>(<span class="cn">NA</span>, N.grid)</span>
+<span id="cb134-34"><a href="métodos-directos.html#cb134-34" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span>(j <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span>N.grid){</span>
+<span id="cb134-35"><a href="métodos-directos.html#cb134-35" aria-hidden="true" tabindex="-1"></a>  f.xy[j] <span class="ot">&lt;-</span> <span class="fu">p.normal2</span>(mu1, Sigma1, </span>
+<span id="cb134-36"><a href="métodos-directos.html#cb134-36" aria-hidden="true" tabindex="-1"></a>                       xy.grid[j, <span class="dv">1</span>], </span>
+<span id="cb134-37"><a href="métodos-directos.html#cb134-37" aria-hidden="true" tabindex="-1"></a>                       xy.grid[j, <span class="dv">2</span>])</span>
+<span id="cb134-38"><a href="métodos-directos.html#cb134-38" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb134-39"><a href="métodos-directos.html#cb134-39" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb134-40"><a href="métodos-directos.html#cb134-40" aria-hidden="true" tabindex="-1"></a>p.xy <span class="ot">&lt;-</span> <span class="fu">as.vector</span>(f.xy<span class="sc">/</span><span class="fu">sum</span>(f.xy))</span>
+<span id="cb134-41"><a href="métodos-directos.html#cb134-41" aria-hidden="true" tabindex="-1"></a><span class="fu">sum</span>(p.xy)</span></code></pre></div>
 <pre><code>## [1] 1</code></pre>
-<div class="sourceCode" id="cb134"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb134-1"><a href="métodos-directos.html#cb134-1" aria-hidden="true" tabindex="-1"></a>rnormal2 <span class="ot">&lt;-</span> <span class="fu">sample</span>(N.grid, <span class="dv">1000</span>, <span class="at">prob =</span> p.xy, <span class="at">replace =</span> T)</span>
-<span id="cb134-2"><a href="métodos-directos.html#cb134-2" aria-hidden="true" tabindex="-1"></a>rxy.normal2 <span class="ot">&lt;-</span> xy.grid[rnormal2, ]</span>
-<span id="cb134-3"><a href="métodos-directos.html#cb134-3" aria-hidden="true" tabindex="-1"></a>rx.normal <span class="ot">&lt;-</span> rxy.normal2[, <span class="dv">1</span>]</span>
-<span id="cb134-4"><a href="métodos-directos.html#cb134-4" aria-hidden="true" tabindex="-1"></a>ry.normal <span class="ot">&lt;-</span> rxy.normal2[, <span class="dv">2</span>]</span>
-<span id="cb134-5"><a href="métodos-directos.html#cb134-5" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb134-6"><a href="métodos-directos.html#cb134-6" aria-hidden="true" tabindex="-1"></a><span class="fu">colMeans</span>(rxy.normal2)</span></code></pre></div>
+<div class="sourceCode" id="cb136"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb136-1"><a href="métodos-directos.html#cb136-1" aria-hidden="true" tabindex="-1"></a>rnormal2 <span class="ot">&lt;-</span> <span class="fu">sample</span>(N.grid, <span class="dv">1000</span>, <span class="at">prob =</span> p.xy, <span class="at">replace =</span> T)</span>
+<span id="cb136-2"><a href="métodos-directos.html#cb136-2" aria-hidden="true" tabindex="-1"></a>rxy.normal2 <span class="ot">&lt;-</span> xy.grid[rnormal2, ]</span>
+<span id="cb136-3"><a href="métodos-directos.html#cb136-3" aria-hidden="true" tabindex="-1"></a>rx.normal <span class="ot">&lt;-</span> rxy.normal2[, <span class="dv">1</span>]</span>
+<span id="cb136-4"><a href="métodos-directos.html#cb136-4" aria-hidden="true" tabindex="-1"></a>ry.normal <span class="ot">&lt;-</span> rxy.normal2[, <span class="dv">2</span>]</span>
+<span id="cb136-5"><a href="métodos-directos.html#cb136-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb136-6"><a href="métodos-directos.html#cb136-6" aria-hidden="true" tabindex="-1"></a><span class="fu">colMeans</span>(rxy.normal2)</span></code></pre></div>
 <pre><code>## [1] 1.6905 4.1370</code></pre>
-<div class="sourceCode" id="cb136"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb136-1"><a href="métodos-directos.html#cb136-1" aria-hidden="true" tabindex="-1"></a><span class="fu">var</span>(rxy.normal2)</span></code></pre></div>
+<div class="sourceCode" id="cb138"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb138-1"><a href="métodos-directos.html#cb138-1" aria-hidden="true" tabindex="-1"></a><span class="fu">var</span>(rxy.normal2)</span></code></pre></div>
 <table>
 <tbody>
 <tr class="odd">
@@ -513,16 +515,16 @@ Figura C.4: Histograma de observaciones con distribución Gamma.
 </tr>
 </tbody>
 </table>
-<div class="sourceCode" id="cb137"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb137-1"><a href="métodos-directos.html#cb137-1" aria-hidden="true" tabindex="-1"></a><span class="fu">hist</span>(rx.normal, <span class="at">freq =</span> F)</span>
-<span id="cb137-2"><a href="métodos-directos.html#cb137-2" aria-hidden="true" tabindex="-1"></a><span class="fu">lines</span>(<span class="fu">density</span>(rx.normal), <span class="at">col =</span> <span class="dv">2</span>)</span></code></pre></div>
+<div class="sourceCode" id="cb139"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb139-1"><a href="métodos-directos.html#cb139-1" aria-hidden="true" tabindex="-1"></a><span class="fu">hist</span>(rx.normal, <span class="at">freq =</span> F)</span>
+<span id="cb139-2"><a href="métodos-directos.html#cb139-2" aria-hidden="true" tabindex="-1"></a><span class="fu">lines</span>(<span class="fu">density</span>(rx.normal), <span class="at">col =</span> <span class="dv">2</span>)</span></code></pre></div>
 <div class="figure"><span id="fig:unnamed-chunk-13-1"></span>
 <img src="A3Simulacion_files/figure-html/unnamed-chunk-13-1.svg" alt="Histogramas de observaciones con distribución Normal bivariada." width="672" />
 <p class="caption">
 Figura C.5: Histogramas de observaciones con distribución Normal bivariada.
 </p>
 </div>
-<div class="sourceCode" id="cb138"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb138-1"><a href="métodos-directos.html#cb138-1" aria-hidden="true" tabindex="-1"></a><span class="fu">hist</span>(ry.normal, <span class="at">freq =</span> F)</span>
-<span id="cb138-2"><a href="métodos-directos.html#cb138-2" aria-hidden="true" tabindex="-1"></a><span class="fu">lines</span>(<span class="fu">density</span>(ry.normal), <span class="at">col =</span> <span class="dv">2</span>)</span></code></pre></div>
+<div class="sourceCode" id="cb140"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb140-1"><a href="métodos-directos.html#cb140-1" aria-hidden="true" tabindex="-1"></a><span class="fu">hist</span>(ry.normal, <span class="at">freq =</span> F)</span>
+<span id="cb140-2"><a href="métodos-directos.html#cb140-2" aria-hidden="true" tabindex="-1"></a><span class="fu">lines</span>(<span class="fu">density</span>(ry.normal), <span class="at">col =</span> <span class="dv">2</span>)</span></code></pre></div>
 <div class="figure"><span id="fig:unnamed-chunk-13-2"></span>
 <img src="A3Simulacion_files/figure-html/unnamed-chunk-13-2.svg" alt="Histogramas de observaciones con distribución Normal bivariada." width="672" />
 <p class="caption">

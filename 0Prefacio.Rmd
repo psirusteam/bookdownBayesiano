@@ -17,12 +17,7 @@ thematic_on(
 
 # Antes de comenzar {-}
 
-```{r results = 'asis', out.width="600px", fig.cap="Tomado de *BayesAna*", echo=FALSE}
-download.file(url = "https://i0.wp.com/anabelforte.com/wp-content/uploads/2020/07/4.gif",
-          destfile = "Pics/fig1.png",
-          mode = 'wb')
-knitr::include_graphics(path = "Pics/fig1.png")
-```
+La estadística bayesiana ha tenido un auge bastante importante en las últimas décadas. La mayoría de publicaciones actuales tienen un componente bayesiano importante. Todos las áreas de la ciencia de datos han explotado este paradigma y la evolución de la estadística ha ido en aumento a medida que la revolución bayesiana va tomando forma. 
 
 ## Cuestionamientos sobre el enfoque bayesiano {-}
 

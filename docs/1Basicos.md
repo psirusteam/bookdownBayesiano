@@ -1,8 +1,7 @@
 
 # Tópicos básicos
 
-![Tomado del Stata Blog](
-https://blog.stata.com/wp-content/uploads/2016/11/video2.gif)
+Para poder entender la racionalidad del paradigma bayesiano es importante reconocer que las innovaciones de las metodologías bayesianas descansan en principios clásicos de la teoría de probabilidad. 
 
 ## Teoría de la decisión
 

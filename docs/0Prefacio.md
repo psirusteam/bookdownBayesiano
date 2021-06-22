@@ -2,10 +2,7 @@
 
 # Antes de comenzar {-}
 
-<div class="figure">
-<img src="Pics/fig1.png" alt="Tomado de *BayesAna*" width="600px" />
-<p class="caption">(\#fig:unnamed-chunk-1)Tomado de *BayesAna*</p>
-</div>
+La estadística bayesiana ha tenido un auge bastante importante en las últimas décadas. La mayoría de publicaciones actuales tienen un componente bayesiano importante. Todos las áreas de la ciencia de datos han explotado este paradigma y la evolución de la estadística ha ido en aumento a medida que la revolución bayesiana va tomando forma. 
 
 ## Cuestionamientos sobre el enfoque bayesiano {-}
 

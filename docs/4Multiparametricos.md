@@ -320,7 +320,7 @@ quantile(y.bar,c(0.025,0.975))
 ## -1.514231  1.553076
 ```
 
-Podemos ver que se espera que el promedio de las pruebas en 5 nuevos pacientes es de 0.1030324, con un intervalo de credibilidad del 95% que es mucho más ancho que el de $\theta$, pues naturalmente $\bar{Y}$ tiene mayor incertidumbre que los parámetros del modelo; además, el tamaño de nuevos datos es de cinco, el cual es pequeño y hace que el pronóstico para $\bar{Y}^*$ no sea muy preciso.
+Podemos ver que se espera que el promedio de las pruebas en 5 nuevos pacientes es de 0.1030324, con un intervalo de credibilidad del 95% que es mucho más ancho que el de $\theta$, pues naturalmente $\bar{Y}$ tiene mayor incertidumbre que los parámetros del modelo; además, el tamaño de nuevos datos es de cinco, el cual es pequeño y hace que el pronóstico para $\bar{Y}^*$ no sea muy preciso. 
 
 ### Parámetros dependientes
 
@@ -526,7 +526,7 @@ Las distribuciones encontradas en los resultados \@ref(prp:PosterSigma2IG) y \@r
 
 Los intervalos del $(1-\alpha)\times 100\%$ de credibilidad para $\theta$ y $\sigma^2$ se construyen usando los percentiles $\alpha/2$ y $1-\alpha/2$ de las respectivas distribuciones posteriores dadas en los resultados mencionados anteriormente. Ilustramos el uso de la metodología en el siguiente ejemplo.
 
-\BeginKnitrBlock{example}<div class="example"><span class="example" id="exm:Eje2.1.2"><strong>(\#exm:Eje2.1.2) </strong></span>Para los datos de función renal \cite{Efronims} que se muestran en el Ejemplo \@ref(exm:EjeRenal), suponga que la información previa está contenida en la medición de función renal para una muestra de 12 pacientes dadas por: -1.3619, -1.1116, -0.4744, -0.5663, 2.2056, 0.9491, 0.2298, -0.7933, 1.0198, -0.9850, 3.5679 y -1.9504. La media y la varianza muestral de estas 12 observaciones corresponden a $\mu=0.060775$ y $\sigma^2_0=2.598512$; por consiguiente $c_0=n_0=12$. 
+\BeginKnitrBlock{example}<div class="example"><span class="example" id="exm:unnamed-chunk-18"><strong>(\#exm:unnamed-chunk-18) </strong></span>Para los datos de función renal \cite{Efronims} que se muestran en el Ejemplo \@ref(exm:EjeRenal), suponga que la información previa está contenida en la medición de función renal para una muestra de 12 pacientes dadas por: -1.3619, -1.1116, -0.4744, -0.5663, 2.2056, 0.9491, 0.2298, -0.7933, 1.0198, -0.9850, 3.5679 y -1.9504. La media y la varianza muestral de estas 12 observaciones corresponden a $\mu=0.060775$ y $\sigma^2_0=2.598512$; por consiguiente $c_0=n_0=12$. 
 
 Por otro lado, la media y la varianza muestral de los 15 pacientes en la información actual son $\bar{y}=0.08349249$ y $S^2=2.301684$. De esta forma, los parámetros de las distribuciones marginales posteriores de $\theta$ y $\sigma^2$ se pueden calcular como $\mu_n=\frac{15}{15+12}\times 0.08349249+\frac{12}{15+12}\times 0.060775=0.07339583$ y $$\sigma^2_n=\dfrac{12*2.598512+14*2.301684+6.666667*(0.060775-0.08349249)^2}{15+12}=2.348487$$ En conclusión, las distribuciones marginales posterior de $\theta$ y $\sigma^2$ están dadas por
 \begin{equation*}
@@ -662,13 +662,296 @@ quantile(sigma2.res, c(0.025, 0.975))
 ## 1.453781 4.409619
 ```
 
+### Parámetros no informativos
+
+En esta sección consideramos el tratamiento de los datos cuando no tenemos información previa disponible. Suponga que $\mathbf{Y}=\{Y_1,\ldots,Y_n\}$ corresponde a una muestra de variables aleatorias con distribución $Normal(\theta, \sigma^2)$. Luego, la función de distribución conjunta o verosimilitud está dada por 
+
+\begin{equation*}
+(\#eq:VeroNormal)
+p(\mathbf{Y} \mid \theta, \sigma^2)=\frac{1}{(2\pi\sigma^2)^{n/2}}\exp\left\{-\frac{1}{2\sigma^2}\sum_{i=1}^n(y_i-\theta)^2\right\}
+\end{equation*}
+
+En primer lugar suponga que los parámetros tienen distribuciones previas independientes. Por ende, en esta primera etapa se realizará el análisis suponiendo que estas distribuciones son no informativas. Lo anterior implica que la distribución previa conjunta de los parámetros de interés está dada por
+\begin{equation}
+p(\theta,\sigma^2)=p(\theta)p(\sigma^2)
+\end{equation}
+
+Como la distribución previa de $\theta$ es normal, es fácil verificar que ésta empieza a tener las características propias de una distribución no informativa cuando la varianza de la misma se vuelve muy grande, sin importar el valor de la media. Cuando esto sucede, la forma de la distribución previa de $\theta$ se torna plana y es lógico pensar que puede ser acercada mediante una distribución constante, tal que
+
+\begin{equation*}
+p(\theta)\propto cte
+\end{equation*}
+
+Por otro lado, @Gelman03 afirmaN que la distribución Inversa-Gamma, la cual es la distribución previa para el parámetro $\sigma^2$, se vuelve no informativa cuando los hiper-parámetros toman valores muy cercanos a cero. De esta forma haciendo tender $\alpha \longrightarrow 0$ y $\beta \longrightarrow 0$, entonces la distribución previa de $\sigma^2$ se convierte en
+
+\begin{equation*}
+p(\sigma^2)\propto \sigma^{-2}
+\end{equation*}
+
+la cual coincide con la distribución previa no informativa de Jeffreys discutida en las secciones anteriores. Por lo anterior, la distribución previa no informativa conjunta está dada por
+
+\begin{equation}
+p(\theta,\sigma^2)\propto \sigma^{-2}
+\end{equation}
+
+Bajo este marco de referencia se tiene el siguiente resultado sobre la distribución posterior de $\theta$
+
+\BeginKnitrBlock{proposition}<div class="proposition"><span class="proposition" id="prp:PosThetaNoInformativa"><strong>(\#prp:PosThetaNoInformativa) </strong></span>La distribución posterior del parámetro $\theta$ sigue una distribución $t$ no estandarizada con $n-1$ grados de libertad, parámetro de localización $\bar{Y}$ y parámetro de escala $\frac{S^2}{n}$; esto es, 
+
+\begin{equation*}
+\theta \mid \mathbf{Y}\sim t_{n-1}\left(\bar{y},\frac{S^2}{n}\right).
+\end{equation*}
+
+Donde $(n-1)S^2=\sum_{i=1}^n(Y_i-\bar{Y})^2$. Esta distribución también puede expresarse como
+\begin{equation*}
+\frac{\theta-\bar{y}}{S/\sqrt{n}} \mid \mathbf{Y} \sim t_{n-1}
+\end{equation*}
+
+donde $t_{n-1}$ denota la distribución $t$ estandarizada con $n-1$ grados de libertad.</div>\EndKnitrBlock{proposition}
+<br>
+
+\BeginKnitrBlock{proof}<div class="proof">\iffalse{} <span class="proof"><em>Prueba. </em></span>  \fi{}En primer lugar nótese que la distribución posterior conjunta de los parámetros de interés es
+\begin{align}
+(\#eq:PropThetaSigma2)
+p(\theta,\sigma^2 \mid \mathbf{Y})& \propto p(\theta,\sigma^2)p(\mathbf{Y} \mid \theta,\sigma^2) \notag \\
+& \propto \frac{1}{\sigma^2}\frac{1}{(2\pi\sigma^2)^{n/2}}\exp\left\{-\frac{1}{2\sigma^2}\sum_{i=1}^n(y_i-\theta)^2\right\} \notag\\
+& \propto \left(\frac{1}{\sigma^2}\right)^{n/2+1}
+\exp\left\{-\frac{1}{2\sigma^2}\left[\sum_{i=1}^n(y_i-\bar{y})^2+n(\bar{y}-\theta)^2\right]\right\} \notag \\
+&= \left(\frac{1}{\sigma^2}\right)^{n/2+1}
+\exp\left\{-\frac{1}{2\sigma^2}\left[(n-1)S^2+n(\bar{y}-\theta)^2\right]\right\}
+\end{align}
+  
+Para hallar la distribución marginal posterior de $\theta$ es necesario integrar la anterior expresión con respecto a $\sigma^2$. Con esto, se tiene que
+
+\begin{align*}
+p(\theta \mid \mathbf{Y})&= \int_0^{\infty} p(\theta,\sigma^2 \mid \mathbf{Y}) \ d\sigma^2 \\
+&\propto \int_0^{\infty} \left(\frac{1}{\sigma^2}\right)^{n/2+1}
+\exp\left\{-\frac{1}{2\sigma^2}\left[(n-1)S^2+n(\bar{y}-\theta)^2\right]\right\} \ d\sigma^2
+\end{align*}
+
+Haciendo un cambio de variable tal que
+\begin{equation*}
+z=\frac{A}{2\sigma^2}, \ \ \ \ \ \ \ \ \ \ \ \text{donde} \ \ \ A=(n-1)S^2+n(\bar{y}-\theta)^2
+\end{equation*}
+
+Por tanto
+\begin{equation*}
+d\sigma^2=-\frac{A}{2z^2} \ dz
+\end{equation*}
+
+Entonces, volviendo a la integral en cuestión, se tiene que
+\begin{align*}
+p(\theta \mid \mathbf{Y})& \propto
+\left(\frac{1}{A}\right)^{n/2+1}\int_{\infty}^{0} \frac{-A}{2z^2} (2z)^{n/2+1}e^{-z} \ dz \\
+&\propto A^{-n/2}\underbrace{\int_{0}^{\infty} z^{n/2-1}e^{-z}\ dz}_{Gamma(n/2)}\\
+&\propto A^{-n/2}\\
+&= [(n-1)S^2+n(\bar{y}-\theta)^2]^{-n/2}\\
+&\propto \left[1+\frac{n(\bar{y}-\theta)^2}{(n-1)S^2}\right]^{-n/2}
+=\left[1+\frac{1}{n-1}\left(\frac{\bar{y}-\theta}{S/\sqrt{n}}\right)^2\right]^{-\frac{(n-1)+1}{2}}
+\end{align*}
+
+la cual corresponde a la función de densidad de distribución de una variable aleatoria con distribución $t_{n-1}(\bar{y},S^2/n)$.</div>\EndKnitrBlock{proof}
+<br>
+
+\BeginKnitrBlock{proposition}<div class="proposition"><span class="proposition" id="prp:PosSigma2NoInformativa"><strong>(\#prp:PosSigma2NoInformativa) </strong></span>La distribución posterior del parámetro $\sigma^2$ sigue una distribución
+\begin{equation*}
+\sigma^2 \mid \mathbf{Y} \sim Inversa-Gamma((n-1)/2,(n-1)S^2/2).
+\end{equation*}</div>\EndKnitrBlock{proposition}
+<br>
+
+\BeginKnitrBlock{proof}<div class="proof">\iffalse{} <span class="proof"><em>Prueba. </em></span>  \fi{}Utilizando el mismo argumento del anterior resultado, se tiene que
+\begin{align*}
+p(\sigma^2 \mid \mathbf{Y})&= \int_{-\infty}^{\infty} p(\theta,\sigma^2 \mid \mathbf{Y}) \ d\theta \\
+& \propto \int_{-\infty}^{\infty} \left(\frac{1}{\sigma^2}\right)^{n/2+1}
+\exp\left\{-\frac{1}{2\sigma^2}\left[(n-1)S^2+n(\bar{y}-\theta)^2\right]\right\} \ d\theta \\
+& = \left(\frac{1}{\sigma^2}\right)^{n/2+1} \sqrt{2\pi\sigma^2/n}\exp\left\{-\frac{1}{2\sigma^2}(n-1)S^2\right\}\underbrace{\int_{-\infty}^{\infty} \frac{1}{\sqrt{2\pi\sigma^2/n}} \exp\left\{-\frac{n}{2\sigma^2}(\bar{y}-\theta)^2\right\} \ d\theta}_{\text{vale $1$}} \\
+& \propto (\sigma^2)^{-n/2-1/2}\exp\left\{-\frac{1}{2\sigma^2}(n-1)S^2\right\}\\
+&= (\sigma^2)^{-\frac{n-1}{2}-1}\exp\left\{-\frac{1}{2\sigma^2}(n-1)S^2\right\}
+\end{align*}
+
+La cual corresponde a la función de densidad de la distribución $Inversa-Gamma((n-1)/2,(n-1)S^2/2)$.</div>\EndKnitrBlock{proof}
+<br>
+
+De los resultados \ref{PosThetaNoInformativa} y \ref{PosSigma2NoInformativa}, podemos ver que cuando no se dispone de información previa, la estimación bayesiana de $\theta$ y $\sigma^2$ están dadas por
+
+\begin{align*}
+\hat{\theta}_B&=E(\theta\mid\mathbf{Y})=\bar{Y}\\
+\hat{\sigma}^2_B&=E(\sigma^2\mid\mathbf{Y})=\dfrac{(n-1)S^2/2}{(n-1)/2-1}=\dfrac{n-1}{n-3}S^2\approx S^2
+\end{align*}
+
+Por consiguiente, podemos concluir que la estimación bayesiana de $\theta$ cuando no hay información previa es idéntica a la estimación clásica de $\theta$, mientas que la de $\sigma^2$ es muy similar a la estimación clásica. En cuanto a la estimación por intervalo de credibilidad, podemos ver que un intervalo de crediblidad de $(1-\alpha)\times 100\%$ está dado por los percentiles $\alpha/2$ y $1-\alpha/2$ de la distribución $t_{n-1}\left(\bar{Y},\dfrac{S^2}{n}\right)$. Se puede ver que estos corresponden a $\bar{Y}+t_{n-1,\alpha/2}\dfrac{S}{\sqrt{n}}$ y $\bar{Y}+t_{n-1,1-\alpha/2}\dfrac{S}{\sqrt{n}}$. En conclusión, un intervalo de credibildad para $\theta$ está dado por $\bar{Y}\pm t_{n-1,1-\alpha/2}\dfrac{S}{\sqrt{n}}$, el cual es idéntico al intervalo de confianza para $\theta$ en la estadística clásica.
+
+En cuanto al intervalo de crediblidad para $\sigma^2$, este está dado por los percentiles $\alpha/2$ y $1-\alpha/2$ de la distribución $Inversa-Gamma((n-1)/2,\ (n-1)S^2/2)$. En la estadística clásica, el intervalo de confianza para $\sigma^2$ está dada por \begin{equation*}
+IC(\sigma^2)=\left(\dfrac{(n-1)S^2}{\chi^2_{n-1,1-\alpha/2}},\ \dfrac{(n-1)S^2}{\chi^2_{n-1,\alpha/2}}\right)
+\end{equation*}
+
+Aunque la forma de estos dos intervalos son muy diferentes, resultan ser idénticos. A continuación mostramos el porqué. Suponga que $a$ es el percentil $\alpha/2$ de la distribución $Inversa-Gamma((n-1)/2,\ (n-1)S^2/2)$, esto es, si $X\sim Inversa-Gamma((n-1)/2,\ (n-1)S^2/2)$, entonces $Pr(X<a)=\alpha/2$. Ahora por propiedades de la distribución $Inversa-Gamma$, se tiene que $\dfrac{X}{(n-1)S^2}\sim Inversa-Gamma(\frac{n-1}{2},\ \frac{1}{2})$. Por la relación entre la distribución $Gamma$ y la distribución $Inversa-Gamma$, tenemos que $\dfrac{(n-1)S^2}{X}\sim Gamma(\frac{n-1}{2},\ 2)$, es decir, $\dfrac{(n-1)S^2}{X}\sim\chi^2_{n-1}$, de donde tenemos que
+\begin{align*}
+\frac{\alpha}{2}&=Pr(X<a)\\
+&=Pr\left(\dfrac{(n-1)S^2}{X}>\dfrac{(n-1)S^2}{a}\right)
+\end{align*}
+
+Esto es, $\dfrac{(n-1)S^2}{a}$ es el percentil $1-\alpha/2$ de la distribución $\chi^2_{n-1}$, esto es,  $\dfrac{(n-1)S^2}{a}=\chi^2_{n-1,1-\alpha/2}$, de donde $a=\dfrac{(n-1)S^2}{\chi^2_{n-1,1-\alpha/2}}$, así concluimos que el límite inferior del intervalo de credibilidad coincide con el límite inferior del intervalo de confianza. Análogamente se puede ver que también los límites superiores coinciden, y así vemos que el intervalo para $\sigma^2$ coincide en la estadística clásica y la estadística bayesiana sin información previa.
+
+#### Enfoque alterno para estimar $\theta$ y $\sigma^2$ {-}
+
+Existe otra forma de obtener las estimaciones para el parámetro $\theta$. Recordando la expresión \ref{PropThetaSigma2}, podemos afirmar que 
+\begin{equation*}
+\theta \mid \sigma^2, \mathbf{Y} \sim Normal(\bar{y},\sigma^2/n)
+\end{equation*}
+
+puesto que 
+\begin{align*}
+p(\theta \mid \sigma^2,\mathbf{Y})&\propto p(\theta, \sigma^2 \mid\mathbf{Y})\\
+&\propto\exp\left\{-\frac{1}{2\sigma^2}\left[(n-1)S^2+n(\bar{y}-\theta)^2\right]\right\}\\
+&=\exp\left\{-\frac{n}{2\sigma^2}(\bar{y}-\theta)^2\right\}
+\end{align*}
+
+La cual corresponde a la función de densidad de la distribución $Normal(\bar{y},\sigma^2/n)$. De esta forma, usando las distribución $p(\sigma^2\mid\mathbf{Y})$ y $p(\theta\mid\sigma^2,\mathbf{Y})$, podemos implementar el siguiente procedimiento para obtener valores simulados de $\theta$ y $\sigma^2$. Si el número de iteraciones se fija como $G$, entonces se procede a:
+
+1. Simular $G$ valores de la distribución de $\sigma^2|\mathbf{Y}$ - es decir, de la distribución $Inversa-Gamma((n-1)/2,(n-1)S^2/2)$. Estos valores se denotan por $\sigma^2_{(1)},\sigma^2_{(2)},\cdots,\sigma^2_{(G)}$.
+2. Para cada valor de $\sigma^2_{(g)}$, con $g=1,\cdots,G$, simular un valor de la distribución de $\theta|\sigma^2,\mathbf{Y}$ - es decir, de la distribución $N(\bar{y},\sigma^2/n)$, donde $\sigma^2$ se reemplaza por $\sigma^2_{(g)}$. De esta forma, se obtiene los valores $\theta_{(1)},\theta_{(2)},\cdots,\theta_{(G)}$.
+
+Las estimaciones de $\theta$ y $\sigma^2$ se pueden obtener de los valores obtenidos $\theta_{(1)},\theta_{(2)},\cdots,\theta_{(G)}$ y $\sigma^2_{(1)},\sigma^2_{(2)},\cdots,\sigma^2_{(G)}$.
+
+### Distribución predictiva
+
+La distribución predictiva para una nueva observación $\tilde{Y}$ está dada por 
+\begin{align*}
+p(\tilde{y}\mid\mathbf{Y})
+&=\int\int p(\tilde{y}\mid\theta,\sigma^2) p(\theta,\sigma^2\mid\mathbf{Y})\ d\theta\ d\sigma^2\\
+&=\int\int p(\tilde{y}\mid \theta,\sigma^2)p(\theta\mid\sigma^2,\mathbf{Y})p(\sigma^2\mid\mathbf{Y})\ d\theta\ d\sigma^2\\
+&=\int\left(\int p(\tilde{y}\mid \theta,\sigma^2)p(\theta\mid\sigma^2,\mathbf{Y})\ d\theta\right)p(\sigma^2\mid\mathbf{Y})\ d\sigma^2
+\end{align*}
+
+En la integral dentro del paréntesis, el parámetro $\sigma^2$ permanece fijo; por lo cual, dicha integral corresponde a la distribución $N\left(\bar{y},\left(1+\dfrac{1}{n}\right)\sigma^2\right)$. De esta forma, al combinarla con la distribución posterior de $\sigma^2$, tenemos que
+\begin{align*}
+&\ \ \ \ p(\tilde{y}\mid\mathbf{Y})\\
+&=\int_0^\infty \dfrac{1}{\sqrt{2\pi(1+\frac{1}{n})\sigma^2}}\exp\left\{-\dfrac{1}{2\sigma^2(1+\frac{1}{n})}(\tilde{y}-\bar{y})^2\right\}\dfrac{\left(\frac{(n-1)S^2}{2}\right)^{(n-1)/2}}{\Gamma\left(\frac{n-1}{2}\right)}(\sigma^2)^{-\frac{n-1}{2}-1}\exp\left\{-\dfrac{(n-1)S^2}{2\sigma^2}\right\}\ d\sigma^2
+\end{align*}
+
+Después de realizar los pasos algebraicos necesarios, se encuentra que 
+\begin{equation}
+p(\tilde{y}\mid\mathbf{Y})=\dfrac{\Gamma(n/2)}{\Gamma((n-1)/2)}\dfrac{1}{\sqrt{\pi(n-1)}}\left(\left(1+\frac{1}{n}\right)S^2\right)^{-1/2}\left(1+\dfrac{1}{n-1}\dfrac{(\tilde{y}-\bar{y})^2}{\left(1+\frac{1}{n}\right)S^2}\right)^{-n/2}
+\end{equation}
+
+La cual corresponde a la distribución $t$ no estandarizada con $n-1$ grados de libertad, parámetro de localización $\bar{y}$ y parámetro de escala $(1+\frac{1}{n})S^2$. De esta forma, podemos ver que los dos primeros momentos de esta distribución están dados por
+\begin{align*}
+E(\tilde{Y}\mid\mathbf{Y})&=\bar{y}\\
+Var(\tilde{Y}\mid\mathbf{Y})&=\dfrac{n-1}{n-3}\left(1+\frac{1}{n}\right)S^2=\dfrac{(n-1)(n+1)}{n(n-3)}S^2
+\end{align*}
+
+Otra manera equivalente de conocer el comportamiento probabilístico de $\tilde{y}$ es por medio de la simulación. Se debe simular en primer lugar valores de $\theta$ y de $\sigma^2$ de la distribución posterior $p(\theta,\ \sigma^2\mid\mathbf{Y})$ usando el muestreo de Gibbs y posteriormente simulando valores de $\tilde{y}$ de la distribución $p(\tilde{y}\mid\theta,\ \sigma^2)$. En la figura \ref{PredictivaYprioriNoninformativa} se muestran el histograma de 10 mil valores de $\tilde{Y}$ simulados de esta forma, donde los datos  corresponden a 20 datos simulados de la distribución $N(12, 3^2)$. En la misma gráfica se observa también la función de densidad de la distribución $t$, podemos ver que los valores simulados de $\tilde{Y}$ efectivamente coinciden con la distribución predictiva de $\tilde{Y}$. Por lo anterior, se puede calcular un predictor de $\tilde{Y}$ como el promedio de los 10 mil valores simulados, y calcular el intervalo de predicción usando los percentiles de estos 10 mil valores.
+
+
+```r
+library("MCMCpack")
+nsim <- 10000
+y.tilde <- theta.pos <- c()
+n <- 20
+y <- rnorm(n, 12, 3)
+y.bar <- mean(y)
+
+S2 <- var(y)
+a.n <- (n - 1)/2
+b.n <- (n - 1) * S2/2
+sigma2.pos <- rinvgamma(nsim, a.n, b.n)
+
+for(i in 1:10000){
+	theta.pos[i] <- rnorm(1, y.bar, sqrt(sigma2.pos[i]/n))
+	y.tilde[i] <- rnorm(1, theta.pos[i], sqrt(sigma2.pos[i]))
+}
+
+tn <- function(x){
+	v2 <- (n + 1) * S2/n
+	tnpred <- (pi * (n - 1) * v2)^(- 0.5) * gamma(n/2) * 
+	  (1 + (x - y.bar)^2/((n - 1) * v2))^(- n/2)/gamma((n - 1)/2)
+	return(tnpred)
+}
+
+ggplot() + 
+  geom_histogram(data = data.frame(y.tilde),
+                 aes(x = y.tilde, y=..density..),
+                 fill = "gray",
+                 color = "black") +
+  stat_density(fun = tn, aes(x = y.tilde), alpha = 0, col = 2) 
+```
+
+<div class="figure" style="text-align: center">
+<img src="4Multiparametricos_files/figure-html/PredictivaYprioriNoninformativa-1.svg" alt="10 mil valores simulados de $\tilde{Y}$ y la función de densidad de la distribución predictiva de $\tilde{Y}$ con parámetros no informativos." width="576" />
+<p class="caption">(\#fig:PredictivaYprioriNoninformativa)10 mil valores simulados de $\tilde{Y}$ y la función de densidad de la distribución predictiva de $\tilde{Y}$ con parámetros no informativos.</p>
+</div>
+
+
+Por otro lado, si consideramos parámetros informativos podríamos usar este mismo método de simulación que es realmente efectivo y que se convertirá de ahora en adelante en nuestro medio para realizar las importantes validaciones predictivas en los diferentes modelos bayesianos que se trabajarán en este libro. Por ejemplo, para el mismo conjunto de datos anterior supongamos que en un experimento anterior se recolectaron 20 datos con media 10 y varianza 5. En la figura \@ref(fig:predictivaTsimu) se muestran el histograma de 10 mil valores simulados para una nueva observación. Nótese que convenientemente la forma de la distribución predictiva teórica coincide plenamente con ls distribución predictiva simulada. Esta agradable propiedad nos acompañará en el resto de los capítulos subsecuentes. 
 
 
 
+```r
+library(MCMCpack)
+nsim <- 10000
+y.tilde <- theta.pos <- sigma2.pos <- c()
+n <- 20
+y <- rnorm(n, 12, 3)
+y.bar <- mean(y)
+S2 <- var(y)
 
+#parametros previos de theta
+mu <- 10
+tau2 <- 4
+#parametros previos de sigma2
+n_0 <- 20
+sigma2_0 <- 5
 
+# Valor inicial de theta
+theta.pos[1] <- 0
 
+#parametros posteriores de sigma2	
+a.n <- (n_0 + n)/2
+b.n <- (n_0 * sigma2_0 + (n - 1) * S2 + 
+          n * (mean(y) - theta.pos[1]))/2
+sigma2.pos[1] <- rinvgamma(1, a.n, b.n)
 
+# Valor inicial de y.tilde
+y.tilde[1] <- rnorm(1, theta.pos[1], sqrt(sigma2.pos[1]))
+#####################
+# Muestreo de Gibbs #
+#####################
+
+for(i in 2:nsim){
+  #parametros posteriores de theta	
+  tau2.n <- 1 / ((n/sigma2.pos[i - 1]) + (1/tau2))
+  mu.n <- tau2.n * (mean(y) * (n/sigma2.pos[i - 1]) + mu/tau2)
+  #simulacion de la distribucion posterior condicional de theta
+  theta.pos[i] <- rnorm(1, mean = mu.n, sd = sqrt(tau2.n))
+  #parametros posteriores de sigma2	
+  b.n <- (n_0 * sigma2_0 + (n - 1) * S2 + 
+          n * (mean(y) - theta.pos[i - 1]))/2
+  #simulacion de la distribucion posterior condicional de theta
+  sigma2.pos[i] <- rinvgamma(1, a.n, b.n)
+  #simulacion de la distribucion predictiva
+  y.tilde[i] <- rnorm(1, theta.pos[i], sqrt(sigma2.pos[i]))
+}
+
+tn <- function(x){
+	v0 <- n_0 * sigma2_0 + n * sigma2_c
+	tnpred <- (pi * v0)^(- 0.5) * gamma((n_0 + n + 1)/2) * 
+	  (1 + (x - theta)^2/v0)^(- (n_0 + n + 1)/2)/gamma((n_0 + n)/2)
+	return(tnpred)
+}
+
+ggplot() + 
+  geom_histogram(data = data.frame(y.tilde),
+                 aes(x = y.tilde, y=..density..),
+                 fill = "gray",
+                 color = "black") +
+  stat_density(fun = tn, aes(x = y.tilde), alpha = 0, col = 2) 
+```
+
+<div class="figure" style="text-align: center">
+<img src="4Multiparametricos_files/figure-html/predictivaTsimu-1.svg" alt="10 mil valores simulados de $\tilde{Y}$ y la función de densidad de la distribución predictiva de $\tilde{Y}$ con parámetros informativos." width="576" />
+<p class="caption">(\#fig:predictivaTsimu)10 mil valores simulados de $\tilde{Y}$ y la función de densidad de la distribución predictiva de $\tilde{Y}$ con parámetros informativos.</p>
+</div>
 
 
 

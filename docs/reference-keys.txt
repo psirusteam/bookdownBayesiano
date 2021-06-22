@@ -113,6 +113,12 @@ eq:desarro1
 prp:unnamed-chunk-14
 prp:PosterSigma2IG
 prp:PosThetaTnoestandar
+eq:VeroNormal
+prp:PosThetaNoInformativa
+eq:PropThetaSigma2
+prp:PosSigma2NoInformativa
+fig:PredictivaYprioriNoninformativa
+fig:predictivaTsimu
 prp:unnamed-chunk-2
 def:unnamed-chunk-3
 prp:unnamed-chunk-4
@@ -219,6 +225,8 @@ modelos-multiparamétricos
 modelo-normal-con-media-y-varianza-desconocida
 parámetros-independientes
 parámetros-dependientes
+parámetros-no-informativos
+distribución-predictiva
 elementos-de-probabilidad
 distribuciones-discretas
 distribución-uniforme-discreta
