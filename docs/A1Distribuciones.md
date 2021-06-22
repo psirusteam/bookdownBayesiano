@@ -4,11 +4,6 @@
 
 # Elementos de probabilidad
 
-![Tomado de *Answering Questions with Data*](
-https://www.crumplab.com/statistics/gifs/sampleHistUnif-1.gif)
-
-
-
 ## Distribuciones discretas
 
 ### Distribución uniforme discreta

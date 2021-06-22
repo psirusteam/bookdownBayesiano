@@ -1,0 +1,13 @@
+base
+StanHeaders
+ggplot2
+rstan
+printr
+knitr
+thematic
+patchwork
+coda
+MASS
+MCMCpack
+dplyr
+pscl

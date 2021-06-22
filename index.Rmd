@@ -67,9 +67,6 @@ thematic_on(
 
 # Prefacio {-}
 ```{r results = 'asis', out.width="100px", fig.cap="Licencia de Creative Commons", echo=FALSE}
-download.file(url = "https://mirrors.creativecommons.org/presskit/buttons/88x31/png/by-nc-sa.png",
-          destfile = "Pics/CClicence.png",
-          mode = 'wb')
 knitr::include_graphics(path = "Pics/CClicence.png")
 ```
 
