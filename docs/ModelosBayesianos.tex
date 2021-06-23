@@ -153,7 +153,7 @@
 
 \title{Modelos Bayesianos con R y STAN}
 \author{Andrés Gutiérrez - Hanwen Zhang}
-\date{2021-06-21}
+\date{2021-06-22}
 
 \usepackage{amsthm}
 \newtheorem{theorem}{Teorema}[chapter]
@@ -5094,6 +5094,448 @@ Por otro lado, si consideramos parámetros informativos podríamos usar este mis
 
 \caption{10 mil valores simulados de $\tilde{Y}$ y la función de densidad de la distribución predictiva de $\tilde{Y}$ con parámetros informativos.}\label{fig:predictivaTsimu}
 \end{figure}
+
+\hypertarget{modelo-normal-multivariante-con-media-desconocida-y-varianza-conocida}{%
+\section{Modelo Normal multivariante con media desconocida y varianza conocida}\label{modelo-normal-multivariante-con-media-desconocida-y-varianza-conocida}}
+
+Cuando la distribución usada para describir el comportamiento de los datos es una distribución normal multivariante, las técnicas de inferencia no se distancian mucho del caso univariado. Se debe tener en cuenta el manejo matricial de las formas cuadráticas y las propiedades básicas del cálculo de matrices. Los desarrollos y resultados derivados de esta sección redundarán en el análisis de los modelos lineales con el enfoque bayesiano.
+
+Sea \(\mathbf{Y}=(Y_1,\ldots,Y_p)'\) un vector aleatorio cuya distribución es normal multivariante dada por
+
+\begin{equation}
+p(\mathbf{Y} \mid \boldsymbol \theta,\boldsymbol \Sigma)\propto \mid \boldsymbol \Sigma\mid ^{-1/2}
+\exp\left\{-\frac{1}{2}(\mathbf{y}-\boldsymbol \theta)'\boldsymbol \Sigma^{-1}(\mathbf{y}-\boldsymbol \theta)\right\}
+\end{equation}
+
+En donde \(\boldsymbol \theta=(\theta_1,\ldots,\theta_p)'\) es el vector que contiene la media de cada uno de los componentes del vector \(\mathbf{Y}\) y \(\boldsymbol \Sigma\) es la matriz de varianzas y covarianzas de orden \(p\times p\), simétrica y definida positiva. La verosimilitud para una muestra de \(n\) vectores aleatorios independientes e idénticamente distribuidos está dada por
+
+\begin{equation*}
+  p(\mathbf{Y}_1\ldots,\mathbf{Y}_n \mid \boldsymbol \theta,\boldsymbol \Sigma)\propto \mid \boldsymbol \Sigma\mid ^{-n/2}
+  \exp\left\{-\frac{1}{2}\sum_{i=1}^n(\mathbf{y}_i-\boldsymbol \theta)'\boldsymbol \Sigma^{-1}(\mathbf{y}_i-\boldsymbol \theta)\right\}
+\end{equation*}
+
+Los parámetros que requieren estimación corresponden al vector de medias \(\boldsymbol \theta\) y la matriz de varianzas y covarianzas \(\boldsymbol \Sigma\). Por ahora, se asume que \(\boldsymbol \Sigma\) es conocida y nos centramos en la estimación del vector de medias \(\boldsymbol \theta\). Para la distribución previa, considerando que en general no hay restricción sobre los valores de los componentes de \(\boldsymbol \theta\), asumimos que \(\boldsymbol \theta\) sigue una distribución previa normal multivariante informativa y parametrizada por los hiper-parámetros \(\boldsymbol \mu\) y \(\boldsymbol \Gamma\)
+
+\begin{equation*}
+p(\boldsymbol \theta\mid \boldsymbol \mu,\boldsymbol \Gamma)\propto \mid \boldsymbol \Gamma\mid ^{-1/2}
+\exp\left\{-\frac{1}{2}(\boldsymbol \theta-\boldsymbol \mu)'\boldsymbol \Gamma^{-1}(\boldsymbol \theta-\boldsymbol \mu)\right\}
+\end{equation*}
+
+Nótese que esta distribución se hace no informativa cuando \(\mid \boldsymbol \Gamma^{-1} \mid \longrightarrow 0\), sin importar el valor del vector de medias previa \(\boldsymbol \mu\). En el siguiente resultado, encontramos la distribución posterior del parámetro \(\boldsymbol \theta\).
+
+\begin{proposition}
+\protect\hypertarget{prp:unnamed-chunk-23}{}{\label{prp:unnamed-chunk-23} }La distribución posterior del vector \(\boldsymbol \theta\) sigue una distribución normal multivariante
+\begin{equation*}
+\boldsymbol \theta\mid \mathbf{Y},\boldsymbol \Sigma\sim N_p (\boldsymbol \mu_n,\boldsymbol \Gamma_n).
+\end{equation*}
+
+En donde
+\begin{align}
+\boldsymbol \Gamma_n &= \left(\boldsymbol \Gamma^{-1}+n\boldsymbol \Sigma^{-1}\right)^{-1}\label{Gamma_n}\\
+\boldsymbol \mu_n &= \boldsymbol \Gamma_n(\boldsymbol \Gamma^{-1}\boldsymbol \mu+n \boldsymbol \Sigma^{-1}\bar{\mathbf{y}})\label{mu_n}
+\end{align}
+\end{proposition}
+
+\begin{proof}
+\iffalse{} {Prueba. } \fi{}En primer lugar, nótese la siguiente identidad
+\begin{equation}
+\sum_{i=1}^n(\mathbf{Y}_i-\boldsymbol \theta)'\boldsymbol \Sigma^{-1}(\mathbf{Y}_i-\boldsymbol \theta)
+=\sum_{i=1}^n(\mathbf{Y}_i-\bar{\mathbf{Y}})'\boldsymbol \Sigma^{-1}(\mathbf{Y}_i-\bar{\mathbf{Y}})
++n(\bar{\mathbf{Y}}-\boldsymbol \theta)'\boldsymbol \Sigma^{-1}(\bar{\mathbf{Y}}-\boldsymbol \theta)
+\end{equation}
+
+puesto que
+\begin{align*}
+&\ \ \ \ \sum_{i=1}^n(\mathbf{Y}_i-\boldsymbol \theta)'\boldsymbol \Sigma^{-1}(\mathbf{Y}_i-\boldsymbol \theta)\\
+&=\sum_{i=1}^n(\mathbf{Y}_i-\bar{\mathbf{Y}}+\bar{\mathbf{Y}}-\boldsymbol \theta)'
+\boldsymbol \Sigma^{-1}(\mathbf{Y}_i-\bar{\mathbf{Y}}+\bar{\mathbf{Y}}-\boldsymbol \theta)\\
+&=\sum_{i=1}^n(\mathbf{Y}_i-\bar{\mathbf{Y}})'\boldsymbol \Sigma^{-1}(\mathbf{Y}_i-\bar{\mathbf{Y}})
++\sum_{i=1}^n(\mathbf{Y}_i-\bar{\mathbf{Y}})'\boldsymbol \Sigma^{-1}(\bar{\mathbf{Y}}-\boldsymbol \theta)\\
+&\hspace{1.5cm}
++(\bar{\mathbf{Y}}-\boldsymbol \theta)'\boldsymbol \Sigma^{-1}\sum_{i=1}^n(\mathbf{Y}_i-\bar{\mathbf{Y}})'
++\sum_{i=1}^n(\bar{\mathbf{Y}}-\boldsymbol \theta)'\boldsymbol \Sigma^{-1}(\bar{\mathbf{Y}}-\boldsymbol \theta)\\
+&=\sum_{i=1}^n(\mathbf{Y}_i-\bar{\mathbf{Y}})'\boldsymbol \Sigma^{-1}(\mathbf{Y}_i-\bar{\mathbf{Y}})
++n(\bar{\mathbf{Y}}-\boldsymbol \theta)'\boldsymbol \Sigma^{-1}(\bar{\mathbf{Y}}-\boldsymbol \theta)
+\end{align*}
+
+Por otro lado, de la definición de distribución previa, se tiene que
+\begin{align*}
+p(\boldsymbol \theta\mid \mathbf{Y},\boldsymbol \Sigma)
+&\propto p(\mathbf{Y} \mid \boldsymbol \theta,\boldsymbol \Sigma)p(\boldsymbol \theta,\boldsymbol \Sigma)\\
+&\propto \exp\left\{-\frac{1}{2}\left[\sum_{i=1}^n(\mathbf{y}_i-\boldsymbol \theta)'\boldsymbol \Sigma^{-1}(\mathbf{y}_i-\boldsymbol \theta)+(\boldsymbol \theta-\boldsymbol \mu)'\boldsymbol \Gamma^{-1}(\boldsymbol \theta-\boldsymbol \mu)\right]\right\}\\
+&\propto \exp\left\{-\frac{1}{2}\left[n(\bar{\mathbf{y}}-\boldsymbol \theta)'\boldsymbol \Sigma^{-1}(\bar{\mathbf{y}}-\boldsymbol \theta)+(\boldsymbol \theta-\boldsymbol \mu)'\boldsymbol \Gamma^{-1}(\boldsymbol \theta-\boldsymbol \mu)\right]\right\}\\
+&\propto \exp\left\{-\frac{1}{2}\left[
+  -n\bar{\mathbf{y}}'\boldsymbol \Sigma^{-1}\boldsymbol \theta-n\boldsymbol \theta'\boldsymbol \Sigma^{-1}\bar{\mathbf{y}}+n\boldsymbol \theta'\boldsymbol \Sigma^{-1}\boldsymbol \theta+\boldsymbol \theta'\boldsymbol \Gamma^{-1}\boldsymbol \theta-\boldsymbol \theta'\boldsymbol \Gamma^{-1}\boldsymbol \mu-\boldsymbol \mu'\boldsymbol \Gamma^{-1}\boldsymbol \theta\right]\right\}\\
+&= \exp\left\{-\frac{1}{2}\left[
+  \boldsymbol \theta'(\boldsymbol \Gamma^{-1}+n\boldsymbol \Sigma^{-1})\boldsymbol \theta-2\boldsymbol \theta'(\boldsymbol \Gamma^{-1}\boldsymbol \mu+n\boldsymbol \Sigma^{-1}\bar{\mathbf{y}})\right]\right\}\\
+&= \exp\left\{-\frac{1}{2}\left[\boldsymbol \theta'\boldsymbol \Gamma^{-1}_n\boldsymbol \theta-2\boldsymbol \theta'\boldsymbol \Gamma^{-1}_n\boldsymbol \mu_n\right]\right\}\\
+&\propto \exp\left\{-\frac{1}{2}\left[\boldsymbol \theta'\boldsymbol \Gamma^{-1}_n\boldsymbol \theta-2\boldsymbol \theta'\boldsymbol \Gamma^{-1}_n\boldsymbol \mu_n+\boldsymbol \mu_n\boldsymbol \Gamma_n^{-1}\boldsymbol \mu_n\right]\right\}\\
+&= \exp\left\{-\frac{1}{2}(\boldsymbol \theta-\boldsymbol \mu_n)'\boldsymbol \Gamma_n^{-1}(\boldsymbol \theta-\boldsymbol \mu_n)\right\}
+  \end{align*}
+
+La cual corresponde al núcleo de una distribución normal multivariante con vector de medias \(\boldsymbol \mu_n\) y matriz de varianzas \(\boldsymbol \Gamma_n\).
+\end{proof}
+
+Observando los parámetros de la distribución posterior, podemos ver que \(\boldsymbol \Gamma_n^{-1} = \boldsymbol \Gamma^{-1}+(\boldsymbol \Sigma/n)^{-1}\). Teniendo en cuenta que la matriz de varianzas y covarianzas es una medida de dispersión de la distribución alrededor de su media, la inversa de dicha matriz se puede ver como una medida de precisión de qué tanto se concentra la distribución alrededor de la media. Así, podemos ver que la precisión posterior viene siendo la suma entre la precisión previa y la precisión de la estimación clásica del parámetro \(\boldsymbol \theta\).
+
+En cuanto a la media posterior \(\boldsymbol \mu_n\), tenemos que
+\begin{align*}
+\boldsymbol \mu_n&=\left(\boldsymbol \Gamma^{-1}+n\boldsymbol \Sigma^{-1}\right)^{-1}
+(\boldsymbol \Gamma^{-1}\boldsymbol \mu+n \boldsymbol \Sigma^{-1}\bar{\mathbf{y}})\\
+&=\left(\mathbf{I}+n\boldsymbol \Gamma\boldsymbol \Sigma^{-1}\right)^{-1}\boldsymbol \mu+\left(\frac{1}{n}\boldsymbol \Sigma\boldsymbol \Gamma^{-1}+\mathbf{I}\right)^{-1}\bar{\mathbf{y}}\\
+&=\underbrace{\boldsymbol \Sigma\left(\boldsymbol \Sigma+n\boldsymbol \Gamma\right)^{-1}}_{\mathbf{A}_1}\boldsymbol \mu+\underbrace{n\boldsymbol \Gamma\left(\boldsymbol \Sigma+n\boldsymbol \Gamma\right)^{-1}}_{\mathbf{A}_2}\bar{\mathbf{y}}
+\end{align*}
+
+De donde podemos que ver que la media posterior \(\boldsymbol \mu_n\) se puede escribir como \(\boldsymbol \mu_n=\mathbf{A}_1\boldsymbol \mu+\mathbf{A}_2\bar{\mathbf{y}}\) donde \(\mathbf{A}_1+\mathbf{A}_2=\mathbf{I}\). Es claro que en el caso univariado, \(\mathbf{A}_1\), \(\boldsymbol \mu\), \(\mathbf{A}_2\) y \(\bar{\mathbf{y}}\) son todos escalares, y \(\boldsymbol \mu_n\) es un valor intermedio entre \(\boldsymbol \mu\) y \(\bar{\mathbf{y}}\). Mientras que en caso multivariado, \(\mathbf{A}_1\boldsymbol \mu+\mathbf{A}_2\bar{\mathbf{y}}\) es similar a una combinación convexa entre los vectores \(\boldsymbol \mu\) y \(\bar{\mathbf{y}}\), pero los coeficientes son matrices en vez de escalares.
+
+Para ilustrar la relación de \(\boldsymbol \mu_n\) con \(\boldsymbol \mu\) y \(\bar{\mathbf{y}}\), tomamos el caso de \(p=2\), y denotamos \(\mathbf{A}=\boldsymbol \Sigma\left(\boldsymbol \Sigma+n\boldsymbol \Gamma\right)^{-1}\). Es claro que \(\mathbf{A}\) es una matriz simétrica y definida positiva, lo denotaremos con \(\mathbf{A}_1=\begin{pmatrix}a_{11}&a_{12}\\ a_{12}&a_{22}\end{pmatrix}\), donde \(a_{11}>0\) y \(a_{22}>0\). De esta forma
+\begin{align*}
+\boldsymbol \mu_n&=\begin{pmatrix}a_{11}&a_{12}\\ a_{12}&a_{22}\end{pmatrix}\begin{pmatrix}\mu_{1}\\ \mu_{2}\end{pmatrix}+\begin{pmatrix}1-a_{11}&-a_{12}\\ -a_{12}&1-a_{22}\end{pmatrix}\begin{pmatrix}\bar{y}_{1}\\ \bar{y}_{2}\end{pmatrix}\\
+&=\begin{pmatrix}a_{11}\mu_1+(1-a_{11})\bar{y}_{1}+a_{12}(\mu_2-\bar{y}_{2})\\a_{22}\mu_2+(1-a_{22})\bar{y}_{2}+a_{12}(\mu_1-\bar{y}_{1})\end{pmatrix}
+\end{align*}
+
+Al observar la primera entrada de \(\boldsymbol \mu_n\), podemos ver que este se compone de una combinación convexa entre \(\mu_1\) y \(\bar{y}_1\) (pues \(a_{11}>0\)) y una parte que depende de la diferencia \(\mu_2-\bar{y}_{2}\); un comportamiento similar se observa en la segunda entrada de \(\boldsymbol \mu_n\). Esta observación es interesante, pues ilustra que cada componente de la media posterior \(\boldsymbol \mu_n\) no siempre será un promedio ponderado del componentes correspondiente de la media previa y la estimación clásica.
+
+Ilustramos los resultados encontrados suponiendo las dos siguientes situaciones:
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\tightlist
+\item
+  Suponga que se quiere estimar el vector de medias \(\boldsymbol \theta=(\theta_1,\theta_2)'\) con una matriz de varianzas y covarianzas conocida de \(\boldsymbol \Sigma=\begin{pmatrix}20&8\\ 8&30\end{pmatrix}\). Para esto se recolectan 10 observaciones con vector de promedios muestrales \(\bar{\mathbf{y}}=(150,230)'\). Como información previa, suponga que \(\boldsymbol \mu=(100, 200)'\) y \(\boldsymbol \Gamma=\begin{pmatrix}5&3\\ 3&10\end{pmatrix}\). Realizando los cálculos correspondiente, se tiene que \(\boldsymbol \Gamma_n=\begin{pmatrix}1.42&0.64\\ 0.64&2.31\end{pmatrix}\), \(\mathbf{A}=\begin{pmatrix}0.3&-0.026\\ -0.026&0.235\end{pmatrix}\) y \(\boldsymbol \mu_n=(136,224)\). Podemos ver que en este caso cada componente de \(\boldsymbol \mu_n\) se encuentra entre los componentes correspondientes de \(\boldsymbol \mu\) y \(\bar{\mathbf{y}}\). Los códigos computacionales se muestran a continuación.
+\end{enumerate}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{n }\OtherTok{\textless{}{-}} \DecValTok{10}
+\NormalTok{mu }\OtherTok{\textless{}{-}} \FunctionTok{matrix}\NormalTok{(}\FunctionTok{c}\NormalTok{(}\DecValTok{100}\NormalTok{, }\DecValTok{200}\NormalTok{))}
+\NormalTok{y.bar }\OtherTok{\textless{}{-}} \FunctionTok{matrix}\NormalTok{(}\FunctionTok{c}\NormalTok{(}\DecValTok{150}\NormalTok{, }\DecValTok{230}\NormalTok{))}
+\NormalTok{Gamma }\OtherTok{\textless{}{-}} \FunctionTok{matrix}\NormalTok{(}\FunctionTok{c}\NormalTok{(}\DecValTok{5}\NormalTok{, }\DecValTok{3}\NormalTok{, }\DecValTok{3}\NormalTok{, }\DecValTok{10}\NormalTok{), }\DecValTok{2}\NormalTok{, }\DecValTok{2}\NormalTok{)}
+\NormalTok{Sigma }\OtherTok{\textless{}{-}} \FunctionTok{matrix}\NormalTok{(}\FunctionTok{c}\NormalTok{(}\DecValTok{20}\NormalTok{, }\DecValTok{8}\NormalTok{, }\DecValTok{8}\NormalTok{, }\DecValTok{30}\NormalTok{), }\DecValTok{2}\NormalTok{, }\DecValTok{2}\NormalTok{)}
+\NormalTok{Gamma.n }\OtherTok{\textless{}{-}} \FunctionTok{solve}\NormalTok{(}\FunctionTok{solve}\NormalTok{(Gamma) }\SpecialCharTok{+}\NormalTok{ n }\SpecialCharTok{*} \FunctionTok{solve}\NormalTok{(Sigma))}
+\NormalTok{A }\OtherTok{\textless{}{-}}\NormalTok{ Sigma }\SpecialCharTok{\%*\%} \FunctionTok{solve}\NormalTok{(Sigma }\SpecialCharTok{+}\NormalTok{ n }\SpecialCharTok{*}\NormalTok{ Gamma) }
+\NormalTok{mu.n }\OtherTok{\textless{}{-}}\NormalTok{ Gamma.n }\SpecialCharTok{\%*\%} 
+\NormalTok{  (}\FunctionTok{solve}\NormalTok{(Gamma) }\SpecialCharTok{\%*\%}\NormalTok{ mu }\SpecialCharTok{+}\NormalTok{ n }\SpecialCharTok{*} \FunctionTok{solve}\NormalTok{(Sigma) }\SpecialCharTok{\%*\%}\NormalTok{ y.bar)}
+\NormalTok{mu.n}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{tabular}{r}
+\hline
+135.7889\\
+\hline
+223.6155\\
+\hline
+\end{tabular}
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\setcounter{enumi}{1}
+\tightlist
+\item
+  Tomando los mismos datos del caso anterior, también podemos suponer que \(\bar{\mathbf{y}}=(150, 2300)'\), las matrices \(\boldsymbol \Gamma_n\) y \(\mathbf{A}\) no cambian de valor, pero la media de la distribución posterior está dada por \(\boldsymbol \mu_n=(190,1808)\). Podemos ver que el primer componente de \(\boldsymbol \mu_n\) no está entre 100 y 150 que corresponden a las estimaciones previa y clásica, respectivamente. Esto se debe a que la diferencia entre \(\mu_2\) y \(\bar{y}_2\) es muy grande.
+\end{enumerate}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{n }\OtherTok{\textless{}{-}} \DecValTok{10}
+\NormalTok{mu }\OtherTok{\textless{}{-}} \FunctionTok{matrix}\NormalTok{(}\FunctionTok{c}\NormalTok{(}\DecValTok{100}\NormalTok{, }\DecValTok{200}\NormalTok{))}
+\NormalTok{y.bar }\OtherTok{\textless{}{-}} \FunctionTok{matrix}\NormalTok{(}\FunctionTok{c}\NormalTok{(}\DecValTok{150}\NormalTok{, }\DecValTok{2300}\NormalTok{))}
+\NormalTok{Gamma }\OtherTok{\textless{}{-}} \FunctionTok{matrix}\NormalTok{(}\FunctionTok{c}\NormalTok{(}\DecValTok{5}\NormalTok{, }\DecValTok{3}\NormalTok{, }\DecValTok{3}\NormalTok{, }\DecValTok{10}\NormalTok{), }\DecValTok{2}\NormalTok{, }\DecValTok{2}\NormalTok{)}
+\NormalTok{Sigma }\OtherTok{\textless{}{-}} \FunctionTok{matrix}\NormalTok{(}\FunctionTok{c}\NormalTok{(}\DecValTok{20}\NormalTok{, }\DecValTok{8}\NormalTok{, }\DecValTok{8}\NormalTok{, }\DecValTok{30}\NormalTok{), }\DecValTok{2}\NormalTok{, }\DecValTok{2}\NormalTok{)}
+\NormalTok{Gamma.n }\OtherTok{\textless{}{-}} \FunctionTok{solve}\NormalTok{(}\FunctionTok{solve}\NormalTok{(Gamma) }\SpecialCharTok{+}\NormalTok{ n }\SpecialCharTok{*} \FunctionTok{solve}\NormalTok{(Sigma))}
+\NormalTok{A }\OtherTok{\textless{}{-}}\NormalTok{ Sigma }\SpecialCharTok{\%*\%} \FunctionTok{solve}\NormalTok{(Sigma }\SpecialCharTok{+}\NormalTok{ n }\SpecialCharTok{*}\NormalTok{ Gamma) }
+\NormalTok{mu.n }\OtherTok{\textless{}{-}}\NormalTok{ Gamma.n }\SpecialCharTok{\%*\%} 
+\NormalTok{  (}\FunctionTok{solve}\NormalTok{(Gamma) }\SpecialCharTok{\%*\%}\NormalTok{ mu }\SpecialCharTok{+}\NormalTok{ n }\SpecialCharTok{*} \FunctionTok{solve}\NormalTok{(Sigma) }\SpecialCharTok{\%*\%}\NormalTok{ y.bar)}
+\NormalTok{mu.n}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{tabular}{r}
+\hline
+189.8642\\
+\hline
+1808.0199\\
+\hline
+\end{tabular}
+
+\hypertarget{distribuciuxf3n-previa-no-informativa}{%
+\subsection{Distribución previa no informativa}\label{distribuciuxf3n-previa-no-informativa}}
+
+Al tener en cuenta que la distribución previa del parámetro \(\boldsymbol \theta\) es la distribución normal multivariada, y al observar la forma de la función de densidad, se puede afirmar que cuando \(|\boldsymbol \Gamma^{-1}|\) es muy pequeño, los parámetros previos \(\boldsymbol \mu\) y \(\boldsymbol \Gamma\) pierden peso en los cálculos de \(\boldsymbol \mu_n\) y \(\boldsymbol \Gamma_n\). En este caso se puede ver que
+\begin{align*}
+\boldsymbol \Gamma_n&\approx n^{-1}\boldsymbol \Sigma\\
+\boldsymbol \mu_n&\approx \bar{\mathbf{y}}
+\end{align*}
+
+De donde podemos concluir que la estimación bayesiana será muy cercana a la estimación clásica \(\bar{y}\), más aún, el intervalo de credibilidad también será muy similar al intervalo de confianza del enfoque clásico.
+
+\begin{example}
+\protect\hypertarget{exm:unnamed-chunk-27}{}{\label{exm:unnamed-chunk-27} }\citet{Student} introdujo un conjunto de datos clásicos sobre el incremento en horas de sueño producido con 2 medicamentos soporíferos diferentes comparados con grupo control en 10 pacientes. Estos datos se pueden encontrar en \texttt{R} con el nombre \texttt{sleep} y se pueden definir como realizaciones de vectores aleatorios con distribución normal bivariada. Supongamos que la matriz de varianzas y covarianzas de la distribución es conocida e igual a \(\Sigma=\begin{pmatrix}1&0.6\\ 0.6&2\end{pmatrix}\).
+
+El parámetro de interés es el vector de medias \(\boldsymbol \theta=(\theta_1,\theta_2)'\). Para la distribución previa, suponemos que \(\boldsymbol \mu=(0,1)'\), es decir que el primer medicamento no tiene ningún efecto soporífero, mientras que el segundo medicamento tiene un efecto promedio de aumentar 1 hora de sueño, también asumimos que \(\Gamma=\begin{pmatrix}2&0\\ 0&2\end{pmatrix}\). Los siguientes códigos de \texttt{STAN} ilustran el procedimiento de estimación del parámetro de interés.
+\end{example}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{NormalMultMedia }\OtherTok{\textless{}{-}} \StringTok{\textquotesingle{}}
+\StringTok{data \{}
+\StringTok{  int\textless{}lower=0\textgreater{} n;}
+\StringTok{  int\textless{}lower=0\textgreater{} P;}
+\StringTok{  vector[P] y[n];}
+\StringTok{  vector[P] mu;}
+\StringTok{  matrix[P, P] Sigma;}
+\StringTok{  matrix[P, P] Gamma;}
+\StringTok{\}}
+\StringTok{parameters \{}
+\StringTok{  vector[P] theta;}
+\StringTok{\}}
+\StringTok{transformed parameters \{}
+\StringTok{  real diftheta;}
+\StringTok{  diftheta = theta[2] {-} theta[1];}
+\StringTok{\}}
+\StringTok{model \{}
+\StringTok{  y \textasciitilde{} multi\_normal(theta, Sigma);}
+\StringTok{  theta \textasciitilde{} multi\_normal(mu, Gamma);}
+\StringTok{\}}
+\StringTok{\textquotesingle{}}
+
+\NormalTok{y }\OtherTok{\textless{}{-}} \FunctionTok{structure}\NormalTok{(}\AttributeTok{.Data =}\NormalTok{ sleep[,}\DecValTok{1}\NormalTok{], }\AttributeTok{.Dim=}\FunctionTok{c}\NormalTok{(}\DecValTok{10}\NormalTok{,}\DecValTok{2}\NormalTok{))}
+\NormalTok{n }\OtherTok{\textless{}{-}} \FunctionTok{nrow}\NormalTok{(y)}
+\NormalTok{P }\OtherTok{\textless{}{-}} \FunctionTok{ncol}\NormalTok{(y)}
+\NormalTok{Sigma  }\OtherTok{\textless{}{-}} \FunctionTok{matrix}\NormalTok{(}\FunctionTok{c}\NormalTok{(}\DecValTok{1}\NormalTok{, }\FloatTok{0.6}\NormalTok{, }\FloatTok{0.6}\NormalTok{, }\DecValTok{2}\NormalTok{), }\DecValTok{2}\NormalTok{, }\DecValTok{2}\NormalTok{)}
+\NormalTok{mu }\OtherTok{\textless{}{-}} \FunctionTok{as.vector}\NormalTok{(}\FunctionTok{c}\NormalTok{(}\DecValTok{0}\NormalTok{, }\DecValTok{1}\NormalTok{))}
+\NormalTok{Gamma }\OtherTok{\textless{}{-}} \FunctionTok{matrix}\NormalTok{(}\FunctionTok{c}\NormalTok{(}\DecValTok{2}\NormalTok{, }\DecValTok{0}\NormalTok{, }\DecValTok{0}\NormalTok{, }\DecValTok{2}\NormalTok{), }\DecValTok{2}\NormalTok{, }\DecValTok{2}\NormalTok{)}
+
+\NormalTok{sample\_data }\OtherTok{\textless{}{-}} \FunctionTok{list}\NormalTok{(}\AttributeTok{y =}\NormalTok{ y, }\AttributeTok{n =}\NormalTok{ n, }\AttributeTok{P =}\NormalTok{ P,}
+                    \AttributeTok{Sigma =}\NormalTok{ Sigma, }\AttributeTok{mu =}\NormalTok{ mu,}
+                    \AttributeTok{Gamma =}\NormalTok{ Gamma)}
+\FunctionTok{set.seed}\NormalTok{(}\DecValTok{1234}\NormalTok{)}
+\NormalTok{NormalMultifit }\OtherTok{\textless{}{-}} \FunctionTok{stan}\NormalTok{(}\AttributeTok{model\_code =}\NormalTok{ NormalMultMedia,}
+                   \AttributeTok{data =}\NormalTok{ sample\_data, }\AttributeTok{verbose =} \ConstantTok{FALSE}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+Después de la convergencia del proceso inferencial, la estimación bayesiana de \(\boldsymbol \theta\) es \((0.6866, 2.1812)'\) para los dos medicamentos; mientras que los intervalos de crediblidad del 95\% corresponden a (0.0834, 1.2776) y (1.3391, 3.0109).
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{print}\NormalTok{(NormalMultifit, }\AttributeTok{digits =} \DecValTok{4}\NormalTok{, }
+      \AttributeTok{pars =} \StringTok{"theta"}\NormalTok{, }\AttributeTok{probs =} \FunctionTok{c}\NormalTok{(}\FloatTok{0.025}\NormalTok{, }\FloatTok{0.975}\NormalTok{))}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## Inference for Stan model: 0b2360136b3d61c08a460b98848640c6.
+## 4 chains, each with iter=2000; warmup=1000; thin=1; 
+## post-warmup draws per chain=1000, total post-warmup draws=4000.
+## 
+##            mean se_mean     sd   2.5%  97.5% n_eff   Rhat
+## theta[1] 0.6874  0.0064 0.3110 0.1038 1.3055  2361 0.9997
+## theta[2] 2.2060  0.0090 0.4283 1.3620 3.0268  2245 1.0000
+## 
+## Samples were drawn using NUTS(diag_e) at Tue Jun 22 23:42:17 2021.
+## For each parameter, n_eff is a crude measure of effective sample size,
+## and Rhat is the potential scale reduction factor on split chains (at 
+## convergence, Rhat=1).
+\end{verbatim}
+
+Las figuras \ref{fig:posNormalMultiStan} muestra la distribución posterior para este ejemplo, junto con la estimación puntual, correspondiente a la media.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{bayesplot}\SpecialCharTok{::}\FunctionTok{mcmc\_areas}\NormalTok{(NormalMultifit, }\AttributeTok{pars =} \FunctionTok{c}\NormalTok{(}\StringTok{"theta[1]"}\NormalTok{, }\StringTok{"theta[2]"}\NormalTok{), }
+                      \AttributeTok{prob =} \FloatTok{0.95}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{figure}
+
+{\centering \includegraphics{4Multiparametricos_files/figure-latex/posNormalMultiStan-1} 
+
+}
+
+\caption{Distribución posterior.}\label{fig:posNormalMultiStan}
+\end{figure}
+
+A continuación, mostramos los códigos de \texttt{R} para llevar a cabo los cálculos directamente.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{y.bar }\OtherTok{\textless{}{-}} \FunctionTok{colMeans}\NormalTok{(y)}
+\NormalTok{Gamma.n }\OtherTok{\textless{}{-}} \FunctionTok{solve}\NormalTok{(}\FunctionTok{solve}\NormalTok{(Gamma) }\SpecialCharTok{+}\NormalTok{ n }\SpecialCharTok{*} \FunctionTok{solve}\NormalTok{(Sigma))}
+\NormalTok{mu.n }\OtherTok{\textless{}{-}}\NormalTok{ Gamma.n }\SpecialCharTok{\%*\%} 
+\NormalTok{  (}\FunctionTok{solve}\NormalTok{(Gamma) }\SpecialCharTok{\%*\%}\NormalTok{ mu }\SpecialCharTok{+}\NormalTok{ n }\SpecialCharTok{*} \FunctionTok{solve}\NormalTok{(Sigma) }\SpecialCharTok{\%*\%}\NormalTok{ y.bar)}
+\NormalTok{mu.n}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{tabular}{r}
+\hline
+0.6802703\\
+\hline
+2.1905381\\
+\hline
+\end{tabular}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{Gamma.n}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{tabular}{r|r}
+\hline
+0.0937527 & 0.0519886\\
+\hline
+0.0519886 & 0.1804003\\
+\hline
+\end{tabular}
+
+De los resultados arrojados, vemos que la distribución posterior del parámetro está dada por
+\begin{equation*}
+\begin{pmatrix}
+\theta_1\\
+\theta_2
+\end{pmatrix}
+\sim N_2\left(\begin{pmatrix}
+0.68\\
+2.19
+\end{pmatrix},\begin{pmatrix}
+0.094&0.052\\
+0.052&0.180
+\end{pmatrix}\right)
+\end{equation*}
+
+De esta forma, la estimación bayesiana obtenida para los efectos promedios corresponde a 0.68 horas y 2.19 horas, respectivamente; los cuales son similares a los obtenidos por \texttt{STAN}. En cuanto a los intervalos de credibilidad del 95\%, estas son dados por los percentiles 2.5\% y 97.5\% de las dos distribuciones posteriores marginales de \(\theta_1\) y \(\theta_2\). Estos intervalos se pueden obtener así:
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{qnorm}\NormalTok{(}\FunctionTok{c}\NormalTok{(}\FloatTok{0.025}\NormalTok{, }\FloatTok{0.975}\NormalTok{), mu.n[}\DecValTok{1}\NormalTok{], }\FunctionTok{sqrt}\NormalTok{(Gamma.n[}\DecValTok{1}\NormalTok{, }\DecValTok{1}\NormalTok{]))}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## [1] 0.08014771 1.28039297
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{qnorm}\NormalTok{(}\FunctionTok{c}\NormalTok{(}\FloatTok{0.025}\NormalTok{, }\FloatTok{0.975}\NormalTok{), mu.n[}\DecValTok{2}\NormalTok{], }\FunctionTok{sqrt}\NormalTok{(Gamma.n[}\DecValTok{2}\NormalTok{, }\DecValTok{2}\NormalTok{]))}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## [1] 1.358072 3.023005
+\end{verbatim}
+
+Ahora, suponga que el objetivo es comparar los medicamentos para concluir si el segundo medicamento es más efectivo que el primero, podemos encontrar la distribución posterior de la diferencia \(\theta_2-\theta_1\). Utilizando propiedades de la distribución normal multivariante, podemos encontrar la distribución posterior de \(\theta_2-\theta_1\), calcular un intervalo de credibilidad para \(\theta_2-\theta_1\) e indagar cuál es la probabilidad de que \(\theta_2\) sea mayor a \(\theta_1\). Estos cálculos se pueden llevar a cabo de la siguiente forma en \texttt{STAN}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{print}\NormalTok{(NormalMultifit, }\AttributeTok{digits =} \DecValTok{4}\NormalTok{, }
+      \AttributeTok{pars =} \StringTok{"diftheta"}\NormalTok{, }\AttributeTok{probs =} \FunctionTok{c}\NormalTok{(}\FloatTok{0.025}\NormalTok{, }\FloatTok{0.975}\NormalTok{))}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## Inference for Stan model: 0b2360136b3d61c08a460b98848640c6.
+## 4 chains, each with iter=2000; warmup=1000; thin=1; 
+## post-warmup draws per chain=1000, total post-warmup draws=4000.
+## 
+##            mean se_mean     sd   2.5%  97.5% n_eff   Rhat
+## diftheta 1.5186  0.0067 0.4136 0.7162 2.3123  3815 0.9998
+## 
+## Samples were drawn using NUTS(diag_e) at Tue Jun 22 23:42:17 2021.
+## For each parameter, n_eff is a crude measure of effective sample size,
+## and Rhat is the potential scale reduction factor on split chains (at 
+## convergence, Rhat=1).
+\end{verbatim}
+
+La figuras \ref{fig:posNormalDifMultiStan} muestra la distribución posterior para este ejemplo, junto con la estimación puntual, correspondiente a la media.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{bayesplot}\SpecialCharTok{::}\FunctionTok{mcmc\_areas}\NormalTok{(NormalMultifit, }\AttributeTok{pars =} \StringTok{"diftheta"}\NormalTok{, }
+                      \AttributeTok{prob =} \FloatTok{0.95}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{figure}
+
+{\centering \includegraphics{4Multiparametricos_files/figure-latex/posNormalDifMultiStan-1} 
+
+}
+
+\caption{Distribución posterior de los parámetros transformados (diferencia de las medias teóricas).}\label{fig:posNormalDifMultiStan}
+\end{figure}
+
+Los mismos cálculos pueden reproducirse en \texttt{R}, por medio de los siguientes códigos computacionales.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{vec }\OtherTok{\textless{}{-}} \FunctionTok{matrix}\NormalTok{(}\FunctionTok{c}\NormalTok{(}\SpecialCharTok{{-}}\DecValTok{1}\NormalTok{, }\DecValTok{1}\NormalTok{), }\DecValTok{1}\NormalTok{, }\DecValTok{2}\NormalTok{)}
+\NormalTok{difmedia }\OtherTok{\textless{}{-}}\NormalTok{ vec }\SpecialCharTok{\%*\%}\NormalTok{ mu.n}
+\NormalTok{varianza }\OtherTok{\textless{}{-}}\NormalTok{ vec }\SpecialCharTok{\%*\%}\NormalTok{ Gamma.n }\SpecialCharTok{\%*\%} \FunctionTok{t}\NormalTok{(vec)}
+\FunctionTok{qnorm}\NormalTok{(}\FunctionTok{c}\NormalTok{(}\FloatTok{0.025}\NormalTok{, }\FloatTok{0.975}\NormalTok{), difmedia, }\FunctionTok{sqrt}\NormalTok{(varianza))}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## [1] 0.7017359 2.3187996
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\DecValTok{1} \SpecialCharTok{{-}} \FunctionTok{pnorm}\NormalTok{(}\DecValTok{0}\NormalTok{, difmedia, }\FunctionTok{sqrt}\NormalTok{(varianza))}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## [1] 0.9998744
+\end{verbatim}
+
+Observando los anteriores resultados, vemos que el intervalo de credibildad para \(\theta_2-\theta_1\) está dado por \((0.7, 2.3)\), el cual no contiene el valor 0, indicando que el segundo medicamento tiene un efecto mayor que el segundo. Adicionalmente, se observa que con probabilidad muy cercana a uno, el segundo medicamento tiene efecto mayor al primero y por ende tiene un desempeño superior al primero.
+
+Finalmente, ilustramos los resultados obtenidos al usar una distribución previa no informativa, para eso, usaremos \(\boldsymbol \Gamma=\begin{pmatrix}100&0\\ 0&100\end{pmatrix}\), con \(|\boldsymbol \Gamma^{-1}|=0.0001\), representando una distribución previa no informativa. Los resultados de estimación arroja la siguiente distribución posterior para el vector de parámetros:
+\begin{equation*}
+\begin{pmatrix}
+\theta_1\\
+\theta_2
+\end{pmatrix}
+\sim N_2\left(\begin{pmatrix}
+0.75\\
+2.33
+\end{pmatrix},\begin{pmatrix}
+0.10&0.06\\
+0.06&0.20
+\end{pmatrix}\right)
+\end{equation*}
+
+Los intervalos de credibilidad del 95\% para los parámetros \(\theta_1\) y \(\theta_2\) están dados por \((0.129, 1.368)\) y \((1.451, 3.202)\), respectivamente. Observamos que estos intervalos de credibilidad son muy similares a los intervalos de confianza del 95\% del enfoque clásico, calculados con la expresión \(\bar{y}\pm z_{1-\alpha/2}\frac{\sigma}{\sqrt{n}}\), y que para los datos del ejemplo están dados por \((0.130, 1.370)\) y \((1.453, 3.207)\).
+
+Finalmente, recordamos los dos siguientes resultados relacionados con la distribución normal multivariante que pueden resultar útiles en otros análisis.
+
+\begin{proposition}
+\protect\hypertarget{prp:unnamed-chunk-34}{}{\label{prp:unnamed-chunk-34} }La distribución posterior marginal de un subconjunto de parámetros, digamos \(\boldsymbol \theta^{(1)}\) es también normal multivariante con media igual a la del subvector de medias apropiado, \(\boldsymbol \mu_n^{(1)}\) y similar matriz de varianzas \(\boldsymbol \Gamma_n^{(11)}\).
+\end{proposition}
+
+\begin{proposition}
+\protect\hypertarget{prp:unnamed-chunk-35}{}{\label{prp:unnamed-chunk-35} }La distribución posterior condicional de un subconjunto de parámetros, digamos \(\boldsymbol \theta^{(1)}\), dado \(\boldsymbol \theta^{(2)}\) es también normal multivariante dada por
+\begin{equation*}
+  \boldsymbol \theta^{(1)} \mid \boldsymbol \theta^{(2)} \sim N_p \left(\boldsymbol \mu_n^{(1)}+\boldsymbol \Gamma_n^{(12)}\left(\boldsymbol \Gamma_n^{(22)}\right)^{-1}
+  \left(\theta^{(2)}-\mu_n^{(2)}\right),\boldsymbol \Gamma_n^{(1 \mid 2)}\right).
+\end{equation*}
+
+En donde
+\begin{align}
+  \boldsymbol \Gamma_n^{(1 \mid 2)}&= \boldsymbol \Gamma_n^{(11)}-\boldsymbol \Gamma_n^{(12)}\left(\boldsymbol \Gamma_n^{(22)}\right)^{-1}\boldsymbol \Gamma_n^{(21)}
+\end{align}
+
+Con \(\boldsymbol \mu^{(1)}\) y \(\boldsymbol \mu^{(2)}\) correspondendientes al vector de medias y \(\boldsymbol \Gamma_n^{(11)}\), \(\boldsymbol \Gamma_n^{(22)}\) denotan la matriz de varianzas y covarianzas de \(\boldsymbol \theta^{(1)}\) y \(\boldsymbol \theta^{(2)}\), respectivamente. \(\boldsymbol \Gamma_n^{(12)}\) es la matriz de covarianzas entre \(\boldsymbol \theta^{(1)}\) y \(\boldsymbol \theta^{(2)}\), \(\boldsymbol \Gamma_n^{(21)}\) es la matriz de covarianzas entre \(\boldsymbol \theta^{(2)}\) y \(\boldsymbol \theta^{(1)}\).
+\end{proposition}
+
+La prueba de los dos resultados anteriores se sigue inmediatamente de las propiedades de la distribución normal multivariante.
 
 \hypertarget{appendix-apuxe9ndice}{%
 \appendix}

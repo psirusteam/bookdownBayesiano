@@ -1,0 +1,700 @@
+<!DOCTYPE html>
+<html lang="es" xml:lang="es">
+<head>
+
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <title>4.2 Modelo Normal multivariante con media desconocida y varianza conocida | Modelos Bayesianos con R y STAN</title>
+  <meta name="description" content="Este es el repositorio del libro Modelos Bayesianos con R y STAN." />
+  <meta name="generator" content="bookdown 0.22 and GitBook 2.6.7" />
+
+  <meta property="og:title" content="4.2 Modelo Normal multivariante con media desconocida y varianza conocida | Modelos Bayesianos con R y STAN" />
+  <meta property="og:type" content="book" />
+  
+  
+  <meta property="og:description" content="Este es el repositorio del libro Modelos Bayesianos con R y STAN." />
+  <meta name="github-repo" content="psirusteam/bookdownBayesiano" />
+
+  <meta name="twitter:card" content="summary" />
+  <meta name="twitter:title" content="4.2 Modelo Normal multivariante con media desconocida y varianza conocida | Modelos Bayesianos con R y STAN" />
+  
+  <meta name="twitter:description" content="Este es el repositorio del libro Modelos Bayesianos con R y STAN." />
+  
+
+<meta name="author" content="Andrés Gutiérrez - Hanwen Zhang" />
+
+
+<meta name="date" content="2021-06-22" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black" />
+  
+  
+<link rel="prev" href="modelo-normal-con-media-y-varianza-desconocida.html"/>
+<link rel="next" href="elementos-de-probabilidad.html"/>
+<script src="libs/header-attrs-2.8/header-attrs.js"></script>
+<script src="libs/jquery-2.2.3/jquery.min.js"></script>
+<link href="libs/gitbook-2.6.7/css/style.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-table.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-bookdown.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-highlight.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-search.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-fontsettings.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-clipboard.css" rel="stylesheet" />
+
+
+
+
+
+
+
+
+
+<link href="libs/anchor-sections-1.0.1/anchor-sections.css" rel="stylesheet" />
+<script src="libs/anchor-sections-1.0.1/anchor-sections.js"></script>
+
+
+<style type="text/css">
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+    color: #aaaaaa;
+  }
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code span.at { color: #7d9029; } /* Attribute */
+code span.bn { color: #40a070; } /* BaseN */
+code span.bu { } /* BuiltIn */
+code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code span.ch { color: #4070a0; } /* Char */
+code span.cn { color: #880000; } /* Constant */
+code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code span.dt { color: #902000; } /* DataType */
+code span.dv { color: #40a070; } /* DecVal */
+code span.er { color: #ff0000; font-weight: bold; } /* Error */
+code span.ex { } /* Extension */
+code span.fl { color: #40a070; } /* Float */
+code span.fu { color: #06287e; } /* Function */
+code span.im { } /* Import */
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code span.op { color: #666666; } /* Operator */
+code span.ot { color: #007020; } /* Other */
+code span.pp { color: #bc7a00; } /* Preprocessor */
+code span.sc { color: #4070a0; } /* SpecialChar */
+code span.ss { color: #bb6688; } /* SpecialString */
+code span.st { color: #4070a0; } /* String */
+code span.va { color: #19177c; } /* Variable */
+code span.vs { color: #4070a0; } /* VerbatimString */
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+</style>
+
+<style type="text/css">
+/* Used with Pandoc 2.11+ new --citeproc when CSL is used */
+div.csl-bib-body { }
+div.csl-entry {
+  clear: both;
+}
+.hanging div.csl-entry {
+  margin-left:2em;
+  text-indent:-2em;
+}
+div.csl-left-margin {
+  min-width:2em;
+  float:left;
+}
+div.csl-right-inline {
+  margin-left:2em;
+  padding-left:1em;
+}
+div.csl-indent {
+  margin-left: 2em;
+}
+</style>
+
+<link rel="stylesheet" href="style.css" type="text/css" />
+</head>
+
+<body>
+
+
+
+  <div class="book without-animation with-summary font-size-2 font-family-1" data-basepath=".">
+
+    <div class="book-summary">
+      <nav role="navigation">
+
+<ul class="summary">
+<li><a href="./">Modelos Bayesianos con R y STAN</a></li>
+
+<li class="divider"></li>
+<li class="chapter" data-level="" data-path="index.html"><a href="index.html"><i class="fa fa-check"></i>Prefacio</a></li>
+<li class="chapter" data-level="" data-path="antes-de-comenzar.html"><a href="antes-de-comenzar.html"><i class="fa fa-check"></i>Antes de comenzar</a>
+<ul>
+<li class="chapter" data-level="" data-path="cuestionamientos-sobre-el-enfoque-bayesiano.html"><a href="cuestionamientos-sobre-el-enfoque-bayesiano.html"><i class="fa fa-check"></i>Cuestionamientos sobre el enfoque bayesiano</a></li>
+<li class="chapter" data-level="" data-path="acerca-de-la-notación.html"><a href="acerca-de-la-notación.html"><i class="fa fa-check"></i>Acerca de la notación</a></li>
+</ul></li>
+<li class="chapter" data-level="1" data-path="tópicos-básicos.html"><a href="tópicos-básicos.html"><i class="fa fa-check"></i><b>1</b> Tópicos básicos</a>
+<ul>
+<li class="chapter" data-level="1.1" data-path="teoría-de-la-decisión.html"><a href="teoría-de-la-decisión.html"><i class="fa fa-check"></i><b>1.1</b> Teoría de la decisión</a></li>
+<li class="chapter" data-level="1.2" data-path="algunos-resultados-de-probabilidad.html"><a href="algunos-resultados-de-probabilidad.html"><i class="fa fa-check"></i><b>1.2</b> Algunos resultados de probabilidad</a></li>
+<li class="chapter" data-level="1.3" data-path="teorema-de-bayes.html"><a href="teorema-de-bayes.html"><i class="fa fa-check"></i><b>1.3</b> Teorema de Bayes</a></li>
+</ul></li>
+<li class="chapter" data-level="2" data-path="inferencia-bayesiana.html"><a href="inferencia-bayesiana.html"><i class="fa fa-check"></i><b>2</b> Inferencia bayesiana</a>
+<ul>
+<li class="chapter" data-level="2.1" data-path="la-distribución-previa.html"><a href="la-distribución-previa.html"><i class="fa fa-check"></i><b>2.1</b> La distribución previa</a>
+<ul>
+<li class="chapter" data-level="2.1.1" data-path="la-distribución-previa.html"><a href="la-distribución-previa.html#distribuciones-conjugadas"><i class="fa fa-check"></i><b>2.1.1</b> Distribuciones conjugadas</a></li>
+<li class="chapter" data-level="2.1.2" data-path="la-distribución-previa.html"><a href="la-distribución-previa.html#familia-exponencial"><i class="fa fa-check"></i><b>2.1.2</b> Familia exponencial</a></li>
+<li class="chapter" data-level="2.1.3" data-path="la-distribución-previa.html"><a href="la-distribución-previa.html#distribuciones-previas-no-informativas"><i class="fa fa-check"></i><b>2.1.3</b> Distribuciones previas no informativas</a></li>
+</ul></li>
+<li class="chapter" data-level="2.2" data-path="pruebas-de-hipótesis.html"><a href="pruebas-de-hipótesis.html"><i class="fa fa-check"></i><b>2.2</b> Pruebas de hipótesis</a>
+<ul>
+<li class="chapter" data-level="2.2.1" data-path="pruebas-de-hipótesis.html"><a href="pruebas-de-hipótesis.html#factor-de-bayes"><i class="fa fa-check"></i><b>2.2.1</b> Factor de Bayes</a></li>
+<li class="chapter" data-level="2.2.2" data-path="pruebas-de-hipótesis.html"><a href="pruebas-de-hipótesis.html#valor-p-bayesiano"><i class="fa fa-check"></i><b>2.2.2</b> Valor-<span class="math inline">\(p\)</span> Bayesiano</a></li>
+</ul></li>
+<li class="chapter" data-level="2.3" data-path="criterios-de-información.html"><a href="criterios-de-información.html"><i class="fa fa-check"></i><b>2.3</b> Criterios de información</a>
+<ul>
+<li class="chapter" data-level="2.3.1" data-path="criterios-de-información.html"><a href="criterios-de-información.html#criterio-dic"><i class="fa fa-check"></i><b>2.3.1</b> Criterio DIC</a></li>
+<li class="chapter" data-level="2.3.2" data-path="criterios-de-información.html"><a href="criterios-de-información.html#criterios-aic-y-bic"><i class="fa fa-check"></i><b>2.3.2</b> Criterios AIC y BIC</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="3" data-path="modelos-uniparamétricos.html"><a href="modelos-uniparamétricos.html"><i class="fa fa-check"></i><b>3</b> Modelos uniparamétricos</a>
+<ul>
+<li class="chapter" data-level="3.1" data-path="modelo-bernoulli.html"><a href="modelo-bernoulli.html"><i class="fa fa-check"></i><b>3.1</b> Modelo Bernoulli</a></li>
+<li class="chapter" data-level="3.2" data-path="modelo-binomial.html"><a href="modelo-binomial.html"><i class="fa fa-check"></i><b>3.2</b> Modelo Binomial</a></li>
+<li class="chapter" data-level="3.3" data-path="modelo-binomial-negativo.html"><a href="modelo-binomial-negativo.html"><i class="fa fa-check"></i><b>3.3</b> Modelo Binomial negativo</a></li>
+<li class="chapter" data-level="3.4" data-path="modelo-poisson.html"><a href="modelo-poisson.html"><i class="fa fa-check"></i><b>3.4</b> Modelo Poisson</a></li>
+<li class="chapter" data-level="3.5" data-path="modelo-exponencial.html"><a href="modelo-exponencial.html"><i class="fa fa-check"></i><b>3.5</b> Modelo Exponencial</a></li>
+<li class="chapter" data-level="3.6" data-path="modelo-normal-con-media-desconocida.html"><a href="modelo-normal-con-media-desconocida.html"><i class="fa fa-check"></i><b>3.6</b> Modelo Normal con media desconocida</a>
+<ul>
+<li class="chapter" data-level="3.6.1" data-path="modelo-normal-con-media-desconocida.html"><a href="modelo-normal-con-media-desconocida.html#distribución-previa-no-informativa-para-theta"><i class="fa fa-check"></i><b>3.6.1</b> Distribución previa no informativa para <span class="math inline">\(\theta\)</span></a></li>
+<li class="chapter" data-level="3.6.2" data-path="modelo-normal-con-media-desconocida.html"><a href="modelo-normal-con-media-desconocida.html#diferentes-formas-de-hallar-la-distribución-previa-para-theta"><i class="fa fa-check"></i><b>3.6.2</b> Diferentes formas de hallar la distribución previa para <span class="math inline">\(\theta\)</span></a></li>
+<li class="chapter" data-level="3.6.3" data-path="modelo-normal-con-media-desconocida.html"><a href="modelo-normal-con-media-desconocida.html#distribuciones-predictivas"><i class="fa fa-check"></i><b>3.6.3</b> Distribuciones predictivas</a></li>
+</ul></li>
+<li class="chapter" data-level="3.7" data-path="modelo-normal-con-varianza-desconocida.html"><a href="modelo-normal-con-varianza-desconocida.html"><i class="fa fa-check"></i><b>3.7</b> Modelo normal con varianza desconocida</a></li>
+</ul></li>
+<li class="chapter" data-level="4" data-path="modelos-multiparamétricos.html"><a href="modelos-multiparamétricos.html"><i class="fa fa-check"></i><b>4</b> Modelos multiparamétricos</a>
+<ul>
+<li class="chapter" data-level="4.1" data-path="modelo-normal-con-media-y-varianza-desconocida.html"><a href="modelo-normal-con-media-y-varianza-desconocida.html"><i class="fa fa-check"></i><b>4.1</b> Modelo Normal con media y varianza desconocida</a>
+<ul>
+<li class="chapter" data-level="4.1.1" data-path="modelo-normal-con-media-y-varianza-desconocida.html"><a href="modelo-normal-con-media-y-varianza-desconocida.html#parámetros-independientes"><i class="fa fa-check"></i><b>4.1.1</b> Parámetros independientes</a></li>
+<li class="chapter" data-level="4.1.2" data-path="modelo-normal-con-media-y-varianza-desconocida.html"><a href="modelo-normal-con-media-y-varianza-desconocida.html#parámetros-dependientes"><i class="fa fa-check"></i><b>4.1.2</b> Parámetros dependientes</a></li>
+<li class="chapter" data-level="4.1.3" data-path="modelo-normal-con-media-y-varianza-desconocida.html"><a href="modelo-normal-con-media-y-varianza-desconocida.html#parámetros-no-informativos"><i class="fa fa-check"></i><b>4.1.3</b> Parámetros no informativos</a></li>
+<li class="chapter" data-level="4.1.4" data-path="modelo-normal-con-media-y-varianza-desconocida.html"><a href="modelo-normal-con-media-y-varianza-desconocida.html#distribución-predictiva"><i class="fa fa-check"></i><b>4.1.4</b> Distribución predictiva</a></li>
+</ul></li>
+<li class="chapter" data-level="4.2" data-path="modelo-normal-multivariante-con-media-desconocida-y-varianza-conocida.html"><a href="modelo-normal-multivariante-con-media-desconocida-y-varianza-conocida.html"><i class="fa fa-check"></i><b>4.2</b> Modelo Normal multivariante con media desconocida y varianza conocida</a>
+<ul>
+<li class="chapter" data-level="4.2.1" data-path="modelo-normal-multivariante-con-media-desconocida-y-varianza-conocida.html"><a href="modelo-normal-multivariante-con-media-desconocida-y-varianza-conocida.html#distribución-previa-no-informativa"><i class="fa fa-check"></i><b>4.2.1</b> Distribución previa no informativa</a></li>
+</ul></li>
+</ul></li>
+<li class="appendix"><span><b>Apéndice</b></span></li>
+<li class="chapter" data-level="A" data-path="elementos-de-probabilidad.html"><a href="elementos-de-probabilidad.html"><i class="fa fa-check"></i><b>A</b> Elementos de probabilidad</a>
+<ul>
+<li class="chapter" data-level="A.1" data-path="distribuciones-discretas.html"><a href="distribuciones-discretas.html"><i class="fa fa-check"></i><b>A.1</b> Distribuciones discretas</a>
+<ul>
+<li class="chapter" data-level="A.1.1" data-path="distribuciones-discretas.html"><a href="distribuciones-discretas.html#distribución-uniforme-discreta"><i class="fa fa-check"></i><b>A.1.1</b> Distribución uniforme discreta</a></li>
+<li class="chapter" data-level="A.1.2" data-path="distribuciones-discretas.html"><a href="distribuciones-discretas.html#distribución-hipergeométrica"><i class="fa fa-check"></i><b>A.1.2</b> Distribución hipergeométrica</a></li>
+<li class="chapter" data-level="A.1.3" data-path="distribuciones-discretas.html"><a href="distribuciones-discretas.html#distribución-bernoulli"><i class="fa fa-check"></i><b>A.1.3</b> Distribución Bernoulli</a></li>
+<li class="chapter" data-level="A.1.4" data-path="distribuciones-discretas.html"><a href="distribuciones-discretas.html#distribución-binomial"><i class="fa fa-check"></i><b>A.1.4</b> Distribución binomial</a></li>
+<li class="chapter" data-level="A.1.5" data-path="distribuciones-discretas.html"><a href="distribuciones-discretas.html#distribución-binomial-negativa"><i class="fa fa-check"></i><b>A.1.5</b> Distribución Binomial negativa</a></li>
+<li class="chapter" data-level="A.1.6" data-path="distribuciones-discretas.html"><a href="distribuciones-discretas.html#distribución-de-poisson"><i class="fa fa-check"></i><b>A.1.6</b> Distribución de Poisson</a></li>
+</ul></li>
+<li class="chapter" data-level="A.2" data-path="distribuciones-continuas.html"><a href="distribuciones-continuas.html"><i class="fa fa-check"></i><b>A.2</b> Distribuciones continuas</a>
+<ul>
+<li class="chapter" data-level="A.2.1" data-path="distribuciones-continuas.html"><a href="distribuciones-continuas.html#distribución-uniforme-continua"><i class="fa fa-check"></i><b>A.2.1</b> Distribución Uniforme Continua</a></li>
+<li class="chapter" data-level="A.2.2" data-path="distribuciones-continuas.html"><a href="distribuciones-continuas.html#distribución-weibull"><i class="fa fa-check"></i><b>A.2.2</b> Distribución Weibull</a></li>
+<li class="chapter" data-level="A.2.3" data-path="distribuciones-continuas.html"><a href="distribuciones-continuas.html#distribución-valor-extremo"><i class="fa fa-check"></i><b>A.2.3</b> Distribución valor-extremo</a></li>
+<li class="chapter" data-level="A.2.4" data-path="distribuciones-continuas.html"><a href="distribuciones-continuas.html#distribución-gamma"><i class="fa fa-check"></i><b>A.2.4</b> Distribución Gamma</a></li>
+<li class="chapter" data-level="A.2.5" data-path="distribuciones-continuas.html"><a href="distribuciones-continuas.html#distribución-gamma-inversa"><i class="fa fa-check"></i><b>A.2.5</b> Distribución Gamma-inversa</a></li>
+<li class="chapter" data-level="A.2.6" data-path="distribuciones-continuas.html"><a href="distribuciones-continuas.html#distribución-exponencial"><i class="fa fa-check"></i><b>A.2.6</b> Distribución exponencial</a></li>
+<li class="chapter" data-level="A.2.7" data-path="distribuciones-continuas.html"><a href="distribuciones-continuas.html#distribución-beta"><i class="fa fa-check"></i><b>A.2.7</b> Distribución Beta</a></li>
+<li class="chapter" data-level="A.2.8" data-path="distribuciones-continuas.html"><a href="distribuciones-continuas.html#distribución-normal"><i class="fa fa-check"></i><b>A.2.8</b> Distribución normal</a></li>
+<li class="chapter" data-level="A.2.9" data-path="distribuciones-continuas.html"><a href="distribuciones-continuas.html#distribución-log-normal"><i class="fa fa-check"></i><b>A.2.9</b> Distribución log-normal</a></li>
+<li class="chapter" data-level="A.2.10" data-path="distribuciones-continuas.html"><a href="distribuciones-continuas.html#distribución-ji-cuadrado"><i class="fa fa-check"></i><b>A.2.10</b> Distribución Ji-cuadrado</a></li>
+<li class="chapter" data-level="A.2.11" data-path="distribuciones-continuas.html"><a href="distribuciones-continuas.html#distribución-t-student"><i class="fa fa-check"></i><b>A.2.11</b> Distribución t-student</a></li>
+<li class="chapter" data-level="A.2.12" data-path="distribuciones-continuas.html"><a href="distribuciones-continuas.html#distribución-t-student-generalizada"><i class="fa fa-check"></i><b>A.2.12</b> Distribución t-student generalizada</a></li>
+<li class="chapter" data-level="A.2.13" data-path="distribuciones-continuas.html"><a href="distribuciones-continuas.html#distribución-f"><i class="fa fa-check"></i><b>A.2.13</b> Distribución F</a></li>
+</ul></li>
+<li class="chapter" data-level="A.3" data-path="distribuciones-multivariadas.html"><a href="distribuciones-multivariadas.html"><i class="fa fa-check"></i><b>A.3</b> Distribuciones multivariadas</a>
+<ul>
+<li class="chapter" data-level="A.3.1" data-path="distribuciones-multivariadas.html"><a href="distribuciones-multivariadas.html#distribución-multinomial"><i class="fa fa-check"></i><b>A.3.1</b> Distribución Multinomial</a></li>
+<li class="chapter" data-level="A.3.2" data-path="distribuciones-multivariadas.html"><a href="distribuciones-multivariadas.html#distribución-dirichelt"><i class="fa fa-check"></i><b>A.3.2</b> Distribución Dirichelt</a></li>
+<li class="chapter" data-level="A.3.3" data-path="distribuciones-multivariadas.html"><a href="distribuciones-multivariadas.html#distribución-normal-multivariante"><i class="fa fa-check"></i><b>A.3.3</b> Distribución Normal Multivariante</a></li>
+<li class="chapter" data-level="A.3.4" data-path="distribuciones-multivariadas.html"><a href="distribuciones-multivariadas.html#distribución-wishart"><i class="fa fa-check"></i><b>A.3.4</b> Distribución Wishart</a></li>
+<li class="chapter" data-level="A.3.5" data-path="distribuciones-multivariadas.html"><a href="distribuciones-multivariadas.html#distribución-inversa-wishart"><i class="fa fa-check"></i><b>A.3.5</b> Distribución inversa-Wishart</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="B" data-path="matriz-de-información.html"><a href="matriz-de-información.html"><i class="fa fa-check"></i><b>B</b> Matriz de información</a></li>
+<li class="chapter" data-level="C" data-path="elementos-de-simulación-estadística.html"><a href="elementos-de-simulación-estadística.html"><i class="fa fa-check"></i><b>C</b> Elementos de simulación estadística</a>
+<ul>
+<li class="chapter" data-level="C.1" data-path="métodos-directos.html"><a href="métodos-directos.html"><i class="fa fa-check"></i><b>C.1</b> Métodos directos</a>
+<ul>
+<li class="chapter" data-level="C.1.1" data-path="métodos-directos.html"><a href="métodos-directos.html#método-de-la-transformación-uniforme"><i class="fa fa-check"></i><b>C.1.1</b> Método de la transformación uniforme</a></li>
+<li class="chapter" data-level="C.1.2" data-path="métodos-directos.html"><a href="métodos-directos.html#método-de-la-grilla"><i class="fa fa-check"></i><b>C.1.2</b> Método de la grilla</a></li>
+</ul></li>
+<li class="chapter" data-level="C.2" data-path="métodos-de-monte-carlo-vía-cadenas-de-markov.html"><a href="métodos-de-monte-carlo-vía-cadenas-de-markov.html"><i class="fa fa-check"></i><b>C.2</b> Métodos de Monte Carlo vía cadenas de Markov</a>
+<ul>
+<li class="chapter" data-level="C.2.1" data-path="métodos-de-monte-carlo-vía-cadenas-de-markov.html"><a href="métodos-de-monte-carlo-vía-cadenas-de-markov.html#el-muestreador-de-gibbs"><i class="fa fa-check"></i><b>C.2.1</b> El muestreador de Gibbs</a></li>
+<li class="chapter" data-level="C.2.2" data-path="métodos-de-monte-carlo-vía-cadenas-de-markov.html"><a href="métodos-de-monte-carlo-vía-cadenas-de-markov.html#el-algoritmo-de-metrópolis-hastings"><i class="fa fa-check"></i><b>C.2.2</b> El algoritmo de Metrópolis-Hastings</a></li>
+<li class="chapter" data-level="C.2.3" data-path="métodos-de-monte-carlo-vía-cadenas-de-markov.html"><a href="métodos-de-monte-carlo-vía-cadenas-de-markov.html#buenas-prácticas-en-la-aplicación-de-métodos-mcmc"><i class="fa fa-check"></i><b>C.2.3</b> Buenas prácticas en la aplicación de métodos MCMC</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="referencias.html"><a href="referencias.html"><i class="fa fa-check"></i>Referencias</a></li>
+<li class="divider"></li>
+<li><a Modelos Bayesianos con R y STAN</a></li>
+
+</ul>
+
+      </nav>
+    </div>
+
+    <div class="book-body">
+      <div class="body-inner">
+        <div class="book-header" role="navigation">
+          <h1>
+            <i class="fa fa-circle-o-notch fa-spin"></i><a href="./">Modelos Bayesianos con R y STAN</a>
+          </h1>
+        </div>
+
+        <div class="page-wrapper" tabindex="-1" role="main">
+          <div class="page-inner">
+
+            <section class="normal" id="section-">
+<div id="modelo-normal-multivariante-con-media-desconocida-y-varianza-conocida" class="section level2" number="4.2">
+<h2><span class="header-section-number">4.2</span> Modelo Normal multivariante con media desconocida y varianza conocida</h2>
+<p>Cuando la distribución usada para describir el comportamiento de los datos es una distribución normal multivariante, las técnicas de inferencia no se distancian mucho del caso univariado. Se debe tener en cuenta el manejo matricial de las formas cuadráticas y las propiedades básicas del cálculo de matrices. Los desarrollos y resultados derivados de esta sección redundarán en el análisis de los modelos lineales con el enfoque bayesiano.</p>
+<p>Sea <span class="math inline">\(\mathbf{Y}=(Y_1,\ldots,Y_p)&#39;\)</span> un vector aleatorio cuya distribución es normal multivariante dada por</p>
+<p><span class="math display">\[\begin{equation}
+p(\mathbf{Y} \mid \boldsymbol \theta,\boldsymbol \Sigma)\propto \mid \boldsymbol \Sigma\mid ^{-1/2}
+\exp\left\{-\frac{1}{2}(\mathbf{y}-\boldsymbol \theta)&#39;\boldsymbol \Sigma^{-1}(\mathbf{y}-\boldsymbol \theta)\right\}
+\end{equation}\]</span></p>
+<p>En donde <span class="math inline">\(\boldsymbol \theta=(\theta_1,\ldots,\theta_p)&#39;\)</span> es el vector que contiene la media de cada uno de los componentes del vector <span class="math inline">\(\mathbf{Y}\)</span> y <span class="math inline">\(\boldsymbol \Sigma\)</span> es la matriz de varianzas y covarianzas de orden <span class="math inline">\(p\times p\)</span>, simétrica y definida positiva. La verosimilitud para una muestra de <span class="math inline">\(n\)</span> vectores aleatorios independientes e idénticamente distribuidos está dada por</p>
+<p><span class="math display">\[\begin{equation*}
+  p(\mathbf{Y}_1\ldots,\mathbf{Y}_n \mid \boldsymbol \theta,\boldsymbol \Sigma)\propto \mid \boldsymbol \Sigma\mid ^{-n/2}
+  \exp\left\{-\frac{1}{2}\sum_{i=1}^n(\mathbf{y}_i-\boldsymbol \theta)&#39;\boldsymbol \Sigma^{-1}(\mathbf{y}_i-\boldsymbol \theta)\right\}
+\end{equation*}\]</span></p>
+<p>Los parámetros que requieren estimación corresponden al vector de medias <span class="math inline">\(\boldsymbol \theta\)</span> y la matriz de varianzas y covarianzas <span class="math inline">\(\boldsymbol \Sigma\)</span>. Por ahora, se asume que <span class="math inline">\(\boldsymbol \Sigma\)</span> es conocida y nos centramos en la estimación del vector de medias <span class="math inline">\(\boldsymbol \theta\)</span>. Para la distribución previa, considerando que en general no hay restricción sobre los valores de los componentes de <span class="math inline">\(\boldsymbol \theta\)</span>, asumimos que <span class="math inline">\(\boldsymbol \theta\)</span> sigue una distribución previa normal multivariante informativa y parametrizada por los hiper-parámetros <span class="math inline">\(\boldsymbol \mu\)</span> y <span class="math inline">\(\boldsymbol \Gamma\)</span></p>
+<p><span class="math display">\[\begin{equation*}
+p(\boldsymbol \theta\mid \boldsymbol \mu,\boldsymbol \Gamma)\propto \mid \boldsymbol \Gamma\mid ^{-1/2}
+\exp\left\{-\frac{1}{2}(\boldsymbol \theta-\boldsymbol \mu)&#39;\boldsymbol \Gamma^{-1}(\boldsymbol \theta-\boldsymbol \mu)\right\}
+\end{equation*}\]</span></p>
+<p>Nótese que esta distribución se hace no informativa cuando <span class="math inline">\(\mid \boldsymbol \Gamma^{-1} \mid \longrightarrow 0\)</span>, sin importar el valor del vector de medias previa <span class="math inline">\(\boldsymbol \mu\)</span>. En el siguiente resultado, encontramos la distribución posterior del parámetro <span class="math inline">\(\boldsymbol \theta\)</span>.</p>
+
+<div class="proposition">
+<p><span id="prp:unnamed-chunk-23" class="proposition"><strong>Resultado 4.8  </strong></span>La distribución posterior del vector <span class="math inline">\(\boldsymbol \theta\)</span> sigue una distribución normal multivariante
+<span class="math display">\[\begin{equation*}
+\boldsymbol \theta\mid \mathbf{Y},\boldsymbol \Sigma\sim N_p (\boldsymbol \mu_n,\boldsymbol \Gamma_n).
+\end{equation*}\]</span></p>
+En donde
+<span class="math display">\[\begin{align}
+\boldsymbol \Gamma_n &amp;= \left(\boldsymbol \Gamma^{-1}+n\boldsymbol \Sigma^{-1}\right)^{-1}\label{Gamma_n}\\
+\boldsymbol \mu_n &amp;= \boldsymbol \Gamma_n(\boldsymbol \Gamma^{-1}\boldsymbol \mu+n \boldsymbol \Sigma^{-1}\bar{\mathbf{y}})\label{mu_n}
+\end{align}\]</span>
+</div>
+<p><br></p>
+
+<div class="proof">
+<p> <span class="proof"><em>Prueba. </em></span> En primer lugar, nótese la siguiente identidad
+<span class="math display">\[\begin{equation}
+\sum_{i=1}^n(\mathbf{Y}_i-\boldsymbol \theta)&#39;\boldsymbol \Sigma^{-1}(\mathbf{Y}_i-\boldsymbol \theta)
+=\sum_{i=1}^n(\mathbf{Y}_i-\bar{\mathbf{Y}})&#39;\boldsymbol \Sigma^{-1}(\mathbf{Y}_i-\bar{\mathbf{Y}})
++n(\bar{\mathbf{Y}}-\boldsymbol \theta)&#39;\boldsymbol \Sigma^{-1}(\bar{\mathbf{Y}}-\boldsymbol \theta)
+\end{equation}\]</span></p>
+<p>puesto que
+<span class="math display">\[\begin{align*}
+&amp;\ \ \ \ \sum_{i=1}^n(\mathbf{Y}_i-\boldsymbol \theta)&#39;\boldsymbol \Sigma^{-1}(\mathbf{Y}_i-\boldsymbol \theta)\\
+&amp;=\sum_{i=1}^n(\mathbf{Y}_i-\bar{\mathbf{Y}}+\bar{\mathbf{Y}}-\boldsymbol \theta)&#39;
+\boldsymbol \Sigma^{-1}(\mathbf{Y}_i-\bar{\mathbf{Y}}+\bar{\mathbf{Y}}-\boldsymbol \theta)\\
+&amp;=\sum_{i=1}^n(\mathbf{Y}_i-\bar{\mathbf{Y}})&#39;\boldsymbol \Sigma^{-1}(\mathbf{Y}_i-\bar{\mathbf{Y}})
++\sum_{i=1}^n(\mathbf{Y}_i-\bar{\mathbf{Y}})&#39;\boldsymbol \Sigma^{-1}(\bar{\mathbf{Y}}-\boldsymbol \theta)\\
+&amp;\hspace{1.5cm}
++(\bar{\mathbf{Y}}-\boldsymbol \theta)&#39;\boldsymbol \Sigma^{-1}\sum_{i=1}^n(\mathbf{Y}_i-\bar{\mathbf{Y}})&#39;
++\sum_{i=1}^n(\bar{\mathbf{Y}}-\boldsymbol \theta)&#39;\boldsymbol \Sigma^{-1}(\bar{\mathbf{Y}}-\boldsymbol \theta)\\
+&amp;=\sum_{i=1}^n(\mathbf{Y}_i-\bar{\mathbf{Y}})&#39;\boldsymbol \Sigma^{-1}(\mathbf{Y}_i-\bar{\mathbf{Y}})
++n(\bar{\mathbf{Y}}-\boldsymbol \theta)&#39;\boldsymbol \Sigma^{-1}(\bar{\mathbf{Y}}-\boldsymbol \theta)
+\end{align*}\]</span></p>
+<p>Por otro lado, de la definición de distribución previa, se tiene que
+<span class="math display">\[\begin{align*}
+p(\boldsymbol \theta\mid \mathbf{Y},\boldsymbol \Sigma)
+&amp;\propto p(\mathbf{Y} \mid \boldsymbol \theta,\boldsymbol \Sigma)p(\boldsymbol \theta,\boldsymbol \Sigma)\\
+&amp;\propto \exp\left\{-\frac{1}{2}\left[\sum_{i=1}^n(\mathbf{y}_i-\boldsymbol \theta)&#39;\boldsymbol \Sigma^{-1}(\mathbf{y}_i-\boldsymbol \theta)+(\boldsymbol \theta-\boldsymbol \mu)&#39;\boldsymbol \Gamma^{-1}(\boldsymbol \theta-\boldsymbol \mu)\right]\right\}\\
+&amp;\propto \exp\left\{-\frac{1}{2}\left[n(\bar{\mathbf{y}}-\boldsymbol \theta)&#39;\boldsymbol \Sigma^{-1}(\bar{\mathbf{y}}-\boldsymbol \theta)+(\boldsymbol \theta-\boldsymbol \mu)&#39;\boldsymbol \Gamma^{-1}(\boldsymbol \theta-\boldsymbol \mu)\right]\right\}\\
+&amp;\propto \exp\left\{-\frac{1}{2}\left[
+  -n\bar{\mathbf{y}}&#39;\boldsymbol \Sigma^{-1}\boldsymbol \theta-n\boldsymbol \theta&#39;\boldsymbol \Sigma^{-1}\bar{\mathbf{y}}+n\boldsymbol \theta&#39;\boldsymbol \Sigma^{-1}\boldsymbol \theta+\boldsymbol \theta&#39;\boldsymbol \Gamma^{-1}\boldsymbol \theta-\boldsymbol \theta&#39;\boldsymbol \Gamma^{-1}\boldsymbol \mu-\boldsymbol \mu&#39;\boldsymbol \Gamma^{-1}\boldsymbol \theta\right]\right\}\\
+&amp;= \exp\left\{-\frac{1}{2}\left[
+  \boldsymbol \theta&#39;(\boldsymbol \Gamma^{-1}+n\boldsymbol \Sigma^{-1})\boldsymbol \theta-2\boldsymbol \theta&#39;(\boldsymbol \Gamma^{-1}\boldsymbol \mu+n\boldsymbol \Sigma^{-1}\bar{\mathbf{y}})\right]\right\}\\
+&amp;= \exp\left\{-\frac{1}{2}\left[\boldsymbol \theta&#39;\boldsymbol \Gamma^{-1}_n\boldsymbol \theta-2\boldsymbol \theta&#39;\boldsymbol \Gamma^{-1}_n\boldsymbol \mu_n\right]\right\}\\
+&amp;\propto \exp\left\{-\frac{1}{2}\left[\boldsymbol \theta&#39;\boldsymbol \Gamma^{-1}_n\boldsymbol \theta-2\boldsymbol \theta&#39;\boldsymbol \Gamma^{-1}_n\boldsymbol \mu_n+\boldsymbol \mu_n\boldsymbol \Gamma_n^{-1}\boldsymbol \mu_n\right]\right\}\\
+&amp;= \exp\left\{-\frac{1}{2}(\boldsymbol \theta-\boldsymbol \mu_n)&#39;\boldsymbol \Gamma_n^{-1}(\boldsymbol \theta-\boldsymbol \mu_n)\right\}
+  \end{align*}\]</span></p>
+La cual corresponde al núcleo de una distribución normal multivariante con vector de medias <span class="math inline">\(\boldsymbol \mu_n\)</span> y matriz de varianzas <span class="math inline">\(\boldsymbol \Gamma_n\)</span>.
+</div>
+<p><br></p>
+<p>Observando los parámetros de la distribución posterior, podemos ver que <span class="math inline">\(\boldsymbol \Gamma_n^{-1} = \boldsymbol \Gamma^{-1}+(\boldsymbol \Sigma/n)^{-1}\)</span>. Teniendo en cuenta que la matriz de varianzas y covarianzas es una medida de dispersión de la distribución alrededor de su media, la inversa de dicha matriz se puede ver como una medida de precisión de qué tanto se concentra la distribución alrededor de la media. Así, podemos ver que la precisión posterior viene siendo la suma entre la precisión previa y la precisión de la estimación clásica del parámetro <span class="math inline">\(\boldsymbol \theta\)</span>.</p>
+<p>En cuanto a la media posterior <span class="math inline">\(\boldsymbol \mu_n\)</span>, tenemos que
+<span class="math display">\[\begin{align*}
+\boldsymbol \mu_n&amp;=\left(\boldsymbol \Gamma^{-1}+n\boldsymbol \Sigma^{-1}\right)^{-1}
+(\boldsymbol \Gamma^{-1}\boldsymbol \mu+n \boldsymbol \Sigma^{-1}\bar{\mathbf{y}})\\
+&amp;=\left(\mathbf{I}+n\boldsymbol \Gamma\boldsymbol \Sigma^{-1}\right)^{-1}\boldsymbol \mu+\left(\frac{1}{n}\boldsymbol \Sigma\boldsymbol \Gamma^{-1}+\mathbf{I}\right)^{-1}\bar{\mathbf{y}}\\
+&amp;=\underbrace{\boldsymbol \Sigma\left(\boldsymbol \Sigma+n\boldsymbol \Gamma\right)^{-1}}_{\mathbf{A}_1}\boldsymbol \mu+\underbrace{n\boldsymbol \Gamma\left(\boldsymbol \Sigma+n\boldsymbol \Gamma\right)^{-1}}_{\mathbf{A}_2}\bar{\mathbf{y}}
+\end{align*}\]</span></p>
+<p>De donde podemos que ver que la media posterior <span class="math inline">\(\boldsymbol \mu_n\)</span> se puede escribir como <span class="math inline">\(\boldsymbol \mu_n=\mathbf{A}_1\boldsymbol \mu+\mathbf{A}_2\bar{\mathbf{y}}\)</span> donde <span class="math inline">\(\mathbf{A}_1+\mathbf{A}_2=\mathbf{I}\)</span>. Es claro que en el caso univariado, <span class="math inline">\(\mathbf{A}_1\)</span>, <span class="math inline">\(\boldsymbol \mu\)</span>, <span class="math inline">\(\mathbf{A}_2\)</span> y <span class="math inline">\(\bar{\mathbf{y}}\)</span> son todos escalares, y <span class="math inline">\(\boldsymbol \mu_n\)</span> es un valor intermedio entre <span class="math inline">\(\boldsymbol \mu\)</span> y <span class="math inline">\(\bar{\mathbf{y}}\)</span>. Mientras que en caso multivariado, <span class="math inline">\(\mathbf{A}_1\boldsymbol \mu+\mathbf{A}_2\bar{\mathbf{y}}\)</span> es similar a una combinación convexa entre los vectores <span class="math inline">\(\boldsymbol \mu\)</span> y <span class="math inline">\(\bar{\mathbf{y}}\)</span>, pero los coeficientes son matrices en vez de escalares.</p>
+<p>Para ilustrar la relación de <span class="math inline">\(\boldsymbol \mu_n\)</span> con <span class="math inline">\(\boldsymbol \mu\)</span> y <span class="math inline">\(\bar{\mathbf{y}}\)</span>, tomamos el caso de <span class="math inline">\(p=2\)</span>, y denotamos <span class="math inline">\(\mathbf{A}=\boldsymbol \Sigma\left(\boldsymbol \Sigma+n\boldsymbol \Gamma\right)^{-1}\)</span>. Es claro que <span class="math inline">\(\mathbf{A}\)</span> es una matriz simétrica y definida positiva, lo denotaremos con <span class="math inline">\(\mathbf{A}_1=\begin{pmatrix}a_{11}&amp;a_{12}\\ a_{12}&amp;a_{22}\end{pmatrix}\)</span>, donde <span class="math inline">\(a_{11}&gt;0\)</span> y <span class="math inline">\(a_{22}&gt;0\)</span>. De esta forma
+<span class="math display">\[\begin{align*}
+\boldsymbol \mu_n&amp;=\begin{pmatrix}a_{11}&amp;a_{12}\\ a_{12}&amp;a_{22}\end{pmatrix}\begin{pmatrix}\mu_{1}\\ \mu_{2}\end{pmatrix}+\begin{pmatrix}1-a_{11}&amp;-a_{12}\\ -a_{12}&amp;1-a_{22}\end{pmatrix}\begin{pmatrix}\bar{y}_{1}\\ \bar{y}_{2}\end{pmatrix}\\
+&amp;=\begin{pmatrix}a_{11}\mu_1+(1-a_{11})\bar{y}_{1}+a_{12}(\mu_2-\bar{y}_{2})\\a_{22}\mu_2+(1-a_{22})\bar{y}_{2}+a_{12}(\mu_1-\bar{y}_{1})\end{pmatrix}
+\end{align*}\]</span></p>
+<p>Al observar la primera entrada de <span class="math inline">\(\boldsymbol \mu_n\)</span>, podemos ver que este se compone de una combinación convexa entre <span class="math inline">\(\mu_1\)</span> y <span class="math inline">\(\bar{y}_1\)</span> (pues <span class="math inline">\(a_{11}&gt;0\)</span>) y una parte que depende de la diferencia <span class="math inline">\(\mu_2-\bar{y}_{2}\)</span>; un comportamiento similar se observa en la segunda entrada de <span class="math inline">\(\boldsymbol \mu_n\)</span>. Esta observación es interesante, pues ilustra que cada componente de la media posterior <span class="math inline">\(\boldsymbol \mu_n\)</span> no siempre será un promedio ponderado del componentes correspondiente de la media previa y la estimación clásica.</p>
+<p>Ilustramos los resultados encontrados suponiendo las dos siguientes situaciones:</p>
+<ol style="list-style-type: decimal">
+<li>Suponga que se quiere estimar el vector de medias <span class="math inline">\(\boldsymbol \theta=(\theta_1,\theta_2)&#39;\)</span> con una matriz de varianzas y covarianzas conocida de <span class="math inline">\(\boldsymbol \Sigma=\begin{pmatrix}20&amp;8\\ 8&amp;30\end{pmatrix}\)</span>. Para esto se recolectan 10 observaciones con vector de promedios muestrales <span class="math inline">\(\bar{\mathbf{y}}=(150,230)&#39;\)</span>. Como información previa, suponga que <span class="math inline">\(\boldsymbol \mu=(100, 200)&#39;\)</span> y <span class="math inline">\(\boldsymbol \Gamma=\begin{pmatrix}5&amp;3\\ 3&amp;10\end{pmatrix}\)</span>. Realizando los cálculos correspondiente, se tiene que <span class="math inline">\(\boldsymbol \Gamma_n=\begin{pmatrix}1.42&amp;0.64\\ 0.64&amp;2.31\end{pmatrix}\)</span>, <span class="math inline">\(\mathbf{A}=\begin{pmatrix}0.3&amp;-0.026\\ -0.026&amp;0.235\end{pmatrix}\)</span> y <span class="math inline">\(\boldsymbol \mu_n=(136,224)\)</span>. Podemos ver que en este caso cada componente de <span class="math inline">\(\boldsymbol \mu_n\)</span> se encuentra entre los componentes correspondientes de <span class="math inline">\(\boldsymbol \mu\)</span> y <span class="math inline">\(\bar{\mathbf{y}}\)</span>. Los códigos computacionales se muestran a continuación.</li>
+</ol>
+<div class="sourceCode" id="cb116"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb116-1"><a href="modelo-normal-multivariante-con-media-desconocida-y-varianza-conocida.html#cb116-1" aria-hidden="true" tabindex="-1"></a>n <span class="ot">&lt;-</span> <span class="dv">10</span></span>
+<span id="cb116-2"><a href="modelo-normal-multivariante-con-media-desconocida-y-varianza-conocida.html#cb116-2" aria-hidden="true" tabindex="-1"></a>mu <span class="ot">&lt;-</span> <span class="fu">matrix</span>(<span class="fu">c</span>(<span class="dv">100</span>, <span class="dv">200</span>))</span>
+<span id="cb116-3"><a href="modelo-normal-multivariante-con-media-desconocida-y-varianza-conocida.html#cb116-3" aria-hidden="true" tabindex="-1"></a>y.bar <span class="ot">&lt;-</span> <span class="fu">matrix</span>(<span class="fu">c</span>(<span class="dv">150</span>, <span class="dv">230</span>))</span>
+<span id="cb116-4"><a href="modelo-normal-multivariante-con-media-desconocida-y-varianza-conocida.html#cb116-4" aria-hidden="true" tabindex="-1"></a>Gamma <span class="ot">&lt;-</span> <span class="fu">matrix</span>(<span class="fu">c</span>(<span class="dv">5</span>, <span class="dv">3</span>, <span class="dv">3</span>, <span class="dv">10</span>), <span class="dv">2</span>, <span class="dv">2</span>)</span>
+<span id="cb116-5"><a href="modelo-normal-multivariante-con-media-desconocida-y-varianza-conocida.html#cb116-5" aria-hidden="true" tabindex="-1"></a>Sigma <span class="ot">&lt;-</span> <span class="fu">matrix</span>(<span class="fu">c</span>(<span class="dv">20</span>, <span class="dv">8</span>, <span class="dv">8</span>, <span class="dv">30</span>), <span class="dv">2</span>, <span class="dv">2</span>)</span>
+<span id="cb116-6"><a href="modelo-normal-multivariante-con-media-desconocida-y-varianza-conocida.html#cb116-6" aria-hidden="true" tabindex="-1"></a>Gamma.n <span class="ot">&lt;-</span> <span class="fu">solve</span>(<span class="fu">solve</span>(Gamma) <span class="sc">+</span> n <span class="sc">*</span> <span class="fu">solve</span>(Sigma))</span>
+<span id="cb116-7"><a href="modelo-normal-multivariante-con-media-desconocida-y-varianza-conocida.html#cb116-7" aria-hidden="true" tabindex="-1"></a>A <span class="ot">&lt;-</span> Sigma <span class="sc">%*%</span> <span class="fu">solve</span>(Sigma <span class="sc">+</span> n <span class="sc">*</span> Gamma) </span>
+<span id="cb116-8"><a href="modelo-normal-multivariante-con-media-desconocida-y-varianza-conocida.html#cb116-8" aria-hidden="true" tabindex="-1"></a>mu.n <span class="ot">&lt;-</span> Gamma.n <span class="sc">%*%</span> </span>
+<span id="cb116-9"><a href="modelo-normal-multivariante-con-media-desconocida-y-varianza-conocida.html#cb116-9" aria-hidden="true" tabindex="-1"></a>  (<span class="fu">solve</span>(Gamma) <span class="sc">%*%</span> mu <span class="sc">+</span> n <span class="sc">*</span> <span class="fu">solve</span>(Sigma) <span class="sc">%*%</span> y.bar)</span>
+<span id="cb116-10"><a href="modelo-normal-multivariante-con-media-desconocida-y-varianza-conocida.html#cb116-10" aria-hidden="true" tabindex="-1"></a>mu.n</span></code></pre></div>
+<table>
+<tbody>
+<tr class="odd">
+<td align="right">135.7889</td>
+</tr>
+<tr class="even">
+<td align="right">223.6155</td>
+</tr>
+</tbody>
+</table>
+<ol start="2" style="list-style-type: decimal">
+<li>Tomando los mismos datos del caso anterior, también podemos suponer que <span class="math inline">\(\bar{\mathbf{y}}=(150, 2300)&#39;\)</span>, las matrices <span class="math inline">\(\boldsymbol \Gamma_n\)</span> y <span class="math inline">\(\mathbf{A}\)</span> no cambian de valor, pero la media de la distribución posterior está dada por <span class="math inline">\(\boldsymbol \mu_n=(190,1808)\)</span>. Podemos ver que el primer componente de <span class="math inline">\(\boldsymbol \mu_n\)</span> no está entre 100 y 150 que corresponden a las estimaciones previa y clásica, respectivamente. Esto se debe a que la diferencia entre <span class="math inline">\(\mu_2\)</span> y <span class="math inline">\(\bar{y}_2\)</span> es muy grande.</li>
+</ol>
+<div class="sourceCode" id="cb117"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb117-1"><a href="modelo-normal-multivariante-con-media-desconocida-y-varianza-conocida.html#cb117-1" aria-hidden="true" tabindex="-1"></a>n <span class="ot">&lt;-</span> <span class="dv">10</span></span>
+<span id="cb117-2"><a href="modelo-normal-multivariante-con-media-desconocida-y-varianza-conocida.html#cb117-2" aria-hidden="true" tabindex="-1"></a>mu <span class="ot">&lt;-</span> <span class="fu">matrix</span>(<span class="fu">c</span>(<span class="dv">100</span>, <span class="dv">200</span>))</span>
+<span id="cb117-3"><a href="modelo-normal-multivariante-con-media-desconocida-y-varianza-conocida.html#cb117-3" aria-hidden="true" tabindex="-1"></a>y.bar <span class="ot">&lt;-</span> <span class="fu">matrix</span>(<span class="fu">c</span>(<span class="dv">150</span>, <span class="dv">2300</span>))</span>
+<span id="cb117-4"><a href="modelo-normal-multivariante-con-media-desconocida-y-varianza-conocida.html#cb117-4" aria-hidden="true" tabindex="-1"></a>Gamma <span class="ot">&lt;-</span> <span class="fu">matrix</span>(<span class="fu">c</span>(<span class="dv">5</span>, <span class="dv">3</span>, <span class="dv">3</span>, <span class="dv">10</span>), <span class="dv">2</span>, <span class="dv">2</span>)</span>
+<span id="cb117-5"><a href="modelo-normal-multivariante-con-media-desconocida-y-varianza-conocida.html#cb117-5" aria-hidden="true" tabindex="-1"></a>Sigma <span class="ot">&lt;-</span> <span class="fu">matrix</span>(<span class="fu">c</span>(<span class="dv">20</span>, <span class="dv">8</span>, <span class="dv">8</span>, <span class="dv">30</span>), <span class="dv">2</span>, <span class="dv">2</span>)</span>
+<span id="cb117-6"><a href="modelo-normal-multivariante-con-media-desconocida-y-varianza-conocida.html#cb117-6" aria-hidden="true" tabindex="-1"></a>Gamma.n <span class="ot">&lt;-</span> <span class="fu">solve</span>(<span class="fu">solve</span>(Gamma) <span class="sc">+</span> n <span class="sc">*</span> <span class="fu">solve</span>(Sigma))</span>
+<span id="cb117-7"><a href="modelo-normal-multivariante-con-media-desconocida-y-varianza-conocida.html#cb117-7" aria-hidden="true" tabindex="-1"></a>A <span class="ot">&lt;-</span> Sigma <span class="sc">%*%</span> <span class="fu">solve</span>(Sigma <span class="sc">+</span> n <span class="sc">*</span> Gamma) </span>
+<span id="cb117-8"><a href="modelo-normal-multivariante-con-media-desconocida-y-varianza-conocida.html#cb117-8" aria-hidden="true" tabindex="-1"></a>mu.n <span class="ot">&lt;-</span> Gamma.n <span class="sc">%*%</span> </span>
+<span id="cb117-9"><a href="modelo-normal-multivariante-con-media-desconocida-y-varianza-conocida.html#cb117-9" aria-hidden="true" tabindex="-1"></a>  (<span class="fu">solve</span>(Gamma) <span class="sc">%*%</span> mu <span class="sc">+</span> n <span class="sc">*</span> <span class="fu">solve</span>(Sigma) <span class="sc">%*%</span> y.bar)</span>
+<span id="cb117-10"><a href="modelo-normal-multivariante-con-media-desconocida-y-varianza-conocida.html#cb117-10" aria-hidden="true" tabindex="-1"></a>mu.n</span></code></pre></div>
+<table>
+<tbody>
+<tr class="odd">
+<td align="right">189.8642</td>
+</tr>
+<tr class="even">
+<td align="right">1808.0199</td>
+</tr>
+</tbody>
+</table>
+<div id="distribución-previa-no-informativa" class="section level3" number="4.2.1">
+<h3><span class="header-section-number">4.2.1</span> Distribución previa no informativa</h3>
+<p>Al tener en cuenta que la distribución previa del parámetro <span class="math inline">\(\boldsymbol \theta\)</span> es la distribución normal multivariada, y al observar la forma de la función de densidad, se puede afirmar que cuando <span class="math inline">\(|\boldsymbol \Gamma^{-1}|\)</span> es muy pequeño, los parámetros previos <span class="math inline">\(\boldsymbol \mu\)</span> y <span class="math inline">\(\boldsymbol \Gamma\)</span> pierden peso en los cálculos de <span class="math inline">\(\boldsymbol \mu_n\)</span> y <span class="math inline">\(\boldsymbol \Gamma_n\)</span>. En este caso se puede ver que
+<span class="math display">\[\begin{align*}
+\boldsymbol \Gamma_n&amp;\approx n^{-1}\boldsymbol \Sigma\\
+\boldsymbol \mu_n&amp;\approx \bar{\mathbf{y}}
+\end{align*}\]</span></p>
+<p>De donde podemos concluir que la estimación bayesiana será muy cercana a la estimación clásica <span class="math inline">\(\bar{y}\)</span>, más aún, el intervalo de credibilidad también será muy similar al intervalo de confianza del enfoque clásico.</p>
+
+<div class="example">
+<p><span id="exm:unnamed-chunk-27" class="example"><strong>Ejemplo 4.2  </strong></span><span class="citation"><a href="#ref-Student" role="doc-biblioref">Student</a> (<a href="#ref-Student" role="doc-biblioref">1908</a>)</span> introdujo un conjunto de datos clásicos sobre el incremento en horas de sueño producido con 2 medicamentos soporíferos diferentes comparados con grupo control en 10 pacientes. Estos datos se pueden encontrar en <code>R</code> con el nombre <code>sleep</code> y se pueden definir como realizaciones de vectores aleatorios con distribución normal bivariada. Supongamos que la matriz de varianzas y covarianzas de la distribución es conocida e igual a <span class="math inline">\(\Sigma=\begin{pmatrix}1&amp;0.6\\ 0.6&amp;2\end{pmatrix}\)</span>.</p>
+El parámetro de interés es el vector de medias <span class="math inline">\(\boldsymbol \theta=(\theta_1,\theta_2)&#39;\)</span>. Para la distribución previa, suponemos que <span class="math inline">\(\boldsymbol \mu=(0,1)&#39;\)</span>, es decir que el primer medicamento no tiene ningún efecto soporífero, mientras que el segundo medicamento tiene un efecto promedio de aumentar 1 hora de sueño, también asumimos que <span class="math inline">\(\Gamma=\begin{pmatrix}2&amp;0\\ 0&amp;2\end{pmatrix}\)</span>. Los siguientes códigos de <code>STAN</code> ilustran el procedimiento de estimación del parámetro de interés.
+</div>
+<div class="sourceCode" id="cb118"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb118-1"><a href="modelo-normal-multivariante-con-media-desconocida-y-varianza-conocida.html#cb118-1" aria-hidden="true" tabindex="-1"></a>NormalMultMedia <span class="ot">&lt;-</span> <span class="st">&#39;</span></span>
+<span id="cb118-2"><a href="modelo-normal-multivariante-con-media-desconocida-y-varianza-conocida.html#cb118-2" aria-hidden="true" tabindex="-1"></a><span class="st">data {</span></span>
+<span id="cb118-3"><a href="modelo-normal-multivariante-con-media-desconocida-y-varianza-conocida.html#cb118-3" aria-hidden="true" tabindex="-1"></a><span class="st">  int&lt;lower=0&gt; n;</span></span>
+<span id="cb118-4"><a href="modelo-normal-multivariante-con-media-desconocida-y-varianza-conocida.html#cb118-4" aria-hidden="true" tabindex="-1"></a><span class="st">  int&lt;lower=0&gt; P;</span></span>
+<span id="cb118-5"><a href="modelo-normal-multivariante-con-media-desconocida-y-varianza-conocida.html#cb118-5" aria-hidden="true" tabindex="-1"></a><span class="st">  vector[P] y[n];</span></span>
+<span id="cb118-6"><a href="modelo-normal-multivariante-con-media-desconocida-y-varianza-conocida.html#cb118-6" aria-hidden="true" tabindex="-1"></a><span class="st">  vector[P] mu;</span></span>
+<span id="cb118-7"><a href="modelo-normal-multivariante-con-media-desconocida-y-varianza-conocida.html#cb118-7" aria-hidden="true" tabindex="-1"></a><span class="st">  matrix[P, P] Sigma;</span></span>
+<span id="cb118-8"><a href="modelo-normal-multivariante-con-media-desconocida-y-varianza-conocida.html#cb118-8" aria-hidden="true" tabindex="-1"></a><span class="st">  matrix[P, P] Gamma;</span></span>
+<span id="cb118-9"><a href="modelo-normal-multivariante-con-media-desconocida-y-varianza-conocida.html#cb118-9" aria-hidden="true" tabindex="-1"></a><span class="st">}</span></span>
+<span id="cb118-10"><a href="modelo-normal-multivariante-con-media-desconocida-y-varianza-conocida.html#cb118-10" aria-hidden="true" tabindex="-1"></a><span class="st">parameters {</span></span>
+<span id="cb118-11"><a href="modelo-normal-multivariante-con-media-desconocida-y-varianza-conocida.html#cb118-11" aria-hidden="true" tabindex="-1"></a><span class="st">  vector[P] theta;</span></span>
+<span id="cb118-12"><a href="modelo-normal-multivariante-con-media-desconocida-y-varianza-conocida.html#cb118-12" aria-hidden="true" tabindex="-1"></a><span class="st">}</span></span>
+<span id="cb118-13"><a href="modelo-normal-multivariante-con-media-desconocida-y-varianza-conocida.html#cb118-13" aria-hidden="true" tabindex="-1"></a><span class="st">transformed parameters {</span></span>
+<span id="cb118-14"><a href="modelo-normal-multivariante-con-media-desconocida-y-varianza-conocida.html#cb118-14" aria-hidden="true" tabindex="-1"></a><span class="st">  real diftheta;</span></span>
+<span id="cb118-15"><a href="modelo-normal-multivariante-con-media-desconocida-y-varianza-conocida.html#cb118-15" aria-hidden="true" tabindex="-1"></a><span class="st">  diftheta = theta[2] - theta[1];</span></span>
+<span id="cb118-16"><a href="modelo-normal-multivariante-con-media-desconocida-y-varianza-conocida.html#cb118-16" aria-hidden="true" tabindex="-1"></a><span class="st">}</span></span>
+<span id="cb118-17"><a href="modelo-normal-multivariante-con-media-desconocida-y-varianza-conocida.html#cb118-17" aria-hidden="true" tabindex="-1"></a><span class="st">model {</span></span>
+<span id="cb118-18"><a href="modelo-normal-multivariante-con-media-desconocida-y-varianza-conocida.html#cb118-18" aria-hidden="true" tabindex="-1"></a><span class="st">  y ~ multi_normal(theta, Sigma);</span></span>
+<span id="cb118-19"><a href="modelo-normal-multivariante-con-media-desconocida-y-varianza-conocida.html#cb118-19" aria-hidden="true" tabindex="-1"></a><span class="st">  theta ~ multi_normal(mu, Gamma);</span></span>
+<span id="cb118-20"><a href="modelo-normal-multivariante-con-media-desconocida-y-varianza-conocida.html#cb118-20" aria-hidden="true" tabindex="-1"></a><span class="st">}</span></span>
+<span id="cb118-21"><a href="modelo-normal-multivariante-con-media-desconocida-y-varianza-conocida.html#cb118-21" aria-hidden="true" tabindex="-1"></a><span class="st">&#39;</span></span>
+<span id="cb118-22"><a href="modelo-normal-multivariante-con-media-desconocida-y-varianza-conocida.html#cb118-22" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb118-23"><a href="modelo-normal-multivariante-con-media-desconocida-y-varianza-conocida.html#cb118-23" aria-hidden="true" tabindex="-1"></a>y <span class="ot">&lt;-</span> <span class="fu">structure</span>(<span class="at">.Data =</span> sleep[,<span class="dv">1</span>], <span class="at">.Dim=</span><span class="fu">c</span>(<span class="dv">10</span>,<span class="dv">2</span>))</span>
+<span id="cb118-24"><a href="modelo-normal-multivariante-con-media-desconocida-y-varianza-conocida.html#cb118-24" aria-hidden="true" tabindex="-1"></a>n <span class="ot">&lt;-</span> <span class="fu">nrow</span>(y)</span>
+<span id="cb118-25"><a href="modelo-normal-multivariante-con-media-desconocida-y-varianza-conocida.html#cb118-25" aria-hidden="true" tabindex="-1"></a>P <span class="ot">&lt;-</span> <span class="fu">ncol</span>(y)</span>
+<span id="cb118-26"><a href="modelo-normal-multivariante-con-media-desconocida-y-varianza-conocida.html#cb118-26" aria-hidden="true" tabindex="-1"></a>Sigma  <span class="ot">&lt;-</span> <span class="fu">matrix</span>(<span class="fu">c</span>(<span class="dv">1</span>, <span class="fl">0.6</span>, <span class="fl">0.6</span>, <span class="dv">2</span>), <span class="dv">2</span>, <span class="dv">2</span>)</span>
+<span id="cb118-27"><a href="modelo-normal-multivariante-con-media-desconocida-y-varianza-conocida.html#cb118-27" aria-hidden="true" tabindex="-1"></a>mu <span class="ot">&lt;-</span> <span class="fu">as.vector</span>(<span class="fu">c</span>(<span class="dv">0</span>, <span class="dv">1</span>))</span>
+<span id="cb118-28"><a href="modelo-normal-multivariante-con-media-desconocida-y-varianza-conocida.html#cb118-28" aria-hidden="true" tabindex="-1"></a>Gamma <span class="ot">&lt;-</span> <span class="fu">matrix</span>(<span class="fu">c</span>(<span class="dv">2</span>, <span class="dv">0</span>, <span class="dv">0</span>, <span class="dv">2</span>), <span class="dv">2</span>, <span class="dv">2</span>)</span>
+<span id="cb118-29"><a href="modelo-normal-multivariante-con-media-desconocida-y-varianza-conocida.html#cb118-29" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb118-30"><a href="modelo-normal-multivariante-con-media-desconocida-y-varianza-conocida.html#cb118-30" aria-hidden="true" tabindex="-1"></a>sample_data <span class="ot">&lt;-</span> <span class="fu">list</span>(<span class="at">y =</span> y, <span class="at">n =</span> n, <span class="at">P =</span> P,</span>
+<span id="cb118-31"><a href="modelo-normal-multivariante-con-media-desconocida-y-varianza-conocida.html#cb118-31" aria-hidden="true" tabindex="-1"></a>                    <span class="at">Sigma =</span> Sigma, <span class="at">mu =</span> mu,</span>
+<span id="cb118-32"><a href="modelo-normal-multivariante-con-media-desconocida-y-varianza-conocida.html#cb118-32" aria-hidden="true" tabindex="-1"></a>                    <span class="at">Gamma =</span> Gamma)</span>
+<span id="cb118-33"><a href="modelo-normal-multivariante-con-media-desconocida-y-varianza-conocida.html#cb118-33" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">1234</span>)</span>
+<span id="cb118-34"><a href="modelo-normal-multivariante-con-media-desconocida-y-varianza-conocida.html#cb118-34" aria-hidden="true" tabindex="-1"></a>NormalMultifit <span class="ot">&lt;-</span> <span class="fu">stan</span>(<span class="at">model_code =</span> NormalMultMedia,</span>
+<span id="cb118-35"><a href="modelo-normal-multivariante-con-media-desconocida-y-varianza-conocida.html#cb118-35" aria-hidden="true" tabindex="-1"></a>                   <span class="at">data =</span> sample_data, <span class="at">verbose =</span> <span class="cn">FALSE</span>)</span></code></pre></div>
+<p>Después de la convergencia del proceso inferencial, la estimación bayesiana de <span class="math inline">\(\boldsymbol \theta\)</span> es <span class="math inline">\((0.6866, 2.1812)&#39;\)</span> para los dos medicamentos; mientras que los intervalos de crediblidad del 95% corresponden a (0.0834, 1.2776) y (1.3391, 3.0109).</p>
+<div class="sourceCode" id="cb119"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb119-1"><a href="modelo-normal-multivariante-con-media-desconocida-y-varianza-conocida.html#cb119-1" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(NormalMultifit, <span class="at">digits =</span> <span class="dv">4</span>, </span>
+<span id="cb119-2"><a href="modelo-normal-multivariante-con-media-desconocida-y-varianza-conocida.html#cb119-2" aria-hidden="true" tabindex="-1"></a>      <span class="at">pars =</span> <span class="st">&quot;theta&quot;</span>, <span class="at">probs =</span> <span class="fu">c</span>(<span class="fl">0.025</span>, <span class="fl">0.975</span>))</span></code></pre></div>
+<pre><code>## Inference for Stan model: 0b2360136b3d61c08a460b98848640c6.
+## 4 chains, each with iter=2000; warmup=1000; thin=1; 
+## post-warmup draws per chain=1000, total post-warmup draws=4000.
+## 
+##            mean se_mean     sd   2.5%  97.5% n_eff   Rhat
+## theta[1] 0.6874  0.0064 0.3110 0.1038 1.3055  2361 0.9997
+## theta[2] 2.2060  0.0090 0.4283 1.3620 3.0268  2245 1.0000
+## 
+## Samples were drawn using NUTS(diag_e) at Tue Jun 22 23:36:38 2021.
+## For each parameter, n_eff is a crude measure of effective sample size,
+## and Rhat is the potential scale reduction factor on split chains (at 
+## convergence, Rhat=1).</code></pre>
+<p>Las figuras <a href="modelo-normal-multivariante-con-media-desconocida-y-varianza-conocida.html#fig:posNormalMultiStan">4.5</a> muestra la distribución posterior para este ejemplo, junto con la estimación puntual, correspondiente a la media.</p>
+<div class="sourceCode" id="cb121"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb121-1"><a href="modelo-normal-multivariante-con-media-desconocida-y-varianza-conocida.html#cb121-1" aria-hidden="true" tabindex="-1"></a>bayesplot<span class="sc">::</span><span class="fu">mcmc_areas</span>(NormalMultifit, <span class="at">pars =</span> <span class="fu">c</span>(<span class="st">&quot;theta[1]&quot;</span>, <span class="st">&quot;theta[2]&quot;</span>), </span>
+<span id="cb121-2"><a href="modelo-normal-multivariante-con-media-desconocida-y-varianza-conocida.html#cb121-2" aria-hidden="true" tabindex="-1"></a>                      <span class="at">prob =</span> <span class="fl">0.95</span>)</span></code></pre></div>
+<div class="figure" style="text-align: center"><span id="fig:posNormalMultiStan"></span>
+<img src="4Multiparametricos_files/figure-html/posNormalMultiStan-1.svg" alt="Distribución posterior." width="576" />
+<p class="caption">
+Figura 4.5: Distribución posterior.
+</p>
+</div>
+<p>A continuación, mostramos los códigos de <code>R</code> para llevar a cabo los cálculos directamente.</p>
+<div class="sourceCode" id="cb122"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb122-1"><a href="modelo-normal-multivariante-con-media-desconocida-y-varianza-conocida.html#cb122-1" aria-hidden="true" tabindex="-1"></a>y.bar <span class="ot">&lt;-</span> <span class="fu">colMeans</span>(y)</span>
+<span id="cb122-2"><a href="modelo-normal-multivariante-con-media-desconocida-y-varianza-conocida.html#cb122-2" aria-hidden="true" tabindex="-1"></a>Gamma.n <span class="ot">&lt;-</span> <span class="fu">solve</span>(<span class="fu">solve</span>(Gamma) <span class="sc">+</span> n <span class="sc">*</span> <span class="fu">solve</span>(Sigma))</span>
+<span id="cb122-3"><a href="modelo-normal-multivariante-con-media-desconocida-y-varianza-conocida.html#cb122-3" aria-hidden="true" tabindex="-1"></a>mu.n <span class="ot">&lt;-</span> Gamma.n <span class="sc">%*%</span> </span>
+<span id="cb122-4"><a href="modelo-normal-multivariante-con-media-desconocida-y-varianza-conocida.html#cb122-4" aria-hidden="true" tabindex="-1"></a>  (<span class="fu">solve</span>(Gamma) <span class="sc">%*%</span> mu <span class="sc">+</span> n <span class="sc">*</span> <span class="fu">solve</span>(Sigma) <span class="sc">%*%</span> y.bar)</span>
+<span id="cb122-5"><a href="modelo-normal-multivariante-con-media-desconocida-y-varianza-conocida.html#cb122-5" aria-hidden="true" tabindex="-1"></a>mu.n</span></code></pre></div>
+<table>
+<tbody>
+<tr class="odd">
+<td align="right">0.6802703</td>
+</tr>
+<tr class="even">
+<td align="right">2.1905381</td>
+</tr>
+</tbody>
+</table>
+<div class="sourceCode" id="cb123"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb123-1"><a href="modelo-normal-multivariante-con-media-desconocida-y-varianza-conocida.html#cb123-1" aria-hidden="true" tabindex="-1"></a>Gamma.n</span></code></pre></div>
+<table>
+<tbody>
+<tr class="odd">
+<td align="right">0.0937527</td>
+<td align="right">0.0519886</td>
+</tr>
+<tr class="even">
+<td align="right">0.0519886</td>
+<td align="right">0.1804003</td>
+</tr>
+</tbody>
+</table>
+<p>De los resultados arrojados, vemos que la distribución posterior del parámetro está dada por
+<span class="math display">\[\begin{equation*}
+\begin{pmatrix}
+\theta_1\\
+\theta_2
+\end{pmatrix}
+\sim N_2\left(\begin{pmatrix}
+0.68\\
+2.19
+\end{pmatrix},\begin{pmatrix}
+0.094&amp;0.052\\
+0.052&amp;0.180
+\end{pmatrix}\right)
+\end{equation*}\]</span></p>
+<p>De esta forma, la estimación bayesiana obtenida para los efectos promedios corresponde a 0.68 horas y 2.19 horas, respectivamente; los cuales son similares a los obtenidos por <code>STAN</code>. En cuanto a los intervalos de credibilidad del 95%, estas son dados por los percentiles 2.5% y 97.5% de las dos distribuciones posteriores marginales de <span class="math inline">\(\theta_1\)</span> y <span class="math inline">\(\theta_2\)</span>. Estos intervalos se pueden obtener así:</p>
+<div class="sourceCode" id="cb124"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb124-1"><a href="modelo-normal-multivariante-con-media-desconocida-y-varianza-conocida.html#cb124-1" aria-hidden="true" tabindex="-1"></a><span class="fu">qnorm</span>(<span class="fu">c</span>(<span class="fl">0.025</span>, <span class="fl">0.975</span>), mu.n[<span class="dv">1</span>], <span class="fu">sqrt</span>(Gamma.n[<span class="dv">1</span>, <span class="dv">1</span>]))</span></code></pre></div>
+<pre><code>## [1] 0.08014771 1.28039297</code></pre>
+<div class="sourceCode" id="cb126"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb126-1"><a href="modelo-normal-multivariante-con-media-desconocida-y-varianza-conocida.html#cb126-1" aria-hidden="true" tabindex="-1"></a><span class="fu">qnorm</span>(<span class="fu">c</span>(<span class="fl">0.025</span>, <span class="fl">0.975</span>), mu.n[<span class="dv">2</span>], <span class="fu">sqrt</span>(Gamma.n[<span class="dv">2</span>, <span class="dv">2</span>]))</span></code></pre></div>
+<pre><code>## [1] 1.358072 3.023005</code></pre>
+<p>Ahora, suponga que el objetivo es comparar los medicamentos para concluir si el segundo medicamento es más efectivo que el primero, podemos encontrar la distribución posterior de la diferencia <span class="math inline">\(\theta_2-\theta_1\)</span>. Utilizando propiedades de la distribución normal multivariante, podemos encontrar la distribución posterior de <span class="math inline">\(\theta_2-\theta_1\)</span>, calcular un intervalo de credibilidad para <span class="math inline">\(\theta_2-\theta_1\)</span> e indagar cuál es la probabilidad de que <span class="math inline">\(\theta_2\)</span> sea mayor a <span class="math inline">\(\theta_1\)</span>. Estos cálculos se pueden llevar a cabo de la siguiente forma en <code>STAN</code></p>
+<div class="sourceCode" id="cb128"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb128-1"><a href="modelo-normal-multivariante-con-media-desconocida-y-varianza-conocida.html#cb128-1" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(NormalMultifit, <span class="at">digits =</span> <span class="dv">4</span>, </span>
+<span id="cb128-2"><a href="modelo-normal-multivariante-con-media-desconocida-y-varianza-conocida.html#cb128-2" aria-hidden="true" tabindex="-1"></a>      <span class="at">pars =</span> <span class="st">&quot;diftheta&quot;</span>, <span class="at">probs =</span> <span class="fu">c</span>(<span class="fl">0.025</span>, <span class="fl">0.975</span>))</span></code></pre></div>
+<pre><code>## Inference for Stan model: 0b2360136b3d61c08a460b98848640c6.
+## 4 chains, each with iter=2000; warmup=1000; thin=1; 
+## post-warmup draws per chain=1000, total post-warmup draws=4000.
+## 
+##            mean se_mean     sd   2.5%  97.5% n_eff   Rhat
+## diftheta 1.5186  0.0067 0.4136 0.7162 2.3123  3815 0.9998
+## 
+## Samples were drawn using NUTS(diag_e) at Tue Jun 22 23:36:38 2021.
+## For each parameter, n_eff is a crude measure of effective sample size,
+## and Rhat is the potential scale reduction factor on split chains (at 
+## convergence, Rhat=1).</code></pre>
+<p>La figuras <a href="modelo-normal-multivariante-con-media-desconocida-y-varianza-conocida.html#fig:posNormalDifMultiStan">4.6</a> muestra la distribución posterior para este ejemplo, junto con la estimación puntual, correspondiente a la media.</p>
+<div class="sourceCode" id="cb130"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb130-1"><a href="modelo-normal-multivariante-con-media-desconocida-y-varianza-conocida.html#cb130-1" aria-hidden="true" tabindex="-1"></a>bayesplot<span class="sc">::</span><span class="fu">mcmc_areas</span>(NormalMultifit, <span class="at">pars =</span> <span class="st">&quot;diftheta&quot;</span>, </span>
+<span id="cb130-2"><a href="modelo-normal-multivariante-con-media-desconocida-y-varianza-conocida.html#cb130-2" aria-hidden="true" tabindex="-1"></a>                      <span class="at">prob =</span> <span class="fl">0.95</span>)</span></code></pre></div>
+<div class="figure" style="text-align: center"><span id="fig:posNormalDifMultiStan"></span>
+<img src="4Multiparametricos_files/figure-html/posNormalDifMultiStan-1.svg" alt="Distribución posterior de los parámetros transformados (diferencia de las medias teóricas)." width="576" />
+<p class="caption">
+Figura 4.6: Distribución posterior de los parámetros transformados (diferencia de las medias teóricas).
+</p>
+</div>
+<p>Los mismos cálculos pueden reproducirse en <code>R</code>, por medio de los siguientes códigos computacionales.</p>
+<div class="sourceCode" id="cb131"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb131-1"><a href="modelo-normal-multivariante-con-media-desconocida-y-varianza-conocida.html#cb131-1" aria-hidden="true" tabindex="-1"></a>vec <span class="ot">&lt;-</span> <span class="fu">matrix</span>(<span class="fu">c</span>(<span class="sc">-</span><span class="dv">1</span>, <span class="dv">1</span>), <span class="dv">1</span>, <span class="dv">2</span>)</span>
+<span id="cb131-2"><a href="modelo-normal-multivariante-con-media-desconocida-y-varianza-conocida.html#cb131-2" aria-hidden="true" tabindex="-1"></a>difmedia <span class="ot">&lt;-</span> vec <span class="sc">%*%</span> mu.n</span>
+<span id="cb131-3"><a href="modelo-normal-multivariante-con-media-desconocida-y-varianza-conocida.html#cb131-3" aria-hidden="true" tabindex="-1"></a>varianza <span class="ot">&lt;-</span> vec <span class="sc">%*%</span> Gamma.n <span class="sc">%*%</span> <span class="fu">t</span>(vec)</span>
+<span id="cb131-4"><a href="modelo-normal-multivariante-con-media-desconocida-y-varianza-conocida.html#cb131-4" aria-hidden="true" tabindex="-1"></a><span class="fu">qnorm</span>(<span class="fu">c</span>(<span class="fl">0.025</span>, <span class="fl">0.975</span>), difmedia, <span class="fu">sqrt</span>(varianza))</span></code></pre></div>
+<pre><code>## [1] 0.7017359 2.3187996</code></pre>
+<div class="sourceCode" id="cb133"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb133-1"><a href="modelo-normal-multivariante-con-media-desconocida-y-varianza-conocida.html#cb133-1" aria-hidden="true" tabindex="-1"></a><span class="dv">1</span> <span class="sc">-</span> <span class="fu">pnorm</span>(<span class="dv">0</span>, difmedia, <span class="fu">sqrt</span>(varianza))</span></code></pre></div>
+<pre><code>## [1] 0.9998744</code></pre>
+<p>Observando los anteriores resultados, vemos que el intervalo de credibildad para <span class="math inline">\(\theta_2-\theta_1\)</span> está dado por <span class="math inline">\((0.7, 2.3)\)</span>, el cual no contiene el valor 0, indicando que el segundo medicamento tiene un efecto mayor que el segundo. Adicionalmente, se observa que con probabilidad muy cercana a uno, el segundo medicamento tiene efecto mayor al primero y por ende tiene un desempeño superior al primero.</p>
+<p>Finalmente, ilustramos los resultados obtenidos al usar una distribución previa no informativa, para eso, usaremos <span class="math inline">\(\boldsymbol \Gamma=\begin{pmatrix}100&amp;0\\ 0&amp;100\end{pmatrix}\)</span>, con <span class="math inline">\(|\boldsymbol \Gamma^{-1}|=0.0001\)</span>, representando una distribución previa no informativa. Los resultados de estimación arroja la siguiente distribución posterior para el vector de parámetros:
+<span class="math display">\[\begin{equation*}
+\begin{pmatrix}
+\theta_1\\
+\theta_2
+\end{pmatrix}
+\sim N_2\left(\begin{pmatrix}
+0.75\\
+2.33
+\end{pmatrix},\begin{pmatrix}
+0.10&amp;0.06\\
+0.06&amp;0.20
+\end{pmatrix}\right)
+\end{equation*}\]</span></p>
+<p>Los intervalos de credibilidad del 95% para los parámetros <span class="math inline">\(\theta_1\)</span> y <span class="math inline">\(\theta_2\)</span> están dados por <span class="math inline">\((0.129, 1.368)\)</span> y <span class="math inline">\((1.451, 3.202)\)</span>, respectivamente. Observamos que estos intervalos de credibilidad son muy similares a los intervalos de confianza del 95% del enfoque clásico, calculados con la expresión <span class="math inline">\(\bar{y}\pm z_{1-\alpha/2}\frac{\sigma}{\sqrt{n}}\)</span>, y que para los datos del ejemplo están dados por <span class="math inline">\((0.130, 1.370)\)</span> y <span class="math inline">\((1.453, 3.207)\)</span>.</p>
+<p>Finalmente, recordamos los dos siguientes resultados relacionados con la distribución normal multivariante que pueden resultar útiles en otros análisis.</p>
+
+<div class="proposition">
+<span id="prp:unnamed-chunk-34" class="proposition"><strong>Resultado 4.9  </strong></span>La distribución posterior marginal de un subconjunto de parámetros, digamos <span class="math inline">\(\boldsymbol \theta^{(1)}\)</span> es también normal multivariante con media igual a la del subvector de medias apropiado, <span class="math inline">\(\boldsymbol \mu_n^{(1)}\)</span> y similar matriz de varianzas <span class="math inline">\(\boldsymbol \Gamma_n^{(11)}\)</span>.
+</div>
+
+<div class="proposition">
+<p><span id="prp:unnamed-chunk-35" class="proposition"><strong>Resultado 4.10  </strong></span>La distribución posterior condicional de un subconjunto de parámetros, digamos <span class="math inline">\(\boldsymbol \theta^{(1)}\)</span>, dado <span class="math inline">\(\boldsymbol \theta^{(2)}\)</span> es también normal multivariante dada por
+<span class="math display">\[\begin{equation*}
+  \boldsymbol \theta^{(1)} \mid \boldsymbol \theta^{(2)} \sim N_p \left(\boldsymbol \mu_n^{(1)}+\boldsymbol \Gamma_n^{(12)}\left(\boldsymbol \Gamma_n^{(22)}\right)^{-1}
+  \left(\theta^{(2)}-\mu_n^{(2)}\right),\boldsymbol \Gamma_n^{(1 \mid 2)}\right).
+\end{equation*}\]</span></p>
+<p>En donde
+<span class="math display">\[\begin{align}
+  \boldsymbol \Gamma_n^{(1 \mid 2)}&amp;= \boldsymbol \Gamma_n^{(11)}-\boldsymbol \Gamma_n^{(12)}\left(\boldsymbol \Gamma_n^{(22)}\right)^{-1}\boldsymbol \Gamma_n^{(21)}
+\end{align}\]</span></p>
+Con <span class="math inline">\(\boldsymbol \mu^{(1)}\)</span> y <span class="math inline">\(\boldsymbol \mu^{(2)}\)</span> correspondendientes al vector de medias y <span class="math inline">\(\boldsymbol \Gamma_n^{(11)}\)</span>, <span class="math inline">\(\boldsymbol \Gamma_n^{(22)}\)</span> denotan la matriz de varianzas y covarianzas de <span class="math inline">\(\boldsymbol \theta^{(1)}\)</span> y <span class="math inline">\(\boldsymbol \theta^{(2)}\)</span>, respectivamente. <span class="math inline">\(\boldsymbol \Gamma_n^{(12)}\)</span> es la matriz de covarianzas entre <span class="math inline">\(\boldsymbol \theta^{(1)}\)</span> y <span class="math inline">\(\boldsymbol \theta^{(2)}\)</span>, <span class="math inline">\(\boldsymbol \Gamma_n^{(21)}\)</span> es la matriz de covarianzas entre <span class="math inline">\(\boldsymbol \theta^{(2)}\)</span> y <span class="math inline">\(\boldsymbol \theta^{(1)}\)</span>.
+</div>
+<p>La prueba de los dos resultados anteriores se sigue inmediatamente de las propiedades de la distribución normal multivariante.</p>
+
+</div>
+</div>
+<!-- </div> -->
+
+
+
+<h3>Referencias</h3>
+<div id="refs" class="references csl-bib-body hanging-indent">
+<div id="ref-Student" class="csl-entry">
+Student. 1908. <span>«The Probable Error of a Mean»</span>. <em>Biometrika</em> 6 (1): 1-25.
+</div>
+</div>
+            </section>
+
+          </div>
+        </div>
+      </div>
+<a href="modelo-normal-con-media-y-varianza-desconocida.html" class="navigation navigation-prev " aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
+<a href="elementos-de-probabilidad.html" class="navigation navigation-next " aria-label="Next page"><i class="fa fa-angle-right"></i></a>
+    </div>
+  </div>
+<script src="libs/gitbook-2.6.7/js/app.min.js"></script>
+<script src="libs/gitbook-2.6.7/js/lunr.js"></script>
+<script src="libs/gitbook-2.6.7/js/clipboard.min.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-search.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-sharing.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-fontsettings.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-bookdown.js"></script>
+<script src="libs/gitbook-2.6.7/js/jquery.highlight.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-clipboard.js"></script>
+<script>
+gitbook.require(["gitbook"], function(gitbook) {
+gitbook.start({
+"sharing": {
+"github": true,
+"facebook": false,
+"twitter": true,
+"linkedin": false,
+"weibo": false,
+"instapaper": false,
+"vk": false,
+"whatsapp": false,
+"all": ["facebook", "twitter", "linkedin", "weibo", "instapaper"]
+},
+"fontsettings": {
+"theme": "white",
+"family": "sans",
+"size": 2
+},
+"edit": {
+"link": "https://github.com/psirusteam/bookdownBayesiano/4Multiparametricos.Rmd",
+"text": "Edit"
+},
+"history": {
+"link": null,
+"text": null
+},
+"view": {
+"link": null,
+"text": null
+},
+"download": ["ModelosBayesianos.pdf", "ModelosBayesianos.epub", "ModelosBayesianos.mobi"],
+"toc": {
+"collapse": "section"
+},
+"tconfig": null
+});
+});
+</script>
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    var src = "true";
+    if (src === "" || src === "true") src = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-MML-AM_CHTML";
+    if (location.protocol !== "file:")
+      if (/^https?:/.test(src))
+        src = src.replace(/^https?:/, '');
+    script.src = src;
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+</body>
+
+</html>

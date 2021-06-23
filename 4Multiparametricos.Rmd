@@ -883,6 +883,316 @@ ggplot() +
 
 
 
+## Modelo Normal multivariante con media desconocida y varianza conocida
+
+Cuando la distribución usada para describir el comportamiento de los datos es una distribución normal multivariante, las técnicas de inferencia no se distancian mucho del caso univariado. Se debe tener en cuenta el manejo matricial de las formas cuadráticas y las propiedades básicas del cálculo de matrices. Los desarrollos y resultados derivados de esta sección redundarán en el análisis de los modelos lineales con el enfoque bayesiano.
+
+Sea $\mathbf{Y}=(Y_1,\ldots,Y_p)'$ un vector aleatorio cuya distribución es normal multivariante dada por
+
+\begin{equation}
+p(\mathbf{Y} \mid \btheta,\bSigma)\propto \mid \bSigma \mid ^{-1/2}
+\exp\left\{-\frac{1}{2}(\mathbf{y}-\btheta)'\bSigma^{-1}(\mathbf{y}-\btheta)\right\}
+\end{equation}
+  
+En donde $\btheta=(\theta_1,\ldots,\theta_p)'$ es el vector que contiene la media de cada uno de los componentes del vector $\mathbf{Y}$ y $\bSigma$ es la matriz de varianzas y covarianzas de orden $p\times p$, simétrica y definida positiva. La verosimilitud para una muestra de $n$ vectores aleatorios  independientes e idénticamente distribuidos está dada por
+
+\begin{equation*}
+  p(\mathbf{Y}_1\ldots,\mathbf{Y}_n \mid \btheta,\bSigma)\propto \mid \bSigma \mid ^{-n/2}
+  \exp\left\{-\frac{1}{2}\sum_{i=1}^n(\mathbf{y}_i-\btheta)'\bSigma^{-1}(\mathbf{y}_i-\btheta)\right\}
+\end{equation*}
+    
+Los parámetros que requieren estimación corresponden al vector de medias $\btheta$ y la matriz de varianzas y covarianzas $\bSigma$. Por ahora, se asume que $\bSigma$ es conocida y nos centramos en la estimación del vector de medias $\btheta$. Para la distribución previa, considerando que en general no hay restricción sobre los valores de los componentes de $\btheta$, asumimos que $\btheta$ sigue una distribución previa normal multivariante informativa y parametrizada por los hiper-parámetros $\bmu$ y $\bGamma$
+
+\begin{equation*}
+p(\btheta \mid \bmu,\bGamma)\propto \mid \bGamma \mid ^{-1/2}
+\exp\left\{-\frac{1}{2}(\btheta-\bmu)'\bGamma^{-1}(\btheta-\bmu)\right\}
+\end{equation*}
+    
+Nótese que esta distribución se hace no informativa cuando $\mid \bGamma^{-1} \mid \longrightarrow 0$, sin importar el valor del vector de medias previa $\bmu$. En el siguiente resultado, encontramos la distribución posterior del parámetro $\btheta$.
+
+```{proposition}
+La distribución posterior del vector $\btheta$ sigue una distribución normal multivariante
+\begin{equation*}
+\btheta \mid \mathbf{Y},\bSigma \sim N_p (\bmu_n,\bGamma_n).
+\end{equation*}
+
+En donde
+\begin{align}
+\bGamma_n &= \left(\bGamma^{-1}+n\bSigma^{-1}\right)^{-1}\label{Gamma_n}\\
+\bmu_n &= \bGamma_n(\bGamma^{-1}\bmu+n \bSigma^{-1}\bar{\mathbf{y}})\label{mu_n}
+\end{align}
+```
+<br>
+
+```{proof}
+En primer lugar, nótese la siguiente identidad
+\begin{equation}
+\sum_{i=1}^n(\mathbf{Y}_i-\btheta)'\bSigma^{-1}(\mathbf{Y}_i-\btheta)
+=\sum_{i=1}^n(\mathbf{Y}_i-\bar{\mathbf{Y}})'\bSigma^{-1}(\mathbf{Y}_i-\bar{\mathbf{Y}})
++n(\bar{\mathbf{Y}}-\btheta)'\bSigma^{-1}(\bar{\mathbf{Y}}-\btheta)
+\end{equation}
+
+puesto que
+\begin{align*}
+&\ \ \ \ \sum_{i=1}^n(\mathbf{Y}_i-\btheta)'\bSigma^{-1}(\mathbf{Y}_i-\btheta)\\
+&=\sum_{i=1}^n(\mathbf{Y}_i-\bar{\mathbf{Y}}+\bar{\mathbf{Y}}-\btheta)'
+\bSigma^{-1}(\mathbf{Y}_i-\bar{\mathbf{Y}}+\bar{\mathbf{Y}}-\btheta)\\
+&=\sum_{i=1}^n(\mathbf{Y}_i-\bar{\mathbf{Y}})'\bSigma^{-1}(\mathbf{Y}_i-\bar{\mathbf{Y}})
++\sum_{i=1}^n(\mathbf{Y}_i-\bar{\mathbf{Y}})'\bSigma^{-1}(\bar{\mathbf{Y}}-\btheta)\\
+&\hspace{1.5cm}
++(\bar{\mathbf{Y}}-\btheta)'\bSigma^{-1}\sum_{i=1}^n(\mathbf{Y}_i-\bar{\mathbf{Y}})'
++\sum_{i=1}^n(\bar{\mathbf{Y}}-\btheta)'\bSigma^{-1}(\bar{\mathbf{Y}}-\btheta)\\
+&=\sum_{i=1}^n(\mathbf{Y}_i-\bar{\mathbf{Y}})'\bSigma^{-1}(\mathbf{Y}_i-\bar{\mathbf{Y}})
++n(\bar{\mathbf{Y}}-\btheta)'\bSigma^{-1}(\bar{\mathbf{Y}}-\btheta)
+\end{align*}
+
+Por otro lado, de la definición de distribución previa, se tiene que
+\begin{align*}
+p(\btheta \mid \mathbf{Y},\bSigma)
+&\propto p(\mathbf{Y} \mid \btheta,\bSigma)p(\btheta,\bSigma)\\
+&\propto \exp\left\{-\frac{1}{2}\left[\sum_{i=1}^n(\mathbf{y}_i-\btheta)'\bSigma^{-1}(\mathbf{y}_i-\btheta)+(\btheta-\bmu)'\bGamma^{-1}(\btheta-\bmu)\right]\right\}\\
+&\propto \exp\left\{-\frac{1}{2}\left[n(\bar{\mathbf{y}}-\btheta)'\bSigma^{-1}(\bar{\mathbf{y}}-\btheta)+(\btheta-\bmu)'\bGamma^{-1}(\btheta-\bmu)\right]\right\}\\
+&\propto \exp\left\{-\frac{1}{2}\left[
+  -n\bar{\mathbf{y}}'\bSigma^{-1}\btheta-n\btheta'\bSigma^{-1}\bar{\mathbf{y}}+n\btheta'\bSigma^{-1}\btheta+\btheta'\bGamma^{-1}\btheta-\btheta'\bGamma^{-1}\bmu-\bmu'\bGamma^{-1}\btheta\right]\right\}\\
+&= \exp\left\{-\frac{1}{2}\left[
+  \btheta'(\bGamma^{-1}+n\bSigma^{-1})\btheta-2\btheta'(\bGamma^{-1}\bmu+n\bSigma^{-1}\bar{\mathbf{y}})\right]\right\}\\
+&= \exp\left\{-\frac{1}{2}\left[\btheta'\bGamma^{-1}_n\btheta-2\btheta'\bGamma^{-1}_n\bmu_n\right]\right\}\\
+&\propto \exp\left\{-\frac{1}{2}\left[\btheta'\bGamma^{-1}_n\btheta-2\btheta'\bGamma^{-1}_n\bmu_n+\bmu_n\bGamma_n^{-1}\bmu_n\right]\right\}\\
+&= \exp\left\{-\frac{1}{2}(\btheta-\bmu_n)'\bGamma_n^{-1}(\btheta-\bmu_n)\right\}
+  \end{align*}
+
+La cual corresponde al núcleo de una distribución normal multivariante con vector de medias $\bmu_n$ y matriz de varianzas $\bGamma_n$.
+```
+<br>
+
+Observando los parámetros de la distribución posterior, podemos ver que $\bGamma_n^{-1} = \bGamma^{-1}+(\bSigma/n)^{-1}$. Teniendo en cuenta que la matriz de varianzas y covarianzas es una medida de dispersión de la distribución alrededor de su media, la inversa de dicha matriz se puede ver como una medida de precisión de qué tanto se concentra la distribución alrededor de la media. Así, podemos ver que la precisión posterior viene siendo la suma entre la precisión previa y la precisión de la estimación clásica del parámetro $\btheta$.
+
+En cuanto a la media posterior $\bmu_n$, tenemos que
+\begin{align*}
+\bmu_n&=\left(\bGamma^{-1}+n\bSigma^{-1}\right)^{-1}
+(\bGamma^{-1}\bmu+n \bSigma^{-1}\bar{\mathbf{y}})\\
+&=\left(\mathbf{I}+n\bGamma\bSigma^{-1}\right)^{-1}\bmu+\left(\frac{1}{n}\bSigma\bGamma^{-1}+\mathbf{I}\right)^{-1}\bar{\mathbf{y}}\\
+&=\underbrace{\bSigma\left(\bSigma+n\bGamma\right)^{-1}}_{\mathbf{A}_1}\bmu+\underbrace{n\bGamma\left(\bSigma+n\bGamma\right)^{-1}}_{\mathbf{A}_2}\bar{\mathbf{y}}
+\end{align*}
+
+De donde podemos que ver que la media posterior $\bmu_n$ se puede escribir como $\bmu_n=\mathbf{A}_1\bmu+\mathbf{A}_2\bar{\mathbf{y}}$ donde $\mathbf{A}_1+\mathbf{A}_2=\mathbf{I}$. Es claro que en el caso univariado, $\mathbf{A}_1$, $\bmu$, $\mathbf{A}_2$ y $\bar{\mathbf{y}}$ son todos escalares, y $\bmu_n$ es un valor intermedio entre $\bmu$ y $\bar{\mathbf{y}}$. Mientras que en caso multivariado, $\mathbf{A}_1\bmu+\mathbf{A}_2\bar{\mathbf{y}}$ es similar a una combinación convexa entre los vectores $\bmu$ y $\bar{\mathbf{y}}$, pero los coeficientes son matrices en vez de escalares. 
+
+Para ilustrar la relación de $\bmu_n$ con $\bmu$ y $\bar{\mathbf{y}}$, tomamos el caso de $p=2$, y denotamos $\mathbf{A}=\bSigma\left(\bSigma+n\bGamma\right)^{-1}$. Es claro que $\mathbf{A}$ es una matriz simétrica y definida positiva, lo denotaremos con $\mathbf{A}_1=\begin{pmatrix}a_{11}&a_{12}\\ a_{12}&a_{22}\end{pmatrix}$, donde $a_{11}>0$ y $a_{22}>0$. De esta forma
+\begin{align*}
+\bmu_n&=\begin{pmatrix}a_{11}&a_{12}\\ a_{12}&a_{22}\end{pmatrix}\begin{pmatrix}\mu_{1}\\ \mu_{2}\end{pmatrix}+\begin{pmatrix}1-a_{11}&-a_{12}\\ -a_{12}&1-a_{22}\end{pmatrix}\begin{pmatrix}\bar{y}_{1}\\ \bar{y}_{2}\end{pmatrix}\\
+&=\begin{pmatrix}a_{11}\mu_1+(1-a_{11})\bar{y}_{1}+a_{12}(\mu_2-\bar{y}_{2})\\a_{22}\mu_2+(1-a_{22})\bar{y}_{2}+a_{12}(\mu_1-\bar{y}_{1})\end{pmatrix}
+\end{align*}
+
+Al observar la primera entrada de $\bmu_n$, podemos ver que este se compone de una combinación convexa entre $\mu_1$ y $\bar{y}_1$ (pues $a_{11}>0$) y una parte que depende de la diferencia $\mu_2-\bar{y}_{2}$; un comportamiento similar se observa en la segunda entrada de $\bmu_n$. Esta observación es interesante, pues ilustra que cada componente de la media posterior $\bmu_n$ no siempre será un promedio ponderado del componentes correspondiente de la media previa y la estimación clásica.
+
+Ilustramos los resultados encontrados suponiendo las dos siguientes situaciones:
+
+1. Suponga que se quiere estimar el vector de medias $\btheta=(\theta_1,\theta_2)'$ con una matriz de varianzas y covarianzas conocida de $\bSigma=\begin{pmatrix}20&8\\ 8&30\end{pmatrix}$. Para esto se recolectan 10 observaciones con vector de promedios muestrales $\bar{\mathbf{y}}=(150,230)'$. Como información previa, suponga que $\bmu=(100, 200)'$ y $\bGamma=\begin{pmatrix}5&3\\ 3&10\end{pmatrix}$. Realizando los cálculos correspondiente, se tiene que $\bGamma_n=\begin{pmatrix}1.42&0.64\\ 0.64&2.31\end{pmatrix}$, $\mathbf{A}=\begin{pmatrix}0.3&-0.026\\ -0.026&0.235\end{pmatrix}$ y $\bmu_n=(136,224)$. Podemos ver que en este caso cada componente de $\bmu_n$ se encuentra entre los componentes correspondientes de $\bmu$ y $\bar{\mathbf{y}}$. Los códigos computacionales se muestran a continuación.
+
+```{r}
+n <- 10
+mu <- matrix(c(100, 200))
+y.bar <- matrix(c(150, 230))
+Gamma <- matrix(c(5, 3, 3, 10), 2, 2)
+Sigma <- matrix(c(20, 8, 8, 30), 2, 2)
+Gamma.n <- solve(solve(Gamma) + n * solve(Sigma))
+A <- Sigma %*% solve(Sigma + n * Gamma) 
+mu.n <- Gamma.n %*% 
+  (solve(Gamma) %*% mu + n * solve(Sigma) %*% y.bar)
+mu.n
+```
+
+
+2. Tomando los mismos datos del caso anterior, también podemos suponer que $\bar{\mathbf{y}}=(150, 2300)'$, las matrices $\bGamma_n$ y $\mathbf{A}$ no cambian de valor, pero la media de la distribución posterior está dada por $\bmu_n=(190,1808)$. Podemos ver que el primer componente de $\bmu_n$ no está entre 100 y 150 que corresponden a las estimaciones previa y clásica, respectivamente. Esto se debe a que la diferencia entre $\mu_2$ y $\bar{y}_2$ es muy grande.
+
+```{r}
+n <- 10
+mu <- matrix(c(100, 200))
+y.bar <- matrix(c(150, 2300))
+Gamma <- matrix(c(5, 3, 3, 10), 2, 2)
+Sigma <- matrix(c(20, 8, 8, 30), 2, 2)
+Gamma.n <- solve(solve(Gamma) + n * solve(Sigma))
+A <- Sigma %*% solve(Sigma + n * Gamma) 
+mu.n <- Gamma.n %*% 
+  (solve(Gamma) %*% mu + n * solve(Sigma) %*% y.bar)
+mu.n
+```
+
+### Distribución previa no informativa
+
+Al tener en cuenta que la distribución previa del parámetro $\btheta$ es la distribución normal multivariada, y al observar la forma de la función de densidad, se puede afirmar que cuando $|\bGamma^{-1}|$ es muy pequeño, los parámetros previos $\bmu$ y $\bGamma$ pierden peso en los cálculos de $\bmu_n$ y $\bGamma_n$. En este caso se puede ver que
+\begin{align*}
+\bGamma_n&\approx n^{-1}\bSigma\\
+\bmu_n&\approx \bar{\mathbf{y}}
+\end{align*}
+
+De donde podemos concluir que la estimación bayesiana será muy cercana a la estimación clásica $\bar{y}$, más aún, el intervalo de credibilidad también será muy similar al intervalo de confianza del enfoque clásico.
+
+```{example}
+@Student introdujo un conjunto de datos clásicos sobre el incremento en horas de sueño producido con 2 medicamentos soporíferos diferentes comparados con grupo control en 10 pacientes. Estos datos se pueden encontrar en `R` con el nombre `sleep` y se pueden definir como realizaciones de vectores aleatorios con distribución normal bivariada. Supongamos que la matriz de varianzas y covarianzas de la distribución es conocida e igual a $\Sigma=\begin{pmatrix}1&0.6\\ 0.6&2\end{pmatrix}$.
+  
+El parámetro de interés es el vector de medias $\btheta=(\theta_1,\theta_2)'$. Para la distribución previa, suponemos que $\bmu=(0,1)'$, es decir que el primer medicamento no tiene ningún efecto soporífero, mientras que el segundo medicamento tiene un efecto promedio de aumentar 1 hora de sueño, también asumimos que $\Gamma=\begin{pmatrix}2&0\\ 0&2\end{pmatrix}$. Los siguientes códigos de `STAN` ilustran el procedimiento de estimación del parámetro de interés.
+```
+
+```{r, results='hide'}
+NormalMultMedia <- '
+data {
+  int<lower=0> n;
+  int<lower=0> P;
+  vector[P] y[n];
+  vector[P] mu;
+  matrix[P, P] Sigma;
+  matrix[P, P] Gamma;
+}
+parameters {
+  vector[P] theta;
+}
+transformed parameters {
+  real diftheta;
+  diftheta = theta[2] - theta[1];
+}
+model {
+  y ~ multi_normal(theta, Sigma);
+  theta ~ multi_normal(mu, Gamma);
+}
+'
+
+y <- structure(.Data = sleep[,1], .Dim=c(10,2))
+n <- nrow(y)
+P <- ncol(y)
+Sigma  <- matrix(c(1, 0.6, 0.6, 2), 2, 2)
+mu <- as.vector(c(0, 1))
+Gamma <- matrix(c(2, 0, 0, 2), 2, 2)
+
+sample_data <- list(y = y, n = n, P = P,
+                    Sigma = Sigma, mu = mu,
+                    Gamma = Gamma)
+set.seed(1234)
+NormalMultifit <- stan(model_code = NormalMultMedia,
+                   data = sample_data, verbose = FALSE)
+```
+
+Después de la convergencia del proceso inferencial, la estimación bayesiana de $\btheta$ es $(0.6866, 2.1812)'$ para los dos medicamentos; mientras que los intervalos de crediblidad del 95\% corresponden a (0.0834, 1.2776) y (1.3391, 3.0109).
+
+```{r}
+print(NormalMultifit, digits = 4, 
+      pars = "theta", probs = c(0.025, 0.975))
+```
+
+Las figuras \@ref(fig:posNormalMultiStan) muestra la distribución posterior para este ejemplo, junto con la estimación puntual, correspondiente a la media. 
+
+```{r, posNormalMultiStan, fig.cap="Distribución posterior."}
+bayesplot::mcmc_areas(NormalMultifit, pars = c("theta[1]", "theta[2]"), 
+                      prob = 0.95)
+```
+
+A continuación, mostramos los códigos de `R` para llevar a cabo los cálculos directamente.
+
+```{r}
+y.bar <- colMeans(y)
+Gamma.n <- solve(solve(Gamma) + n * solve(Sigma))
+mu.n <- Gamma.n %*% 
+  (solve(Gamma) %*% mu + n * solve(Sigma) %*% y.bar)
+mu.n
+Gamma.n
+```
+
+De los resultados arrojados, vemos que la distribución posterior del parámetro está dada por
+\begin{equation*}
+\begin{pmatrix}
+\theta_1\\
+\theta_2
+\end{pmatrix}
+\sim N_2\left(\begin{pmatrix}
+0.68\\
+2.19
+\end{pmatrix},\begin{pmatrix}
+0.094&0.052\\
+0.052&0.180
+\end{pmatrix}\right)
+\end{equation*}
+
+De esta forma, la estimación bayesiana obtenida para los efectos promedios corresponde a 0.68 horas y 2.19 horas, respectivamente; los cuales son similares a los obtenidos por `STAN`. En cuanto a los intervalos de credibilidad del 95\%, estas son dados por los percentiles 2.5\% y 97.5\% de las dos distribuciones posteriores marginales de $\theta_1$ y $\theta_2$. Estos intervalos se pueden obtener así:
+
+```{r}
+qnorm(c(0.025, 0.975), mu.n[1], sqrt(Gamma.n[1, 1]))
+qnorm(c(0.025, 0.975), mu.n[2], sqrt(Gamma.n[2, 2]))
+```
+
+Ahora, suponga que el objetivo es comparar los medicamentos para concluir si el segundo medicamento es más efectivo que el primero, podemos encontrar la distribución posterior de la diferencia $\theta_2-\theta_1$. Utilizando propiedades de la distribución normal multivariante, podemos encontrar la distribución posterior de $\theta_2-\theta_1$, calcular un intervalo de credibilidad para $\theta_2-\theta_1$ e indagar cuál es la probabilidad de que $\theta_2$ sea mayor a $\theta_1$. Estos cálculos se pueden llevar a cabo de la siguiente forma en `STAN`
+
+```{r}
+print(NormalMultifit, digits = 4, 
+      pars = "diftheta", probs = c(0.025, 0.975))
+```
+
+La figuras \@ref(fig:posNormalDifMultiStan) muestra la distribución posterior para este ejemplo, junto con la estimación puntual, correspondiente a la media. 
+
+```{r, posNormalDifMultiStan, fig.cap="Distribución posterior de los parámetros transformados (diferencia de las medias teóricas)."}
+bayesplot::mcmc_areas(NormalMultifit, pars = "diftheta", 
+                      prob = 0.95)
+```
+
+Los mismos cálculos pueden reproducirse en `R`, por medio de los siguientes códigos computacionales.
+
+```{r}
+vec <- matrix(c(-1, 1), 1, 2)
+difmedia <- vec %*% mu.n
+varianza <- vec %*% Gamma.n %*% t(vec)
+qnorm(c(0.025, 0.975), difmedia, sqrt(varianza))
+1 - pnorm(0, difmedia, sqrt(varianza))
+```
+
+Observando los anteriores resultados, vemos que el intervalo de credibildad para $\theta_2-\theta_1$ está dado por $(0.7, 2.3)$, el cual no contiene el valor 0, indicando que el segundo medicamento tiene un efecto mayor que el segundo. Adicionalmente, se observa que con probabilidad muy cercana a uno, el segundo medicamento tiene efecto mayor al primero y por ende tiene un desempeño superior al primero.
+
+Finalmente, ilustramos los resultados obtenidos al usar una distribución previa no informativa, para eso, usaremos $\bGamma=\begin{pmatrix}100&0\\ 0&100\end{pmatrix}$, con $|\bGamma^{-1}|=0.0001$, representando una distribución previa no informativa. Los resultados de estimación arroja la siguiente distribución posterior para el vector de parámetros:
+\begin{equation*}
+\begin{pmatrix}
+\theta_1\\
+\theta_2
+\end{pmatrix}
+\sim N_2\left(\begin{pmatrix}
+0.75\\
+2.33
+\end{pmatrix},\begin{pmatrix}
+0.10&0.06\\
+0.06&0.20
+\end{pmatrix}\right)
+\end{equation*}
+
+Los intervalos de credibilidad del 95\% para los parámetros $\theta_1$ y $\theta_2$ están dados por $(0.129, 1.368)$ y $(1.451, 3.202)$, respectivamente. Observamos que estos intervalos de credibilidad son muy similares a los intervalos de confianza del 95\% del enfoque clásico, calculados con la expresión $\bar{y}\pm z_{1-\alpha/2}\frac{\sigma}{\sqrt{n}}$, y que para los datos del ejemplo están dados por $(0.130, 1.370)$ y $(1.453, 3.207)$.
+
+Finalmente, recordamos los dos siguientes resultados relacionados con la distribución normal multivariante que pueden resultar útiles en otros análisis.
+
+```{proposition}
+La distribución posterior marginal de un subconjunto de parámetros, digamos $\btheta^{(1)}$ es también normal multivariante con media igual a la del subvector de medias apropiado, $\bmu_n^{(1)}$ y similar matriz de varianzas $\bGamma_n^{(11)}$.
+```
+  
+```{proposition}
+La distribución posterior condicional de un subconjunto de parámetros, digamos $\btheta^{(1)}$, dado $\btheta^{(2)}$ es también normal multivariante dada por
+\begin{equation*}
+  \btheta^{(1)} \mid \btheta^{(2)} \sim N_p \left(\bmu_n^{(1)}+\bGamma_n^{(12)}\left(\bGamma_n^{(22)}\right)^{-1}
+  \left(\theta^{(2)}-\mu_n^{(2)}\right),\bGamma_n^{(1 \mid 2)}\right).
+\end{equation*}
+
+En donde
+\begin{align}
+  \bGamma_n^{(1 \mid 2)}&= \bGamma_n^{(11)}-\bGamma_n^{(12)}\left(\bGamma_n^{(22)}\right)^{-1}\bGamma_n^{(21)}
+\end{align}
+
+Con $\bmu^{(1)}$ y $\bmu^{(2)}$ correspondendientes al vector de medias y $\bGamma_n^{(11)}$, $\bGamma_n^{(22)}$ denotan la matriz de varianzas y covarianzas de $\btheta^{(1)}$ y $\btheta^{(2)}$, respectivamente. $\bGamma_n^{(12)}$ es la matriz de covarianzas entre $\btheta^{(1)}$ y $\btheta^{(2)}$, $\bGamma_n^{(21)}$ es la matriz de covarianzas entre $\btheta^{(2)}$ y $\btheta^{(1)}$. 
+```
+  
+La prueba de los dos resultados anteriores se sigue inmediatamente de las propiedades de la distribución normal multivariante.
+
+
+
+
+
+
+
+
+
 
 
 
