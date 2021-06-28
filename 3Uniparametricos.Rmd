@@ -2034,7 +2034,7 @@ Suponga que la fábrica debe hacer un despacho de 8 láminas, y se quiere conoce
 De esta forma, se puede afirmar que el grosor promedio del despacho es de 3.13cm con un intervalo del 95% dado por (2.85cm, 3.40cm). Nótese que el intervalo para $\bar{Y}^{*}$ es más ancho que el intervalo para $\theta$, pues este tiene una varianza mayor a la varianza de la distribución posterior de $\theta$.
 ```
 
-## Modelo normal con varianza desconocida
+## Modelo Normal con varianza desconocida
 
 En esta sección se presentan los fundamentos necesario para realizar inferencia bayesiana en un modelo normal para el cual sí se conoce la media, pero no su varianza. En casi todas las aplicaciones prácticas, es común que ambos parámetros sean desconocidos. Sin embargo, estas secciones servirán de base teórica para desarrollar modelos más complejos. Supóngase además que se cuenta con información previa, la cual puede basarse sin pérdida de generalidad en observaciones anteriores de alguna muestra de tamaño $n_0$ cuya varianza estimada fue $\sigma^2_0$.
 

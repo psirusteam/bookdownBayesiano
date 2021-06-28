@@ -1,0 +1,603 @@
+<!DOCTYPE html>
+<html lang="es" xml:lang="es">
+<head>
+
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <title>4.4 Modelo Multinomial | Modelos Bayesianos con R y STAN</title>
+  <meta name="description" content="Este es el repositorio del libro Modelos Bayesianos con R y STAN." />
+  <meta name="generator" content="bookdown 0.22 and GitBook 2.6.7" />
+
+  <meta property="og:title" content="4.4 Modelo Multinomial | Modelos Bayesianos con R y STAN" />
+  <meta property="og:type" content="book" />
+  
+  
+  <meta property="og:description" content="Este es el repositorio del libro Modelos Bayesianos con R y STAN." />
+  <meta name="github-repo" content="psirusteam/bookdownBayesiano" />
+
+  <meta name="twitter:card" content="summary" />
+  <meta name="twitter:title" content="4.4 Modelo Multinomial | Modelos Bayesianos con R y STAN" />
+  
+  <meta name="twitter:description" content="Este es el repositorio del libro Modelos Bayesianos con R y STAN." />
+  
+
+<meta name="author" content="Andrés Gutiérrez - Hanwen Zhang" />
+
+
+<meta name="date" content="2021-06-28" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black" />
+  
+  
+<link rel="prev" href="modelo-normal-multivariante-con-media-y-varianza-desconocida.html"/>
+<link rel="next" href="elementos-de-probabilidad.html"/>
+<script src="libs/header-attrs-2.8/header-attrs.js"></script>
+<script src="libs/jquery-2.2.3/jquery.min.js"></script>
+<link href="libs/gitbook-2.6.7/css/style.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-table.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-bookdown.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-highlight.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-search.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-fontsettings.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-clipboard.css" rel="stylesheet" />
+
+
+
+
+
+
+
+
+
+<link href="libs/anchor-sections-1.0.1/anchor-sections.css" rel="stylesheet" />
+<script src="libs/anchor-sections-1.0.1/anchor-sections.js"></script>
+
+
+<style type="text/css">
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+    color: #aaaaaa;
+  }
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code span.at { color: #7d9029; } /* Attribute */
+code span.bn { color: #40a070; } /* BaseN */
+code span.bu { } /* BuiltIn */
+code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code span.ch { color: #4070a0; } /* Char */
+code span.cn { color: #880000; } /* Constant */
+code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code span.dt { color: #902000; } /* DataType */
+code span.dv { color: #40a070; } /* DecVal */
+code span.er { color: #ff0000; font-weight: bold; } /* Error */
+code span.ex { } /* Extension */
+code span.fl { color: #40a070; } /* Float */
+code span.fu { color: #06287e; } /* Function */
+code span.im { } /* Import */
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code span.op { color: #666666; } /* Operator */
+code span.ot { color: #007020; } /* Other */
+code span.pp { color: #bc7a00; } /* Preprocessor */
+code span.sc { color: #4070a0; } /* SpecialChar */
+code span.ss { color: #bb6688; } /* SpecialString */
+code span.st { color: #4070a0; } /* String */
+code span.va { color: #19177c; } /* Variable */
+code span.vs { color: #4070a0; } /* VerbatimString */
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+</style>
+
+<style type="text/css">
+/* Used with Pandoc 2.11+ new --citeproc when CSL is used */
+div.csl-bib-body { }
+div.csl-entry {
+  clear: both;
+}
+.hanging div.csl-entry {
+  margin-left:2em;
+  text-indent:-2em;
+}
+div.csl-left-margin {
+  min-width:2em;
+  float:left;
+}
+div.csl-right-inline {
+  margin-left:2em;
+  padding-left:1em;
+}
+div.csl-indent {
+  margin-left: 2em;
+}
+</style>
+
+<link rel="stylesheet" href="style.css" type="text/css" />
+</head>
+
+<body>
+
+
+
+  <div class="book without-animation with-summary font-size-2 font-family-1" data-basepath=".">
+
+    <div class="book-summary">
+      <nav role="navigation">
+
+<ul class="summary">
+<li><a href="./">Modelos Bayesianos con R y STAN</a></li>
+
+<li class="divider"></li>
+<li class="chapter" data-level="" data-path="index.html"><a href="index.html"><i class="fa fa-check"></i>Prefacio</a></li>
+<li class="chapter" data-level="" data-path="antes-de-comenzar.html"><a href="antes-de-comenzar.html"><i class="fa fa-check"></i>Antes de comenzar</a>
+<ul>
+<li class="chapter" data-level="" data-path="cuestionamientos-sobre-el-enfoque-bayesiano.html"><a href="cuestionamientos-sobre-el-enfoque-bayesiano.html"><i class="fa fa-check"></i>Cuestionamientos sobre el enfoque bayesiano</a></li>
+<li class="chapter" data-level="" data-path="acerca-de-la-notación.html"><a href="acerca-de-la-notación.html"><i class="fa fa-check"></i>Acerca de la notación</a></li>
+</ul></li>
+<li class="chapter" data-level="1" data-path="tópicos-básicos.html"><a href="tópicos-básicos.html"><i class="fa fa-check"></i><b>1</b> Tópicos básicos</a>
+<ul>
+<li class="chapter" data-level="1.1" data-path="teoría-de-la-decisión.html"><a href="teoría-de-la-decisión.html"><i class="fa fa-check"></i><b>1.1</b> Teoría de la decisión</a></li>
+<li class="chapter" data-level="1.2" data-path="algunos-resultados-de-probabilidad.html"><a href="algunos-resultados-de-probabilidad.html"><i class="fa fa-check"></i><b>1.2</b> Algunos resultados de probabilidad</a></li>
+<li class="chapter" data-level="1.3" data-path="teorema-de-bayes.html"><a href="teorema-de-bayes.html"><i class="fa fa-check"></i><b>1.3</b> Teorema de Bayes</a></li>
+</ul></li>
+<li class="chapter" data-level="2" data-path="inferencia-bayesiana.html"><a href="inferencia-bayesiana.html"><i class="fa fa-check"></i><b>2</b> Inferencia bayesiana</a>
+<ul>
+<li class="chapter" data-level="2.1" data-path="la-distribución-previa.html"><a href="la-distribución-previa.html"><i class="fa fa-check"></i><b>2.1</b> La distribución previa</a>
+<ul>
+<li class="chapter" data-level="2.1.1" data-path="la-distribución-previa.html"><a href="la-distribución-previa.html#distribuciones-conjugadas"><i class="fa fa-check"></i><b>2.1.1</b> Distribuciones conjugadas</a></li>
+<li class="chapter" data-level="2.1.2" data-path="la-distribución-previa.html"><a href="la-distribución-previa.html#familia-exponencial"><i class="fa fa-check"></i><b>2.1.2</b> Familia exponencial</a></li>
+<li class="chapter" data-level="2.1.3" data-path="la-distribución-previa.html"><a href="la-distribución-previa.html#distribuciones-previas-no-informativas"><i class="fa fa-check"></i><b>2.1.3</b> Distribuciones previas no informativas</a></li>
+</ul></li>
+<li class="chapter" data-level="2.2" data-path="pruebas-de-hipótesis.html"><a href="pruebas-de-hipótesis.html"><i class="fa fa-check"></i><b>2.2</b> Pruebas de hipótesis</a>
+<ul>
+<li class="chapter" data-level="2.2.1" data-path="pruebas-de-hipótesis.html"><a href="pruebas-de-hipótesis.html#factor-de-bayes"><i class="fa fa-check"></i><b>2.2.1</b> Factor de Bayes</a></li>
+<li class="chapter" data-level="2.2.2" data-path="pruebas-de-hipótesis.html"><a href="pruebas-de-hipótesis.html#valor-p-bayesiano"><i class="fa fa-check"></i><b>2.2.2</b> Valor-<span class="math inline">\(p\)</span> Bayesiano</a></li>
+</ul></li>
+<li class="chapter" data-level="2.3" data-path="criterios-de-información.html"><a href="criterios-de-información.html"><i class="fa fa-check"></i><b>2.3</b> Criterios de información</a>
+<ul>
+<li class="chapter" data-level="2.3.1" data-path="criterios-de-información.html"><a href="criterios-de-información.html#criterio-dic"><i class="fa fa-check"></i><b>2.3.1</b> Criterio DIC</a></li>
+<li class="chapter" data-level="2.3.2" data-path="criterios-de-información.html"><a href="criterios-de-información.html#criterios-aic-y-bic"><i class="fa fa-check"></i><b>2.3.2</b> Criterios AIC y BIC</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="3" data-path="modelos-uniparamétricos.html"><a href="modelos-uniparamétricos.html"><i class="fa fa-check"></i><b>3</b> Modelos uniparamétricos</a>
+<ul>
+<li class="chapter" data-level="3.1" data-path="modelo-bernoulli.html"><a href="modelo-bernoulli.html"><i class="fa fa-check"></i><b>3.1</b> Modelo Bernoulli</a></li>
+<li class="chapter" data-level="3.2" data-path="modelo-binomial.html"><a href="modelo-binomial.html"><i class="fa fa-check"></i><b>3.2</b> Modelo Binomial</a></li>
+<li class="chapter" data-level="3.3" data-path="modelo-binomial-negativo.html"><a href="modelo-binomial-negativo.html"><i class="fa fa-check"></i><b>3.3</b> Modelo Binomial negativo</a></li>
+<li class="chapter" data-level="3.4" data-path="modelo-poisson.html"><a href="modelo-poisson.html"><i class="fa fa-check"></i><b>3.4</b> Modelo Poisson</a></li>
+<li class="chapter" data-level="3.5" data-path="modelo-exponencial.html"><a href="modelo-exponencial.html"><i class="fa fa-check"></i><b>3.5</b> Modelo Exponencial</a></li>
+<li class="chapter" data-level="3.6" data-path="modelo-normal-con-media-desconocida.html"><a href="modelo-normal-con-media-desconocida.html"><i class="fa fa-check"></i><b>3.6</b> Modelo Normal con media desconocida</a>
+<ul>
+<li class="chapter" data-level="3.6.1" data-path="modelo-normal-con-media-desconocida.html"><a href="modelo-normal-con-media-desconocida.html#distribución-previa-no-informativa-para-theta"><i class="fa fa-check"></i><b>3.6.1</b> Distribución previa no informativa para <span class="math inline">\(\theta\)</span></a></li>
+<li class="chapter" data-level="3.6.2" data-path="modelo-normal-con-media-desconocida.html"><a href="modelo-normal-con-media-desconocida.html#diferentes-formas-de-hallar-la-distribución-previa-para-theta"><i class="fa fa-check"></i><b>3.6.2</b> Diferentes formas de hallar la distribución previa para <span class="math inline">\(\theta\)</span></a></li>
+<li class="chapter" data-level="3.6.3" data-path="modelo-normal-con-media-desconocida.html"><a href="modelo-normal-con-media-desconocida.html#distribuciones-predictivas"><i class="fa fa-check"></i><b>3.6.3</b> Distribuciones predictivas</a></li>
+</ul></li>
+<li class="chapter" data-level="3.7" data-path="modelo-normal-con-varianza-desconocida.html"><a href="modelo-normal-con-varianza-desconocida.html"><i class="fa fa-check"></i><b>3.7</b> Modelo Normal con varianza desconocida</a></li>
+</ul></li>
+<li class="chapter" data-level="4" data-path="modelos-multiparamétricos.html"><a href="modelos-multiparamétricos.html"><i class="fa fa-check"></i><b>4</b> Modelos multiparamétricos</a>
+<ul>
+<li class="chapter" data-level="4.1" data-path="modelo-normal-con-media-y-varianza-desconocida.html"><a href="modelo-normal-con-media-y-varianza-desconocida.html"><i class="fa fa-check"></i><b>4.1</b> Modelo Normal con media y varianza desconocida</a>
+<ul>
+<li class="chapter" data-level="4.1.1" data-path="modelo-normal-con-media-y-varianza-desconocida.html"><a href="modelo-normal-con-media-y-varianza-desconocida.html#parámetros-independientes"><i class="fa fa-check"></i><b>4.1.1</b> Parámetros independientes</a></li>
+<li class="chapter" data-level="4.1.2" data-path="modelo-normal-con-media-y-varianza-desconocida.html"><a href="modelo-normal-con-media-y-varianza-desconocida.html#parámetros-dependientes"><i class="fa fa-check"></i><b>4.1.2</b> Parámetros dependientes</a></li>
+<li class="chapter" data-level="4.1.3" data-path="modelo-normal-con-media-y-varianza-desconocida.html"><a href="modelo-normal-con-media-y-varianza-desconocida.html#parámetros-no-informativos"><i class="fa fa-check"></i><b>4.1.3</b> Parámetros no informativos</a></li>
+<li class="chapter" data-level="4.1.4" data-path="modelo-normal-con-media-y-varianza-desconocida.html"><a href="modelo-normal-con-media-y-varianza-desconocida.html#distribución-predictiva"><i class="fa fa-check"></i><b>4.1.4</b> Distribución predictiva</a></li>
+</ul></li>
+<li class="chapter" data-level="4.2" data-path="modelo-normal-multivariante-con-media-desconocida-y-varianza-conocida.html"><a href="modelo-normal-multivariante-con-media-desconocida-y-varianza-conocida.html"><i class="fa fa-check"></i><b>4.2</b> Modelo Normal multivariante con media desconocida y varianza conocida</a>
+<ul>
+<li class="chapter" data-level="4.2.1" data-path="modelo-normal-multivariante-con-media-desconocida-y-varianza-conocida.html"><a href="modelo-normal-multivariante-con-media-desconocida-y-varianza-conocida.html#distribución-previa-no-informativa"><i class="fa fa-check"></i><b>4.2.1</b> Distribución previa no informativa</a></li>
+</ul></li>
+<li class="chapter" data-level="4.3" data-path="modelo-normal-multivariante-con-media-y-varianza-desconocida.html"><a href="modelo-normal-multivariante-con-media-y-varianza-desconocida.html"><i class="fa fa-check"></i><b>4.3</b> Modelo Normal multivariante con media y varianza desconocida</a>
+<ul>
+<li class="chapter" data-level="4.3.1" data-path="modelo-normal-multivariante-con-media-y-varianza-desconocida.html"><a href="modelo-normal-multivariante-con-media-y-varianza-desconocida.html#parámetros-independientes-con-distribuciones-previas-informativas"><i class="fa fa-check"></i><b>4.3.1</b> Parámetros independientes con distribuciones previas informativas</a></li>
+<li class="chapter" data-level="4.3.2" data-path="modelo-normal-multivariante-con-media-y-varianza-desconocida.html"><a href="modelo-normal-multivariante-con-media-y-varianza-desconocida.html#parámetros-dependientes-1"><i class="fa fa-check"></i><b>4.3.2</b> Parámetros dependientes</a></li>
+<li class="chapter" data-level="4.3.3" data-path="modelo-normal-multivariante-con-media-y-varianza-desconocida.html"><a href="modelo-normal-multivariante-con-media-y-varianza-desconocida.html#parámetros-no-informativos-1"><i class="fa fa-check"></i><b>4.3.3</b> Parámetros no informativos</a></li>
+</ul></li>
+<li class="chapter" data-level="4.4" data-path="modelo-multinomial.html"><a href="modelo-multinomial.html"><i class="fa fa-check"></i><b>4.4</b> Modelo Multinomial</a></li>
+</ul></li>
+<li class="appendix"><span><b>Apéndice</b></span></li>
+<li class="chapter" data-level="A" data-path="elementos-de-probabilidad.html"><a href="elementos-de-probabilidad.html"><i class="fa fa-check"></i><b>A</b> Elementos de probabilidad</a>
+<ul>
+<li class="chapter" data-level="A.1" data-path="distribuciones-discretas.html"><a href="distribuciones-discretas.html"><i class="fa fa-check"></i><b>A.1</b> Distribuciones discretas</a>
+<ul>
+<li class="chapter" data-level="A.1.1" data-path="distribuciones-discretas.html"><a href="distribuciones-discretas.html#distribución-uniforme-discreta"><i class="fa fa-check"></i><b>A.1.1</b> Distribución uniforme discreta</a></li>
+<li class="chapter" data-level="A.1.2" data-path="distribuciones-discretas.html"><a href="distribuciones-discretas.html#distribución-hipergeométrica"><i class="fa fa-check"></i><b>A.1.2</b> Distribución hipergeométrica</a></li>
+<li class="chapter" data-level="A.1.3" data-path="distribuciones-discretas.html"><a href="distribuciones-discretas.html#distribución-bernoulli"><i class="fa fa-check"></i><b>A.1.3</b> Distribución Bernoulli</a></li>
+<li class="chapter" data-level="A.1.4" data-path="distribuciones-discretas.html"><a href="distribuciones-discretas.html#distribución-binomial"><i class="fa fa-check"></i><b>A.1.4</b> Distribución binomial</a></li>
+<li class="chapter" data-level="A.1.5" data-path="distribuciones-discretas.html"><a href="distribuciones-discretas.html#distribución-binomial-negativa"><i class="fa fa-check"></i><b>A.1.5</b> Distribución Binomial negativa</a></li>
+<li class="chapter" data-level="A.1.6" data-path="distribuciones-discretas.html"><a href="distribuciones-discretas.html#distribución-de-poisson"><i class="fa fa-check"></i><b>A.1.6</b> Distribución de Poisson</a></li>
+</ul></li>
+<li class="chapter" data-level="A.2" data-path="distribuciones-continuas.html"><a href="distribuciones-continuas.html"><i class="fa fa-check"></i><b>A.2</b> Distribuciones continuas</a>
+<ul>
+<li class="chapter" data-level="A.2.1" data-path="distribuciones-continuas.html"><a href="distribuciones-continuas.html#distribución-uniforme-continua"><i class="fa fa-check"></i><b>A.2.1</b> Distribución Uniforme Continua</a></li>
+<li class="chapter" data-level="A.2.2" data-path="distribuciones-continuas.html"><a href="distribuciones-continuas.html#distribución-weibull"><i class="fa fa-check"></i><b>A.2.2</b> Distribución Weibull</a></li>
+<li class="chapter" data-level="A.2.3" data-path="distribuciones-continuas.html"><a href="distribuciones-continuas.html#distribución-valor-extremo"><i class="fa fa-check"></i><b>A.2.3</b> Distribución valor-extremo</a></li>
+<li class="chapter" data-level="A.2.4" data-path="distribuciones-continuas.html"><a href="distribuciones-continuas.html#distribución-gamma"><i class="fa fa-check"></i><b>A.2.4</b> Distribución Gamma</a></li>
+<li class="chapter" data-level="A.2.5" data-path="distribuciones-continuas.html"><a href="distribuciones-continuas.html#distribución-gamma-inversa"><i class="fa fa-check"></i><b>A.2.5</b> Distribución Gamma-inversa</a></li>
+<li class="chapter" data-level="A.2.6" data-path="distribuciones-continuas.html"><a href="distribuciones-continuas.html#distribución-exponencial"><i class="fa fa-check"></i><b>A.2.6</b> Distribución exponencial</a></li>
+<li class="chapter" data-level="A.2.7" data-path="distribuciones-continuas.html"><a href="distribuciones-continuas.html#distribución-beta"><i class="fa fa-check"></i><b>A.2.7</b> Distribución Beta</a></li>
+<li class="chapter" data-level="A.2.8" data-path="distribuciones-continuas.html"><a href="distribuciones-continuas.html#distribución-normal"><i class="fa fa-check"></i><b>A.2.8</b> Distribución normal</a></li>
+<li class="chapter" data-level="A.2.9" data-path="distribuciones-continuas.html"><a href="distribuciones-continuas.html#distribución-log-normal"><i class="fa fa-check"></i><b>A.2.9</b> Distribución log-normal</a></li>
+<li class="chapter" data-level="A.2.10" data-path="distribuciones-continuas.html"><a href="distribuciones-continuas.html#distribución-ji-cuadrado"><i class="fa fa-check"></i><b>A.2.10</b> Distribución Ji-cuadrado</a></li>
+<li class="chapter" data-level="A.2.11" data-path="distribuciones-continuas.html"><a href="distribuciones-continuas.html#distribución-t-student"><i class="fa fa-check"></i><b>A.2.11</b> Distribución t-student</a></li>
+<li class="chapter" data-level="A.2.12" data-path="distribuciones-continuas.html"><a href="distribuciones-continuas.html#distribución-t-student-generalizada"><i class="fa fa-check"></i><b>A.2.12</b> Distribución t-student generalizada</a></li>
+<li class="chapter" data-level="A.2.13" data-path="distribuciones-continuas.html"><a href="distribuciones-continuas.html#distribución-f"><i class="fa fa-check"></i><b>A.2.13</b> Distribución F</a></li>
+</ul></li>
+<li class="chapter" data-level="A.3" data-path="distribuciones-multivariadas.html"><a href="distribuciones-multivariadas.html"><i class="fa fa-check"></i><b>A.3</b> Distribuciones multivariadas</a>
+<ul>
+<li class="chapter" data-level="A.3.1" data-path="distribuciones-multivariadas.html"><a href="distribuciones-multivariadas.html#distribución-multinomial"><i class="fa fa-check"></i><b>A.3.1</b> Distribución Multinomial</a></li>
+<li class="chapter" data-level="A.3.2" data-path="distribuciones-multivariadas.html"><a href="distribuciones-multivariadas.html#distribución-dirichelt"><i class="fa fa-check"></i><b>A.3.2</b> Distribución Dirichelt</a></li>
+<li class="chapter" data-level="A.3.3" data-path="distribuciones-multivariadas.html"><a href="distribuciones-multivariadas.html#distribución-normal-multivariante"><i class="fa fa-check"></i><b>A.3.3</b> Distribución Normal Multivariante</a></li>
+<li class="chapter" data-level="A.3.4" data-path="distribuciones-multivariadas.html"><a href="distribuciones-multivariadas.html#distribución-wishart"><i class="fa fa-check"></i><b>A.3.4</b> Distribución Wishart</a></li>
+<li class="chapter" data-level="A.3.5" data-path="distribuciones-multivariadas.html"><a href="distribuciones-multivariadas.html#distribución-inversa-wishart"><i class="fa fa-check"></i><b>A.3.5</b> Distribución inversa-Wishart</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="B" data-path="matriz-de-información.html"><a href="matriz-de-información.html"><i class="fa fa-check"></i><b>B</b> Matriz de información</a></li>
+<li class="chapter" data-level="C" data-path="elementos-de-simulación-estadística.html"><a href="elementos-de-simulación-estadística.html"><i class="fa fa-check"></i><b>C</b> Elementos de simulación estadística</a>
+<ul>
+<li class="chapter" data-level="C.1" data-path="métodos-directos.html"><a href="métodos-directos.html"><i class="fa fa-check"></i><b>C.1</b> Métodos directos</a>
+<ul>
+<li class="chapter" data-level="C.1.1" data-path="métodos-directos.html"><a href="métodos-directos.html#método-de-la-transformación-uniforme"><i class="fa fa-check"></i><b>C.1.1</b> Método de la transformación uniforme</a></li>
+<li class="chapter" data-level="C.1.2" data-path="métodos-directos.html"><a href="métodos-directos.html#método-de-la-grilla"><i class="fa fa-check"></i><b>C.1.2</b> Método de la grilla</a></li>
+</ul></li>
+<li class="chapter" data-level="C.2" data-path="métodos-de-monte-carlo-vía-cadenas-de-markov.html"><a href="métodos-de-monte-carlo-vía-cadenas-de-markov.html"><i class="fa fa-check"></i><b>C.2</b> Métodos de Monte Carlo vía cadenas de Markov</a>
+<ul>
+<li class="chapter" data-level="C.2.1" data-path="métodos-de-monte-carlo-vía-cadenas-de-markov.html"><a href="métodos-de-monte-carlo-vía-cadenas-de-markov.html#el-muestreador-de-gibbs"><i class="fa fa-check"></i><b>C.2.1</b> El muestreador de Gibbs</a></li>
+<li class="chapter" data-level="C.2.2" data-path="métodos-de-monte-carlo-vía-cadenas-de-markov.html"><a href="métodos-de-monte-carlo-vía-cadenas-de-markov.html#el-algoritmo-de-metrópolis-hastings"><i class="fa fa-check"></i><b>C.2.2</b> El algoritmo de Metrópolis-Hastings</a></li>
+<li class="chapter" data-level="C.2.3" data-path="métodos-de-monte-carlo-vía-cadenas-de-markov.html"><a href="métodos-de-monte-carlo-vía-cadenas-de-markov.html#buenas-prácticas-en-la-aplicación-de-métodos-mcmc"><i class="fa fa-check"></i><b>C.2.3</b> Buenas prácticas en la aplicación de métodos MCMC</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="referencias.html"><a href="referencias.html"><i class="fa fa-check"></i>Referencias</a></li>
+<li class="divider"></li>
+<li><a Modelos Bayesianos con R y STAN</a></li>
+
+</ul>
+
+      </nav>
+    </div>
+
+    <div class="book-body">
+      <div class="body-inner">
+        <div class="book-header" role="navigation">
+          <h1>
+            <i class="fa fa-circle-o-notch fa-spin"></i><a href="./">Modelos Bayesianos con R y STAN</a>
+          </h1>
+        </div>
+
+        <div class="page-wrapper" tabindex="-1" role="main">
+          <div class="page-inner">
+
+            <section class="normal" id="section-">
+<div id="modelo-multinomial" class="section level2" number="4.4">
+<h2><span class="header-section-number">4.4</span> Modelo Multinomial</h2>
+<p>En esta sección discutimos el modelamiento bayesiano de datos provenientes de una distribución multinomial que corresponde a una extensión multivariada de la distribución binomial. Suponga que <span class="math inline">\(\textbf{Y}=(Y_1,\ldots,Y_p)&#39;\)</span> es un vector aleatorio con distribución multinomial, así, su distribución está parametrizada por el vector <span class="math inline">\(\boldsymbol \theta=(\theta_1,\ldots,\theta_p)&#39;\)</span> y está dada por la siguiente expresión</p>
+<p><span class="math display">\[\begin{equation}
+p(\mathbf{Y} \mid \boldsymbol \theta)=\binom{n}{y_1,\ldots,y_p}\prod_{i=1}^p\theta_i^{y_i} \ \ \ \ \ \theta_i&gt;0 \texttt{ , }  \sum_{i=1}^py_i=n \texttt{ y } \sum_{i=1}^p\theta_i=1
+\end{equation}\]</span></p>
+<p>Donde</p>
+<p><span class="math display">\[\begin{equation*}
+\binom{n}{y_1,\ldots,y_p}=\frac{n!}{y_1!\cdots y_p!}.
+\end{equation*}\]</span></p>
+<p>Como cada parámetro <span class="math inline">\(\theta_i\)</span> está restringido al espacio <span class="math inline">\(\Theta=[0,1]\)</span>, entonces es posible asignar a la distribución de Dirichlet como la distribución previa del vector de parámetros. Por lo tanto la distribución previa del vector de parámetros <span class="math inline">\(\boldsymbol \theta\)</span>, parametrizada por el vector de hiperparámetros <span class="math inline">\(\boldsymbol \alpha=(\alpha_1,\ldots,\alpha_p)&#39;\)</span>, está dada por</p>
+<p><span class="math display">\[\begin{equation}
+p(\boldsymbol \theta\mid \boldsymbol \alpha)=\frac{\Gamma(\alpha_1+\cdots+\alpha_p)}{\Gamma(\alpha_1)\cdots\Gamma(\alpha_p)}
+  \prod_{i=1}^p\theta_i^{\alpha_i-1} \ \ \ \ \ \alpha_i&gt;0 \texttt{ y } \sum_{i=1}^p\theta_i=1
+\end{equation}\]</span></p>
+<p>Bajo este marco de referencia se tienen los siguientes resultados</p>
+
+<div class="proposition">
+<span id="prp:unnamed-chunk-64" class="proposition"><strong>Resultado 4.18  </strong></span>La distribución posterior del parámetro <span class="math inline">\(\boldsymbol \theta\)</span> sigue una distribución <span class="math inline">\(Dirichlet(y_1+\alpha_1,\ldots,y_p+\alpha_p)\)</span>
+</div>
+<p><br></p>
+
+<div class="proof">
+ <span class="proof"><em>Prueba. </em></span> <span class="math display">\[\begin{align*}
+p(\boldsymbol \theta\mid \mathbf{Y})&amp;\propto p(\mathbf{Y} \mid \boldsymbol \theta)p(\boldsymbol \theta\mid \boldsymbol \alpha)\\
+&amp;=\binom{n}{y_1,\ldots,y_p}\prod_{i=1}^p\theta_i^{y_i}\frac{\Gamma(\alpha_1+\cdots+\alpha_p)}{\Gamma(\alpha_1)
+  \cdots\Gamma(\alpha_p)}
+\prod_{i=1}^p\theta_i^{\alpha_i-1}\\
+&amp;\propto \prod_{i=1}^p\theta_i^{y_i+\alpha_i-1}
+\end{align*}\]</span>
+Dado que <span class="math inline">\(\sum_{i=1}^p\theta_i=1\)</span>, entonces factorizando convenientemente, se encuentra una expresión idéntica a la función de distribución de una vector aleatorio con distribución <span class="math inline">\(Dirichelt(y_1+\alpha_1,\ldots,y_p+\alpha_p)\)</span>.
+</div>
+<p><br></p>
+<p>Del anterior resultado, podemos ver que la estimación bayesiana de cada parámetro <span class="math inline">\(\theta_i\)</span> con <span class="math inline">\(i=1,\cdots,p\)</span> está dada por</p>
+<p><span class="math display">\[\begin{align*}
+\hat{\theta}_i=\dfrac{y_i+\alpha_i}{\sum_{j=1}^py_j+\sum_{j=1}^p\alpha_j}
+\end{align*}\]</span></p>
+<p>Debido a que el valor de <span class="math inline">\(y_i\)</span> normalmente denota el número de datos en la <span class="math inline">\(i\)</span>-ésima categoría, y <span class="math inline">\(\theta_i\)</span> denota la probabilidad de pertenencia a esa categoría específica, la anterior expresión sugiere que, si tuvieramos información de experimentos anteriores, podríamos usar el número de datos en la <span class="math inline">\(i\)</span>-ésima categoría como un aproximación para <span class="math inline">\(\alpha_i\)</span>. De esta forma, <span class="math inline">\(\sum_{j=1}^p\alpha_j\)</span> denotaría el número total de obsservaciones en la información previa, y la estimación de <span class="math inline">\(\theta_i\)</span> se puede ver como la proporción de datos en la <span class="math inline">\(i\)</span>-ésima categoría combinada con la información actual.</p>
+<p>En los dos siguientes resultados, examinamos la forma de la distribución predictiva previa y posterior para una nueva observación.</p>
+
+<div class="proposition">
+<span id="prp:unnamed-chunk-66" class="proposition"><strong>Resultado 4.19  </strong></span>La distribución predictiva previa para una observación <span class="math inline">\(\mathbf{y}\)</span> está dada por
+<span class="math display">\[\begin{equation}
+p(\mathbf{Y})=\binom{n}{y_1,\ldots,y_p} \frac{\Gamma(\sum_{i=1}^p\alpha_i)}{\prod_{i=1}^p\Gamma(\alpha_i)}
+\frac{\prod_{i=1}^p\Gamma(y_i+\alpha_i)}{\Gamma(\sum_{i=1}^py_i+\sum_{i=1}^p\alpha_i)}
+\end{equation}\]</span>
+y define una auténtica función de densidad de probabilidad continua.
+</div>
+<p><br></p>
+
+<div class="proof">
+ <span class="proof"><em>Prueba. </em></span> De la definición de función de distribución predictiva se tiene que
+<span class="math display">\[\begin{align*}
+p(\mathbf{Y})&amp;=\int p(\mathbf{Y} \mid \boldsymbol \theta)p(\boldsymbol \theta\mid \boldsymbol \alpha)\ d\boldsymbol \theta\\
+&amp;=\binom{n}{y_1,\ldots,y_p} \frac{\Gamma(\alpha_1+\cdots+\alpha_p)}{\Gamma(\alpha_1)\cdots\Gamma(\alpha_p)}
+\frac{\Gamma(y_1+\alpha_1)\cdots\Gamma(y_p+\alpha_p)}{\Gamma(y_1+\alpha_1+\cdots + y_p+\alpha_p)}\\
+&amp;\times
+\int_0^1 \cdots \int_0^1 \frac{\Gamma(y_1+\alpha_1+\cdots+y_p+\alpha_p)}{\Gamma(y_1+\alpha_1)\cdots\Gamma(y_p+\alpha_p)}
+\prod_{i=1}^p\theta_i^{y_i+\alpha_i-1} \ d\theta_1 \cdots d\theta_p\\
+&amp;=\binom{n}{y_1,\ldots,y_p} \frac{\Gamma(\alpha_1+\cdots+\alpha_p)}{\Gamma(\alpha_1)\cdots\Gamma(\alpha_p)}
+\frac{\Gamma(y_1+\alpha_1)\cdots\Gamma(y_p+\alpha_p)}{\Gamma(y_1+\alpha_1+\cdots + y_p+\alpha_p)}\\
+&amp;=\binom{n}{y_1,\ldots,y_p} \frac{\Gamma(\sum_{i=1}^p\alpha_i)}{\prod_{i=1}^p\Gamma(\alpha_i)}
+\frac{\prod_{i=1}^p\Gamma(y_i+\alpha_i)}{\Gamma(\sum_{i=1}^py_i+\sum_{i=1}^p\alpha_i)}
+\end{align*}\]</span>
+</div>
+<p><br></p>
+
+<div class="proposition">
+<span id="prp:unnamed-chunk-68" class="proposition"><strong>Resultado 4.20  </strong></span>Después de la recolección de los datos, la distribución predictiva posterior para una nueva observación del vector aleatorio <span class="math inline">\(\tilde{\mathbf{y}}\)</span> de tamaño <span class="math inline">\(p\)</span>, para <span class="math inline">\(n^*\)</span> repeticiones del mismo experimento aleatorio, está dada por
+<span class="math display">\[\begin{align}
+p(\tilde{\mathbf{y}} \mid \mathbf{Y})&amp;=
+  \binom{n^*}{\tilde{y}_1,\ldots,\tilde{y}_p} \frac{\Gamma(\sum_{i=1}^p(y_i+\alpha_i))}{\prod_{i=1}^p\Gamma(y_i+\alpha_i)}
+\frac{\prod_{i=1}^p\Gamma(\tilde{y}_i+y_i+\alpha_i)}{\Gamma(\sum_{i=1}^p(\tilde{y}_i+y_i+\alpha_i))}
+\end{align}\]</span>
+</div>
+<p><br></p>
+
+<div class="proof">
+ <span class="proof"><em>Prueba. </em></span> De la definición de función de distribución predictiva posterior se tiene que
+<span class="math display">\[\begin{align*}
+p(\tilde{\mathbf{y}} \mid \mathbf{Y})&amp;=\int p(\tilde{\mathbf{y}} \mid \boldsymbol \theta)p(\boldsymbol \theta\mid \mathbf{Y})\ d\boldsymbol \theta\\
+&amp;=\binom{n^*}{\tilde{y}_1,\ldots,\tilde{y}_p} \frac{\Gamma(\sum_{i=1}^p(y_i+\alpha_i))}{\prod_{i=1}^p\Gamma(y_i+\alpha_i)}
+\frac{\prod_{i=1}^p\Gamma(\tilde{y}_i+y_i+\alpha_i)}{\Gamma(\sum_{i=1}^p(\tilde{y}_i+y_i+\alpha_i))}\\
+&amp;\times
+\int_0^1 \cdots \int_0^1 \frac{\Gamma(\sum_{i=1}^p(\tilde{y}_i+y_i+\alpha_i))}{\prod_{i=1}^p\Gamma(\tilde{y}_i+y_i+\alpha_i)}
+\prod_{i=1}^p\theta_i^{\tilde{y}_i+y_i+\alpha_i-1} \ d\theta_1 \cdots d\theta_p\\
+&amp;=\binom{n^*}{\tilde{y}_1,\ldots,\tilde{y}_p} \frac{\Gamma(\sum_{i=1}^p(y_i+\alpha_i))}{\prod_{i=1}^p\Gamma(y_i+\alpha_i)}
+\frac{\prod_{i=1}^p\Gamma(\tilde{y}_i+y_i+\alpha_i)}{\Gamma(\sum_{i=1}^p(\tilde{y}_i+y_i+\alpha_i))}
+\end{align*}\]</span>
+</div>
+<p><br></p>
+<p>Suponga ahora que no hay disponible ninguna fuente de información previa, por consiguiente podemos usar la distribución previa no informativa de Jeffreys para realizar la correspondiente inferencia bayesiana. Se debe tener en cuenta que, en el caso de modelos multiparamétricos, esta distribución previa está dada por <span class="math inline">\(p(\boldsymbol \theta)\propto \mid J(\boldsymbol \theta)\mid^{1/2}\)</span>, con</p>
+<p><span class="math display">\[\begin{align*}
+J(\boldsymbol \theta)&amp;=-E\left(\dfrac{\partial^2 \ln p(\mathbf{Y}\mid\boldsymbol \theta)}{\partial\boldsymbol \theta\partial\boldsymbol \theta&#39;}\right)\\
+&amp;=-E\left(\dfrac{\partial}{\partial\boldsymbol \theta}\left(\frac{y_1}{\theta_1},\cdots,\frac{y_p}{\theta_p}\right)\right)\\
+&amp;=\begin{pmatrix}\frac{n}{\theta_1}&amp;\cdots&amp;0\\
+\vdots&amp;\ddots&amp;\vdots\\0&amp;\cdots&amp;\frac{n}{\theta_p}\end{pmatrix}
+\end{align*}\]</span></p>
+<p>De donde podemos ver que la previa no informativa de Jeffreys para <span class="math inline">\(\boldsymbol \theta\)</span> está dada por
+<span class="math display">\[\begin{equation*}
+p(\boldsymbol \theta)\propto(\theta_1)^{-1/2}\cdots(\theta_p)^{-1/2}
+\end{equation*}\]</span></p>
+<p>La cual corresponde a una distribución <span class="math inline">\(Dirichlet(1/2,\cdots,1/2)\)</span>. El uso de esta distribución previa conduce a la distribución posterior <span class="math inline">\(\boldsymbol \theta\mid\mathbf{Y}\sim Dirichlet(y_1+1/2,\cdots,y_p+1/2)\)</span>, y la estimación posterior de cada <span class="math inline">\(\theta_i\)</span> viene dada por</p>
+<p><span class="math display">\[\begin{equation*}
+\hat{\theta}_i=\frac{y_i+1/2}{n+p/2}
+\end{equation*}\]</span></p>
+<p>Esta distribución resultante es muy similar a la estimación clásica de <span class="math inline">\(\theta_i\)</span> dada por <span class="math inline">\(y_i/n\)</span>, especialmente cuando <span class="math inline">\(n\)</span> es grande o <span class="math inline">\(p\)</span> es pequeño.</p>
+
+<div class="example">
+<p><span id="exm:Multinomial" class="example"><strong>Ejemplo 4.6  </strong></span>En este ejemplo se realiza un análisis bayesiano acerca de la intención de voto para la elección de la alcaldía de la ciudad de Bogotá en el año 2011. El análisis electoral, en una primera instancia, trata de conocer la probabilidad de éxito de un candidato, que aplicada a una población específica se traduce en la intención de voto hacia el candidato. Como hay varios candidatos en la disputa, entonces es conveniente suponer que el fenómeno puede ser descrito mediante el uso de una distribución multinomial. Como el parámetro en este caso es un vector de probabilidades, es adecuado suponer una distribución previa de tipo Dirichlet para este vector. Para este ejemplo, desarrollaremos un análisis básico con base en una primera encuesta realizada del 12 al 14 de agosto del 2011, en donde se afirmaba que había una reñida competencia entre los candidatos Peñalosa y Petro (cada uno con el 22%), siendo el candidato Mockus tercero, con tan solo el 12% de intención de voto, seguido muy de cerca por Parody, con el 9% de intención de voto.</p>
+<p>Con base en esta información, y teniendo en cuenta que hubo 604 respondientes, se afina la distribución previa que es Dirichlet con parámetros 133 (igual a <span class="math inline">\(604 \times 0.22\)</span>), 133 (igual a <span class="math inline">\(604 \times 0.22\)</span>), 72 (igual a <span class="math inline">\(604 \times 0.12\)</span>) y 64 (igual a <span class="math inline">\(604 \times 0.09\)</span>), para los candidatos Peñalosa, Petro, Mockus y Parody, respectivamente. Por otro lado, según la última encuesta electoral reportada por un medio de comunicación, con periodo de recolección entre el 30 de agosto y el primero de Septiembre, se encontró que, de 1000 respondientes, Peñalosa alcanza el 22% de preferencia, seguido de Petro, con 17%; en tercer lugar aparecía Mockus, con 12%, y en cuarto lugar Parody, con 11%.</p>
+<p>Como se trata de la encuesta más reciente, supondremos que estos datos corresponden a la realización de una distribución multinomial. El análisis conjugado señala que la distribución posterior del parámetro es de tipo Dirichlet. Otra pregunta de interés radica en comparar la intención de voto de los candidatos Peñalosa y Petro, pues son los que tienen mayor apoyo ciudadano.</p>
+Los códigos en <code>STAN</code> para el análisis baayesiano se presentan a continuación. Nótese que se define un nuevo parámetro <span class="math inline">\(\delta=\theta_1-\theta_2\)</span>, con <span class="math inline">\(\theta_1\)</span> y <span class="math inline">\(\theta_2\)</span> los parámetros asociados a la intención de voto de Peñalosa y Petro, respectivamente.
+</div>
+<div class="sourceCode" id="cb176"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb176-1"><a href="modelo-multinomial.html#cb176-1" aria-hidden="true" tabindex="-1"></a>Multinom <span class="ot">&lt;-</span> <span class="st">&#39;</span></span>
+<span id="cb176-2"><a href="modelo-multinomial.html#cb176-2" aria-hidden="true" tabindex="-1"></a><span class="st">data {</span></span>
+<span id="cb176-3"><a href="modelo-multinomial.html#cb176-3" aria-hidden="true" tabindex="-1"></a><span class="st">  int&lt;lower=0&gt; k;</span></span>
+<span id="cb176-4"><a href="modelo-multinomial.html#cb176-4" aria-hidden="true" tabindex="-1"></a><span class="st">  int y[k];</span></span>
+<span id="cb176-5"><a href="modelo-multinomial.html#cb176-5" aria-hidden="true" tabindex="-1"></a><span class="st">  vector[k] alpha;</span></span>
+<span id="cb176-6"><a href="modelo-multinomial.html#cb176-6" aria-hidden="true" tabindex="-1"></a><span class="st">}</span></span>
+<span id="cb176-7"><a href="modelo-multinomial.html#cb176-7" aria-hidden="true" tabindex="-1"></a><span class="st">parameters {</span></span>
+<span id="cb176-8"><a href="modelo-multinomial.html#cb176-8" aria-hidden="true" tabindex="-1"></a><span class="st">  simplex[k] theta;</span></span>
+<span id="cb176-9"><a href="modelo-multinomial.html#cb176-9" aria-hidden="true" tabindex="-1"></a><span class="st">}</span></span>
+<span id="cb176-10"><a href="modelo-multinomial.html#cb176-10" aria-hidden="true" tabindex="-1"></a><span class="st">transformed parameters {</span></span>
+<span id="cb176-11"><a href="modelo-multinomial.html#cb176-11" aria-hidden="true" tabindex="-1"></a><span class="st">  real delta;</span></span>
+<span id="cb176-12"><a href="modelo-multinomial.html#cb176-12" aria-hidden="true" tabindex="-1"></a><span class="st">  delta = theta[1] - theta[2];</span></span>
+<span id="cb176-13"><a href="modelo-multinomial.html#cb176-13" aria-hidden="true" tabindex="-1"></a><span class="st">}</span></span>
+<span id="cb176-14"><a href="modelo-multinomial.html#cb176-14" aria-hidden="true" tabindex="-1"></a><span class="st">model {</span></span>
+<span id="cb176-15"><a href="modelo-multinomial.html#cb176-15" aria-hidden="true" tabindex="-1"></a><span class="st">  y ~ multinomial(theta);</span></span>
+<span id="cb176-16"><a href="modelo-multinomial.html#cb176-16" aria-hidden="true" tabindex="-1"></a><span class="st">  theta ~ dirichlet(alpha);</span></span>
+<span id="cb176-17"><a href="modelo-multinomial.html#cb176-17" aria-hidden="true" tabindex="-1"></a><span class="st">}</span></span>
+<span id="cb176-18"><a href="modelo-multinomial.html#cb176-18" aria-hidden="true" tabindex="-1"></a><span class="st">generated quantities {</span></span>
+<span id="cb176-19"><a href="modelo-multinomial.html#cb176-19" aria-hidden="true" tabindex="-1"></a><span class="st">  int ypred[k];</span></span>
+<span id="cb176-20"><a href="modelo-multinomial.html#cb176-20" aria-hidden="true" tabindex="-1"></a><span class="st">  int deltapred;</span></span>
+<span id="cb176-21"><a href="modelo-multinomial.html#cb176-21" aria-hidden="true" tabindex="-1"></a><span class="st">  ypred = multinomial_rng(theta, 100);</span></span>
+<span id="cb176-22"><a href="modelo-multinomial.html#cb176-22" aria-hidden="true" tabindex="-1"></a><span class="st">  deltapred = ypred[1] - ypred[2];</span></span>
+<span id="cb176-23"><a href="modelo-multinomial.html#cb176-23" aria-hidden="true" tabindex="-1"></a><span class="st">}</span></span>
+<span id="cb176-24"><a href="modelo-multinomial.html#cb176-24" aria-hidden="true" tabindex="-1"></a><span class="st">&#39;</span></span>
+<span id="cb176-25"><a href="modelo-multinomial.html#cb176-25" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb176-26"><a href="modelo-multinomial.html#cb176-26" aria-hidden="true" tabindex="-1"></a>y <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="dv">220</span>, <span class="dv">170</span>, <span class="dv">120</span>, <span class="dv">110</span>)</span>
+<span id="cb176-27"><a href="modelo-multinomial.html#cb176-27" aria-hidden="true" tabindex="-1"></a>k <span class="ot">&lt;-</span> <span class="fu">length</span>(y)</span>
+<span id="cb176-28"><a href="modelo-multinomial.html#cb176-28" aria-hidden="true" tabindex="-1"></a>alpha <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="dv">133</span>, <span class="dv">133</span>, <span class="dv">72</span>, <span class="dv">54</span>)</span>
+<span id="cb176-29"><a href="modelo-multinomial.html#cb176-29" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb176-30"><a href="modelo-multinomial.html#cb176-30" aria-hidden="true" tabindex="-1"></a>sample_data <span class="ot">&lt;-</span> <span class="fu">list</span>(<span class="at">k =</span> k, <span class="at">y =</span> y, <span class="at">alpha =</span> alpha)</span>
+<span id="cb176-31"><a href="modelo-multinomial.html#cb176-31" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">1234</span>)</span>
+<span id="cb176-32"><a href="modelo-multinomial.html#cb176-32" aria-hidden="true" tabindex="-1"></a>Multinomfit <span class="ot">&lt;-</span> <span class="fu">stan</span>(<span class="at">model_code =</span> Multinom,</span>
+<span id="cb176-33"><a href="modelo-multinomial.html#cb176-33" aria-hidden="true" tabindex="-1"></a>                   <span class="at">data =</span> sample_data, <span class="at">verbose =</span> <span class="cn">FALSE</span>)</span></code></pre></div>
+<p>De los resultados obtenidos, vemos que la estimación bayesiana del vector de inteciones de voto es <span class="math inline">\(\hat{\boldsymbol \theta}=(34.8\%, 29.9\%, 19.0\%, 16.1\%)\)</span>; esto es, un resultado favorable para el candidato Peñalosa, con una ventaja de casi 5% sobre el candidato Petro. Además, la estimación puntual de la diferencia entre ambos parámetros es de 4.8%.</p>
+<div class="sourceCode" id="cb177"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb177-1"><a href="modelo-multinomial.html#cb177-1" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(Multinomfit, <span class="at">digits =</span> <span class="dv">4</span>, </span>
+<span id="cb177-2"><a href="modelo-multinomial.html#cb177-2" aria-hidden="true" tabindex="-1"></a>      <span class="at">pars =</span> <span class="fu">c</span>(<span class="st">&quot;theta&quot;</span>, <span class="st">&quot;delta&quot;</span>), <span class="at">probs =</span> <span class="fu">c</span>(<span class="fl">0.025</span>, <span class="fl">0.975</span>))</span></code></pre></div>
+<pre><code>## Inference for Stan model: 2bdfd5cacdee4a63c64675325d2dd77b.
+## 4 chains, each with iter=2000; warmup=1000; thin=1; 
+## post-warmup draws per chain=1000, total post-warmup draws=4000.
+## 
+##            mean se_mean     sd   2.5%  97.5% n_eff   Rhat
+## theta[1] 0.3488   2e-04 0.0148 0.3200 0.3786  4878 0.9992
+## theta[2] 0.2991   2e-04 0.0141 0.2711 0.3265  4375 0.9993
+## theta[3] 0.1897   2e-04 0.0125 0.1657 0.2157  4560 0.9995
+## theta[4] 0.1624   2e-04 0.0116 0.1404 0.1860  4290 0.9993
+## delta    0.0498   4e-04 0.0247 0.0026 0.0986  4654 0.9991
+## 
+## Samples were drawn using NUTS(diag_e) at Sun Jun 27 23:51:31 2021.
+## For each parameter, n_eff is a crude measure of effective sample size,
+## and Rhat is the potential scale reduction factor on split chains (at 
+## convergence, Rhat=1).</code></pre>
+<p>El mismo procedimiento se puede realizar en <code>R</code> usando la siguiente sintaxis.</p>
+<div class="sourceCode" id="cb179"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb179-1"><a href="modelo-multinomial.html#cb179-1" aria-hidden="true" tabindex="-1"></a>nsim <span class="ot">&lt;-</span> <span class="dv">1000</span></span>
+<span id="cb179-2"><a href="modelo-multinomial.html#cb179-2" aria-hidden="true" tabindex="-1"></a>theta.pos <span class="ot">&lt;-</span> <span class="fu">rdirichlet</span>(nsim, y <span class="sc">+</span> alpha)</span>
+<span id="cb179-3"><a href="modelo-multinomial.html#cb179-3" aria-hidden="true" tabindex="-1"></a><span class="co"># Estimación de intención de voto para los candidatos</span></span>
+<span id="cb179-4"><a href="modelo-multinomial.html#cb179-4" aria-hidden="true" tabindex="-1"></a><span class="fu">colMeans</span>(theta.pos)</span></code></pre></div>
+<pre><code>## [1] 0.3485904 0.2996615 0.1896296 0.1621185</code></pre>
+<div class="sourceCode" id="cb181"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb181-1"><a href="modelo-multinomial.html#cb181-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Ventaja de intención de voto de Peñalosa sobre Petro</span></span>
+<span id="cb181-2"><a href="modelo-multinomial.html#cb181-2" aria-hidden="true" tabindex="-1"></a><span class="fu">mean</span>(theta.pos[, <span class="dv">1</span>] <span class="sc">-</span> theta.pos[, <span class="dv">2</span>])</span></code></pre></div>
+<pre><code>## [1] 0.04892888</code></pre>
+<div class="sourceCode" id="cb183"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb183-1"><a href="modelo-multinomial.html#cb183-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Intervalo de credibilidad para la diferencia</span></span>
+<span id="cb183-2"><a href="modelo-multinomial.html#cb183-2" aria-hidden="true" tabindex="-1"></a><span class="fu">quantile</span>(theta.pos[, <span class="dv">1</span>] <span class="sc">-</span> theta.pos[, <span class="dv">2</span>], </span>
+<span id="cb183-3"><a href="modelo-multinomial.html#cb183-3" aria-hidden="true" tabindex="-1"></a>         <span class="fu">c</span>(<span class="fl">0.025</span>, <span class="fl">0.975</span>))</span></code></pre></div>
+<pre><code>##        2.5%       97.5% 
+## 0.001564511 0.096907424</code></pre>
+<p>Vemos que la estimación de <span class="math inline">\(\boldsymbol \theta\)</span> es similar a lo obtenido en <code>STAN</code>. Para comparar la intención de voto de Peñalosa y Petro, se puede calcular la probabilidad <span class="math inline">\(Pr(\theta_1 &gt; \theta_2)\)</span>, tal como sigue:</p>
+<div class="sourceCode" id="cb185"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb185-1"><a href="modelo-multinomial.html#cb185-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Probabilidad de que Peñalosa obtenga más votos que Petro</span></span>
+<span id="cb185-2"><a href="modelo-multinomial.html#cb185-2" aria-hidden="true" tabindex="-1"></a><span class="fu">sum</span>(theta.pos[, <span class="dv">1</span>] <span class="sc">&gt;</span> theta.pos[, <span class="dv">2</span>])<span class="sc">/</span>nsim</span></code></pre></div>
+<pre><code>## [1] 0.979</code></pre>
+<p>La gráfica <a href="modelo-multinomial.html#fig:multinom1">4.10</a> muestra las densidades posteriores de los cuatro componentes del parámetro de interés. Además, observamos que la probabilidad de un triunfo de Peñalosa sobre Petro no necesariamente es contundente.</p>
+<div class="figure" style="text-align: center"><span id="fig:multinom1"></span>
+<img src="4Multiparametricos_files/figure-html/multinom1-1.svg" alt="Distribuciones posteriores para el vector de probabilidades de interés." width="576" />
+<p class="caption">
+Figura 4.10: Distribuciones posteriores para el vector de probabilidades de interés.
+</p>
+</div>
+<p>Una de las cosas más interesante de la estadística bayesiana es la distribución posterior predictiva. En efecto, las últimas líneas del código en <code>STAN</code> permiten realizar este tipo de muestreo. El objeto que guarda estas observaciones simuladas es <code>ypred</code>; mientras que <code>deltapred</code> guarda las observaciones de la diferencia entre los dos primeros candidatos.</p>
+<div class="sourceCode" id="cb187"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb187-1"><a href="modelo-multinomial.html#cb187-1" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(Multinomfit, <span class="at">digits =</span> <span class="dv">4</span>, </span>
+<span id="cb187-2"><a href="modelo-multinomial.html#cb187-2" aria-hidden="true" tabindex="-1"></a>      <span class="at">pars =</span> <span class="fu">c</span>(<span class="st">&quot;ypred&quot;</span>, <span class="st">&quot;deltapred&quot;</span>), <span class="at">probs =</span> <span class="fu">c</span>(<span class="fl">0.025</span>, <span class="fl">0.975</span>))</span></code></pre></div>
+<pre><code>## Inference for Stan model: 0e62eee46c638a357c8cec17ef27ea2f.
+## 4 chains, each with iter=2000; warmup=1000; thin=1; 
+## post-warmup draws per chain=1000, total post-warmup draws=4000.
+## 
+##              mean se_mean     sd 2.5% 97.5% n_eff   Rhat
+## ypred[1]  34.8482  0.0803 5.0254   25    45  3917 1.0001
+## ypred[2]  29.9200  0.0751 4.8550   21    40  4183 0.9995
+## ypred[3]  19.0742  0.0677 4.1755   11    27  3807 1.0000
+## ypred[4]  16.1575  0.0604 3.9011    9    24  4168 0.9997
+## deltapred  4.9282  0.1338 8.4919  -12    21  4028 0.9997
+## 
+## Samples were drawn using NUTS(diag_e) at Mon Jun 28 00:24:42 2021.
+## For each parameter, n_eff is a crude measure of effective sample size,
+## and Rhat is the potential scale reduction factor on split chains (at 
+## convergence, Rhat=1).</code></pre>
+<p>En efecto, al momento de predecir los intervalos de credibilidad son más amplios como lo muestra la gráfica <a href="modelo-multinomial.html#fig:multinom2">4.11</a>. Además, la diferencia entre los dos candidatos sigue siendo grande, pero definitivamente la elección no está definida, como se observa en la gráfica <a href="modelo-multinomial.html#fig:multinom3">4.12</a>.</p>
+<div class="figure" style="text-align: center"><span id="fig:multinom2"></span>
+<img src="4Multiparametricos_files/figure-html/multinom2-1.svg" alt="Distribuciones posteriores predictivas." width="576" />
+<p class="caption">
+Figura 4.11: Distribuciones posteriores predictivas.
+</p>
+</div>
+<div class="figure" style="text-align: center"><span id="fig:multinom3"></span>
+<img src="4Multiparametricos_files/figure-html/multinom3-1.svg" alt="Distribuciones posteriores predictivas." width="576" />
+<p class="caption">
+Figura 4.12: Distribuciones posteriores predictivas.
+</p>
+</div>
+
+</div>
+<!-- </div> -->
+
+
+
+            </section>
+
+          </div>
+        </div>
+      </div>
+<a href="modelo-normal-multivariante-con-media-y-varianza-desconocida.html" class="navigation navigation-prev " aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
+<a href="elementos-de-probabilidad.html" class="navigation navigation-next " aria-label="Next page"><i class="fa fa-angle-right"></i></a>
+    </div>
+  </div>
+<script src="libs/gitbook-2.6.7/js/app.min.js"></script>
+<script src="libs/gitbook-2.6.7/js/lunr.js"></script>
+<script src="libs/gitbook-2.6.7/js/clipboard.min.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-search.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-sharing.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-fontsettings.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-bookdown.js"></script>
+<script src="libs/gitbook-2.6.7/js/jquery.highlight.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-clipboard.js"></script>
+<script>
+gitbook.require(["gitbook"], function(gitbook) {
+gitbook.start({
+"sharing": {
+"github": true,
+"facebook": false,
+"twitter": true,
+"linkedin": false,
+"weibo": false,
+"instapaper": false,
+"vk": false,
+"whatsapp": false,
+"all": ["facebook", "twitter", "linkedin", "weibo", "instapaper"]
+},
+"fontsettings": {
+"theme": "white",
+"family": "sans",
+"size": 2
+},
+"edit": {
+"link": "https://github.com/psirusteam/bookdownBayesiano/4Multiparametricos.Rmd",
+"text": "Edit"
+},
+"history": {
+"link": null,
+"text": null
+},
+"view": {
+"link": null,
+"text": null
+},
+"download": ["ModelosBayesianos.pdf", "ModelosBayesianos.epub", "ModelosBayesianos.mobi"],
+"toc": {
+"collapse": "section"
+},
+"tconfig": null
+});
+});
+</script>
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    var src = "true";
+    if (src === "" || src === "true") src = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-MML-AM_CHTML";
+    if (location.protocol !== "file:")
+      if (/^https?:/.test(src))
+        src = src.replace(/^https?:/, '');
+    script.src = src;
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+</body>
+
+</html>

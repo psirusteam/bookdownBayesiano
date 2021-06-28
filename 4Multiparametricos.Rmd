@@ -1187,7 +1187,7 @@ Con $\bmu^{(1)}$ y $\bmu^{(2)}$ correspondendientes al vector de medias y $\bGam
   
 La prueba de los dos resultados anteriores se sigue inmediatamente de las propiedades de la distribución normal multivariante.
 
-## Modelo normal multivariante con media y varianza desconocida
+## Modelo Normal multivariante con media y varianza desconocida
   
 Al igual que en la distribución normal univariada, cuando se desconoce tanto el vector de medias como la matriz de varianzas y covarianzas de la distribución, es necesario plantear diversos enfoques y situarse en el más conveniente. Nótese que en términos de parámetros, existen $p$ parámetros correspondientes al vector de medias $\btheta$ y $\binom{p}{2}=\dfrac{p(p+1)}{2}$ parámetros correspondientes a la matriz de varianzas $\bSigma$. Pensando en la gran cantidad de parámetros que se deben modelar, es necesario tener en cuenta que el número de datos en la muestra aleatoria sea lo suficientemente grande. Suponiendo que el número de observaciones en la muestra aleatoria sea suficiente, existe otra situación que se debe surtir y es la asignación de las distribuciones previas para $\btheta$ y $\bSigma$. En estos términos, es posible
   
@@ -1922,38 +1922,233 @@ c(9 * var(y[, 1]) / qchisq(0.975, 9),
 
 En comparación con el intervalo de credibilidad, el intervalo de confianza está ubicado levemente hacia la izquierda del eje real, esto se debe a que la estimación clásica de la varianza siempre será menor a la estimación bayesiana con una previa no informativa.
 
+## Modelo Multinomial
+
+En esta sección discutimos el modelamiento bayesiano de datos provenientes de una distribución multinomial que corresponde a una extensión multivariada de la distribución binomial. Suponga que $\textbf{Y}=(Y_1,\ldots,Y_p)'$ es un vector aleatorio con distribución multinomial, así, su distribución está parametrizada por el vector $\btheta=(\theta_1,\ldots,\theta_p)'$ y está dada por la siguiente expresión
+
+\begin{equation}
+p(\mathbf{Y} \mid \btheta)=\binom{n}{y_1,\ldots,y_p}\prod_{i=1}^p\theta_i^{y_i} \ \ \ \ \ \theta_i>0 \texttt{ , }  \sum_{i=1}^py_i=n \texttt{ y } \sum_{i=1}^p\theta_i=1
+\end{equation}
+  
+Donde
+
+\begin{equation*}
+\binom{n}{y_1,\ldots,y_p}=\frac{n!}{y_1!\cdots y_p!}.
+\end{equation*}
+  
+Como cada parámetro $\theta_i$ está restringido al espacio $\Theta=[0,1]$, entonces es posible asignar a la distribución de Dirichlet como la distribución previa del vector de parámetros. Por lo tanto la distribución previa del vector de parámetros $\btheta$, parametrizada por el vector de hiperparámetros $\balpha=(\alpha_1,\ldots,\alpha_p)'$, está dada por
+  
+\begin{equation}
+p(\btheta \mid \balpha)=\frac{\Gamma(\alpha_1+\cdots+\alpha_p)}{\Gamma(\alpha_1)\cdots\Gamma(\alpha_p)}
+  \prod_{i=1}^p\theta_i^{\alpha_i-1} \ \ \ \ \ \alpha_i>0 \texttt{ y } \sum_{i=1}^p\theta_i=1
+\end{equation}
+  
+Bajo este marco de referencia se tienen los siguientes resultados
+  
+
+```{proposition}
+La distribución posterior del parámetro $\btheta$ sigue una distribución $Dirichlet(y_1+\alpha_1,\ldots,y_p+\alpha_p)$
+```
+<br>
+
+```{proof}
+\begin{align*}
+p(\btheta \mid \mathbf{Y})&\propto p(\mathbf{Y} \mid \btheta)p(\btheta \mid \balpha)\\
+&=\binom{n}{y_1,\ldots,y_p}\prod_{i=1}^p\theta_i^{y_i}\frac{\Gamma(\alpha_1+\cdots+\alpha_p)}{\Gamma(\alpha_1)
+  \cdots\Gamma(\alpha_p)}
+\prod_{i=1}^p\theta_i^{\alpha_i-1}\\
+&\propto \prod_{i=1}^p\theta_i^{y_i+\alpha_i-1}
+\end{align*}
+Dado que $\sum_{i=1}^p\theta_i=1$, entonces factorizando convenientemente, se encuentra una expresión idéntica a la función de distribución de una vector aleatorio con distribución $Dirichelt(y_1+\alpha_1,\ldots,y_p+\alpha_p)$.
+```
+<br>
+
+Del anterior resultado, podemos ver que la estimación bayesiana de cada parámetro $\theta_i$ con $i=1,\cdots,p$ está dada por
+
+\begin{align*}
+\hat{\theta}_i=\dfrac{y_i+\alpha_i}{\sum_{j=1}^py_j+\sum_{j=1}^p\alpha_j}
+\end{align*}
+
+Debido a que el valor de $y_i$ normalmente denota el número de datos en la $i$-ésima categoría, y $\theta_i$ denota la probabilidad de pertenencia a esa categoría específica, la anterior expresión sugiere que, si tuvieramos información de experimentos anteriores, podríamos usar el número de datos en la $i$-ésima categoría como un aproximación para $\alpha_i$. De esta forma, $\sum_{j=1}^p\alpha_j$ denotaría el número total de obsservaciones en la información previa, y la estimación de $\theta_i$ se puede ver como la proporción de datos en la $i$-ésima categoría combinada con la información actual.
+
+En los dos siguientes resultados, examinamos la forma de la distribución predictiva previa y posterior para una nueva observación.
+
+```{proposition}
+La distribución predictiva previa para una observación $\mathbf{y}$ está dada por
+\begin{equation}
+p(\mathbf{Y})=\binom{n}{y_1,\ldots,y_p} \frac{\Gamma(\sum_{i=1}^p\alpha_i)}{\prod_{i=1}^p\Gamma(\alpha_i)}
+\frac{\prod_{i=1}^p\Gamma(y_i+\alpha_i)}{\Gamma(\sum_{i=1}^py_i+\sum_{i=1}^p\alpha_i)}
+\end{equation}
+y define una auténtica función de densidad de probabilidad continua.
+```
+<br>
+
+```{proof}
+De la definición de función de distribución predictiva se tiene que
+\begin{align*}
+p(\mathbf{Y})&=\int p(\mathbf{Y} \mid \btheta)p(\btheta \mid \balpha)\ d\btheta\\
+&=\binom{n}{y_1,\ldots,y_p} \frac{\Gamma(\alpha_1+\cdots+\alpha_p)}{\Gamma(\alpha_1)\cdots\Gamma(\alpha_p)}
+\frac{\Gamma(y_1+\alpha_1)\cdots\Gamma(y_p+\alpha_p)}{\Gamma(y_1+\alpha_1+\cdots + y_p+\alpha_p)}\\
+&\times
+\int_0^1 \cdots \int_0^1 \frac{\Gamma(y_1+\alpha_1+\cdots+y_p+\alpha_p)}{\Gamma(y_1+\alpha_1)\cdots\Gamma(y_p+\alpha_p)}
+\prod_{i=1}^p\theta_i^{y_i+\alpha_i-1} \ d\theta_1 \cdots d\theta_p\\
+&=\binom{n}{y_1,\ldots,y_p} \frac{\Gamma(\alpha_1+\cdots+\alpha_p)}{\Gamma(\alpha_1)\cdots\Gamma(\alpha_p)}
+\frac{\Gamma(y_1+\alpha_1)\cdots\Gamma(y_p+\alpha_p)}{\Gamma(y_1+\alpha_1+\cdots + y_p+\alpha_p)}\\
+&=\binom{n}{y_1,\ldots,y_p} \frac{\Gamma(\sum_{i=1}^p\alpha_i)}{\prod_{i=1}^p\Gamma(\alpha_i)}
+\frac{\prod_{i=1}^p\Gamma(y_i+\alpha_i)}{\Gamma(\sum_{i=1}^py_i+\sum_{i=1}^p\alpha_i)}
+\end{align*}
+```
+<br>
+
+```{proposition}
+Después de la recolección de los datos, la distribución predictiva posterior para una nueva observación del vector aleatorio $\tilde{\mathbf{y}}$ de tamaño $p$, para $n^*$ repeticiones del mismo experimento aleatorio, está dada por
+\begin{align}
+p(\tilde{\mathbf{y}} \mid \mathbf{Y})&=
+  \binom{n^*}{\tilde{y}_1,\ldots,\tilde{y}_p} \frac{\Gamma(\sum_{i=1}^p(y_i+\alpha_i))}{\prod_{i=1}^p\Gamma(y_i+\alpha_i)}
+\frac{\prod_{i=1}^p\Gamma(\tilde{y}_i+y_i+\alpha_i)}{\Gamma(\sum_{i=1}^p(\tilde{y}_i+y_i+\alpha_i))}
+\end{align}
+```
+<br>
+
+```{proof}
+De la definición de función de distribución predictiva posterior se tiene que
+\begin{align*}
+p(\tilde{\mathbf{y}} \mid \mathbf{Y})&=\int p(\tilde{\mathbf{y}} \mid \btheta)p(\btheta \mid \mathbf{Y})\ d\btheta\\
+&=\binom{n^*}{\tilde{y}_1,\ldots,\tilde{y}_p} \frac{\Gamma(\sum_{i=1}^p(y_i+\alpha_i))}{\prod_{i=1}^p\Gamma(y_i+\alpha_i)}
+\frac{\prod_{i=1}^p\Gamma(\tilde{y}_i+y_i+\alpha_i)}{\Gamma(\sum_{i=1}^p(\tilde{y}_i+y_i+\alpha_i))}\\
+&\times
+\int_0^1 \cdots \int_0^1 \frac{\Gamma(\sum_{i=1}^p(\tilde{y}_i+y_i+\alpha_i))}{\prod_{i=1}^p\Gamma(\tilde{y}_i+y_i+\alpha_i)}
+\prod_{i=1}^p\theta_i^{\tilde{y}_i+y_i+\alpha_i-1} \ d\theta_1 \cdots d\theta_p\\
+&=\binom{n^*}{\tilde{y}_1,\ldots,\tilde{y}_p} \frac{\Gamma(\sum_{i=1}^p(y_i+\alpha_i))}{\prod_{i=1}^p\Gamma(y_i+\alpha_i)}
+\frac{\prod_{i=1}^p\Gamma(\tilde{y}_i+y_i+\alpha_i)}{\Gamma(\sum_{i=1}^p(\tilde{y}_i+y_i+\alpha_i))}
+\end{align*}
+```
+<br>
+
+Suponga ahora que no hay disponible ninguna fuente de información previa, por consiguiente podemos usar la distribución previa no informativa de Jeffreys para realizar la correspondiente inferencia bayesiana. Se debe tener en cuenta que, en el caso de modelos multiparamétricos, esta distribución previa está dada por $p(\btheta)\propto \mid J(\btheta)\mid^{1/2}$, con 
+
+\begin{align*}
+J(\btheta)&=-E\left(\dfrac{\partial^2 \ln p(\mathbf{Y}\mid\btheta)}{\partial\btheta\partial\btheta'}\right)\\
+&=-E\left(\dfrac{\partial}{\partial\btheta}\left(\frac{y_1}{\theta_1},\cdots,\frac{y_p}{\theta_p}\right)\right)\\
+&=\begin{pmatrix}\frac{n}{\theta_1}&\cdots&0\\
+\vdots&\ddots&\vdots\\0&\cdots&\frac{n}{\theta_p}\end{pmatrix}
+\end{align*}
+
+De donde podemos ver que la previa no informativa de Jeffreys para $\btheta$ está dada por 
+\begin{equation*}
+p(\btheta)\propto(\theta_1)^{-1/2}\cdots(\theta_p)^{-1/2}
+\end{equation*}
+
+La cual corresponde a una distribución $Dirichlet(1/2,\cdots,1/2)$. El uso de esta distribución previa conduce a la distribución posterior $\btheta\mid\mathbf{Y}\sim Dirichlet(y_1+1/2,\cdots,y_p+1/2)$, y la estimación posterior de cada $\theta_i$ viene dada por 
+
+\begin{equation*}
+\hat{\theta}_i=\frac{y_i+1/2}{n+p/2}
+\end{equation*}
+
+Esta distribución resultante es muy similar a la estimación clásica de $\theta_i$ dada por $y_i/n$, especialmente cuando $n$ es grande o $p$ es pequeño.
+
+```{example, Multinomial}
+En este ejemplo se realiza un análisis bayesiano acerca de la intención de voto para la elección de la alcaldía de la ciudad de Bogotá en el año 2011. El análisis electoral, en una primera instancia, trata de conocer la probabilidad de éxito de un candidato, que aplicada a una población específica se traduce en la intención de voto hacia el candidato. Como hay varios candidatos en la disputa, entonces es conveniente suponer que el fenómeno puede ser descrito mediante el uso de una distribución multinomial. Como el parámetro en este caso es un vector de probabilidades, es adecuado suponer una distribución previa de tipo Dirichlet para este vector. Para este ejemplo, desarrollaremos un análisis básico con base en una primera encuesta realizada del 12 al 14 de agosto del 2011, en donde se afirmaba que había una reñida competencia entre los candidatos Peñalosa y Petro (cada uno con el 22%), siendo el candidato Mockus tercero, con tan solo el 12% de intención de voto, seguido muy de cerca por Parody, con el 9% de intención de voto.
+
+Con base en esta información, y teniendo en cuenta que hubo 604 respondientes, se afina la distribución previa que es Dirichlet con parámetros 133 (igual a $604 \times 0.22$), 133 (igual a $604 \times 0.22$), 72 (igual a $604 \times 0.12$) y 64 (igual a $604 \times 0.09$), para los candidatos Peñalosa, Petro, Mockus y Parody, respectivamente. Por otro lado, según la última encuesta electoral reportada por un medio de comunicación, con periodo de recolección entre el 30 de agosto y el primero de Septiembre, se encontró que, de 1000 respondientes, Peñalosa alcanza el 22% de preferencia, seguido de Petro, con 17%; en tercer lugar aparecía Mockus, con 12%, y en cuarto lugar Parody, con 11%.
+
+Como se trata de la encuesta más reciente, supondremos que estos datos corresponden a la realización de una distribución multinomial. El análisis conjugado señala que la distribución posterior del parámetro es de tipo Dirichlet. Otra pregunta de interés radica en comparar la intención de voto de los candidatos Peñalosa y Petro, pues son los que tienen mayor apoyo ciudadano. 
+
+Los códigos en `STAN` para el análisis baayesiano se presentan a continuación. Nótese que se define un nuevo parámetro $\delta=\theta_1-\theta_2$, con $\theta_1$ y $\theta_2$ los parámetros asociados a la intención de voto de Peñalosa y Petro, respectivamente.
+```
+
+```{r, results='hide'}
+Multinom <- '
+data {
+  int<lower=0> k;
+  int y[k];
+  vector[k] alpha;
+}
+parameters {
+  simplex[k] theta;
+}
+transformed parameters {
+  real delta;
+  delta = theta[1] - theta[2];
+}
+model {
+  y ~ multinomial(theta);
+  theta ~ dirichlet(alpha);
+}
+generated quantities {
+  int ypred[k];
+  int deltapred;
+  ypred = multinomial_rng(theta, 100);
+  deltapred = ypred[1] - ypred[2];
+}
+'
+
+y <- c(220, 170, 120, 110)
+k <- length(y)
+alpha <- c(133, 133, 72, 54)
+
+sample_data <- list(k = k, y = y, alpha = alpha)
+set.seed(1234)
+Multinomfit <- stan(model_code = Multinom,
+                   data = sample_data, verbose = FALSE)
+```
+
+De los resultados obtenidos, vemos que la estimación bayesiana del vector de inteciones de voto es $\hat{\btheta}=(34.8\%, 29.9\%, 19.0\%, 16.1\%)$; esto es, un resultado favorable para el candidato Peñalosa, con una ventaja de casi 5% sobre el candidato Petro. Además, la estimación puntual de la diferencia entre ambos parámetros es de 4.8%.
+
+```{r}
+print(Multinomfit, digits = 4, 
+      pars = c("theta", "delta"), probs = c(0.025, 0.975))
+```
 
 
+El mismo procedimiento se puede realizar en `R` usando la siguiente sintaxis.
 
+```{r}
+nsim <- 1000
+theta.pos <- rdirichlet(nsim, y + alpha)
+# Estimación de intención de voto para los candidatos
+colMeans(theta.pos)
+# Ventaja de intención de voto de Peñalosa sobre Petro
+mean(theta.pos[, 1] - theta.pos[, 2])
+# Intervalo de credibilidad para la diferencia
+quantile(theta.pos[, 1] - theta.pos[, 2], 
+         c(0.025, 0.975))
+```
 
+Vemos que la estimación de $\btheta$ es similar a lo obtenido en `STAN`. Para comparar la intención de voto de Peñalosa y Petro, se puede calcular la probabilidad $Pr(\theta_1 > \theta_2)$, tal como sigue:
 
+```{r}
+# Probabilidad de que Peñalosa obtenga más votos que Petro
+sum(theta.pos[, 1] > theta.pos[, 2])/nsim
+```
 
+La gráfica \@ref(fig:multinom1) muestra las densidades posteriores de los cuatro componentes del parámetro de interés. Además, observamos que la probabilidad de un triunfo de Peñalosa sobre Petro no necesariamente es contundente.
 
+```{r, multinom1, echo = FALSE, fig.cap="Distribuciones posteriores para el vector de probabilidades de interés."}
+bayesplot::mcmc_areas(Multinomfit, 
+      pars = c("theta[1]", "theta[2]", 
+               "theta[3]", "theta[4]"), 
+      prob = 0.95)
+```
 
+Una de las cosas más interesante de la estadística bayesiana es la distribución posterior predictiva. En efecto, las últimas líneas del código en `STAN` permiten realizar este tipo de muestreo. El objeto que guarda estas observaciones simuladas es `ypred`; mientras que `deltapred` guarda las observaciones de la diferencia entre los dos primeros candidatos. 
 
+```{r}
+print(Multinomfit, digits = 4, 
+      pars = c("ypred", "deltapred"), probs = c(0.025, 0.975))
+```
 
+En efecto, al momento de predecir los intervalos de credibilidad son más amplios como lo muestra la gráfica \@ref(fig:multinom2). Además, la diferencia entre los dos candidatos sigue siendo grande, pero definitivamente la elección no está definida, como se observa en la gráfica \@ref(fig:multinom3). 
 
+```{r, multinom2, echo = FALSE, fig.cap="Distribuciones posteriores predictivas."}
+bayesplot::mcmc_areas(Multinomfit, 
+      pars = c("ypred[1]", "ypred[2]", 
+               "ypred[3]", "ypred[4]"), 
+      prob = 0.95)
+```
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+```{r, multinom3, echo = FALSE, fig.cap="Distribuciones posteriores predictivas."}
+bayesplot::mcmc_areas(Multinomfit, 
+      pars = c("deltapred"), 
+      prob = 0.95)
+```
