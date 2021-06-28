@@ -24,7 +24,7 @@
 <meta name="author" content="Andrés Gutiérrez - Hanwen Zhang" />
 
 
-<meta name="date" content="2021-06-22" />
+<meta name="date" content="2021-06-27" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
@@ -217,6 +217,12 @@ div.csl-indent {
 <li class="chapter" data-level="4.2" data-path="modelo-normal-multivariante-con-media-desconocida-y-varianza-conocida.html"><a href="modelo-normal-multivariante-con-media-desconocida-y-varianza-conocida.html"><i class="fa fa-check"></i><b>4.2</b> Modelo Normal multivariante con media desconocida y varianza conocida</a>
 <ul>
 <li class="chapter" data-level="4.2.1" data-path="modelo-normal-multivariante-con-media-desconocida-y-varianza-conocida.html"><a href="modelo-normal-multivariante-con-media-desconocida-y-varianza-conocida.html#distribución-previa-no-informativa"><i class="fa fa-check"></i><b>4.2.1</b> Distribución previa no informativa</a></li>
+</ul></li>
+<li class="chapter" data-level="4.3" data-path="modelo-normal-multivariante-con-media-y-varianza-desconocida.html"><a href="modelo-normal-multivariante-con-media-y-varianza-desconocida.html"><i class="fa fa-check"></i><b>4.3</b> Modelo normal multivariante con media y varianza desconocida</a>
+<ul>
+<li class="chapter" data-level="4.3.1" data-path="modelo-normal-multivariante-con-media-y-varianza-desconocida.html"><a href="modelo-normal-multivariante-con-media-y-varianza-desconocida.html#parámetros-independientes-con-distribuciones-previas-informativas"><i class="fa fa-check"></i><b>4.3.1</b> Parámetros independientes con distribuciones previas informativas</a></li>
+<li class="chapter" data-level="4.3.2" data-path="modelo-normal-multivariante-con-media-y-varianza-desconocida.html"><a href="modelo-normal-multivariante-con-media-y-varianza-desconocida.html#parámetros-dependientes-1"><i class="fa fa-check"></i><b>4.3.2</b> Parámetros dependientes</a></li>
+<li class="chapter" data-level="4.3.3" data-path="modelo-normal-multivariante-con-media-y-varianza-desconocida.html"><a href="modelo-normal-multivariante-con-media-y-varianza-desconocida.html#parámetros-no-informativos-1"><i class="fa fa-check"></i><b>4.3.3</b> Parámetros no informativos</a></li>
 </ul></li>
 </ul></li>
 <li class="appendix"><span><b>Apéndice</b></span></li>
@@ -442,7 +448,7 @@ El siguiente código en <code>STAN</code> muestra cómo se lleva a cabo la infer
 ## and Rhat is the potential scale reduction factor on split chains (at 
 ## convergence, Rhat=1).</code></pre>
 <p>Después de ejecutar las iteraciones necesarias, la salida del anterior código muestra una estimación puntual para la esperanza de <span class="math inline">\(Y\)</span> de 0.09 con un intervalo de credibilidad del 95% dado por (-0.71, 0.91). Por otro lado, la estimación puntual de la desviación estándar de <span class="math inline">\(Y\)</span> es de 1.55 con un intervalo de credibilidad del 95% dado por (1.09, 2.31).</p>
-<p>Las figuras <a href="modelo-normal-con-media-y-varianza-desconocida.html#fig:posNormalMVStan2">4.1</a> muestra la distribución posterior para este ejemplo, junto con la estimación puntual, correspondiente a la desviación estándar.</p>
+<p>Las figuras <a href="modelo-normal-con-media-y-varianza-desconocida.html#fig:posNormalMVStan2">4.1</a> muestran la distribución posterior para este ejemplo, junto con la estimación puntual, correspondiente a la desviación estándar.</p>
 <div class="figure" style="text-align: center"><span id="fig:posNormalMVStan2"></span>
 <img src="4Multiparametricos_files/figure-html/posNormalMVStan2-1.svg" alt="Distribuciones posteriores." width="576" />
 <p class="caption">

@@ -24,7 +24,7 @@
 <meta name="author" content="Andrés Gutiérrez - Hanwen Zhang" />
 
 
-<meta name="date" content="2021-06-22" />
+<meta name="date" content="2021-06-27" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
@@ -217,6 +217,12 @@ div.csl-indent {
 <li class="chapter" data-level="4.2" data-path="modelo-normal-multivariante-con-media-desconocida-y-varianza-conocida.html"><a href="modelo-normal-multivariante-con-media-desconocida-y-varianza-conocida.html"><i class="fa fa-check"></i><b>4.2</b> Modelo Normal multivariante con media desconocida y varianza conocida</a>
 <ul>
 <li class="chapter" data-level="4.2.1" data-path="modelo-normal-multivariante-con-media-desconocida-y-varianza-conocida.html"><a href="modelo-normal-multivariante-con-media-desconocida-y-varianza-conocida.html#distribución-previa-no-informativa"><i class="fa fa-check"></i><b>4.2.1</b> Distribución previa no informativa</a></li>
+</ul></li>
+<li class="chapter" data-level="4.3" data-path="modelo-normal-multivariante-con-media-y-varianza-desconocida.html"><a href="modelo-normal-multivariante-con-media-y-varianza-desconocida.html"><i class="fa fa-check"></i><b>4.3</b> Modelo normal multivariante con media y varianza desconocida</a>
+<ul>
+<li class="chapter" data-level="4.3.1" data-path="modelo-normal-multivariante-con-media-y-varianza-desconocida.html"><a href="modelo-normal-multivariante-con-media-y-varianza-desconocida.html#parámetros-independientes-con-distribuciones-previas-informativas"><i class="fa fa-check"></i><b>4.3.1</b> Parámetros independientes con distribuciones previas informativas</a></li>
+<li class="chapter" data-level="4.3.2" data-path="modelo-normal-multivariante-con-media-y-varianza-desconocida.html"><a href="modelo-normal-multivariante-con-media-y-varianza-desconocida.html#parámetros-dependientes-1"><i class="fa fa-check"></i><b>4.3.2</b> Parámetros dependientes</a></li>
+<li class="chapter" data-level="4.3.3" data-path="modelo-normal-multivariante-con-media-y-varianza-desconocida.html"><a href="modelo-normal-multivariante-con-media-y-varianza-desconocida.html#parámetros-no-informativos-1"><i class="fa fa-check"></i><b>4.3.3</b> Parámetros no informativos</a></li>
 </ul></li>
 </ul></li>
 <li class="appendix"><span><b>Apéndice</b></span></li>
@@ -563,7 +569,7 @@ donde <span class="math inline">\(n&gt;0\)</span> y se nota como <span class="ma
 <p>La función de densidad de la distribución t-student es muy parecida a la de distribución normal estándar, entre más grande sea el grado de libertad, más se parece a la distribución normal estándar.</p>
 
 <div class="proposition">
-<p><span id="prp:unnamed-chunk-45" class="proposition"><strong>Resultado A.17  </strong></span>Si <span class="math inline">\(Y\)</span> es una variable aleatoria con distribución t-student con <span class="math inline">\(n\)</span> grados de libertad, entonces</p>
+<p><span id="prp:unnamed-chunk-45" class="proposition"><strong>Resultado 4.13  </strong></span>Si <span class="math inline">\(Y\)</span> es una variable aleatoria con distribución t-student con <span class="math inline">\(n\)</span> grados de libertad, entonces</p>
 <ul>
 <li><span class="math inline">\(E(Y)=0\)</span> para <span class="math inline">\(n&gt;1\)</span>.</li>
 <li><span class="math inline">\(Var(Y)=\frac{n}{n-2}\)</span> para <span class="math inline">\(n&gt;2\)</span>.</li>
@@ -584,7 +590,7 @@ donde <span class="math inline">\(n&gt;0\)</span> y se nota como <span class="ma
 </div>
 
 <div class="proposition">
-<p><span id="prp:unnamed-chunk-47" class="proposition"><strong>Resultado A.18  </strong></span>Si <span class="math inline">\(Y\)</span> es una variable aleatoria con distribución t-student generalizada, entonces</p>
+<p><span id="prp:unnamed-chunk-47" class="proposition"><strong>Resultado A.17  </strong></span>Si <span class="math inline">\(Y\)</span> es una variable aleatoria con distribución t-student generalizada, entonces</p>
 <ul>
 <li><span class="math inline">\(E(Y)=\theta\)</span> para <span class="math inline">\(n&gt;1\)</span>.</li>
 <li><span class="math inline">\(Var(Y)=\frac{n}{n-2}\sigma^2\)</span> para <span class="math inline">\(n&gt;2\)</span>.</li>
@@ -610,7 +616,7 @@ y se nota como <span class="math inline">\(Y\sim F^m_n\)</span>.
 </div>
 
 <div class="proposition">
-<p><span id="prp:unnamed-chunk-50" class="proposition"><strong>Resultado A.19  </strong></span>Si <span class="math inline">\(Y\)</span> es una variable aleatoria con distribución F con <span class="math inline">\(m\)</span> grados de libertad en el numerador y <span class="math inline">\(n\)</span> grados de libertado en el denominador, entonces</p>
+<p><span id="prp:unnamed-chunk-50" class="proposition"><strong>Resultado A.18  </strong></span>Si <span class="math inline">\(Y\)</span> es una variable aleatoria con distribución F con <span class="math inline">\(m\)</span> grados de libertad en el numerador y <span class="math inline">\(n\)</span> grados de libertado en el denominador, entonces</p>
 <ul>
 <li><span class="math inline">\(E(Y)=\frac{n}{n-2}\)</span> para <span class="math inline">\(n&gt;2\)</span>.</li>
 <li><span class="math inline">\(Var(Y)=\frac{2n^2(m+n-2)}{m(n-2)^2(n-4)}\)</span> para <span class="math inline">\(n&gt;4\)</span>.</li>

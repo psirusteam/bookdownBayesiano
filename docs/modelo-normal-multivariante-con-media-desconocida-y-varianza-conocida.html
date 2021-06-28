@@ -24,7 +24,7 @@
 <meta name="author" content="Andrés Gutiérrez - Hanwen Zhang" />
 
 
-<meta name="date" content="2021-06-22" />
+<meta name="date" content="2021-06-27" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
@@ -32,7 +32,7 @@
   
   
 <link rel="prev" href="modelo-normal-con-media-y-varianza-desconocida.html"/>
-<link rel="next" href="elementos-de-probabilidad.html"/>
+<link rel="next" href="modelo-normal-multivariante-con-media-y-varianza-desconocida.html"/>
 <script src="libs/header-attrs-2.8/header-attrs.js"></script>
 <script src="libs/jquery-2.2.3/jquery.min.js"></script>
 <link href="libs/gitbook-2.6.7/css/style.css" rel="stylesheet" />
@@ -218,6 +218,12 @@ div.csl-indent {
 <ul>
 <li class="chapter" data-level="4.2.1" data-path="modelo-normal-multivariante-con-media-desconocida-y-varianza-conocida.html"><a href="modelo-normal-multivariante-con-media-desconocida-y-varianza-conocida.html#distribución-previa-no-informativa"><i class="fa fa-check"></i><b>4.2.1</b> Distribución previa no informativa</a></li>
 </ul></li>
+<li class="chapter" data-level="4.3" data-path="modelo-normal-multivariante-con-media-y-varianza-desconocida.html"><a href="modelo-normal-multivariante-con-media-y-varianza-desconocida.html"><i class="fa fa-check"></i><b>4.3</b> Modelo normal multivariante con media y varianza desconocida</a>
+<ul>
+<li class="chapter" data-level="4.3.1" data-path="modelo-normal-multivariante-con-media-y-varianza-desconocida.html"><a href="modelo-normal-multivariante-con-media-y-varianza-desconocida.html#parámetros-independientes-con-distribuciones-previas-informativas"><i class="fa fa-check"></i><b>4.3.1</b> Parámetros independientes con distribuciones previas informativas</a></li>
+<li class="chapter" data-level="4.3.2" data-path="modelo-normal-multivariante-con-media-y-varianza-desconocida.html"><a href="modelo-normal-multivariante-con-media-y-varianza-desconocida.html#parámetros-dependientes-1"><i class="fa fa-check"></i><b>4.3.2</b> Parámetros dependientes</a></li>
+<li class="chapter" data-level="4.3.3" data-path="modelo-normal-multivariante-con-media-y-varianza-desconocida.html"><a href="modelo-normal-multivariante-con-media-y-varianza-desconocida.html#parámetros-no-informativos-1"><i class="fa fa-check"></i><b>4.3.3</b> Parámetros no informativos</a></li>
+</ul></li>
 </ul></li>
 <li class="appendix"><span><b>Apéndice</b></span></li>
 <li class="chapter" data-level="A" data-path="elementos-de-probabilidad.html"><a href="elementos-de-probabilidad.html"><i class="fa fa-check"></i><b>A</b> Elementos de probabilidad</a>
@@ -318,9 +324,11 @@ p(\boldsymbol \theta\mid \boldsymbol \mu,\boldsymbol \Gamma)\propto \mid \boldsy
 \boldsymbol \theta\mid \mathbf{Y},\boldsymbol \Sigma\sim N_p (\boldsymbol \mu_n,\boldsymbol \Gamma_n).
 \end{equation*}\]</span></p>
 En donde
-<span class="math display">\[\begin{align}
-\boldsymbol \Gamma_n &amp;= \left(\boldsymbol \Gamma^{-1}+n\boldsymbol \Sigma^{-1}\right)^{-1}\label{Gamma_n}\\
-\boldsymbol \mu_n &amp;= \boldsymbol \Gamma_n(\boldsymbol \Gamma^{-1}\boldsymbol \mu+n \boldsymbol \Sigma^{-1}\bar{\mathbf{y}})\label{mu_n}
+<span class="math display" id="eq:mun" id="eq:Gamman">\[\begin{align}
+\tag{4.6}
+\boldsymbol \Gamma_n &amp;= \left(\boldsymbol \Gamma^{-1}+n\boldsymbol \Sigma^{-1}\right)^{-1}\\
+\tag{4.7}
+\boldsymbol \mu_n &amp;= \boldsymbol \Gamma_n(\boldsymbol \Gamma^{-1}\boldsymbol \mu+n \boldsymbol \Sigma^{-1}\bar{\mathbf{y}})
 \end{align}\]</span>
 </div>
 <p><br></p>
@@ -434,7 +442,7 @@ La cual corresponde al núcleo de una distribución normal multivariante con vec
 <p>De donde podemos concluir que la estimación bayesiana será muy cercana a la estimación clásica <span class="math inline">\(\bar{y}\)</span>, más aún, el intervalo de credibilidad también será muy similar al intervalo de confianza del enfoque clásico.</p>
 
 <div class="example">
-<p><span id="exm:unnamed-chunk-27" class="example"><strong>Ejemplo 4.2  </strong></span><span class="citation"><a href="#ref-Student" role="doc-biblioref">Student</a> (<a href="#ref-Student" role="doc-biblioref">1908</a>)</span> introdujo un conjunto de datos clásicos sobre el incremento en horas de sueño producido con 2 medicamentos soporíferos diferentes comparados con grupo control en 10 pacientes. Estos datos se pueden encontrar en <code>R</code> con el nombre <code>sleep</code> y se pueden definir como realizaciones de vectores aleatorios con distribución normal bivariada. Supongamos que la matriz de varianzas y covarianzas de la distribución es conocida e igual a <span class="math inline">\(\Sigma=\begin{pmatrix}1&amp;0.6\\ 0.6&amp;2\end{pmatrix}\)</span>.</p>
+<p><span id="exm:EjeStudent" class="example"><strong>Ejemplo 4.2  </strong></span><span class="citation"><a href="#ref-Student" role="doc-biblioref">Student</a> (<a href="#ref-Student" role="doc-biblioref">1908</a>)</span> introdujo un conjunto de datos clásicos sobre el incremento en horas de sueño producido con 2 medicamentos soporíferos diferentes comparados con grupo control en 10 pacientes. Estos datos se pueden encontrar en <code>R</code> con el nombre <code>sleep</code> y se pueden definir como realizaciones de vectores aleatorios con distribución normal bivariada. Supongamos que la matriz de varianzas y covarianzas de la distribución es conocida e igual a <span class="math inline">\(\Sigma=\begin{pmatrix}1&amp;0.6\\ 0.6&amp;2\end{pmatrix}\)</span>.</p>
 El parámetro de interés es el vector de medias <span class="math inline">\(\boldsymbol \theta=(\theta_1,\theta_2)&#39;\)</span>. Para la distribución previa, suponemos que <span class="math inline">\(\boldsymbol \mu=(0,1)&#39;\)</span>, es decir que el primer medicamento no tiene ningún efecto soporífero, mientras que el segundo medicamento tiene un efecto promedio de aumentar 1 hora de sueño, también asumimos que <span class="math inline">\(\Gamma=\begin{pmatrix}2&amp;0\\ 0&amp;2\end{pmatrix}\)</span>. Los siguientes códigos de <code>STAN</code> ilustran el procedimiento de estimación del parámetro de interés.
 </div>
 <div class="sourceCode" id="cb118"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb118-1"><a href="modelo-normal-multivariante-con-media-desconocida-y-varianza-conocida.html#cb118-1" aria-hidden="true" tabindex="-1"></a>NormalMultMedia <span class="ot">&lt;-</span> <span class="st">&#39;</span></span>
@@ -483,7 +491,7 @@ El parámetro de interés es el vector de medias <span class="math inline">\(\bo
 ## theta[1] 0.6874  0.0064 0.3110 0.1038 1.3055  2361 0.9997
 ## theta[2] 2.2060  0.0090 0.4283 1.3620 3.0268  2245 1.0000
 ## 
-## Samples were drawn using NUTS(diag_e) at Tue Jun 22 23:36:38 2021.
+## Samples were drawn using NUTS(diag_e) at Sun Jun 27 20:29:23 2021.
 ## For each parameter, n_eff is a crude measure of effective sample size,
 ## and Rhat is the potential scale reduction factor on split chains (at 
 ## convergence, Rhat=1).</code></pre>
@@ -554,7 +562,7 @@ Figura 4.5: Distribución posterior.
 ##            mean se_mean     sd   2.5%  97.5% n_eff   Rhat
 ## diftheta 1.5186  0.0067 0.4136 0.7162 2.3123  3815 0.9998
 ## 
-## Samples were drawn using NUTS(diag_e) at Tue Jun 22 23:36:38 2021.
+## Samples were drawn using NUTS(diag_e) at Sun Jun 27 20:29:23 2021.
 ## For each parameter, n_eff is a crude measure of effective sample size,
 ## and Rhat is the potential scale reduction factor on split chains (at 
 ## convergence, Rhat=1).</code></pre>
@@ -594,11 +602,11 @@ Figura 4.6: Distribución posterior de los parámetros transformados (diferencia
 <p>Finalmente, recordamos los dos siguientes resultados relacionados con la distribución normal multivariante que pueden resultar útiles en otros análisis.</p>
 
 <div class="proposition">
-<span id="prp:unnamed-chunk-34" class="proposition"><strong>Resultado 4.9  </strong></span>La distribución posterior marginal de un subconjunto de parámetros, digamos <span class="math inline">\(\boldsymbol \theta^{(1)}\)</span> es también normal multivariante con media igual a la del subvector de medias apropiado, <span class="math inline">\(\boldsymbol \mu_n^{(1)}\)</span> y similar matriz de varianzas <span class="math inline">\(\boldsymbol \Gamma_n^{(11)}\)</span>.
+<span id="prp:unnamed-chunk-33" class="proposition"><strong>Resultado 3.5  </strong></span>La distribución posterior marginal de un subconjunto de parámetros, digamos <span class="math inline">\(\boldsymbol \theta^{(1)}\)</span> es también normal multivariante con media igual a la del subvector de medias apropiado, <span class="math inline">\(\boldsymbol \mu_n^{(1)}\)</span> y similar matriz de varianzas <span class="math inline">\(\boldsymbol \Gamma_n^{(11)}\)</span>.
 </div>
 
 <div class="proposition">
-<p><span id="prp:unnamed-chunk-35" class="proposition"><strong>Resultado 4.10  </strong></span>La distribución posterior condicional de un subconjunto de parámetros, digamos <span class="math inline">\(\boldsymbol \theta^{(1)}\)</span>, dado <span class="math inline">\(\boldsymbol \theta^{(2)}\)</span> es también normal multivariante dada por
+<p><span id="prp:unnamed-chunk-34" class="proposition"><strong>Resultado 4.9  </strong></span>La distribución posterior condicional de un subconjunto de parámetros, digamos <span class="math inline">\(\boldsymbol \theta^{(1)}\)</span>, dado <span class="math inline">\(\boldsymbol \theta^{(2)}\)</span> es también normal multivariante dada por
 <span class="math display">\[\begin{equation*}
   \boldsymbol \theta^{(1)} \mid \boldsymbol \theta^{(2)} \sim N_p \left(\boldsymbol \mu_n^{(1)}+\boldsymbol \Gamma_n^{(12)}\left(\boldsymbol \Gamma_n^{(22)}\right)^{-1}
   \left(\theta^{(2)}-\mu_n^{(2)}\right),\boldsymbol \Gamma_n^{(1 \mid 2)}\right).
@@ -610,13 +618,8 @@ Figura 4.6: Distribución posterior de los parámetros transformados (diferencia
 Con <span class="math inline">\(\boldsymbol \mu^{(1)}\)</span> y <span class="math inline">\(\boldsymbol \mu^{(2)}\)</span> correspondendientes al vector de medias y <span class="math inline">\(\boldsymbol \Gamma_n^{(11)}\)</span>, <span class="math inline">\(\boldsymbol \Gamma_n^{(22)}\)</span> denotan la matriz de varianzas y covarianzas de <span class="math inline">\(\boldsymbol \theta^{(1)}\)</span> y <span class="math inline">\(\boldsymbol \theta^{(2)}\)</span>, respectivamente. <span class="math inline">\(\boldsymbol \Gamma_n^{(12)}\)</span> es la matriz de covarianzas entre <span class="math inline">\(\boldsymbol \theta^{(1)}\)</span> y <span class="math inline">\(\boldsymbol \theta^{(2)}\)</span>, <span class="math inline">\(\boldsymbol \Gamma_n^{(21)}\)</span> es la matriz de covarianzas entre <span class="math inline">\(\boldsymbol \theta^{(2)}\)</span> y <span class="math inline">\(\boldsymbol \theta^{(1)}\)</span>.
 </div>
 <p>La prueba de los dos resultados anteriores se sigue inmediatamente de las propiedades de la distribución normal multivariante.</p>
-
 </div>
 </div>
-<!-- </div> -->
-
-
-
 <h3>Referencias</h3>
 <div id="refs" class="references csl-bib-body hanging-indent">
 <div id="ref-Student" class="csl-entry">
@@ -629,7 +632,7 @@ Student. 1908. <span>«The Probable Error of a Mean»</span>. <em>Biometrika</em
         </div>
       </div>
 <a href="modelo-normal-con-media-y-varianza-desconocida.html" class="navigation navigation-prev " aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
-<a href="elementos-de-probabilidad.html" class="navigation navigation-next " aria-label="Next page"><i class="fa fa-angle-right"></i></a>
+<a href="modelo-normal-multivariante-con-media-y-varianza-desconocida.html" class="navigation navigation-next " aria-label="Next page"><i class="fa fa-angle-right"></i></a>
     </div>
   </div>
 <script src="libs/gitbook-2.6.7/js/app.min.js"></script>
