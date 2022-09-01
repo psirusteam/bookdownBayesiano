@@ -1,0 +1,1155 @@
+<<echo=FALSE, message=FALSE>>=
+library(R2jags)
+library(coda)
+library(lattice)
+library(R2WinBUGS)
+library(rjags)
+library(superdiag)
+library(mcmcplots)
+
+library(xtable)
+library(ggplot2)
+library(gridExtra)
+options(scipen = 100, digits = 2)
+set.seed(12345)
+library(knitr)
+knit_theme$set("acid")
+@
+%--------------------
+ 
+\chapter{Modelos multiparamétricos}
+En este capítulo, discutimos situaciones donde se reuieren estimar simultáneamente más de un parámetro, es decir, los datos que enfrentamos se ajustan a una distrubución de probabilidad que involucre a multiples parámetros, específicamente, se estudiará las siguientes distribuciones
+\begin{itemize}
+\item la distribución normal univariada que tiene dos parámetros: la media $\theta$ y la varianza $\sigma^2$,
+\item la distribución normal normal mutivarianza con vector de medias $\btheta$ y la matriz de varianzas y covarianzas $\bSigma$, y
+\item la distribución multinomial cuyo parámetro constituye en el vector de probabilidades $\btheta$.
+\end{itemize}
+
+En el contexto de la estimación bayesiana, es necesario hallar la distribución posterior conjunta de estos parámetros, y hallar la estimación mediante: (1) hallar teóricamente la esperanza de la distribución posterior conjunta, ó (2) simular valores de la distribución posterior conjunta, de donde se puede obtener la estimación puntual y por intervalo.
+
+\section{Normal univariada con media y varianza desconocida}
+
+Supongamos que se dispone de realizaciones de un conjunto de variables independientes e idénticamente distribuidos $Y_1,\cdots,Y_n\sim N(\theta,\sigma^2)$, cuando se desconoce tanto la media como la varianza de la distribución, es necesario plantear diversos enfoques y situarse en el más conveniente, según el contexto del problema. En términos de la asignación de las distribuciones previa para $\theta$ y $\sigma^2$ es posible:
+
+\begin{itemize}
+\item Suponer que la distribución previa $p(\theta)$ es independiente de la distribución previa $p(\sigma^2)$ y que ambas distribuciones son informativas. 
+\item Suponer que la distribución previa $p(\theta)$ es independiente de la distribución previa $p(\sigma^2)$ y que ambas distribuciones son no informativas.
+\item Suponer que la distribución previa para $\theta$ depende de $\sigma^2$ y escribirla como $p(\theta \mid \sigma^2)$, mientras que la distribución previa de $\sigma^2$ no depende de $\theta$ y se puede escribir como $p(\sigma^2)$.
+\end{itemize}
+
+A continuación, analizamos cada uno de estos planteamientos, y desarrollamos los resultados necesrios para la estimación de $\theta$ y $\sigma^2$.
+
+\subsection{Parámetros independientes}
+
+El primer enfoque que considermos para el análisis de los parámetros de interés $\theta$ y $\sigma^2$ en una distribución normal univariada es suponer que las distribuciones previa de cada uno de los parámetros son independientes pero al mismo tiempo son informativas. \citeasnoun{Gelman03} afirma que este supuesto de independencia es atractivo en problemas para los cuales la información previa para $\theta$ no toma la forma de un número fijo de observaciones con varianza $\sigma^2$. Adicionalmente, este supuesto de independencia es coeherente con el hecho de que en la teoría clásica de estimación los estimadores insesgados de varianza mínima de $\theta$ y $\sigma^2$ son independientes (ver \citeasnoun[Sec.2.4]{Zhang}).
+
+En este orden de ideas, y siguiendo la argumentación del capítulo anterior, la distribución previa para el parámetro $\theta$ es
+\begin{equation*}
+\theta \sim Normal(\mu,\tau^2)
+\end{equation*}
+
+y la distribución previa para el parámetro $\sigma^2$ es
+\begin{equation*}
+\sigma^2 \sim Inversa-Gamma(n_0/2,n_0\sigma^2_0/2)
+\end{equation*}
+
+Asumiendo independencia previa, la distribución previa conjunta resulta estar dada por
+\begin{equation}
+p(\theta,\sigma^2)\propto (\sigma^2)^{-n_0/2-1}\exp\left\{-\dfrac{n_0\sigma^2_0}{2\sigma^2}\right\}
+\exp\left\{-\frac{1}{2\tau^2}(\theta-\mu)^2\right\}
+\end{equation}
+
+Una vez que se conoce la forma estructural de la distribución previa conjunta, es posible establecer la distribución posterior conjunta puesto que la verosimilitud de los datos, $p(\mathbf{Y} \mid \theta,\sigma^2)$, está dada por la expresión (\ref{vero_normal}) y
+\begin{equation*}
+p(\theta,\sigma^2 \mid \mathbf{Y})\propto p(\mathbf{Y} \mid \theta,\sigma^2)p(\theta,\sigma^2)
+\end{equation*}
+
+\begin{Res}
+La distribución posterior conjunta de los parámetros de interés está dada por
+\begin{align}
+p(\theta,\sigma^2 \mid \mathbf{Y})&\propto (\sigma^2)^{-(n+n_0)/2-1} \notag \\
+&\times
+\exp\left\{-\frac{1}{2\sigma^2}\left[n_0\sigma^2_0+(n-1)S^2
+                                     +n(\bar{y}-\theta)^2\right]-\frac{1}{2\tau^2}(\theta-\mu)^2\right\}
+\end{align}
+\end{Res}
+
+
+\begin{proof}
+Tenemos que
+\begin{align*}
+p(\theta,\sigma^2 \mid \mathbf{Y})&\propto p(\mathbf{Y} \mid \theta,\sigma^2)p(\theta,\sigma^2)\\
+&\propto(\sigma^2)^{-n/2}\exp\left\{-\frac{1}{2\sigma^2}\sum_{i=1}^n(y_i-\theta)^2\right\}(\sigma^2)^{-n_0/2-1}\exp\left\{-\dfrac{n_0\sigma^2_0}{2\sigma^2}\right\}
+\exp\left\{-\frac{1}{2\tau^2}(\theta-\mu)^2\right\} \\
+&=(\sigma^2)^{-(n+n_0)/2-1}\exp\left\{-\frac{1}{2\sigma^2}\left[n_0\sigma^2_0+\sum_{i=1}^n(y_i-\theta)^2\right]-\frac{1}{2\tau^2}(\theta-\mu)^2\right\}\\
+&\propto (\sigma^2)^{-(n+n_0)/2-1}\exp\left\{-\frac{1}{2\sigma^2}\left[n_0\sigma^2_0+(n-1)S^2
+                                     +n(\bar{y}-\theta)^2\right]-\frac{1}{2\tau^2}(\theta-\mu)^2\right\}
+\end{align*}
+dond la última expresión se obtiene al sumar y restar $\bar{y}$ dentro de $(y_i-\theta)^2$.
+\end{proof}
+
+
+Nótese que la distribución posterior conjunta no tiene una forma estructural conocida y por lo tanto no es posible realizar el método de integración analítica para obtener una constante de integración \cite{Migon}. Sin embargo, sí es posible obtener las distribuciones condicionales posterior de $\theta$ y de $\sigma^2$, notando que
+\begin{align*}
+p(\theta \mid \sigma^2,\mathbf{Y})\propto p(\theta,\underbrace{\sigma^2}_{fijo} \mid \mathbf{Y})
+\ \ \ \ \ \ \ \ \ \text{y} \ \ \ \ \ \ \ \ \ \
+p(\sigma^2 \mid \theta,\mathbf{Y})\propto p(\underbrace{\theta}_{fijo},\sigma^2 \mid \mathbf{Y})
+\end{align*}
+
+Es decir, para encontrar la distribución posterior marginal de $\theta$ dado $\sigma^2$, se utiliza la distribución posterior conjunta y los términos que no dependan de $\theta$ se incorporan en la constante de proporcionalidad. El mismo razonamiento se aplica para el parámetro $\sigma^2$.
+
+\begin{Res}
+La distribución posterior condicional de $\theta$ es
+\begin{equation}\label{Post_theta_Gibbs}
+\theta  \mid  \sigma^2,\mathbf{Y} \sim Normal(\mu_n,\tau_n^2)
+\end{equation}
+En donde las expresiones para $\mu_n$ y $\tau_n^2$ están dadas por \ref{tau_sigma_n}, y la distribución posterior condicional de $\sigma^2$ es 
+\begin{equation}\label{Post_Sigma2_Gibbs}
+\sigma^2  \mid  \theta,\mathbf{Y} \sim Inversa-Gamma\left(\dfrac{n_0+n}{2},\dfrac{v_0}{2}\right)
+\end{equation}
+con $v_0=n_0\sigma^2_0+(n-1)S^2+n(\bar{y}-\theta)^2$.
+\end{Res}
+
+\begin{proof}
+Acudiendo a la distribución posterior conjunta e incorporando los términos que no dependen de $\theta$ en la constante de proporcionalidad, se tiene que
+\begin{align*}
+p(\theta \mid \sigma^2,\mathbf{Y})&\propto \exp\left\{-\frac{n}{2\sigma^2}(\bar{y}-\theta)^2-\frac{1}{2\tau^2}(\theta-\mu)^2\right\}
+\end{align*}
+Completando los cuadrados y siguiendo el razonamiento de la demostración del Resultado \ref{Res_pos_theta}, se encuentra una expresión idéntica a la función de distribución de una variable aleatoria con distribución $Normal(\mu_n, \tau^2_n)$. Para la distribución posterior condicional de $\sigma^2$, consultar el resultado \ref{posterior_sigma2}.
+\end{proof}
+
+Una vez encontradas las distribuciones posteriores condicionales de $\theta$ y $\sigma^2$, se puede obtener la estimación de estos parámetros métodos de Monte Carlo, específicamente utilizando el muestreo de Gibbs, que puesto en el contexto de este capítulo, se resume en los siguientes pasos:
+\begin{enumerate}[(1)]
+\item Fijar un valor inicial para $\theta$, lo denotamos por $\theta_{(1)}$
+\item Simular un valor de la distribución de $\sigma^2|\theta,\mathbf{Y}$ en \ref{Post_Sigma2_Gibbs} donde el parámetro $v_0$ que depende de $\theta$, debe ser reemplazado por $\theta_{(1)}$ del paso anterior. Este valor simulado se denotará por $\sigma^2_{(1)}$
+\item  Simlar un valor de la distribución de $\theta|\sigma^2,\mathbf{Y}$ en \ref{Post_theta_Gibbs} donde en $mu_n$ y $\tau^2_n$ se debe reemplazar $\sigma^2$ por $\sigma^2_{(1)}$. Este valor simulado se denota por $\theta_{(2)}$.
+\item Se repite los pasos (2) y (3) hasta completar un número de iteraciones suficientes para alcanzar la convergencia en ambos parámetros
+\end{enumerate}
+
+Después de ejecutar el muestreador de Gibbs, eliminar los primeros valores simulados para descartar influencia del valor inicial y posiblemente efectuar el \emph{thinning} para eliminar correlaciones que pueden estar presentes, tenemos los valores finales simulados de $\theta$ y $\sigma^2$, de donde podemos calcular la estimación tomando los promedios respectivos, y calcular intervalos de credibilidad como los percentiles muestrales de los valores simulados. 
+
+\begin{Eje}\label{Eje-Renal}
+\citeasnoun{Efronims} consideró un conjunto de datos que muestran la función renal de 157 individuos que se sometieron a una prueba médica exhaustiva en un hospital. Los resultados de la prueba renal están en un intervalo de -6 puntos a 4 puntos. Entre más alto sea el resultado, se concluye que el riñón del individuo es más sano. Nótese que estas pruebas son importantes para predecir el comportamiento de un riñón donado a un paciente con problemas renales. Los datos son extraídos de la siguiente página WEB  (\url{http://statweb.stanford.edu/~ckirby/brad/LSI/datasets-and-programs/datasets.html}) y para este ejemplo sólo se utilizaron los primeros 15 datos del archivo.
+
+En principio, es de interés para el investigador conocer la media y la dispersión de estos datos, para poder analizar a fondo la situación de los pacientes que esperan un transplante.
+
+Dado que se trata de una primera aproximación, se prefiere utilizar distribuciones previas no informativas para los parámetros de la media y varianza. Lo anterior se logra en \verb'JAGS' definiendo las distribuciones previas de \verb"mu ~ dnorm(0,0.001)" y de \verb"tau ~ dgamma(0.001,0.001)" donde \verb"tau" corresponde al parámetro de precisión que resulta ser el inverso de la varianza $\sigma^2$. De esta forma, la distribución previa de $mu$ está centrada en cero, pero con una varianza muy grande al igual que la distribución de la varianza, los cuales representan distribuciones previas no informativas.
+
+El siguiente código en \verb'JAGS' muestra cómo se lleva a cabo la inferencia.
+
+\colorbox{black}{\textcolor{white}{\textbf{Código JAGS}}}
+<<fig.height=4>>=
+Model <- function(){
+  for (i in 1:n)
+  {
+    y[i] ~ dnorm(theta,tau)
+  }
+  theta ~ dnorm(0,0.001);
+  sigma <- 1/sqrt(tau)
+  tau ~ dgamma(0.001, 0.001)
+}
+
+n <- 15
+y <- c(1.69045085, -1.41076082, -0.27909483, -0.91387987, 3.21868429, -1.47282460, 
+       -0.96524353, -2.45084934, 1.03838153, 1.79928679, 0.97826621, 0.67463830, 
+       -1.08665864, -0.00509027, 0.43708128)
+
+Model.data <- list("y","n")
+Model.param <- c("theta", "sigma")
+Model.inits <- function(){
+  list("theta"=c(0), "tau"=c(1))
+}
+
+Model.fit <- jags(data=Model.data, inits=Model.inits, Model.param, n.iter=10000, 
+               n.burnin=1000, model.file=Model)
+
+print(Model.fit)
+@
+
+Después de ejecutar diez mil iteraciones, la salida del anterior código muestra una estimación puntual para la esperanza de $Y$ de 0.089 con un intervalo de credibilidad del 95\% dado por (-0.75, 0.95). Por otro lado, la estimación puntual de la desviación estándar de $Y$ es de 1.557 con un intervalo de credibilidad del 95\% dado por (1.12, 2.39).
+
+A continuación se ilustra el uso de \verb'R' el algoritmo de Gibbs para los datos del ejemplo. Se recalca que se utiliza la librería \verb"MCMCpack" \cite{MCMCpack} para generar las realizaciones de la distribución Inversa-Gamma, cuya distribución no informativa se muestra en la figura \ref{kidneygamma}.
+
+\colorbox{black}{\textcolor{white}{\textbf{Código R}}}
+<<fig.height=4>>=
+library(MCMCpack)
+y <- c(1.69045085, -1.41076082, -0.27909483, -0.91387987, 3.21868429, -1.47282460, 
+       -0.96524353, -2.45084934, 1.03838153, 1.79928679, 0.97826621, 0.67463830, 
+       -1.08665864, -0.00509027, 0.43708128)
+n <- length(y)
+
+#Parámetros previos de theta
+mu <- 0; tau2 <- 1000
+#Parámetros previos de sigma2
+a <- 0.001; b <- 0.001
+
+nsim <- 10000
+theta.pos <- rep(NA,nsim)
+sigma2.pos <- rep(NA,nsim)
+
+# Valor inicial de theta
+theta.pos[1] <- 0
+
+#Parámetros posteriores de sigma2	
+a.n <- a+n/2
+b.n <- b+((n-1)*var(y)+n*(mean(y)-theta.pos[1]))/2
+#simulación de la distribución posterior condicional de theta
+sigma2.pos[1] <- rinvgamma(1, a.n, b.n)
+
+########################
+# Muestreador de Gibbs #
+########################
+for(i in 2:nsim){
+  #Parámetros posteriores de theta	
+  tau2.n <- 1/((n/sigma2.pos[i-1])+(1/tau2))
+  mu.n <- tau2.n*(mean(y)*(n/sigma2.pos[i-1])+mu/tau2)
+  #simulación de la distribución posterior condicional de theta
+  theta.pos[i] <- rnorm(1, mean=mu.n, sd=sqrt(tau2.n))
+  #Parámetros posteriores de sigma2	
+  a.n <- a+n/2
+  b.n <- b+((n-1)*var(y)+n*(mean(y)-theta.pos[i]))/2
+  #simulación de la distribución posterior condicional de theta
+  sigma2.pos[i] <- rinvgamma(1, a.n, b.n)
+}
+par(mfrow=c(1,2))
+acf(theta.pos[1001:nsim])
+acf(sigma2.pos[1001:nsim])
+@
+Al observar que no existen correlaciones importantes en los valores simulados de $\theta$ y $\sigma^2$ (después de descartar las primeras 1000 iteraciones), se concluye que se puede utilizar directamente estos valores para la obtención de las estimaciones. Por cual, se calcula el promedio y los percentiles muestrales de los valores simulados de la siguiente forma:
+<<>>=
+mean(theta.pos[1001:nsim])
+quantile(theta.pos[1001:nsim], c(0.025,0.975))
+mean(sqrt(sigma2.pos[1001:nsim]))
+quantile(sqrt(sigma2.pos[1001:nsim]), c(0.025,0.975))
+@
+
+De donde podemos concluir que una estimación puntual para la esperanza de $Y$ de 0.085 con un intervalo de credibilidad del 95\% dado por (-0.73, 0.89). Por otro lado, la estimación puntual de la desviación estándar de $Y$ es de 1.5 con un intervalo de credibilidad del 95\% dado por (1.0, 2.3), resultados muy similares a lo obtenido don \verb'JAGS'
+\end{Eje}
+
+\subsection{Parámetros dependientes}
+
+En algunas situaciones es muy útil asumir una distribución previa conjugada, y para lograr eso no es posible establecer que los parámetros tengan distribuciones previa independientes. Bajo esta situación, la inferencia posterior de los parámetros de interés debe ser llevada a cabo en dos etapas: En la primera, se debe establecer la distribución previa conjunta para ambos parámetros siguiendo la sencilla regla que afirma que
+\begin{equation*}
+p(\theta,\sigma^2)=p(\sigma^2)p(\theta \mid \sigma^2)
+\end{equation*}
+
+En la segunda etapa ya es posible analizar posterior propiamente cada uno de los parámetros de interés siguiendo otra sencilla regla que afirma que
+\begin{equation*}
+p(\theta,\sigma^2 \mid \mathbf{Y})\propto p(\mathbf{Y} \mid \theta,\sigma^2)p(\theta,\sigma^2)
+\end{equation*}
+
+La anterior formulación conlleva a asignar una distribución previa para $\theta$ dependiente del parámetro $\sigma^2$. Esto quiere decir que en la distribución $p(\theta \mid \sigma^2)$, el valor de $\sigma^2$ se considera una constante fija y conocida, esta distribución previa está dada por\footnote{La forma como la distribución previa de $\theta$ dependa de $\sigma^2$ es coherente con la información de Fisher sobre $\theta$ que es igual a $\sigma^{-2}$.}
+\begin{equation*}
+p(\theta \mid \sigma^2)\sim Normal(\mu,\sigma^2/c_0)
+\end{equation*}
+
+donde $c_0$ es una constante. Por otro lado, y siguiendo los argumentos de la sección 2.7, una posible opción para la distribución previa de $\sigma^2$, que no depende de $\theta$, corresponde a
+\begin{equation*}
+p(\sigma^2)\sim Inversa-Gamma(n_0/2,n_0\sigma^2_0/2)
+\end{equation*}
+
+De esta forma, podemos encontrar la distribución conjunta previa de $\theta$ y $\sigma^2$ como sigue:
+\begin{Res}
+La distribución conjunta previa de los parámetros $\theta$ y $\sigma^2$ está dada por una distribución
+\begin{equation*}
+\theta,\sigma^2 \sim Normal-Inversa-Gamma\left(\mu, c_0, \frac{n_0+1}{2},\frac{n_0\sigma^2_0}{2}\right).
+\end{equation*}
+\end{Res}
+
+\begin{proof}
+\begin{align*}
+p(\theta,\sigma^2)&=p(\sigma^2)p(\theta \mid \sigma^2)\\
+&\propto (\sigma^2)^{-\frac{n_0}{2}-1}\exp\left\{-\dfrac{n_0\sigma_0^2}{2\sigma^2}\right\}
+(\sigma^2)^{-\frac{1}{2}}\exp\left\{-\frac{c_0}{2\sigma^2}(\theta-\mu)^2\right\}\\
+&= (\sigma^2)^{-\frac{n_0+1}{2}-1}\exp\left\{-\frac{1}{2\sigma^2}\left[n_0\sigma^2_0+c_0(\theta-\mu)^2\right]\right\}
+\end{align*}
+la cual corresponde a la forma de la función de densidad de la distribución Normal-Inversa-Gamma.
+\end{proof}
+
+Una vez encontrada la distribución conjunta previa, procedemos a encontrar la distribución conjunta posterior, y así poder encontrar las estimaciones de $\theta$ y $\sigma^2$.
+\begin{Res}
+La distribución posterior conjunta de los parámetros $\theta$ y $\sigma^2$ está dada por
+\begin{equation*}
+\theta,\sigma^2\mid\mathbf{Y} \sim Normal-Inversa-Gamma\left(\mu_n, c_0+n, \frac{n_0+n+1}{2},\beta\right).
+\end{equation*}
+
+con 
+\begin{equation*}
+\beta=\dfrac{1}{2}\left(n_0\sigma^2_0+(n-1)S^2+\dfrac{c_0n}{c_0+n}(\mu-\bar{y})^2\right)
+\end{equation*}
+
+y
+\begin{equation*}
+\mu_n=\frac{\frac{n}{\sigma^2}\bar{Y}+\frac{c_0}{\sigma^2}\mu}{\frac{n}{\sigma^2}+\frac{c_0}{\sigma^2}}
+=\frac{n\bar{Y}+c_0\mu}{n+c_0}
+\end{equation*}
+\end{Res}
+
+\begin{proof}
+En primer lugar, recordamos que la función de verosimilitud de la muestra está dada por
+\begin{align}
+p(\mathbf{Y} \mid \theta,\sigma^2)= \frac{1}{(2\pi\sigma^2)^{n/2}}
+\exp\left\{-\frac{1}{2\sigma^2}\left[(n-1)S^2+n(\bar{y}-\theta)^2\right]\right\}
+\end{align}
+Por otro lado, se tiene que
+\begin{align}\label{desarro1}
+p(\theta,\sigma^2 \mid \mathbf{Y}) & \propto p(\mathbf{Y} \mid \theta,\sigma^2)p(\theta,\sigma^2)\notag\\
+&\propto (\sigma^2)^{-\frac{n_0+n+1}{2}-1}
+\exp\left\{-\frac{1}{2\sigma^2}\left[n_0\sigma^2_0+c_0(\theta-\mu)^2+(n-1)S^2+n(\bar{y}-\theta)^2\right]\right\}\notag\\
+&= (\sigma^2)^{-\frac{n_0+n+1}{2}-1}\\
+&\times
+\exp\left\{-\frac{1}{2\sigma^2}\left[n_0\sigma^2_0+(n-1)S^2+(c_0+n)(\theta-\mu_n)^2+\frac{c_0n}{c_0+n}(\mu-\bar{y})^2\right]\right\}
+\end{align}
+puesto que
+\begin{align*}
+c_0(\theta-\mu)^2+n(\bar{y}-\theta)^2=(c_0+n)(\theta-\mu_n)^2+\frac{c_0n}{c_0+n}(\mu-\bar{y})^2
+\end{align*}
+\end{proof}
+
+Para encontrar las distribuciones marginales posterior de cada uno de los parámetros de interés se utilizan argumentos distintos puesto que $\theta$ depende de $\sigma^2$ pero este último no depende del primero. De esta manera se tiene que:
+  
+\begin{enumerate}
+\item Para hallar la distribución posterior condicional de $\theta \mid \sigma^2$, dada por $P(\theta \mid \sigma^2,\mathbf{Y})$, se debe considerar que $\sigma^2$ es una constante fija y conocida tal como se consideró al principio de esta sección. Basado en lo anterior, es posible utilizar la siguiente regla de probabilidad
+\begin{align*}
+P(\theta \mid \sigma^2,\mathbf{Y})=\frac{p(\theta,\sigma^2 \mid \mathbf{Y})}{p(\sigma^2,\mathbf{Y})}p(\mathbf{Y})\propto p(\theta,\sigma^2 \mid \mathbf{Y})
+\end{align*}
+Lo anterior sugiere que la distribución marginal posterior de $\theta$, $p(\theta \mid \sigma^2,\mathbf{Y})$, se encuentra utilizando la distribución posterior conjunta, $p(\theta,\sigma^2 \mid \mathbf{Y})$, suponiendo que todas las expresiones que involucren al valor $\sigma^2$ se pueden incluir en la constante de proporcionalidad
+\item Dado que $\sigma^2$ no depende de ningún otro parámetro entonces, utilizando la distribución posterior conjunta, es posible encontrar su distribución marginal posterior de la siguiente forma
+\begin{align*}
+p(\sigma^2 \mid \mathbf{Y})=\int p(\theta,\sigma^2 \mid \mathbf{Y}) d\theta
+\end{align*}
+Lo propio es posible hacer con $\theta$, utilizando la distribución posterior conjunta, es posible encontrar su distribución marginal posterior de la siguiente forma
+\begin{align*}
+p(\theta \mid \mathbf{Y})=\int p(\theta,\sigma^2 \mid \mathbf{Y}) d\sigma^2
+\end{align*}
+\end{enumerate}
+
+
+\begin{Res}
+La distribuciónposterior de $\theta$ condicional a $sigma^2,\sigma^2,\mathbf{Y}$ está dada por
+\begin{equation*}
+\theta \mid \sigma^2,\mathbf{Y} \sim Normal(\mu_n,\sigma^2/(n+c_0))
+\end{equation*}
+con $\mu_n=\dfrac{n\bar{y}+c_0\mu}{n+c_0}$.
+\end{Res}
+
+\begin{proof}
+Acudiendo a la distribución posterior conjunta dada en \ref{desarro1}, tenemos que
+\begin{align*}
+p(\theta \mid \sigma^2,\mathbf{Y})&\propto 
+p(\theta,\sigma^2 \mid \mathbf{Y}) \\
+&\propto(\sigma^2)^{-\frac{n_0+n+1}{2}-1}\\
+&\hspace{1cm}\times
+\exp\left\{-\frac{1}{2\sigma^2}\left[n_0\sigma^2_0+(n-1)S^2+(c_0+n)(\theta-\mu_n)^2+\frac{c_0n}{c_0+n}(\mu-\bar{y})^2\right]\right\}\\
+&\propto \exp\left\{-\frac{1}{2\sigma^2}(c_0+n)(\theta-\mu_n)^2\right\}
+\end{align*}
+la cual corresponde a la forma de la función de densidad de la distribución $Normal(\mu_n, \sigma^2/(n+c_0))$.
+\end{proof}
+
+En el anterior resultado, la media de la distribución condicional posterior $\mu_n$ se puede escribir como $\mu_n=\frac{n}{n+c_0}\bar{y}+\frac{c_0}{n+c_0}\mu$, promedio ponderado entre la estimación clásica $\bar{y}$ y la estimación previa $\mu$. Observando la forma que toman los pesos $\frac{n}{n+c_0}$ y $\frac{c_0}{n+c_0}$, se puede pensar a $c_0$ como el número de observaciones en la información previa, y así, los pesos de la estimación clásica y la estimación previa dependen directamente de los tamaños muestrales respectivos.
+
+\begin{Res}\label{Poster_sigma2_IG}
+La distribución marginal posterior del parámetro $\sigma^2$ es
+\begin{equation*}
+\sigma^2 \mid \mathbf{Y} \sim Inversa-Gamma\left(\frac{n+n_0}{2},\frac{(n+n_0)\sigma^2_n}{2}\right)
+\end{equation*}
+Donde $(n+n_0)\sigma^2_n=n_0\sigma^2_0+(n-1)S^2+\frac{c_0n}{c_0+n}(\mu-\bar{y})^2$ corresponde a una suma ponderada de la varianza previa, la varianza muestral y la distancia entre la media muestral y la media previa.
+\end{Res}
+
+\begin{proof}
+De la distribución posterior conjunta (3.1.5) e integrando con respecto a $\theta$, se tiene que
+\begin{align*}
+p(\sigma^2 \mid \mathbf{Y})&=\int p(\theta,\sigma^2 \mid \mathbf{Y}) \ d\theta\\
+&\propto (\sigma^2)^{-\frac{n_0+n+1}{2}-1}
+\exp\left\{-\frac{1}{2\sigma^2}\left[n_0\sigma^2_0+(n-1)S^2+\frac{c_0n}{c_0+n}(\mu-\bar{y})^2\right]\right\}\\
+&\hspace{2cm}\times
+\int_{-\infty}^{\infty}\exp\left\{-\frac{n+c_0}{2\sigma^2}(\theta-\mu_n)^2\right\} \ d\theta\\
+&\propto (\sigma^2)^{-\frac{n_0+n}{2}-1}
+\exp\left\{-\frac{1}{2\sigma^2}\left[n_0\sigma^2_0+(n-1)S^2+\frac{c_0n}{c_0+n}(\mu-\bar{y})^2\right]\right\}\\
+&\hspace{2cm}\times
+\int_{-\infty}^{\infty}\frac{\sqrt{n+c_0}}{\sqrt{2\pi\sigma^2}}
+\exp\left\{-\frac{n+c_0}{2\sigma^2}(\theta-\mu_n)^2\right\} \ d\theta\\
+&\propto (\sigma^2)^{-\frac{n_0+n}{2}-1}
+\exp\left\{-\frac{(n+n_0)\sigma^2_n}{2\sigma^2}\right\}
+\end{align*}
+la cual corresponde a la forma de la función de densidad de la distribución $Inversa-Gamma(\frac{n+n_0}{2},\frac{(n+n_0)\sigma^2_n}{2})$.
+\end{proof}
+
+Dadas las distribuciones $p(\sigma^2\mid \mathbf{Y})$ y $p(\theta\mid \sigma^2, \mathbf{Y})$, podemos proceder de la siguiente forma para obetener valores simulados de $\theta$ y $\sigma^2$ y de esta forma, obtener las estimaciones. Si el número de iteraciones se fija como $G$, entonces se procede a:
+
+\begin{enumerate}[(1)]
+\item Simular $G$ valores de la distribución de $\sigma^2|\mathbf{Y}$, es decir, de la distribución $Inversa-Gamma(\frac{n+n_0}{2},\frac{(n+n_0)\sigma^2_n}{2})$, estos valores se denotan por $\sigma^2_{(1)},\sigma^2_{(2)},\cdots,\sigma^2_{(G)}$.
+\item  Para cada valor de $\sigma^2_{(g)}$, con $g=1,\cdots,G$, simlar un valor de la distribución de $\theta|\sigma^2,\mathbf{Y}$, es decir, de la distribución $N(\mu_n,\sigma^2/(n+c_0))$, donde $\sigma^2$ se reemplaza por $\sigma^2_{(g)}$. De sta forma, se obtiene los valores $\theta_{(1)},\theta_{(2)},\cdots,\theta_{(G)}$.
+\end{enumerate}
+
+Es claro que en el anterior algoritmo, no es necesario fijar algún valor inicial para $\theta$ o para $\sigma^2$, así como tampoco induce correlaciones entre los valores simulados para ningún parámetro. Por lo tanto, se puede usar directamente estos valores para el cálculo de las estimación, y no es necesario descartar los primeros valores simulados, ni realizar el \emph{thinning}.
+
+Ahora bien, existe otra alternativa para obtener la estimación de $\theta$ y $\sigma^2$: encontrando directamente la distribución posterior de cada parámetro. La distribución posterior de $\sigma^2$ ya se encontró en el resultado \ref{Poster_sigma2_IG}, resta encontrar la distribución posterior de $\theta$, la cual se presenta en el siguiente resultado. 
+
+\begin{Res}\label{Pos_theta_t_noestandar}
+La distribución posterior del parámetro $\theta$ es la distribución $t$ no estandarizado con grado de libertad $n_0+n$, el parámetro de localización $\mu_n=\dfrac{n\bar{Y}+c_0\mu}{n+c_0}$ y el parámetro de escala $\dfrac{\sigma_n}{\sqrt{c_0+n}}$ con $(n+n_0)\sigma^2_n=n_0\sigma^2_0+(n-1)S^2+\frac{c_0n}{c_0+n}(\mu-\bar{y})^2$. Esto es, 
+\begin{equation*}
+\theta \mid \mathbf{Y} \sim t_{n+n_0}\left(\mu_n, \frac{\sigma^2_n}{c_0+n}\right)
+\end{equation*}
+\end{Res}
+
+\begin{proof}
+Partiendo de la distribución posterior conjunta e integrando con respecto a $\sigma^2$, se tiene que
+\begin{align*}
+p(\theta \mid \mathbf{Y})&= \int_0^{\infty} p(\theta,\sigma^2 \mid \mathbf{Y}) \ d\sigma^2 \\
+&\propto \int_0^{\infty} \left(\frac{1}{\sigma^2}\right)^{\frac{n_0+n+1}{2}+1}
+\exp\left\{-\frac{1}{2\sigma^2}\left[(n_0+n)\sigma^2_n+(c_0+n)(\theta-\mu_n)^2\right]\right\} \ d\sigma^2
+\end{align*}
+Haciendo un cambio de variable tal que
+\begin{equation*}
+z=\frac{A}{2\sigma^2}, \ \ \ \ \ \ \ \ \ \ \ \text{donde} \ \ \ A=(n_0+n)\sigma^2_n+(c_0+n)(\theta-\mu_n)^2
+\end{equation*}
+por tanto
+\begin{equation*}
+d\sigma^2=-\frac{A}{2z^2} \ dz
+\end{equation*}
+Entonces, volviendo a la integral en cuestión, se tiene que
+\begin{align*}
+p(\theta \mid \mathbf{Y})& \propto
+\left(\frac{1}{A}\right)^{\frac{n_0+n+1}{2}+1}\int_{\infty}^{0} \frac{-A}{2z^2} (2z)^{\frac{n_0+n+1}{2}+1}e^{-z} \ dz \\
+&\propto A^{-\frac{n_0+n+1}{2}}\underbrace{\int_{0}^{\infty} z^{\frac{n_0+n+1}{2}-1}e^{-z}\ dz}_{Gamma\left(\frac{n_0+n+1}{2},1\right)}\\
+&\propto A^{-\frac{n_0+n+1}{2}}\\
+&= \left[(n_0+n)\sigma^2_n+(c_0+n)(\theta-\mu_n)^2\right]^{-\frac{n_0+n+1}{2}}\\
+&\propto \left[1+\frac{(c_0+n)(\theta-\mu_n)^2}{(n_0+n)\sigma^2_n}\right]^{-\frac{n_0+n+1}{2}}\\
+&=\left[1+\frac{1}{n_0+n}\left(\frac{\theta-\mu_n}{\sigma_n/\sqrt{c_0+n}}\right)^2\right]^{-\frac{n_0+n+1}{2}}
+\end{align*}
+la cual corresponde a la forma de la función de densidad de la distribución deseada.
+\end{proof}
+
+Las distribuciones encontradas en los resultados \ref{Pos_theta_t_noestandar} y \ref{Poster_sigma2_IG}, permite estimar directamente los parámetros $\theta$ y $\sigma^2$ usando las esperanzas teóricas de las distribuciones posteriores. Esto es, las estimaciones puntuales son:
+\begin{align*}
+\hat{\theta}&=\mu_n=\dfrac{n\bar{Y}+c_0\mu}{n+n_0}\\
+\hat{\sigma}^2&=\dfrac{(n+n_0)\sigma^2_n/2}{(n+n_0)/2-1}=\dfrac{(n+n_0)\sigma^2_n}{n+n_0-2}\approx\sigma^2_n=\dfrac{n_0\sigma^2_0+(n-1)S^2+\frac{c_0n}{c_0+n}(\mu-\bar{y})^2}{n+n_0}
+\end{align*}
+
+Los intervalos de credibilidad de $\theta$ y $\sigma^2$ de $(1-\alpha)\times 100\%$ se construyen usando los percentiles $\alpha/2$ y $1-\alpha/2$ de las respectivas distribuciones posteriores dadas en los resultados \ref{Pos_theta_t_noestandar} y \ref{Poster_sigma2_IG}.
+
+Ilustramos el uso de la metodología en el siguiente ejemplo.
+
+\begin{Eje}
+Para los datos de función renal \cite{Efronims} que se muestran en el Ejemplo \ref{Eje-Renal}, suponga que la información previa está contenida en la medición de función renal en una muestra de 12 pacientes dadas por: -1.3619, -1.1116, -0.4744, -0.5663, 2.2056, 0.9491, 0.2298, -0.7933, 1.0198, -0.9850, 3.5679 y -1.9504. La media y la varianza muestral de estas 12 observaciones corresponden a 0.060775 y 2.598512, así, se toma $\mu=0.060775$, $\sigma^2_0=2.598512$ y $c_0=n_0=12$. Por otro lado, la media y la varianza muestral de las 15 pacientes en la información actual son $\bar{y}=0.08349249$ y $S^2=2.301684$. De esta forma, los parámetros de las distribuciones marginales posterior de $\theta$ y $\sigma^2$ se pueden calcular como $\mu_n=\frac{15}{15+12}0.08349249+\frac{12}{15+12}0.060775=0.07339583$ y $$\sigma^2_n=\dfrac{12*2.598512+14*2.301684+6.666667*(0.060775-0.08349249)^2}{15+12}=2.348487$$. En conclusión, las distribuciones marginales posterior de $\theta$ y $\sigma^2$ están dadas por
+\begin{equation*}
+\theta|\mathbf{Y}\sim t_{27}(0.07339583,2.348487/27=0.086981)
+\end{equation*}
+
+y
+\begin{equation*}
+\sigma^2|\mathbf{Y}\sim Inversa-Gamma(27/2=13.5,\ 27*2.348487/2=31.70457)
+\end{equation*}
+
+Así, la estimación Bayesiana de $\theta$ es $\mu_n=0.073$ y un intervalo de credibilidad de $95\%$ para $\theta$ se puede calcular como $0.073\pm t_{27,0.975}*\sqrt{0.086981}=(-0.53,\ 0.68)$. Por otro lado, la estimación Bayesiana de $\sigma^2$ está dada por $31.70457/(13.5-1)=2.53$, y un intervalo de credibilidad de $95\%$ para $\sigma^2$ se puede calcular como los percentiles $2.5\%$ y $97.5\%$ de la distribución $IG(13.5,\ 31.70457)$, dado por $(1.5, 4.4)$.
+
+Los anteriores cálculos se ilustran en el siguiente código \verb'R'.
+<<>>=
+# Datos de la información previa
+x <- c(-1.3619, -1.1116, -0.4744, -0.5663, 2.2056, 0.9491, 0.2298, -0.7933, 1.0198,
+          -0.9850, 3.5679, -1.9504)
+# Datos de la información actual
+y <- c(1.69045085, -1.41076082, -0.27909483, -0.91387987, 3.21868429, -1.47282460, 
+          -0.96524353, -2.45084934, 1.03838153, 1.79928679, 0.97826621, 0.67463830,
+          -1.08665864, -0.00509027, 0.43708128)
+# Paramétros de la distribución previa
+n0 <- c0 <- 12
+mu <- mean(x); sigma2_0 <- var(x)
+# Información
+n <- length(y)
+bar.y <- mean(y); S2 <- var(y)
+# Algunos paramétros de la distribución posterior
+mu.n <- (n*bar.y + c0*mu)/(n+n0)
+sigma2_n <- (n0*sigma2_0+(n-1)*S2+c0*n*(mu-bar.y)^2/(c0+n))/(n+n0)
+# Estimación puntual
+theta.hat <- mu.n; sigma2.hat <- (n+n0)*sigma2_n/(n+n0-2)
+theta.hat
+sigma2.hat
+# Intervalo de credibilidad de 95% para theta
+mu.n + qt(c(0.025,0.975), df=n+n0)*sqrt(sigma2_n/(n+n0))
+# Intervalo de credibilidad de 95% para sigma2
+qigamma(0.025, alpha=(n+n0)/2, beta=(n+n0)*sigma2_n/2)
+qigamma(0.975, alpha=(n+n0)/2, beta=(n+n0)*sigma2_n/2)
+@
+
+Otra forma de estimar los parámetros $\theta$ y $\sigma^2$ es utilizando los métodos de Monte Carlos tal como lo expone anteriormente, simulando primero los valores de $\sigma^2$ y posteriormente los valores de $\theta$.
+<<fig.height=4>>=
+set.seed(1234)
+n.sim <- 20000
+sigma2.res <- rinvgamma(n.sim, (n+n0)/2, (n+n0)*sigma2_n/2)
+theta.res <- c()
+for(i in 1:n.sim){
+  theta.res[i] <- rnorm(1,mu.n, sqrt(sigma2.res[i]/(n+c0)))
+}
+# Visualiza los valores simulados
+par(mfrow=c(1,2))
+ts.plot(theta.res)
+ts.plot(sigma2.res)
+acf(theta.res)
+acf(sigma2.res)
+# Estimaciones puntuales
+mean(theta.res)
+mean(sigma2.res)
+# Intervalos de credibilidad del 95%
+quantile(theta.res, c(0.025,0.975))
+quantile(sigma2.res, c(0.025,0.975))
+@
+
+Podemos comprobar de las gráficas de los valores simulados que no hay necesidad de descartar los primeros valores obtenidos; de la misma forma, de los correlogramas se puede observar que los valores simulados no incorrelacionados entre ellos, por lo cual podemos calcular las estimaciones directamente usando los 20 mil valores simulados. 
+
+La estimación e intervalo de credibilidad para $\theta$ calculada desde los valores simulados corresponden a 0.073 y (-0.53, 0.67); mientras que para $\sigma^2$, están dadas por 2.5 y (1.5, 4.4). Podemos ver que los resultados obtenidos en los dos enfoques son muy similares.
+\end{Eje}
+
+\subsection{Parámetros no informativos}
+En esta sección consideramos el tratamiento cuando no tenemos información previa disponible.
+
+Suponga que $\mathbf{Y}=\{Y_1,\ldots,Y_n\}$ corresponde a una muestra de variables aleatorias con distribución $Normal(\theta,\sigma^2)$. Luego, la función de distribución conjunta o verosimilitud está dada por \ref{vero_normal}
+
+\begin{equation*}
+p(\mathbf{Y} \mid \theta, \sigma^2)=\frac{1}{(2\pi\sigma^2)^{n/2}}\exp\left\{-\frac{1}{2\sigma^2}\sum_{i=1}^n(y_i-\theta)^2\right\}
+\end{equation*}
+
+En primer lugar suponga que los parámetros tienen distribuciones previa independientes y en esta primera etapa se realizará el análisis suponiendo que estas distribuciones son no informativas. Lo anterior implica que la distribución previa conjunta de los parámetros de interés está dada por
+
+\begin{equation}
+p(\theta,\sigma^2)=p(\theta)p(\sigma^2)
+\end{equation}
+
+Como la distribución previa de $\theta$ es normal, es fácil verificar que ésta empieza a tener las características propias de una distribución no informativa cuando la varianza de la misma se vuelve muy grande, sin importar el valor de la media. Cuando esto sucede, entonces la forma de la distribución previa de $\theta$ se torna plana y es lógico pensar que puede ser acercada mediante una distribución constante, tal que
+\begin{equation*}
+p(\theta)\propto cte
+\end{equation*}
+
+Por otro lado, \citeasnoun{Gelman03} afirma que la distribución Inversa-Gamma, la cual es la distribución previa para el parámetro $\sigma^2$, se vuelve no informativa cuando los hiper-parámetros toman valores muy cercanos a cero. De esta forma haciendo tender $\alpha \longrightarrow 0$ y $\beta \longrightarrow 0$, entonces la distribución previa de $\sigma^2$ se convierte en
+\begin{equation*}
+p(\sigma^2)\propto \sigma^{-2}
+\end{equation*}
+
+la cual coincide con la distribución previa no informativa de Jeffreys discutida en la sección \ref{Normal_Varianza}. Por lo anterior, la distribución previa no informativa conjunta estaría dada por
+\begin{equation}
+p(\theta,\sigma^2)\propto \sigma^{-2}
+\end{equation}
+
+Bajo este marco de referencia se tiene el siguiente resultado sobre la distribución posterior de $\theta$
+\begin{Res}\label{pos_theta_no_informativa}
+La distribución posterior del parámetro $\theta$ sigue una distribución $t$ no estandarizado con grado de libertad $n-1$, el parámetro de localización $\bar{Y}$ y el parámetro de escala $\frac{S^2}{n}$, esto es, 
+\begin{equation*}
+\theta \mid \mathbf{Y}\sim t_{n-1}\left(\bar{y},\frac{S^2}{n}\right).
+\end{equation*}
+
+Donde $(n-1)S^2=\sum_{i=1}^n(Y_i-\bar{Y})^2$. Esta distribución también puede expresarse como
+\begin{equation*}
+\frac{\theta-\bar{y}}{S/\sqrt{n}} \mid \mathbf{Y} \sim t_{n-1}
+\end{equation*}
+
+donde $t_{n-1}$ denota la distribución $t$ estandarizado con grado de libertad $n-1$.
+\end{Res}
+
+\begin{proof}
+En primer lugar nótese que la distribución posterior conjunta de los parámetros de interés es
+\begin{align}\label{prop_theta_sigma2}
+p(\theta,\sigma^2 \mid \mathbf{Y})& \propto p(\theta,\sigma^2)p(\mathbf{Y} \mid \theta,\sigma^2) \notag \\
+& \propto \frac{1}{\sigma^2}\frac{1}{(2\pi\sigma^2)^{n/2}}\exp\left\{-\frac{1}{2\sigma^2}\sum_{i=1}^n(y_i-\theta)^2\right\} \notag\\
+& \propto \left(\frac{1}{\sigma^2}\right)^{n/2+1}
+\exp\left\{-\frac{1}{2\sigma^2}\left[\sum_{i=1}^n(y_i-\bar{y})^2+n(\bar{y}-\theta)^2\right]\right\} \notag \\
+&= \left(\frac{1}{\sigma^2}\right)^{n/2+1}
+\exp\left\{-\frac{1}{2\sigma^2}\left[(n-1)S^2+n(\bar{y}-\theta)^2\right]\right\}
+\end{align}
+Ahora, para hallar la distribución marginal posterior de $\theta$ es necesario integrar la anterior expresión con respecto a $\sigma^2$. Con esto, se tiene que
+\begin{align*}
+p(\theta \mid \mathbf{Y})&= \int_0^{\infty} p(\theta,\sigma^2 \mid \mathbf{Y}) \ d\sigma^2 \\
+&\propto \int_0^{\infty} \left(\frac{1}{\sigma^2}\right)^{n/2+1}
+\exp\left\{-\frac{1}{2\sigma^2}\left[(n-1)S^2+n(\bar{y}-\theta)^2\right]\right\} \ d\sigma^2
+\end{align*}
+Haciendo un cambio de variable tal que
+\begin{equation*}
+z=\frac{A}{2\sigma^2}, \ \ \ \ \ \ \ \ \ \ \ \text{donde} \ \ \ A=(n-1)S^2+n(\bar{y}-\theta)^2
+\end{equation*}
+por tanto
+\begin{equation*}
+d\sigma^2=-\frac{A}{2z^2} \ dz
+\end{equation*}
+Entonces, volviendo a la integral en cuestión, se tiene que
+\begin{align*}
+p(\theta \mid \mathbf{Y})& \propto
+\left(\frac{1}{A}\right)^{n/2+1}\int_{\infty}^{0} \frac{-A}{2z^2} (2z)^{n/2+1}e^{-z} \ dz \\
+&\propto A^{-n/2}\underbrace{\int_{0}^{\infty} z^{n/2-1}e^{-z}\ dz}_{Gamma(n/2)}\\
+&\propto A^{-n/2}\\
+&= [(n-1)S^2+n(\bar{y}-\theta)^2]^{-n/2}\\
+&\propto \left[1+\frac{n(\bar{y}-\theta)^2}{(n-1)S^2}\right]^{-n/2}
+=\left[1+\frac{1}{n-1}\left(\frac{\bar{y}-\theta}{S/\sqrt{n}}\right)^2\right]^{-\frac{(n-1)+1}{2}}
+\end{align*}
+la cual corresponde a la función de densidad de distribución de una variable aleatoria con distribución $t_{n-1}(\bar{y},S^2/n)$.
+\end{proof}
+
+\begin{Res}\label{pos_sigma2_no_informativa}
+La distribución posterior del parámetro $\sigma^2$ sigue una distribución
+\begin{equation*}
+\sigma^2 \mid \mathbf{Y} \sim Inversa-Gamma((n-1)/2,(n-1)S^2/2).
+\end{equation*}
+\end{Res}
+
+\begin{proof}
+Utilizando el mismo argumento del anterior resultado, se tiene que
+\begin{align*}
+p(\sigma^2 \mid \mathbf{Y})&= \int_{-\infty}^{\infty} p(\theta,\sigma^2 \mid \mathbf{Y}) \ d\theta \\
+& \propto \int_{-\infty}^{\infty} \left(\frac{1}{\sigma^2}\right)^{n/2+1}
+\exp\left\{-\frac{1}{2\sigma^2}\left[(n-1)S^2+n(\bar{y}-\theta)^2\right]\right\} \ d\theta \\
+& = \left(\frac{1}{\sigma^2}\right)^{n/2+1} \sqrt{2\pi\sigma^2/n}\exp\left\{-\frac{1}{2\sigma^2}(n-1)S^2\right\}\underbrace{\int_{-\infty}^{\infty} \frac{1}{\sqrt{2\pi\sigma^2/n}} \exp\left\{-\frac{n}{2\sigma^2}(\bar{y}-\theta)^2\right\} \ d\theta}_{\text{vale $1$}} \\
+& \propto (\sigma^2)^{-n/2-1/2}\exp\left\{-\frac{1}{2\sigma^2}(n-1)S^2\right\}\\
+&= (\sigma^2)^{-\frac{n-1}{2}-1}\exp\left\{-\frac{1}{2\sigma^2}(n-1)S^2\right\}
+\end{align*}
+la cual corresponde a la función de densidad de la distribución $Inversa-Gamma((n-1)/2,(n-1)S^2/2)$.
+\end{proof}
+
+De los resultados \ref{pos_theta_no_informativa} y \ref{pos_sigma2_no_informativa}, podemos ver que cuando no se dispone de información previa, la estimación bayesiana de $\theta$ y $\sigma^2$ están dadas por
+\begin{align*}
+\hat{\theta}_B&=E(\theta\mid\mathbf{Y})=\bar{Y}\\
+\hat{\sigma}^2_B&=E(\sigma^2\mid\mathbf{Y})=\dfrac{(n-1)S^2/2}{(n-1)/2-1}=\dfrac{n-1}{n-3}S^2\approx S^2
+\end{align*}
+Podemos concluir que la estimación bayesiana de $\theta$ cuando no hay información previa es idéntica a la estimación clásica de $\theta$, mientas que la de $\sigma^2$ es muy similar a la estimación clásica.
+
+En cuanto a la estimación por intervalo, podemos ver que un intervalo de crediblidad de $(1-\alpha)\times 100\%$ está dado por los percentiles $\alpha/2$ y $1-\alpha/2$ de la distribución $t_{n-1}\left(\bar{Y},\dfrac{S^2}{n}\right)$, se puede ver que estos corresponden a $\bar{Y}+t_{n-1,\alpha/2}\dfrac{S}{\sqrt{n}}$ y $\bar{Y}+t_{n-1,1-\alpha/2}\dfrac{S}{\sqrt{n}}$. En conclusión, un intervalo de credibildad para $\theta$ está dado por $\bar{Y}\pm t_{n-1,1-\alpha/2}\dfrac{S}{\sqrt{n}}$, el cual es idéntico al intervalo de confianza para $\theta$ en la estadística clásica.
+
+En cuanto al intervalo de crediblidad para $\sigma^2$, este está dado por los percentiles $\alpha/2$ y $1-\alpha/2$ de la distribución $Inversa-Gamma((n-1)/2,\ (n-1)S^2/2)$. En la estadística clásica, el intervalo de confianza para $\sigma^2$ está dada por \begin{equation*}
+IC(\sigma^2)=\left(\dfrac{(n-1)S^2}{\chi^2_{n-1,1-\alpha/2}},\ \dfrac{(n-1)S^2}{\chi^2_{n-1,\alpha/2}}\right)
+\end{equation*}
+
+Aunque la forma de estos dos intervalos son muy diferentes, resultan ser idénticos. A continuación mostramos el porqué. Suponga que $a$ es el percentil $\alpha/2$ de la distribución $Inversa-Gamma((n-1)/2,\ (n-1)S^2/2)$, esto es, si $X\sim Inversa-Gamma((n-1)/2,\ (n-1)S^2/2)$, entonces $Pr(X<a)=\alpha/2$. Ahora por propiedades de la distribución $Inversa-Gamma$, se tiene que $\dfrac{X}{(n-1)S^2}\sim Inversa-Gamma(\frac{n-1}{2},\ \frac{1}{2})$. Por la relación entre la distribución $Gamma$ y la distribución $Inversa-Gamma$, tenemos que $\dfrac{(n-1)S^2}{X}\sim Gamma(\frac{n-1}{2},\ 2)$, es decir, $\dfrac{(n-1)S^2}{X}\sim\chi^2_{n-1}$, de donde tenemos que
+\begin{align*}
+\frac{\alpha}{2}&=Pr(X<a)\\
+&=Pr\left(\dfrac{(n-1)S^2}{X}>\dfrac{(n-1)S^2}{a}\right)
+\end{align*}
+
+Esto es, $\dfrac{(n-1)S^2}{a}$ es el percentil $1-\alpha/2$ de la distribución $\chi^2_{n-1}$, esto es,  $\dfrac{(n-1)S^2}{a}=\chi^2_{n-1,1-\alpha/2}$, de donde $a=\dfrac{(n-1)S^2}{\chi^2_{n-1,1-\alpha/2}}$, así concluimos que el límite inferior del intervalo de credibildad coincide con el límite inferior del intervalo de confianza. Análogamente se puede ver que también los límites superiores coinciden, y así vemos que el intervalo para $\sigma^2$ coincide en la estadística clásica y la estadística bayesiana sin información previa.
+
+\textbf{\emph{Enfoque alterno para estimar $\theta$ y $\sigma^2$}}
+
+Existe otra forma de obtener las estimaciones para el parámetro $\theta$, recordando la expresión \ref{prop_theta_sigma2}, podemos afirmar que 
+\begin{equation*}
+\theta \mid \sigma, \mathbf{Y} \sim Normal(\bar{y},\sigma^2/n)
+\end{equation*}
+
+puesto que 
+\begin{align*}
+p(\theta \mid \sigma^2,\mathbf{Y})&\propto p(\theta, \sigma^2 \mid\mathbf{Y})\\
+&\propto\exp\left\{-\frac{1}{2\sigma^2}\left[(n-1)S^2+n(\bar{y}-\theta)^2\right]\right\}\\
+&=\exp\left\{-\frac{n}{2\sigma^2}(\bar{y}-\theta)^2\right\}
+\end{align*}
+
+la cual corresponde a la función de densidad de la distribución $Normal(\bar{y},\sigma^2/n)$. De esta forma, usando las distribución $p(\sigma^2\mid\mathbf{Y})$ y $p(\theta\mid\sigma^2,\mathbf{Y})$, podemos implementar el siguiente procedimiento para obtener valores simulados de $\theta$ y $\sigma^2$: 
+
+Si el número de iteraciones se fija como $G$, entonces se procede a:
+\begin{enumerate}[(1)]
+\item Simular $G$ valores de la distribución de $\sigma^2|\mathbf{Y}$, es decir, de la distribución $Inversa-Gamma((n-1)/2,(n-1)S^2/2)$, estos valores se denotan por $\sigma^2_{(1)},\sigma^2_{(2)},\cdots,\sigma^2_{(G)}$.
+\item  Para cada valor de $\sigma^2_{(g)}$, con $g=1,\cdots,G$, simlar un valor de la distribución de $\theta|\sigma^2,\mathbf{Y}$, es decir, de la distribución $N(\bar{y},\sigma^2/n)$, donde $\sigma^2$ se reemplaza por $\sigma^2_{(g)}$. De sta forma, se obtiene los valores $\theta_{(1)},\theta_{(2)},\cdots,\theta_{(G)}$.
+\end{enumerate}
+
+Las estimaciones de $\theta$ y $\sigma^2$ se pueden obteer de los valores obtenidos $\theta_{(1)},\theta_{(2)},\cdots,\theta_{(G)}$ y $\sigma^2_{(1)},\sigma^2_{(2)},\cdots,\sigma^2_{(G)}$.
+
+\section{Normal multivariante con media desconocida y varianza conocida}
+
+Cuando la verosimilitud de los datos es una distribución normal multivariante, las técnicas de inferencia no se distancian mucho del caso univariado. Se debe tener en cuenta el manejo matricial de las formas cuadráticas y las propiedades básicas del cálculo de matrices. Los desarrollos y resultados derivados de esta sección redundarán en el análisis de los modelos lineales con el enfoque bayesiano.
+
+Sea $\mathbf{Y}=(Y_1,\ldots,Y_p)$ un vector aleatorio cuya distribución es normal multivariante dada por
+
+\begin{equation}
+p(\mathbf{Y} \mid \btheta,\bSigma)\propto \mid \bSigma \mid ^{-1/2}
+\exp\left\{-\frac{1}{2}(\mathbf{y}-\btheta)'\bSigma^{-1}(\mathbf{y}-\btheta)\right\}
+  \end{equation}
+  
+  en donde $\btheta=(\theta_1,\ldots,\theta_p)'$ es la media de cada uno de los componentes del vector y $\bSigma$ es una matriz de varianzas y covarianzas de orden $p\times p$, simétrica y definida positiva. La verosimilitud para una muestra de $n$ vectores aleatorios  independientes e idénticamente distribuidos está dada por
+  
+  \begin{equation}
+  p(\mathbf{Y}_1\ldots,\mathbf{Y}_n \mid \btheta,\bSigma)\propto \mid \bSigma \mid ^{-n/2}
+  \exp\left\{-\frac{1}{2}\sum_{i=1}^n(\mathbf{y}_i-\btheta)'\bSigma^{-1}(\mathbf{y}_i-\btheta)\right\}
+    \end{equation}
+    
+En el caso más general, suponga que el vector de medias $\theta$ sigue una distribución previa normal multivariante informativa y parametrizada por los hiper parámetros $\bmu$ y $\bGamma$
+  \begin{equation*}
+p(\btheta \mid \bmu,\bGamma)\propto \mid \bGamma \mid ^{-1/2}
+\exp\left\{-\frac{1}{2}(\btheta-\bmu)'\bGamma^{-1}(\btheta-\bmu)\right\}
+  \end{equation*}
+    
+  Nótese que esta distribución se hace no informativa cuando $ \mid \bGamma^{-1} \mid \longrightarrow 0$ sin importar el valor del vector de medias previa $\bmu$.
+  
+  
+\begin{Res}
+La distribución posterior del vector de parámetros $\bmu$ sigue una distribución normal multivariante
+\begin{equation*}
+\btheta \mid \mathbf{Y},\bSigma \sim N_p (\bmu_n,\bGamma_n).
+\end{equation*}
+En donde
+\begin{align}
+\bmu_n &= \left(\bGamma^{-1}+n\bSigma^{-1}\right)^{-1}(\bGamma^{-1}\bmu+n \bSigma^{-1}\bar{\mathbf{y}})\\
+\bGamma_n &= \left(\bGamma^{-1}+n\bSigma^{-1}\right)^{-1}
+\end{align}
+\end{Res}
+
+\begin{proof}
+En primer lugar, nótese la siguiente identidad
+\begin{equation}
+\sum_{i=1}^n(\mathbf{Y}_i-\btheta)'\bSigma^{-1}(\mathbf{Y}_i-\btheta)
+=\sum_{i=1}^n(\mathbf{Y}_i-\bar{\mathbf{Y}})'\bSigma^{-1}(\mathbf{Y}_i-\bar{\mathbf{Y}})
++n(\bar{\mathbf{Y}}-\btheta)'\bSigma^{-1}(\bar{\mathbf{Y}}-\btheta)
+\end{equation}
+
+que resulta puesto que
+\begin{align*}
+\sum_{i=1}^n(\mathbf{Y}_i-\btheta)'\bSigma^{-1}(\mathbf{Y}_i-\btheta)
+&=\sum_{i=1}^n(\mathbf{Y}_i-\bar{\mathbf{Y}}+\bar{\mathbf{Y}}-\btheta)'
+\bSigma^{-1}(\mathbf{Y}_i-\bar{\mathbf{Y}}+\bar{\mathbf{Y}}-\btheta)\\
+&=\sum_{i=1}^n(\mathbf{Y}_i-\bar{\mathbf{Y}})'\bSigma^{-1}(\mathbf{Y}_i-\bar{\mathbf{Y}})\\
+&\hspace{2cm}
++\sum_{i=1}^n(\mathbf{Y}_i-\bar{\mathbf{Y}})'\bSigma^{-1}(\bar{\mathbf{Y}}-\btheta)\\
+&\hspace{2cm}
++(\bar{\mathbf{Y}}-\btheta)'\bSigma^{-1}\sum_{i=1}^n(\mathbf{Y}_i-\bar{\mathbf{Y}})'\\
+&\hspace{2cm}
++\sum_{i=1}^n(\bar{\mathbf{Y}}-\btheta)'\bSigma^{-1}(\bar{\mathbf{Y}}-\btheta)\\
+&=\sum_{i=1}^n(\mathbf{Y}_i-\bar{\mathbf{Y}})'\bSigma^{-1}(\mathbf{Y}_i-\bar{\mathbf{Y}})
++n(\bar{\mathbf{Y}}-\btheta)'\bSigma^{-1}(\bar{\mathbf{Y}}-\btheta)
+\end{align*}
+
+Por otro lado, de la definición de distribución previa, se tiene que
+\begin{align*}
+p(\btheta \mid \mathbf{Y},\bSigma)&\propto p(\mathbf{Y} \mid \btheta,\bSigma)p(\btheta,\bSigma)\\
+&= \exp\left\{-\frac{1}{2}\left[\sum_{i=1}^n(\mathbf{y}_i-\btheta)'\bSigma^{-1}(\mathbf{y}_i-\btheta)+
+                                 (\btheta-\bmu)'\bGamma^{-1}(\btheta-\bmu)\right]\right\}\\
+&\propto \exp\left\{-\frac{1}{2}\left[n(\bar{\mathbf{y}}-\btheta)'\bSigma^{-1}(\bar{\mathbf{y}}-\btheta)+
+                                      (\btheta-\bmu)'\bGamma^{-1}(\btheta-\bmu)\right]\right\}\\
+&\propto \exp\left\{-\frac{1}{2}\left[
+  -n\bar{\mathbf{y}}'\bSigma^{-1}\btheta-n\btheta'\bSigma^{-1}\bar{\mathbf{y}}+n\btheta'\bSigma^{-1}\btheta
+  +\btheta'\bGamma^{-1}\btheta-\btheta'\bGamma^{-1}\bmu-\bmu'\bGamma^{-1}\btheta\right]\right\}\\
+&= \exp\left\{-\frac{1}{2}\left[
+  \btheta'(\bGamma^{-1}+n\bSigma^{-1})\btheta-\btheta'(2\bGamma^{-1}\bmu+2n\bSigma^{-1}\bar{\mathbf{y}})
+  \right]\right\}\\
+&= \exp\left\{-\frac{1}{2}\btheta'\bGamma^{-1}_n\btheta
+  +\btheta'\bGamma^{-1}_n\bmu_n\right\}\\
+&\propto \exp\left\{-\frac{1}{2}\btheta'\bGamma^{-1}_n\btheta
+  +\btheta'\bGamma^{-1}_n\bmu_n-\frac{1}{2}\bmu_n\bGamma_n^{-1}\bmu_n\right\}\\
+&= \exp\left\{-\frac{1}{2}\left[\btheta'\bGamma^{-1}_n\btheta
+                                 -2\btheta'\bGamma^{-1}_n\bmu_n+\bmu_n\bGamma_n^{-1}\bmu_n\right]\right\}\\
+&= \exp\left\{-\frac{1}{2}(\btheta-\bmu_n)'\bGamma_n^{-1}(\btheta-\bmu_n)\right\}
+  \end{align*}
+  \end{proof}
+
+  
+  \begin{Res}
+  La distribución posterior marginal de un subconjunto de parámetros, digamos $\btheta^{(1)}$ es también normal multivariante con media igual a la del subvector de medias apropiado, $\bmu_n^{(1)}$ y similar matriz de varianzas.
+  \end{Res}
+  
+  \begin{proof}
+  Este resultado se sigue inmediatamente de las propiedades de la distribución normal multivariante
+  \end{proof}
+  
+  \begin{Res}
+  La distribución posterior condicional de un subconjunto de parámetros, digamos $\btheta^{(1)}$, dado $\btheta^{(2)}$ es también normal multivariante dada por
+  \begin{equation*}
+  \btheta^{(1)} \mid \btheta^{(2)} \sim N_p \left(\bmu_n^{(1)}+\bGamma_n^{(12)}\left(\bGamma_n^{(22)}\right)^{-1}
+  \left(\theta^{(2)}-\mu_n^{(2)}\right),\bGamma_n^{(1 \mid 2)}\right).
+  \end{equation*}
+  En donde
+  \begin{align}
+  \bGamma_n^{(1 \mid 2)}&= \bGamma_n^{(11)}-\bGamma_n^{(12)}\left(\bGamma_n^{(22)}\right)^{-1}\bGamma_n^{(21)}
+  \end{align}
+  \end{Res}
+  
+  \begin{proof}
+  Este resultado se sigue inmediatamente de las propiedades de la distribución normal multivariante
+  \end{proof}
+  
+  \section{Normal multivariante con media y varianza desconocida}
+  
+  Al igual que en las secciones anteriores, cuando se desconoce tanto la media como la varianza de la distribución, es necesario plantear diversos enfoques y situarse en el más conveniente.\footnote{Nótese que en términos de parámetros, existen $p$ parámetros correspondientes al vector de medias $\btheta$ y $\binom{p}{2}=\dfrac{p(p+1)}{2}$ parámetros correspondientes a la matriz de varianzas $\bSigma$. Pensando en la gran cantidad de parámetros que se deben modelar, es necesario tener en cuenta que el número de datos en la muestra aleatoria sea lo suficientemente grande.} Suponiendo que el número de observaciones en la muestra aleatoria sea suficiente, existe otra situación que se debe surtir y es la asignación de las distribuciones previa para $\btheta$ y $\bSigma$. En estos términos, es posible
+  
+  \begin{itemize}
+  \item Suponer que la distribución previa $p(\btheta)$ es independiente de la distribución previa $p(\bSigma)$ y que ambas distribuciones son no informativas.
+  \item Suponer que la distribución previa para $\btheta$ depende de $\bSigma$ y escribirla como $p(\btheta \mid \bSigma)$, mientras que la distribución previa de $\bSigma$ no depende de $\btheta$ y se puede escribir como $p(\bSigma)$. El análisis posterior de este enfoque encuentra la distribución posterior de $\bSigma \mid \mathbf{Y}$ y con esta se encuentra la distribución posterior de $\btheta \mid \bSigma,\mathbf{Y}$.
+  \item Suponer que la distribución previa $p(\btheta)$ es independiente de la distribución previa $p(\bSigma)$ y que ambas distribuciones son informativas. Luego, utilizar un análisis de simulación condicional conjunta para extraer muestras provenientes de las respectivas distribuciones posterior.
+  \end{itemize}
+  
+  
+\subsection{Parámetros independientes}
+
+En este último enfoque se supone que las distribuciones previa para los parámetros de interés son independientes e informativas. Para lograr que las resultantes distribuciones posterior sean conjugadas, debe escribirse la verosimilitud de la muestra aleatoria
+$\mathbf{Y}=\{\mathbf{Y}_1,\ldots,\mathbf{Y}_n\}$ justo como los presenta la expresión (B.3.5) tal que
+\begin{equation}
+(\mathbf{Y} \mid \btheta,\bSigma)
+\propto \mid \bSigma \mid ^{-n/2}\exp\left\{-\frac{1}{2}traza(\bSigma^{-1}\mathbf{S}_{\btheta})\right\}
+\end{equation}
+
+Donde $\mathbf{S}_{\btheta}=\sum_{i=1}^n(\mathbf{Y}_i-\btheta)(\mathbf{Y}_i-\btheta)'$. Para el vector de medias $\btheta$ es posible asignar una distribución previa normal tal que
+\begin{equation*}
+\btheta \sim Normal_p(\bmu,\bGamma)
+\end{equation*}
+
+
+Por otro lado, la distribución para la matriz de varianzas $\bSigma$ es
+\begin{equation*}
+\bSigma \sim Inversa-Wishart(\bLambda^{-1})
+\end{equation*}
+
+Asumiendo independencia previa, la distribución previa conjunta resulta estar dada por
+\begin{align}
+p(\btheta,\bSigma)&=p(\btheta)p(\bSigma)\notag\\
+&\propto \mid \bSigma \mid ^{-(v+p+1)/2}\notag\\
+&\times
+\exp\left\{ -\frac{1}{2}\left[traza(\bLambda\bSigma^{-1})+
+(\btheta-\bmu)'\bGamma^{-1}(\btheta-\bmu)\right]\right\}
+\end{align}
+
+
+Una vez que se conoce la forma estructural de la distribución previa conjunta, es posible establecer la distribución posterior conjunta puesto que la verosimilitud de los datos, $p(\mathbf{Y} \mid \btheta,\bSigma)$, está dada por la expresión (3.3.1), entonces y acudiendo a la simetría de las matrices $\bLambda$, $\bSigma$ y $\mathbf{S}_{\btheta}$, se tiene que
+\begin{align}
+p(\btheta,\bSigma \mid \mathbf{Y})&=p(\btheta,\bSigma)p(\mathbf{Y} \mid \btheta,\bSigma)\notag\\
+&\propto \mid \bSigma \mid ^{-(v+n+p+1)/2}\notag\\
+&\times
+\exp\left\{ -\frac{1}{2}\left[traza(\bLambda\bSigma^{-1}+\bSigma^{-1}\mathbf{S}_{\btheta})+
+                                (\btheta-\bmu)'\bGamma^{-1}(\btheta-\bmu)\right]\right\}\notag\\
+                              &\propto \mid \bSigma \mid ^{-(v+n+p+1)/2}\notag\\
+                              &\times
+                              \exp\left\{ -\frac{1}{2}\left[traza(\bSigma^{-1}(\bLambda+\mathbf{S}_{\btheta}))+
+                              (\btheta-\bmu)'\bGamma^{-1}(\btheta-\bmu)\right]\right\}
+\end{align}
+
+Dado que la distribución posterior conjunta no tiene una forma estructural conocida, no es posible utilizar el método de integración analítica. Sin embargo, es posible obtener las distribuciones condicionales de cada uno de los parámetros suponiendo fijos los restantes y teniendo en cuenta que
+\begin{align*}
+p(\btheta \mid \bSigma,\mathbf{Y})\propto p(\btheta,\underbrace{\bSigma}_{fijo} \mid \mathbf{Y})
+\ \ \ \ \ \ \ \ \ \text{y} \ \ \ \ \ \ \ \ \ \
+p(\bSigma \mid \btheta,\mathbf{Y})\propto p(\underbrace{\btheta}_{fijo},\bSigma \mid \mathbf{Y})
+\end{align*}
+
+\begin{Res}
+La distribución posterior de la matriz de parámetros $\bSigma$ condicional a $\btheta,\mathbf{Y}$ es
+\begin{equation*}
+\bSigma \mid \btheta,\mathbf{Y} \sim Inversa-Wishart_{v+n}(\bLambda+\mathbf{S}_{\btheta})
+\end{equation*}
+\end{Res}
+
+\begin{proof}
+La prueba es inmediata notando que
+\begin{align*}
+\bSigma \mid \btheta,\mathbf{Y}&\propto
+\mid \bSigma \mid ^{-(v+n+p+1)/2}\notag\\
+&\times
+\exp\left\{ -\frac{1}{2}\left[traza(\bSigma^{-1}(\bLambda+\mathbf{S}_{\btheta}))+
+                                (\btheta-\bmu)'\bGamma^{-1}(\btheta-\bmu)\right]\right\}
+                              \end{align*}
+                              Por lo tanto, factorizando convenientemente, se encuentra una expresión idéntica a la función de distribución
+                              de una variable aleatoria con distribución $Inversa-Wishart_{v+n}(\bLambda+\mathbf{S}_{\btheta})$.
+                              \end{proof}
+
+                              
+                              \begin{Res}
+                              La distribución posterior del vector de parámetros $\btheta$ condicional a $\bSigma,\mathbf{Y}$ es
+                              \begin{equation*}
+                              \btheta \mid  \bSigma,\mathbf{Y} \sim Normal_p(\bmu_n,\bGamma_n)
+                              \end{equation*}
+                              donde $\bmu_n$ y $\bGamma_n$ están dadas por las expresiones (3.2.3) y (3.2.4), respectivamente.
+                              \end{Res}
+                              
+                              \begin{proof}
+                              Utilizando el resultado (B.3.5), se tiene que la verosimilitud para los datos observados también se puede escribir como
+                              \begin{align*}
+                              p(\mathbf{Y} \mid \btheta,\bSigma)
+                              &\propto \mid \bSigma \mid ^{-n/2}\exp\left\{-\frac{1}{2}\sum_{i=1}^n
+                              (\mathbf{Y}_i-\btheta)'\bSigma^{-1}(\mathbf{Y}_i-\btheta)\right\}
+\end{align*}
+
+Por lo tanto, reemplazando la verosimilitud en (3.3.3), se tiene que la distribución posterior conjunta también se puede escribir como
+\begin{align*}
+p(\btheta,\bSigma \mid \mathbf{Y})
+&\propto \mid \bSigma \mid ^{-(v+n+p+1)/2}\notag\\
+&\times
+\exp\left\{ -\frac{1}{2}\left[\sum_{i=1}^n
+                               (\mathbf{Y}_i-\btheta)'\bSigma^{-1}(\mathbf{Y}_i-\btheta)
+                               +(\btheta-\bmu)'\bGamma^{-1}(\btheta-\bmu)\right]\right\}
+\end{align*}
+
+Y fijando la matriz de parámetros $\bSigma$, se encuentra que la distribución posterior de $\btheta$ condicional a $\bSigma,\mathbf{Y}$ es tal que
+\begin{align*}
+p(\btheta \mid \bSigma,\mathbf{Y})
+\propto
+\exp\left\{ -\frac{1}{2}\left[\sum_{i=1}^n
+                               (\mathbf{Y}_i-\btheta)'\bSigma^{-1}(\mathbf{Y}_i-\btheta)
+                               +(\btheta-\bmu)'\bGamma^{-1}(\btheta-\bmu)\right]\right\}
+\end{align*}
+
+La anterior expresión tiene la misma forma estructural que la expresión principal en la demostración del resultado 3.2.1. Luego, siguiendo el mismo razonamiento se llega fácilmente a la prueba.
+\end{proof}
+
+\subsection{Parámetros dependientes}
+
+Al igual que en el caso univariado, la inferencia posterior de los parámetros de interés debe ser llevada a cabo en dos etapas: En la primera, se debe establecer la distribución previa conjunta para ambos parámetros mediante
+\begin{equation*}
+p(\btheta,\bSigma)=p(\bSigma)p(\btheta \mid \bSigma)
+\end{equation*}
+
+Luego, en la segunda etapa es posible analizar posterior propiamente cada uno de los parámetros de interés puesto que
+\begin{equation*}
+p(\btheta,\bSigma \mid \mathbf{Y})\propto p(\mathbf{Y} \mid \btheta,\bSigma)p(\btheta,\bSigma)
+\end{equation*}
+
+Al igual que en el caso univariado, la anterior formulación conlleva a asignar una distribución previa para $\btheta$ dependiente del parámetro $\bSigma$. Esto quiere decir que en la distribución $p(\btheta \mid \bSigma)$ el valor de $\bSigma$ se considera una constante fija y conocida. Siguiendo los linemientos de la Sección 3.2, una distribución previa para $\btheta$  condicional a $\bSigma$ es
+\begin{equation*}
+p(\btheta \mid \bSigma)\sim Normal_p(\bmu,\bSigma/c_0)
+\end{equation*}
+
+Donde $c_0$ es una constante. Por otro lado, y siguiendo los argumentos de la sección anterior, una posible opción para la distribución previa de $\bSigma$, corresponde a
+\begin{equation*}
+p(\bSigma)\sim Inversa-Wishart_{v_0}(\bLambda_0^{-1})
+\end{equation*}
+
+\begin{Res}
+La distribución previa conjunta de los parámetros $\btheta$ y $\bSigma$ está dada por
+\begin{equation*}
+p(\btheta,\bSigma) \propto \mid \bSigma \mid ^{-(v_0+p)/2+1}
+\exp\left\{ -\frac{1}{2}\left[traza(\bLambda_0\bSigma^{-1})+
+                                c_0(\btheta-\bmu)'\bSigma^{-1}(\btheta-\bmu)\right]\right\}
+                              \end{equation*}
+                              \end{Res}
+                              
+                              \begin{proof}
+                              La prueba es inmediata al multiplicar las densidades y asignar los términos que no dependen de los parámetros de interés a la constante de proporcionalidad.
+                              \end{proof}
+                              
+                              Para encontrar las distribuciones posterior de cada uno de los parámetros de interés se utilizan argumentos similares a los de la sección 3.1.2.
+                              
+                              \begin{Res}
+                              La distribución posterior de $\btheta$ condicional a $\bSigma,\mathbf{Y}$ está dada por
+                              \begin{equation*}
+                              \theta \mid \sigma^2,\mathbf{Y} \sim Normal_p(\bmu_n,\bSigma/(n+c_0))
+                              \end{equation*}
+                              donde
+                              \begin{equation*}
+                              \mu_n=\frac{n\bar{\mathbf{Y}}+c_0\bmu}{n+c_0}
+                              \end{equation*}
+                              \end{Res}
+                              
+                              \begin{Res}
+                              La distribución marginal posterior de la matriz de parámetros $\bSigma$ es
+                              \begin{equation*}
+                              \sigma^2 \mid \mathbf{Y} \sim Inversa-Whishart_{n+v_0}(\bLambda_n^{-1})
+                              \end{equation*}
+                              Donde
+                              \begin{equation*}
+                              \bLambda_n=\bLambda_0+\mathbf{S}+\frac{c_0n}{c_0+n}(\bmu-\bar{\mathbf{y}})(\bmu-\bar{\mathbf{y}})'
+                              \end{equation*}
+                              \end{Res}
+                              
+                              \begin{Res}
+                              La distribución marginal posterior del parámetro $\btheta$ es $t-student$ multivariante tal que
+                              \begin{equation*}
+                              \btheta \mid \mathbf{Y} \sim t_{n+v_0-p+1}\left(\bmu_n, \frac{\bLambda_n}{n+v_0-p+1}\right)
+                              \end{equation*}
+                              \end{Res}
+                              
+                              En términos de simulación de densidades se debe primero simular distribución $p(\bSigma \mid \mathbf{Y})$ y encontrar un valor estimado para esta matriz de parámetros. Luego, se debe utilizar este valor para simular la distribución $p(\btheta \mid \bSigma,\mathbf{Y})$ y encontrar un valor estimado para este vector de parámetros.
+                              
+\subsection{Parámetros no informativos}
+
+\citeasnoun{Gelman03} afirma que la distribución previa no informativa de Jeffreys conjunta para $\btheta,\bSigma$, en este caso está dada por la siguiente expresión
+\begin{equation*}
+p(\btheta,\bSigma)\propto \mid \bSigma \mid ^{-(p+1)/2}
+\end{equation*}
+
+Por lo tanto la distribución posterior conjunta para $\btheta,\bSigma$ está dada por
+
+\begin{equation*}
+p(\btheta,\bSigma \mid \mathbf{Y})\propto
+\mid \bSigma \mid ^{-(p+n+1)/2}
+\exp\left\{ -\frac{1}{2}\sum_{i=1}^n
+  (\mathbf{Y}_i-\btheta)'\bSigma^{-1}(\mathbf{Y}_i-\btheta)\right\}
+  \end{equation*}
+  
+  \begin{Res}
+  La distribución posterior del vector de parámetros $\btheta$ condicional a $\bSigma,\mathbf{Y}$ es
+  \begin{equation*}
+  \btheta \mid \bSigma,\mathbf{Y}\sim Normal_p(\bar{\mathbf{y}},\bSigma/n)
+  \end{equation*}
+  \end{Res}
+  
+  \begin{proof}
+  Utilizando la identidad (3.2.5) se tiene que
+  \begin{align*}
+  p(\btheta \mid \bSigma,\mathbf{Y})
+  \propto \exp\left\{ -\frac{1}{2}\sum_{i=1}^n
+  (\mathbf{Y}_i-\btheta)'\bSigma^{-1}(\mathbf{Y}_i-\btheta)\right\}\\
+\propto \exp\left\{ -\frac{n}{2}(\btheta-\bar{\mathbf{Y}})'\bSigma^{-1}(\btheta-\bar{\mathbf{Y}})\right\}
+  \end{align*}
+  Por lo tanto, factorizando convenientemente, se encuentra una expresión idéntica a la función de distribución
+  de una variable aleatoria con distribución $Normal_p(\bar{y},\bSigma/n)$.
+  \end{proof}
+  
+  
+\begin{Res}
+La distribución marginal posterior de la matriz de parámetros $\bSigma$ es
+\begin{equation*}
+\bSigma \mid \mathbf{Y}\sim Inversa-Whishart_{n-1}(\mathbf{S})
+\end{equation*}
+donde $\mathbf{S}=\sum_{i=1}^n(\mathbf{y}_i-\bar{\mathbf{y}})(\mathbf{y}_i-\bar{\mathbf{y}})'$
+\end{Res}
+
+\begin{proof}
+En primer lugar nótese que
+\begin{equation*}
+\textbf{S}_{\btheta}=\mathbf{S}+n(\btheta-\bar{\mathbf{y}})(\btheta-\bar{\mathbf{y}})'
+\end{equation*}
+
+Por otro lado, recurriendo a las propiedades del operador $traza$, e integrando la distribución posterior conjunta con respecto a $\btheta$, se tiene que
+
+\begin{align*}
+p(\bSigma \mid \mathbf{Y})&=\int p(\btheta,\bSigma \mid \mathbf{Y}) \ d\btheta\\
+&= \mid \bSigma \mid ^{-(p+n+1)/2}\int\exp\left\{ -\frac{1}{2}\sum_{i=1}^n
+  (\mathbf{Y}_i-\btheta)'\bSigma^{-1}(\mathbf{Y}_i-\btheta)\right\} \ d\btheta\\
+  &= \mid \bSigma \mid ^{-(p+n+1)/2}\int
+  \exp\left\{ -\frac{1}{2}traza(\bSigma^{-1}\mathbf{S}_{\btheta})\right\} \ d\btheta\\
+  &= \mid \bSigma \mid ^{-(p+n+1)/2}\int
+  \exp\left\{ -\frac{1}{2}traza(\bSigma^{-1}
+  (\mathbf{S}+n(\btheta-\bar{\mathbf{y}})(\btheta-\bar{\mathbf{y}})'))\right\} \ d\btheta\\
+&= \mid \bSigma \mid ^{-(p+n)/2}\exp\left\{ -\frac{1}{2}traza(\bSigma^{-1}\mathbf{S})\right\}\\
+&\hspace{2cm}\times
+\int \mid \bSigma \mid ^{-1/2}\exp\left\{ -\frac{n}{2}traza(\bSigma^{-1}(\btheta-\bar{\mathbf{y}})
+                                                             (\btheta-\bar{\mathbf{y}})')\right\} \ d\btheta\\
+                                                             &= \mid \bSigma \mid ^{-(p+n)/2}\exp\left\{ -\frac{1}{2}traza(\bSigma^{-1}\mathbf{S})\right\}\\
+                                                             &\hspace{2cm}\times
+                                                             \int \mid \bSigma \mid ^{-1/2}\exp\left\{ -\frac{n}{2}traza((\btheta-\bar{\mathbf{y}})'\bSigma^{-1}(\btheta-\bar{\mathbf{y}}))\right\} \ d\btheta\\
+&= \mid \bSigma \mid ^{-(p+n)/2}\exp\left\{ -\frac{1}{2}traza(\bSigma^{-1}\mathbf{S})\right\}\\
+&\hspace{2cm}\times
+\int\underbrace{ \mid \bSigma \mid ^{-1/2}\exp\left\{ -\frac{n}{2}(\btheta-\bar{\mathbf{y}})'\bSigma^{-1}(\btheta-\bar{\mathbf{y}})\right\}}
+  _{Normal_p(\bar{\mathbf{y}},\bSigma/n)} \ d\btheta\\
+  &= \mid \bSigma \mid ^{-(p+n)/2}\exp\left\{ -\frac{1}{2}traza(\bSigma^{-1}\mathbf{S})\right\}
+  \end{align*}
+  Por lo tanto, factorizando convenientemente, se encuentra una expresión idéntica a la función de distribución
+  de una variable aleatoria con distribución $Inversa-Whishart_{n-1}(\mathbf{S})$.
+  \end{proof}
+
+  
+  \section{Multinomial}
+  
+  Suponga que $\textbf{Y}=(Y_1,\ldots,Y_p)'$ es un vector aleatorio con distribución Multinomial. Luego, su distribución está parametrizada por el vector $\btheta=(\theta_1,\ldots,\theta_p)'$ y está dada por la siguiente expresión
+  
+  \begin{equation}
+  p(\mathbf{Y} \mid \btheta)=\binom{n}{y_1,\ldots,y_p}\prod_{i=1}^p\theta_i^{y_i} \ \ \ \ \ \theta_i>0 \texttt{ , }  \sum_{i=1}^ny_i=n \texttt{ y } \sum_{i=1}^p\theta_i=1
+  \end{equation}
+  
+  donde
+  \begin{equation*}
+  \binom{n}{y_1,\ldots,y_p}=\frac{n!}{y_1!\cdots y_p!}.
+  \end{equation*}
+  
+  Como cada parámetro $\theta$ está restringido al espacio $\Theta=[0,1]$, entonces es posible asignar a la distribución de Dirichlet como la distribución previa del vector de parámetros. Por lo tanto la distribución previa del vector de parámetros $\btheta$, parametrizada por el vector de hiperparámetros $\balpha=(\alpha_1,\ldots,\alpha_p)'$, está dada por
+  
+  \begin{equation}
+  p(\btheta \mid \balpha)=\frac{\Gamma(\alpha_1+\cdots+\alpha_p)}{\Gamma(\alpha_1)\cdots\Gamma(\alpha_p)}
+  \prod_{i=1}^p\theta_i^{\alpha_i-1} \ \ \ \ \ \alpha_i>0 \texttt{ y } \sum_{i=1}^p\theta_i=1
+  \end{equation}
+  
+  Bajo este marco de referencia se tienen los siguientes resultados
+  
+\begin{Res}
+La distribución posterior del parámetro $\btheta$ sigue una distribución $Dirichlet(y_1+\alpha_1,\ldots,y_p+\alpha_p)$
+  \end{Res}
+
+\begin{proof}
+\begin{align*}
+p(\btheta \mid \mathbf{Y})&\propto p(\mathbf{Y} \mid \btheta)p(\btheta \mid \balpha)\\
+&=\binom{n}{y_1,\ldots,y_p}\prod_{i=1}^p\theta_i^{y_i}\frac{\Gamma(\alpha_1+\cdots+\alpha_p)}{\Gamma(\alpha_1)
+  \cdots\Gamma(\alpha_p)}
+\prod_{i=1}^p\theta_i^{\alpha_i-1}\\
+&\propto \prod_{i=1}^p\theta_i^{y_i+\alpha_i-1}
+\end{align*}
+Dado que $\sum_{i=1}^p\theta_i=1$, entonces factorizando convenientemente, se encuentra una expresión idéntica a la función de distribución de una vector aleatorio con distribución $Dirichelt(y_1+\alpha_1,\ldots,y_n+\alpha_n)$.
+\end{proof}
+
+\begin{Res}
+La distribución predictiva previa para una observación $\mathbf{y}$ está dada por
+\begin{equation}
+p(\mathbf{Y})=\binom{n}{y_1,\ldots,y_p} \frac{\Gamma(\sum_{i=1}^p\alpha_i)}{\prod_{i=1}^p\Gamma(\alpha_i)}
+\frac{\prod_{i=1}^p\Gamma(y_i+\alpha_i)}{\Gamma(\sum_{i=1}^py_i+\sum_{i=1}^p\alpha_i)}
+\end{equation}
+y define una auténtica función de densidad de probabilidad continua.
+\end{Res}
+
+
+\begin{proof}
+De la definición de función de distribución predictiva se tiene que
+\begin{align*}
+p(\mathbf{Y})&=\int p(\mathbf{Y} \mid \btheta)p(\btheta \mid \balpha)\ d\btheta\\
+&=\binom{n}{y_1,\ldots,y_p} \frac{\Gamma(\alpha_1+\cdots+\alpha_p)}{\Gamma(\alpha_1)\cdots\Gamma(\alpha_p)}
+\frac{\Gamma(y_1+\alpha_1)\cdots\Gamma(y_p+\alpha_p)}{\Gamma(y_1+\alpha_1+\cdots + y_p+\alpha_p)}\\
+&\times
+\int_0^1 \cdots \int_0^1 \frac{\Gamma(y_1+\alpha_1+\cdots+y_p+\alpha_p)}{\Gamma(y_1+\alpha_1)\cdots\Gamma(y_p+\alpha_p)}
+\prod_{i=1}^p\theta_i^{y_i+\alpha_i-1} \ d\theta_1 \cdots d\theta_p\\
+&=\binom{n}{y_1,\ldots,y_p} \frac{\Gamma(\alpha_1+\cdots+\alpha_p)}{\Gamma(\alpha_1)\cdots\Gamma(\alpha_p)}
+\frac{\Gamma(y_1+\alpha_1)\cdots\Gamma(y_p+\alpha_p)}{\Gamma(y_1+\alpha_1+\cdots + y_p+\alpha_p)}\\
+&=\binom{n}{y_1,\ldots,y_p} \frac{\Gamma(\sum_{i=1}^p\alpha_i)}{\prod_{i=1}^p\Gamma(\alpha_i)}
+\frac{\prod_{i=1}^p\Gamma(y_i+\alpha_i)}{\Gamma(\sum_{i=1}^py_i+\sum_{i=1}^p\alpha_i)}
+\end{align*}
+\end{proof}
+
+
+\begin{Res}
+Después de la recolección de los datos, la distribución predictiva posterior para una nueva observación del vector aleatorio $\tilde{\mathbf{y}}$ de tamaño $p$, para $n^*$ repeticiones del mismo experimento aleatorio, está dada por
+\begin{align}
+p(\tilde{\mathbf{y}} \mid \mathbf{Y})&=
+  \binom{n^*}{\tilde{y}_1,\ldots,\tilde{y}_p} \frac{\Gamma(\sum_{i=1}^p(y_i+\alpha_i))}{\prod_{i=1}^p\Gamma(y_i+\alpha_i)}
+\frac{\prod_{i=1}^p\Gamma(\tilde{y}_i+y_i+\alpha_i)}{\Gamma(\sum_{i=1}^p(\tilde{y}_i+y_i+\alpha_i))}
+\end{align}
+\end{Res}
+
+\begin{proof}
+De la definición de función de distribución predictiva posterior se tiene que
+\begin{align*}
+p(\tilde{\mathbf{y}} \mid \mathbf{Y})&=\int p(\tilde{\mathbf{y}} \mid \btheta)p(\btheta \mid \mathbf{Y})\ d\btheta\\
+&=\binom{n^*}{\tilde{y}_1,\ldots,\tilde{y}_p} \frac{\Gamma(\sum_{i=1}^p(y_i+\alpha_i))}{\prod_{i=1}^p\Gamma(y_i+\alpha_i)}
+\frac{\prod_{i=1}^p\Gamma(\tilde{y}_i+y_i+\alpha_i)}{\Gamma(\sum_{i=1}^p(\tilde{y}_i+y_i+\alpha_i))}\\
+&\times
+\int_0^1 \cdots \int_0^1 \frac{\Gamma(\sum_{i=1}^p(\tilde{y}_i+y_i+\alpha_i))}{\prod_{i=1}^p\Gamma(\tilde{y}_i+y_i+\alpha_i)}
+\prod_{i=1}^p\theta_i^{\tilde{y}_i+y_i+\alpha_i-1} \ d\theta_1 \cdots d\theta_p\\
+&=\binom{n^*}{\tilde{y}_1,\ldots,\tilde{y}_p} \frac{\Gamma(\sum_{i=1}^p(y_i+\alpha_i))}{\prod_{i=1}^p\Gamma(y_i+\alpha_i)}
+\frac{\prod_{i=1}^p\Gamma(\tilde{y}_i+y_i+\alpha_i)}{\Gamma(\sum_{i=1}^p(\tilde{y}_i+y_i+\alpha_i))}
+\end{align*}
+\end{proof}
+
+
+\begin{Eje}
+Aunque no estoy de acuerdo con la metodología de muestreo de la mayoría de las encuestas electorales, pienso que la acumulación de la información es de alguna forma ilustrativa. En esta entrada se realiza un análisis bayesiano acerca de la intención de voto para las próximas elecciones de la alcaldía de Bogotá, ciudad donde yo resido. El ejercicio es meramente académico y voy a actualizar los resultados de manera sistemática hasta el día de las elecciones.
+
+El análisis electoral desde el enfoque bayesiano puede parecer sencillo. En una primera instancia, se trata de conocer la probabilidad de éxito de un candidato, que aplicada a una población específica se traduce en la intención de voto hacia el candidato. Como hay varios candidatos en la disputa, entonces es conveniente suponer que el fenómeno puede ser descrito muy bien mediante el uso de una distribución multinomial. Como el parámetro en este caso es un vector de probabilidades, es adecuado suponer una distribución previa de tipo Dirichlet para este vector. Por lo tanto, haciendo uso del teorema de Bayes, la distribución posterior del parámetro será también de tipo Dirichlet.
+
+En esta primera entrada, desarrollaremos un análisis básico con base en una primera encuesta realizada del 12 al 14, en donde según el portal WEB de la revista Semana se afirma que:
+  
+  <<Según la encuesta de Ipsos Napoleón Franco, hay un cabeza a cabeza (cada uno con el 22\%) entre los dos candidatos. Mockus es tercero, pero con notable diferencia: 12\%, seguido, muy cerca, por Gina Parody, con 9\%>>.
+                                                                        
+                                                                        Con base en esta información, y teniendo en cuenta que hubo 604 respondientes, se afina la distribución previa que es Dirichlet con parámetros 133 (igual a 604*0.22), 133 (604*0.22), 72 (604*0.12) y 64 (604*0.09), para los candidatos Peñalosa, Petro, Mockus y Parody, respectivamente. En las entradas posteriores se analizarán otras distribuciones previas que pueden ser más convenientes y/o tener ventajas en el análisis.
+                                                                        
+                                                                        Por otro lado, según la última encuesta electoral reportada por un medio de comunicación, correspondiente a la realizada por la firma Centro Nacional de Consultoría, entre el 30 de agosto y el primero de Septiembre, y publicada por el portal WEB de ElTiempo.com afirma que:
+                                                                          
+                                                                          <<Peñalosa alcanza el 22\% de preferencia. Segundo aparece Gustavo Petro, con 17\%, en tercer lugar Antanas Mockus, con 12\%. El cuarto lugar es para la candidata Gina Parody, con 11\%>>.
+                                                                        
+                                                                        Como se trata de la encuesta más reciente, supondremos que estos datos corresponden a la realización de una distribución multinomial.
+                                                                        
+                                                                        Es bien sabido que el análisis conjugado, señala que la distribución posterior del parámetro es de tipo Dirichlet, que en este ejercicio particular, tiene parámetros 353, 302, 192 y 164, para los candidatos Peñalosa, Petro, Mockus y Parody, respectivamente. Después de realizar cien mil simulaciones de Monte Carlo y chequear la convergencia de las cadenas y todo lo otro que se deba chequear, los resultados se presentan a continuación:
+                                                                          
+                                                                          Luego, la distribución posterior estima que Peñalosa será el ganador. Nada nuevo hasta acá. La novedad es que realicé un análisis para determinar la probabilidad posterior de que el parámetro de Peñalosa fuese mayor que el parámetro de Petro. Esta probabilidad es del orden de 0.97. Luego, la probabilidad de victoria de Peñalosa sobre Petro al día de hoy y, aunque sea muy difícil, suponiendo que los datos son válidos, es de 0.97.
+                                                                        
+                                                                        \colorbox{black}{\textcolor{white}{\textbf{Código WinBugs}}}
+                                                                        \begin{verbatim}
+                                                                        model {
+                                                                          y[1:k] ~ dmulti(theta[1:k],n)
+                                                                          theta[1:k] ~ ddirch(alpha[1:k])
+                                                                          delta <- theta[1]-theta[2]
+                                                                          P <- step(delta)
+                                                                        }
+                                                                        
+                                                                        DATA
+                                                                        list(k=4,alpha=c(133,133,72,54),y=c(220,170,120,110),n=620)
+                                                                        \end{verbatim}
+                                                                        
+                                                                        \end{Eje}
+                                                                        
+
+
+

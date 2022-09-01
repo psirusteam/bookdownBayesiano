@@ -1,0 +1,120 @@
+\begin{thebibliography}{xx}
+
+\harvarditem{Akaike}{1974}{Akaike}
+Akaike, H.  \harvardyearleft 1974\harvardyearright , `{A new look at the
+  statistical model identification}', {\em IEEE Transactions on Automatic
+  Control} {\bf 19}(6),~716--723.
+
+\harvarditem{Apostol}{1957}{Apostol}
+Apostol, T.~M.  \harvardyearleft 1957\harvardyearright , {\em Mathematical
+  Analysis}, McGraw - Hill.
+
+\harvarditem{Berger}{1985}{Berger}
+Berger, J.~O.  \harvardyearleft 1985\harvardyearright , {\em Statistical
+  Decision Theory and Bayesian Analysis}, 2 edn, Springer.
+
+\harvarditem{Box \harvardand\ Tiao}{1992}{BoxTiao}
+Box, G. E.~P. \harvardand\ Tiao, G.~C.  \harvardyearleft 1992\harvardyearright
+  , {\em Bayesian Inference in Statistical Analysis}, 1 edn, Wiley.
+
+\harvarditem{Carlin \harvardand\ Louis}{1996}{Carlin96}
+Carlin, B.~P. \harvardand\ Louis, T.~A.  \harvardyearleft 1996\harvardyearright
+  , {\em Bayes and Empirical Bayes for Data Analysis}, 1 edn, Chapman and
+  Hall/CRC.
+
+\harvarditem{Cavanaugh}{1997}{AICc}
+Cavanaugh, J.~E.  \harvardyearleft 1997\harvardyearright , `{Unifying the
+  derivations of the Akaike and corrected Akaike information criteria}', {\em
+  Statistics $\&$ Probability Letters} {\bf 31},~201--208.
+
+\harvarditem{Crowley \harvardand\ Hu}{1977}{survi}
+Crowley, J. \harvardand\ Hu, M.  \harvardyearleft 1977\harvardyearright ,
+  `Covariance analysis of heart transplant survival data', {\em Journal of the
+  American Statistical Association} {\bf 72},~27 -- 36.
+
+\harvarditem{Dempster}{1974}{Dempster74}
+Dempster, A.~P.  \harvardyearleft 1974\harvardyearright , The direct use of
+  likelihood for significance testing, {\em in} `Proceedings of Conference on
+  Foundational Questions in Statistical Inference', Department of Theoretical
+  Statistics: University of Aarhus., pp.~335 -- 352.
+
+\harvarditem{Efron}{2010}{Efronims}
+Efron, B.  \harvardyearleft 2010\harvardyearright , {\em {Large-Scale
+  Inference. Empirical Bayes Methods for Estimation, Testing, and Prediction}},
+  Cambridge University Press.
+
+\harvarditem{Efron \harvardand\ Morris}{1975}{Efron75}
+Efron, B. \harvardand\ Morris, C.  \harvardyearleft 1975\harvardyearright ,
+  `Data analysis using stein's estimator and its generalizations', {\em Journal
+  of the American Statistical Association} {\bf 70},~311 -- 319.
+
+\harvarditem[Gelman et~al.]{Gelman, Carlin, Stern \harvardand\
+  Rubin}{1995}{Gelman95}
+Gelman, A., Carlin, J.~B., Stern, H.~S. \harvardand\ Rubin, D.~B.
+  \harvardyearleft 1995\harvardyearright , {\em Bayesian Data Analysis}, 1 edn,
+  Chapman and Hall/CRC.
+
+\harvarditem[Gelman et~al.]{Gelman, Carlin, Stern \harvardand\
+  Rubin}{2003}{Gelman03}
+Gelman, A., Carlin, J.~B., Stern, H.~S. \harvardand\ Rubin, D.~B.
+  \harvardyearleft 2003\harvardyearright , {\em Bayesian Data Analysis}, 2 edn,
+  Chapman and Hall/CRC.
+
+\harvarditem{Jordan}{2004}{Jordan}
+Jordan, M.~I.  \harvardyearleft 2004\harvardyearright , The exponential family
+  and generalized linear models.
+
+\harvarditem[Martin et~al.]{Martin, Quinn \harvardand\ Park}{2011}{MCMCpack}
+Martin, A.~D., Quinn, K.~M. \harvardand\ Park, J.~H.  \harvardyearleft
+  2011\harvardyearright , `{MCMCpack}: Markov chain monte carlo in {R}', {\em
+  Journal of Statistical Software} {\bf 42}(9),~22.
+\newline\harvardurl{http://www.jstatsoft.org/v42/i09/}
+
+\harvarditem{Migon \harvardand\ Gamerman}{1999}{Migon}
+Migon, H.~S. \harvardand\ Gamerman, D.  \harvardyearleft 1999\harvardyearright
+  , {\em Statistical Inference: An Integrated Approach}, Arnold.
+
+\harvarditem{Pe\~na}{2002}{Pena2002}
+Pe\~na, D.  \harvardyearleft 2002\harvardyearright , {\em {An\'alisis de datos
+  multivariantes}}, {McGraw-Hill}.
+
+\harvarditem{Schwarz}{1978}{Schwarz}
+Schwarz, G.  \harvardyearleft 1978\harvardyearright , `Estimating the dimension
+  of a model', {\em Annals of Statistics} {\bf 6},~461 -- 464.
+
+\harvarditem[Spiegelhalter et~al.]{Spiegelhalter, Best, Carlin \harvardand\
+  VanderLinde}{2002}{Spiegel}
+Spiegelhalter, D.~J., Best, N.~G., Carlin, B.~P. \harvardand\ VanderLinde, A.
+  \harvardyearleft 2002\harvardyearright , `Bayesian measures of model
+  complexity and fit', {\em Journal of the Royal Statistical Society} {\bf B
+  64},~583 -- 639.
+
+\harvarditem{Student}{1908}{Student}
+Student  \harvardyearleft 1908\harvardyearright , `The probable error of a
+  mean', {\em Biometrika} {\bf 6}(1),~1 -- 25.
+
+\harvarditem{Therneau \harvardand\ Lumley}{2011}{survival}
+Therneau, T. \harvardand\ Lumley, T.  \harvardyearleft 2011\harvardyearright ,
+  {\em survival: Survival analysis, including penalised likelihood.}
+\newblock R package version 2.36-5.
+
+\harvarditem{Wikipedia}{2011{\em a}}{wikiHit}
+Wikipedia  \harvardyearleft 2011{\em a}\harvardyearright , `Hit ---
+  {W}ikipedia{,} the free encyclopedia'.
+
+\harvarditem{Wikipedia}{2011{\em b}}{wikiBat}
+Wikipedia  \harvardyearleft 2011{\em b}\harvardyearright , `{Porcentaje de
+  bateo. Wikipedia}'.
+
+\harvarditem{Yee}{2012}{VGAM}
+Yee, T.~W.  \harvardyearleft 2012\harvardyearright , {\em VGAM: Vector
+  Generalized Linear and Additive Models.}, URL
+  http://CRAN.R-project.org/package=VGAM.
+\newblock R package version 0.9-0.
+
+\harvarditem{Zhang \harvardand\ Guti\'errez}{2010}{Zhang}
+Zhang, H. \harvardand\ Guti\'errez, H.~A.  \harvardyearleft
+  2010\harvardyearright , {\em Teor\'ia estad\'istica. Aplicaci\'on y
+  m\'etodos.}, Universidad Santo Tom\'as.
+
+\end{thebibliography}

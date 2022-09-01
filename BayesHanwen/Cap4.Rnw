@@ -1,0 +1,1422 @@
+<<echo=FALSE, message=FALSE>>=
+library(R2jags)
+library(coda)
+library(lattice)
+library(R2WinBUGS)
+library(rjags)
+library(superdiag)
+library(mcmcplots)
+library(xtable)
+library(ggplot2)
+library(plot3D)
+library(reshape2)
+library(gridExtra)
+options(scipen = 100, digits = 2)
+set.seed(12345)
+library(knitr)
+knit_theme$set("acid")
+setwd("/Users/hanwenzhang/Dropbox/Bayes")
+@
+%--------------------
+ 
+\chapter{Modelo lineal Bayesiano}\label{Capitulo_ML}
+
+En t\'erminos de modelamiento estad\'istico, la relaci\'on entre una variable de inter\'es $Y$ y una matriz de variables auxiliares $\mathbf{X}$, es una de las herramientas estad\'isticas m\'as utilizadas por los investigadores en los \'ultimos tiempos. Herramientas como la regresi\'on simple, la regresi\'on m\'ultiple y el an\'alisis de varianza forman parte del arsenal de opciones que la ciencia estad\'istica ofrece a los usuarios que van un paso m\'as all\'a estableciendo relaciones de causalidad en el contexto de propio de la investigaci\'on.
+
+Por supuesto, el enfoque bayesiano tambi\'en ofrece al investigador herramientas poderosas en t\'erminos del modelamiento de relaciones causales. Siguiendo el mismo esp\'iritu que en los anteriores cap\'itulos, la inferencia bayesiana proporciona distribuciones posterior para los par\'ametros de inter\'es y distribuciones predictivas para nuevas observaciones en cada uno de los contextos mencionados anteriormente. Como lo menciona \citeasnoun{Migon}, es muy \'util adoptar la notaci\'on matricial para el desarrollo posterior del an\'alisis bayesiano; entonces, se definen
+\begin{equation*}
+\mathbf{Y}=
+\begin{pmatrix}
+  Y_1 \\
+  \vdots \\
+  Y_n \\
+\end{pmatrix} \ \ \ \ \ \ \ \ \ \ \text{y} \ \ \ \ \ \ \ \ \
+\textbf{X}=
+\begin{pmatrix}
+  \mathbf{x}_1' \\
+  \vdots \\
+  \mathbf{x}_n' \\
+\end{pmatrix}
+=
+\begin{pmatrix}
+  x_{11} & \ldots & x_{1q} \\
+  \vdots & \ddots & \vdots \\
+  x_{n1} & \ldots & x_{nq} \\
+\end{pmatrix}
+\end{equation*}
+
+y se supone que existe una relaci\'on de causalidad de parte de $\mathbf{X}$ reflejada en $\mathbf{Y}$ que puede ser descrita mediante el siguiente modelo probabil\'istico
+\begin{equation}
+\mathbf{Y}=\mathbf{X}\bbeta+\beps
+\end{equation}
+
+en donde $\beps=(\varepsilon_1,\ldots,\varepsilon_n)'$ es un vector aleatorio tal que cada una de sus componentes sigue una distribuci\'on de probabilidad, que en la mayor\'ia de los casos suele ser normal. Antes de comenzar con la estipulaci\'on propia del an\'alisis bayesiano, es necesario aclarar el papel que juegan las variables auxiliares en la inferencia estad\'istica.
+
+En primer lugar, n\'otese que el inter\'es particular recae en la distribuci\'on del vector de $n$ variables aleatorias $\mathbf{Y}=(Y_1\ldots,Y_n)'$
+condicional a la matriz de variables auxiliares $\mathbf{X}$ e indexada por el vector de par\'ametros de inter\'es $\bbeta=(\beta_1,\ldots,\beta_q)'$ dada por $p(\mathbf{Y} \mid \bbeta,\mathbf{X})$.
+
+Basado en lo anterior, es posible y suponiendo que las variables de inter\'es son intercambiables, entonces es posible plantear el siguiente modelo poblacional
+\begin{align*}
+E(Y_i \mid \bbeta,\mathbf{X})&=\bbeta\mathbf{x}_{i}'=\beta_1x_{i1}+\cdots+\beta_qx_{iq}\\
+Var(Y_i \mid \bbeta,\mathbf{X})&=\sigma^2
+\end{align*}
+
+para $i=1,\ldots,n$. Generalmente $\bbeta$ y $\sigma^2$ son los par\'ametros de inter\'es. \citeasnoun{Gelman03} afirma que en la realidad, las observaciones incluyen realizaciones tanto de las variables de inter\'es $Y_i$ como de las variables auxiliares $\mathbf{X}$ y por la anterior raz\'on, el modelamiento bayesiano propiamente dicho deber\'ia incluir
+
+\begin{enumerate}[a]
+  \item Una distribuci\'on  para las variables auxiliares $\mathbf{X}$ indexada por un vector de hiperpar\'ametros $\bphi$, dada por $p(\mathbf{X} \mid \bphi)$.
+  \item Una verosimilitud conjunta de los datos observados dada por $p(\mathbf{X},\mathbf{Y} \mid \bphi,\btheta)$, en donde $\btheta=(\bbeta',\sigma^2)$ es el vector de par\'ametros de inter\'es.
+  \item  Por \'ultimo, una distribuci\'on previa conjunta para los par\'ametros desconocidos dada por $p(\bphi,\btheta)$.
+\end{enumerate}
+
+Sin embargo, en un contexto est\'andar, los anteriores requerimientos se simplifican al suponer que los par\'ametros $\btheta$ y $\bphi$ son independientes previa - es decir $p(\btheta,\bphi)=p(\btheta)p(\bphi)$ - y que la distribuci\'on de las variables auxiliares es no informativa al igual que la distribuci\'on previa del par\'ametro $\bphi$ - es decir que $p(\bphi \mid \mathbf{X})\propto k$ . De esta manera se tiene que
+\begin{align*}
+p(\btheta,\bphi \mid \mathbf{Y},\mathbf{X} )&=p(\bphi \mid \mathbf{X})p(\btheta \mid \mathbf{Y},\mathbf{X})\\
+&\propto p(\btheta \mid \mathbf{Y},\mathbf{X})\\
+&\propto p(\btheta)p(\mathbf{Y} \mid \btheta,\mathbf{X})
+\end{align*}
+
+Por ende, de aqu\'i en adelante vamos a referirnos a la distribuci\'on posterior de $\bbeta$ comprendiendo que la especificaci\'on de esta distribuci\'on cubre todo el \'ambito probabil\'istico de las observaciones de las variables auxiliares.
+
+El modelo b\'asico y cl\'asico asume que la verosimilitud para las variables de inter\'es es
+\begin{equation*}
+\mathbf{Y} \mid \btheta,\sigma^2,\mathbf{X}\sim Normal_n(\mathbf{X}\bbeta,\sigma^2\mathbf{I}_n)
+\end{equation*}
+
+en donde $\mathbf{I}_n$ denota la matriz identidad de orden $n\times n$. Por supuesto, el modelo normal no es el \'unico que se puede postular como verosimilitud para los datos. Existen muchos m\'as distribuciones que ser\'an contempladas m\'as adelante.
+
+\section{Modelo lineal con varianza conocida}\label{LM_Var_Des}
+
+En t\'erminos generales, la verosimilitud del vector de variables de inter\'es est\'a dada por la siguiente expresi\'on 
+\begin{equation}
+p(\mathbf{Y} \mid \bbeta,\bSigma,\mathbf{X})\propto \exp\left\{-\frac{1}{2}(\mathbf{y}-\mathbf{X}\bbeta)'\bSigma^{-1}(\mathbf{y}-\mathbf{X}\bbeta)\right\}
+\end{equation}
+
+en donde $\bSigma$ representa la matriz de varianzas de $\mathbf{Y}$, sim\'etrica y definida positiva. Se tiene que cada una de las entradas de la matriz de varianzas  es conocida. Suponga que la distribuci\'on previa del vector de par\'ametros de inter\'es es informativa y adem\'as est\'a regida por la siguiente estructura probabil\'istica
+\begin{equation*}
+\bbeta\sim Normal_q(\mathbf{b},\mathbf{B})
+\end{equation*}
+
+n\'otese que es natural asignarle a $\bbeta$ una distribuci\'on normal multivariante pues cada uno de sus componentes describe una relaci\'on num\'erica de la variable de inter\'es con la correspondiente variable de informaci\'on auxiliar, y por consiguiente puede tomar valores positivos o negativos, entreros o fraccionarios. Bajo este contexto se tiene el siguiente resultado.
+
+\begin{Res}
+La distribuci\'on posterior para el vector de par\'ametros de inter\'es es
+\begin{equation*}
+\bbeta \mid \mathbf{Y},\mathbf{X},\bSigma \sim Normal_q(\mathbf{b}_q,\mathbf{B}_q)
+\end{equation*}
+donde
+\begin{align}
+\mathbf{B}_q &= \left(\mathbf{B}^{-1}+\mathbf{X}'\bSigma^{-1}\mathbf{X}\right)^{-1}\label{varianza_pos_beta_Sigma_conocida}\\
+\mathbf{b}_q &=\mathbf{B}_q\left(\mathbf{B}^{-1}\mathbf{b}+\mathbf{X}'\bSigma^{-1}\mathbf{Y}\right)\label{media_pos_beta_Sigma_conocida}
+\end{align}
+\end{Res}
+
+\begin{proof}
+De la definici\'on de distribuci\'on posterior, y completando cuadrados como en la demostraci\'on del Resultado 3.2.1.,  se tiene que
+\begin{align*}
+p(\bbeta \mid \mathbf{Y},\bSigma)&\propto
+\exp\left\{-\frac{1}{2}\left[(\mathbf{y}-\mathbf{X}\bbeta)'\bSigma^{-1}(\mathbf{y}-\mathbf{X}\bbeta)
++(\bbeta-\mathbf{b})'\mathbf{B}^{-1}(\bbeta-\mathbf{b})\right]\right\}\\
+&\propto
+\exp\left\{-\frac{1}{2}\left[\bbeta'(\mathbf{X}'\bSigma^{-1}\mathbf{X}+\mathbf{B}^{-1})\bbeta
+- 2\bbeta'(\mathbf{X}'\bSigma^{-1}\mathbf{Y}+\mathbf{B}^{-1}\mathbf{b})\right]\right\}\\
+&=\exp\left\{-\frac{1}{2}\bbeta'\mathbf{B}^{-1}_q\bbeta
++ \bbeta'\mathbf{B}^{-1}_q\mathbf{b}_q\right\}\\
+&\propto\exp\left\{-\frac{1}{2}\bbeta'\mathbf{B}^{-1}_q\bbeta
++ \bbeta'\mathbf{B}^{-1}_q\mathbf{b}_q
+-\frac{1}{2}\mathbf{b}_q'\mathbf{B}^{-1}_q\mathbf{b}_q\right\}\\
+&=\exp\left\{-\frac{1}{2}(\bbeta-\mathbf{b}_q)'\mathbf{B}^{-1}_q(\bbeta-\mathbf{b}_q)\right\}
+\end{align*}
+Por lo tanto, factorizando convenientemente, se encuentra una expresi\'on id\'entica a la
+funci\'on de distribuci\'on de una vector aleatorio con distribuci\'on $Normal_q(\mathbf{b}_q,\mathbf{B}_q)$.
+\end{proof}
+
+Contextualizado en el modelo lineal cl\'asico, en donde la varianza de las observaciones es constante e igual a $\sigma^2$ y se supone que no existe correlaci\'on entre ellas, entonces $\bSigma=\sigma^2\mathbf{I}_n$, y la funci\'on de verosimilitud del vector de variables de inter\'es est\'a dada por la siguiente expresi\'on
+\begin{equation}
+p(\mathbf{Y} \mid \bbeta,\sigma^2,\mathbf{X})\propto \exp\left\{-\frac{1}{2\sigma^2}(\mathbf{y}-\mathbf{X}\bbeta)'(\mathbf{y}-\mathbf{X}\bbeta)\right\}
+\end{equation}
+
+en donde el par\'ametro $\sigma^2$ es conocido. La distribuci\'on posterior para el vector de par\'ametros de inter\'es $\bbeta$ ser\'ia
+\begin{equation*}
+\bbeta \mid \mathbf{Y},\mathbf{X},\sigma^2 \sim Normal_q(\mathbf{b}_q,\mathbf{B}_q)
+\end{equation*}
+donde
+\begin{align*}
+\mathbf{B}_q &= \left(\mathbf{B}^{-1}+\frac{1}{\sigma^2}\mathbf{X}'\mathbf{X}\right)^{-1}\\
+\mathbf{b}_q &=\mathbf{B}_q\left(\mathbf{B}^{-1}\mathbf{b}+\frac{1}{\sigma^2}\mathbf{X}'\mathbf{Y}\right)
+\end{align*}
+
+n\'otese que si las entradas diagonales de la matriz de covarianzas $\mathbf{B}$ en la distribuci\'on previa para $\bbeta$ es muy grande, entonces $\mathbf{B}^{-1}\longrightarrow \mathbf{0}_{q\times q}$ y por lo tanto, se tiene que
+\begin{align*}
+\mathbf{B}_q &\longrightarrow \sigma^2(\mathbf{X}'\mathbf{X})^{-1}\\
+\mathbf{b}_q &\longrightarrow (\mathbf{X}'\mathbf{X})^{-1}\mathbf{X}'\mathbf{Y}
+\end{align*}
+
+y las anteriores expresiones que coinciden con los estimadores del modelo lineal cl\'asico usando t\'ecnicas frecuentistas como la estimaci\'on mediante la t\'ecnica de los m\'inimos cuadrados o por el m\'etodo de m\'axima verosimilitud. Por lo anterior, usar valores grandes en la diagonal de la matriz $\mathbf{B}$ es una buena alternativa para cuando no se dispone ninguna informaci\'on previa.
+
+Por otro lado, cuando tenemos datos de las variables $\mathbf{Y}$ y $\mathbf{X}$ que nos sirvan como informaci\'on previa, podemos ajustar una l\'inea de regresi\'on siguiendo la metodolog\'ia de la estad\'istica cl\'asica, y usar las estimaciones obtenidas de los coeficientes de regresi\'on como el par\'ametro $\mathbf{b}$ y usar los errores estandares de las estimaciones al cuadrado como los elementos diagonales de la matriz $\mathbf{B}$.
+
+\begin{Eje}\label{renal_varianza_conocida}
+Para ilustrar el c\'omo se halla la estimaci\'on bayesiana de los coeficientes de regresi\'on, hacemos uso de los datos del puntaje del funcionamiento renal reportados en \citeasnoun{Efronims} que hab\'ian sido estudiados en el ejemplo \ref{Eje-Renal}. Estos datos pueden ser descargados de la p\'agina \url{http://statweb.stanford.edu/~ckirby/brad/LSI/datasets-and-programs/datasets.html}. En este ejemplo, vamos a estudiar el efecto de la variable edad sobre el puntaje obtenido, esto es, procedemos a ajustar la l\'inea de regresi\'on $y_i=\beta_0+\beta_1Edad_i+e_i$ con $i=1,\cdots,157$, usamos $\sigma^2=3.5$. Primero cargamos y examinamos los datos.
+<<fig.height=4>>=
+load("kidneydata.Rdata")
+attach("kidneydata.Rdata")
+head(kidneydata)
+plot(kidneydata[,1], kidneydata[,2],xlab="Edad", ylab="Puntaje")
+@
+De la gr\'afica de dispersi\'on se observa que a medida que la persona avance en edad, la funci\'on renal disminuye. Para realizar un an\'alisis bayesiano sin informaci\'on previa, utilizamos $\mathbf{b}=\mathbf{0}$ y $\mathbf{B}=1000\times\mathbf{I}_2$.
+
+\colorbox{black}{\textcolor{white}{\textbf{C\'odigo JAGS}}}
+<<fig.height=4>>=
+Regre.Model <- function(){
+  for (i in 1:n)
+  {
+    y[i] ~ dnorm(mu[i],tau)
+    mu[i] <- beta0 + beta1*x[i]
+  }
+  # Distribuci\'on previa para los par\'ametros
+  beta0 ~ dnorm(0, 0.0001)
+  beta1 ~ dnorm(0, 0.0001)
+  tau <- 1/sigma2
+}
+
+y <- kidneydata[,2]
+x <- kidneydata[,1]
+n <- length(y)
+sigma2 <- 3.5
+
+Regre.Model.data <- list("y", "x", "n", "sigma2")
+Regre.Model.param <- c("beta0", "beta1")
+Regre.Model.inits <- function(){
+  list("beta0"=c(0), "beta1"=c(0))
+}
+
+Regre.Model.fit <- jags(data=Regre.Model.data, inits=Regre.Model.inits, 
+        Regre.Model.param, n.iter=10000, n.burnin=1000, model.file=Regre.Model)
+
+print(Regre.Model.fit)
+@
+El anterior procedimiento se puede llevar a cabo en \verb'R' usando los siguientes c\'odigos. 
+
+\colorbox{black}{\textcolor{white}{\textbf{C\'odigo R}}}
+<<>>=
+# par\'ametros de la distribuci\'on previa
+B <- diag(rep(100,2))
+b <- rep(0,2)
+# Datos muestrales
+X <- cbind(1,kidneydata[,1])
+Y <- kidneydata[,2]
+sigma2 <- 3.5
+# par\'ametros de la distribuci\'on posterior
+Bq <- solve(solve(B) + t(X)%*%X/sigma2)
+bq <- Bq %*% (solve(B)%*%b + t(X)%*%Y/sigma2)
+Bq
+bq
+@
+De los anteriores c\'alculos vemos que la distribuci\'on posterior de los par\'ametros $\beta_0$ y $\beta_1$ est\'a dada por
+\begin{align*}
+\beta_0\mid \mathbf{Y},\mathbf{X}&\sim Normal(2.857, 0.1393)\\
+\beta_1\mid \mathbf{Y},\mathbf{X}&\sim Normal(-0.079, 0.000088)\\
+\end{align*}
+
+Estas distribuciones posteriores coincide con lo encontrado por \verb'JAGS'. Para decidir si el efecto negativo de la variable edad sobre el puntaje es significativo, basta calcular un intervalo de credibildad para $\beta_1$ como:
+<<>>=
+qnorm(c(0.025,0.975), bq[2], sqrt(Bq[2,2]))
+@
+donde se evidencia que dicho intervalo \'unicamente valores negativos, por lo cual se puede concluir que el efecto de la edad s\'i es significativo. tambi\'en podemos concluir sobre la evidencia de la hip\'otesis de que $\beta_1<-0.05$, esto es, con cada a\~no de m\'as, el punta de la funci\'on renal disminuye en m\'as de 0.05 puntos. Para resolver esta inquietud, podemos calular $Pr(\beta_1<-0.5)$ usando la distribuci\'on posterior de $\beta_1$, as\'i
+<<>>=
+pnorm(-0.05, bq[2], sqrt(Bq[2,2]))
+@
+podemos concluir que la hip\'otesis de $\beta_1<-0.5$ es consistente con los datos. Finalmente, observamos los resultados de la estimaci\'on de la l\'inea de regresi\'on usando t\'ecnicas de la estad\'istica cl\'asica.
+<<>>=
+summary(lm(Y ~ X[,2]))
+@
+Observamos que la estimaci\'on de los par\'ametros $\beta_0$ y $\beta_1$ es muy cercana a la estimaci\'on bayesiana, y el error est\'andar del enfoque cl\'asico tambi\'en es similar a la desviaci\'on est\'andar de la distribuci\'on posterior de los par\'ametros. 
+\end{Eje}
+
+En el anterior ejemplo, no se cuentan con datos que puedan servir como informaci\'on previa de donde se puede obtener los par\'ametros de la distribuci\'on previa $\mathbf{b}$ y $\mathbf{B}$, por lo cual se tom\'o estos par\'ametros que representen esta falta de informaci\'on previa. De lo contrario, se puede usar los datos que representan la informaci\'on previa para ajustar una l\'inea de regresi\'on, tomar los coeficientes estimados para el vector $\mathbf{b}$, y en cuanto a la matriz $\mathbf{B}$, \'esta se puede tomar como una matriz diagonal y usar los errores est\'andares del ajuste al cuadrado como elementos diagonales.
+
+\section{Modelo lineal con varianza desconocida}
+
+En muy raras ocasiones se conoce la estructura de dispersi\'on de las variables de inter\'es y ese desconocimiento de la variabilidad de las observaciones es la regla m\'as que la excepci\'on en una gran cantidad de situaciones de la vida real. En este contexto, es necesario modelar conjuntamente, tanto la matriz de varianzas como el vector de par\'ametros de inter\'es que moldean la relaci\'on de causalidad.
+
+\subsection{previas no informativas}
+
+Para empezar, y siguiendo los supuestos b\'asicos del modelo lineal general, suponga que las variables aleatorias de inter\'es conforman una muestra aleatoria en donde no existe ninguna estructura de correlaci\'on y el par\'ametro de variabilidad es constante a trav\'es de todos los individuos de la muestra. de esta manera, la verosimilitud conjunta estar\'a dada por la expresi\'on (5.1.2) en donde, una vez m\'as el par\'ametro $\sigma^2$ es desconocido.
+
+En el caso m\'as sencillo, se supone que la distribuci\'on previa conjunta de los par\'ametros de inter\'es puede ser factorizada de la siguiente manera.
+\begin{equation*}
+p(\bbeta,\sigma^2)=p(\bbeta \mid \sigma^2)p(\sigma^2)
+\end{equation*}
+
+y asignando a cada uno de los par\'ametros de inter\'es distribuciones previa no informativas, entonces, al igual que en cap\'itulos anteriores, se concluye que la distribuci\'on previa no informativa para $\bbeta \mid \sigma^2$ puede ser uniforme y constante tal que $p(\bbeta \mid \sigma^2)\propto k$ y la de $\sigma^2$ tal que $p(\sigma^2)\propto 1/\sigma^2$. Basado en lo anterior, es factible asignar la siguiente distribuci\'on previa conjunta
+\begin{equation*}
+p(\bbeta,\sigma^2 \mid \mathbf{X})\propto\frac{1}{\sigma^2}
+\end{equation*}
+
+En este orden de ideas, es f\'acil comprobara que la distribuci\'on posterior conjunta de los par\'ametros de inter\'es est\'a dada por
+\begin{align}
+p(\bbeta,\sigma^2 \mid \mathbf{Y},\mathbf{X})&\propto
+p(\mathbf{Y} \mid \bbeta,\sigma^2,\mathbf{X})p(\bbeta,\sigma^2 \mid \mathbf{X}) \notag \\
+&\propto\left(\sigma^2\right)^{-n/2-1}
+\exp\left\{-\frac{1}{2\sigma^2}(\mathbf{y}-\mathbf{X}\bbeta)'(\mathbf{y}-\mathbf{X}\bbeta)\right\}
+\end{align}
+
+Basados en la anterior distribuci\'on conjunta, se tienen los siguientes dos resultados que dan cuenta de las distribuciones marginales posterior para los par\'ametros de inter\'es.
+
+\begin{Res}\label{beta_sigma_Y_X}
+La distribuci\'on posterior del vector de par\'ametros $\bbeta$ condicionado a $\sigma^2, \mathbf{Y}, \mathbf{X}$ es
+\begin{equation*}
+\bbeta \mid \sigma^2, \mathbf{Y}, \mathbf{X}\sim Normal_q(\hat{\bbeta}, \sigma^2(\mathbf{X}'\mathbf{X})^{-1})
+\end{equation*}
+
+en donde $\hat{\bbeta}$ denota el vector de estimadores frecuentistas cl\'asicos obtenidos con el m\'etodo de m\'inimos cuadrados, dado por
+\begin{equation}
+\hat{\bbeta}=(\mathbf{X}'\mathbf{X})^{-1}\mathbf{X}'\mathbf{Y}
+\end{equation}
+\end{Res}
+
+\begin{proof}
+Utilizando la t\'ecnica del condicionamiento posterior, se tiene que de la expresi\'on
+\begin{align*}
+p(\bbeta \mid \sigma^2,\mathbf{Y},\mathbf{X})&\propto p(\bbeta,\underbrace{\sigma^2}_{fijo} \mid \mathbf{Y},\mathbf{X})\\
+&\propto \exp\left\{-\frac{1}{2\sigma^2}(\mathbf{y}-\mathbf{X}\bbeta)'(\mathbf{y}-\mathbf{X}\bbeta)\right\}\\
+&= \exp\left\{-\frac{1}{2\sigma^2}(\mathbf{y}'\mathbf{y}-\mathbf{y}'\mathbf{X}\bbeta
+-\bbeta'\mathbf{X}'\mathbf{y}+\bbeta'\mathbf{X}'\mathbf{X}\bbeta)\right\}\\
+&\propto \exp\left\{-\frac{1}{2\sigma^2}(\mathbf{y}'\mathbf{X}'\mathbf{X}\mathbf{y}-\mathbf{y}'\mathbf{X}\bbeta
+-\bbeta'\mathbf{X}'\mathbf{y}+\bbeta'\mathbf{X}'\mathbf{X}\bbeta)\right\}\\
+&\propto \exp\left\{-\frac{1}{2\sigma^2}(\bbeta-(\mathbf{X}'\mathbf{X})^{-1}\mathbf{X}'\mathbf{y})'
+(\mathbf{X}'\mathbf{X})(\bbeta-(\mathbf{X}'\mathbf{X})^{-1}\mathbf{X}'\mathbf{y})\right\}
+\end{align*}
+Por lo tanto, factorizando convenientemente, se encuentra una expresi\'on id\'entica a la
+funci\'on de distribuci\'on de una vector aleatorio con distribuci\'on $Normal_q(\hat{\bbeta}, \sigma^2(\mathbf{X}'\mathbf{X})^{-1})$.
+\end{proof}
+
+\begin{Res}
+La distribuci\'on posterior del par\'ametro $\sigma^2$ es
+\begin{equation*}
+\sigma^2 \mid  \mathbf{Y}, \mathbf{X}
+\sim Inversa-Gamma \left(\frac{n-q}{2},\frac{S^2_e}{2}\right)
+\end{equation*}
+
+en donde $S^2_e=(\mathbf{Y}-\mathbf{X}\hat{\bbeta})'(\mathbf{Y}-\mathbf{X}\hat{\bbeta})$ denota la suma de cuadrados de los errores del modelo ajustado.
+\end{Res}
+\begin{proof}
+Para encontrar la distribuci\'on posterior de $\sigma^2$ se utiliza la siguiente expresi\'on, en virtud del conocimiento de la verosimilitud y la distribuci\'on posterior condicional de $\bbeta$,
+\begin{align*}
+P(\sigma^2 \mid  \mathbf{Y}, \mathbf{X})&=\frac{p(\bbeta,\sigma^2 \mid \mathbf{Y},\mathbf{X})}
+{p(\bbeta \mid \sigma^2,\mathbf{Y},\mathbf{X})}\\
+&\propto\left(\sigma^2\right)^{q/2-n/2-1}
+\exp\left\{-\frac{1}{2\sigma^2}[(\mathbf{y}-\mathbf{X}\bbeta)'(\mathbf{y}-\mathbf{X}\bbeta)
+-(\bbeta-\hat{\bbeta})'(\mathbf{X}'\mathbf{X})(\bbeta-\hat{\bbeta})]\right\}\\
+&\propto\left(\sigma^2\right)^{-(n-q)/2-1}
+\exp\left\{-\frac{1}{2\sigma^2}S^2_e\right\}
+\end{align*}
+
+Lo anterior se tiene, puesto que, teniendo en cuenta que
+\begin{equation}
+\mathbf{y}'\mathbf{X}\hat{\bbeta}=\hat{\bbeta}'\mathbf{X}'\mathbf{X}\hat{\bbeta}
+\end{equation}
+
+despu\'es de un simple desarrollo algebraico, se encuentra que
+\begin{equation*}
+(\mathbf{y}-\mathbf{X}\bbeta)'(\mathbf{y}-\mathbf{X}\bbeta)
+-(\bbeta-\hat{\bbeta})'(\mathbf{X}'\mathbf{X})(\bbeta-\hat{\bbeta})
+=\mathbf{Y}'\mathbf{Y}-\mathbf{Y}'\mathbf{X}\hat{\bbeta}
+\end{equation*}
+
+que coincide con
+\begin{equation*}
+S^2_e=(\mathbf{y}-\mathbf{X}\hat{\bbeta})'(\mathbf{y}-\mathbf{X}\hat{\bbeta})
+=\mathbf{Y}'\mathbf{Y}-\mathbf{Y}'\mathbf{X}\hat{\bbeta}
+\end{equation*}
+Por lo tanto, factorizando convenientemente, se encuentra una expresi\'on id\'entica a la
+funci\'on de distribuci\'on de una variable aleatoria con distribuci\'on $Gamma-inversa \left(\frac{n-q}{2},\frac{S^2_e}{2}\right)$.
+\end{proof}
+
+Dado lo anterior, la estimaci\'on Bayesiana de $\sigma^2$ viene dada por
+\begin{equation*}
+\hat{\sigma}^2_{Bay}=\dfrac{\frac{S^2_e}{2}}{\frac{n-q}{2}-1}=\dfrac{S^2_e}{n-q-2}\approx \hat{\sigma}^2_{Cla}
+\end{equation*}
+
+Al igual que en los cap\'itulos anteriores, la simulaci\'on para este tipo de especificaciones debe tener en cuenta en primer lugar la simulaci\'on de la distribuci\'on $p(\sigma^2 \mid \mathbf{Y},\mathbf{X})$ y encontrar un valor estimado para este par\'ametro. Luego, se debe utilizar este valor para simular la distribuci\'on $p(\bbeta \mid \sigma^2,\mathbf{Y},\mathbf{X})$ e igualmente, encontrar un valor estimado para este par\'ametro.
+
+\begin{Eje}
+Retomamos los datos del puntaje de funci\'on renal que fue utlizado en el ejemplo \ref{renal_varianza_conocida} y procedemos a estimar la l\'inea de regresi\'on explicando el comportamiento del puntaje en funci\'on de la variable edad, asumimos que el valor de $\sigma^2$ es desconocido. Los c\'odigos en \verb'JAGS' son como siguen:
+
+\colorbox{black}{\textcolor{white}{\textbf{C\'odigo JAGS}}}
+<<fig.height=4>>=
+Regre2.Model <- function(){
+  for (i in 1:n)
+  {
+    y[i] ~ dnorm(mu[i], tau)
+    mu[i] <- beta0 + beta1*x[i]
+  }
+  # Distribuci\'on previa para los par\'ametros
+  beta0 ~ dnorm(0, 0.0001)
+  beta1 ~ dnorm(0, 0.0001)
+  tau ~ dgamma(0.001, 0.001)
+  sigma <- 1/sqrt(tau)
+}
+
+y <- kidneydata[,2]
+x <- kidneydata[,1]
+n <- length(y)
+
+Regre2.Model.data <- list("y", "x", "n")
+Regre2.Model.param <- c("beta0", "beta1", "sigma")
+Regre2.Model.inits <- function(){
+  list("beta0"=c(0), "beta1"=c(0), "tau"=c(1))
+}
+
+Regre2.Model.fit <- jags(data=Regre2.Model.data, inits=Regre2.Model.inits, 
+                         Regre2.Model.param, n.iter=10000, n.burnin=1000, 
+                         model.file=Regre2.Model)
+
+print(Regre2.Model.fit)
+@
+
+Los anteriores c\'alculos se pueden implementar en \verb'R' con los siguientes c\'odigos:
+
+\colorbox{black}{\textcolor{white}{\textbf{C\'odigo R}}}
+<<fig.height=4>>=
+library(MCMCpack)
+library(mvtnorm)
+# Datos muestrales
+X <- cbind(1,kidneydata[,1])
+Y <- kidneydata[,2]
+q <- 2
+
+n.sim <- 20000
+beta.hat <- solve(t(X)%*%X)%*%t(X)%*%Y
+S2.e <- sum((Y-X%*%beta.hat)^2)
+# Simular valores para la varianza
+sigma2.res <- rinvgamma(n.sim, (n-q)/2, S2.e/2)
+# Simular valores para los coeficientes de regresi\'on
+beta.res <- matrix(NA,n.sim,q)
+for(i in 1:n.sim){
+  beta.res[i,] <- rmvnorm(1, beta.hat, sigma2.res[i]*solve(t(X)%*%X))
+}
+@ 
+
+Una vez concluido el proceso de computaci\'on, procedemos a calcular las estimaciones de $\sigma^2$, $\sigma$, $\beta_0$ y $\beta_1$. Los intervalos de credibilidad pueden ser calculados como los percentiles muestrales de los valores simulados para cada par\'ametro.
+<<>>=
+# Estimaciones puntuales
+mean(sigma2.res)
+mean(sqrt(sigma2.res))
+colMeans(beta.res)
+apply(beta.res,2,sd)
+@
+Por otro lado, obtenemos la estimaci\'on del modelo con la estad\'istica cl\'asica
+<<>>=
+summary(lm(Y ~ X[,2]))
+@
+Observamos que la estimaci\'on de $\beta_0$, $\beta_1$ y $\sigma$ obtenido de los dos enfoques son muy similares.
+\end{Eje}
+
+
+\subsection{previas informativas}
+
+Al igual que en los cap\'itulos anteriores, la simulaci\'on para este tipo de especificaciones debe tener en cuenta en primer lugar la simulaci\'on de la distribuci\'on $p(\sigma^2 \mid \mathbf{Y},\mathbf{X})$ y encontrar un valor estimado para este par\'ametro. Luego, se debe utilizar este valor para simular la distribuci\'on $p(\bbeta \mid \sigma^2,\mathbf{Y},\mathbf{X})$ e igualmente, encontrar un valor estimado para este par\'ametro.
+
+\begin{Eje}
+Retomamos los datos del puntaje de funci\'on renal que fue utlizado en el ejemplo \ref{renal_varianza_conocida} y procedemos a estimar la l\'inea de regresi\'on explicando el comportamiento del puntaje en funci\'on de la variable edad, asumimos que el valor de $\sigma^2$ es desconocido. Los c\'odigos en \verb'JAGS' son como siguen:
+
+\colorbox{black}{\textcolor{white}{\textbf{C\'odigo JAGS}}}
+<<fig.height=4>>=
+Regre2.Model <- function(){
+  for (i in 1:n)
+  {
+    y[i] ~ dnorm(mu[i], tau)
+    mu[i] <- beta0 + beta1*x[i]
+  }
+  # Distribuci\'on previa para los par\'ametros
+  beta0 ~ dnorm(0, 0.0001)
+  beta1 ~ dnorm(0, 0.0001)
+  tau ~ dgamma(0.001, 0.001)
+  sigma <- 1/sqrt(tau)
+}
+
+y <- kidneydata[,2]
+x <- kidneydata[,1]
+n <- length(y)
+
+Regre2.Model.data <- list("y", "x", "n")
+Regre2.Model.param <- c("beta0", "beta1", "sigma")
+Regre2.Model.inits <- function(){
+  list("beta0"=c(0), "beta1"=c(0), "tau"=c(1))
+}
+
+Regre2.Model.fit <- jags(data=Regre2.Model.data, inits=Regre2.Model.inits, 
+                         Regre2.Model.param, n.iter=10000, n.burnin=1000, 
+                         model.file=Regre2.Model)
+
+print(Regre2.Model.fit)
+@
+Los anteriores c\'alculos se pueden implementar en \verb'R' con los siguientes c\'odigos:
+
+\colorbox{black}{\textcolor{white}{\textbf{C\'odigo R}}}
+<<fig.height=4>>=
+library(MCMCpack)
+library(mvtnorm)
+# Datos muestrales
+X <- cbind(1,kidneydata[,1])
+Y <- kidneydata[,2]
+q <- 2
+
+n.sim <- 20000
+beta.hat <- solve(t(X)%*%X)%*%t(X)%*%Y
+S2.e <- sum((Y-X%*%beta.hat)^2)
+# Simular valores para la varianza
+sigma2.res <- rinvgamma(n.sim, (n-q)/2, S2.e/2)
+# Simular valores para los coeficientes de regresi\'on
+beta.res <- matrix(NA,n.sim,q)
+for(i in 1:n.sim){
+  beta.res[i,] <- rmvnorm(1, beta.hat, sigma2.res[i]*solve(t(X)%*%X))
+}
+@ 
+Una vez concludo el proceso de computaci\'on, procedemos a calcular las estimaciones de $\sigma^2$, $\sigma$, $\beta_0$ y $\beta_1$. Los intervalos de credibilidad pueden ser calculados como los percentiles muestrales de los valores simulados para cada par\'ametro.
+<<>>=
+# Estimaciones puntuales
+mean(sigma2.res)
+mean(sqrt(sigma2.res))
+colMeans(beta.res)
+sd(beta.res[,1])
+sd(beta.res[,2])
+@
+Por otro lado, obtenemos la estimaci\'on del modelo con la estad\'istica cl\'asica
+<<>>=
+summary(lm(Y ~ X[,2]))
+@
+Observamos que la estimaci\'on de $\beta_0$, $\beta_1$ y $\sigma$ obtenido de los dos enfoques son muy similares.
+\end{Eje}
+
+\subsection{previas informativas}
+
+Esta secci\'on tiene dos acepciones: la primera en donde la distribuci\'on de los par\'ametros de inter\'es puede ser descompuesta como el producto dependiente de dos distribuciones, y la otro, por supuesto, cuando se considera que los par\'ametros de inter\'es son independientes previa. Sin embargo, para cade uno de los dos casos, es necesario reescribir la verosimilitud de las observaciones para poder obtener resultados conjugados.
+
+En primer lugar, se definen las siguientes cantidades, las cuales se hab\'ian utilizado indirectamente en secciones anteriores pero que ser\'an de inter\'es para el tratamiento riguroso de las distribuciones posterior en este apartado. Luego, se define la \emph{suma de cuadrados del error de estimaci\'on de los par\'ametros de inter\'es} ponderado por las variables de informaci\'on auxiliar como
+\begin{equation}
+Q(\bbeta)=(\bbeta-\hat{\bbeta})'(\mathbf{X}'\mathbf{X})(\bbeta-\hat{\bbeta})
+\end{equation}
+
+donde $\hat{\bbeta}$ est\'a dado por la expresi\'on (5.2.2). Por otro lado, se define la \emph{suma de cuadrados del error de predicci\'on} de las observaciones bajo el modelo lineal general dado por la siguiente expresi\'on
+\begin{equation}
+S^2_e=(\mathbf{y}-\mathbf{X}\hat{\bbeta})'(\mathbf{y}-\mathbf{X}\hat{\bbeta})
+\end{equation}
+
+Con las anteriores expresiones es posible plantear la siguiente identidad que fue utilizada en la demostraci\'on del Resultado 5.2.3.
+\begin{equation}
+Q(\bbeta)+S^2_e=(\mathbf{y}-\mathbf{X}\bbeta)'(\mathbf{y}-\mathbf{X}\bbeta)
+\end{equation}
+
+n\'otese que con esta expresi\'on es posible reescribir la verosimilitud de las observaciones dada por la expresi\'on (5.2.1) de la siguiente manera
+
+\begin{equation}
+p(\mathbf{Y} \mid \bbeta,\sigma^2,\mathbf{X})\propto (\sigma^2)^{-n/2} \exp\left\{-\frac{1}{2\sigma^2}\left(Q(\bbeta)+S^2_e\right)\right\}
+\end{equation}
+
+Antes de plantear las distirbuciones previa para los par\'ametros de inter\'es, n\'otese que a trav\'es de este texto, cuando se trata de modelos con m\'ultiples par\'ametros de inter\'es, siempre se han planteado dos grandes posibilidades: que los par\'ametros sean dependientes previa y por supuesto, que los par\'ametros sean independientes previa. El tratamiento de ambos escenarios es diferente y vamos a estudiar cada caso con detenimiento.
+
+\subsubsection*{par\'ametros dependientes}
+
+Los par\'ametros de inter\'es son $\bbeta$ y $\sigma^2$ y su distribuciones previa conjunta se supone que est\'a dada por
+\begin{equation*}
+p(\bbeta,\sigma^2)=p(\bbeta \mid \sigma^2)p(\sigma^2)
+\end{equation*}
+
+Espec\'ificamente, la distribuci\'on previa del par\'ametro $\bbeta$ condicionada a $\sigma^2$ es informativa y est\'a regida por la siguiente estructura probabil\'istica
+\begin{equation*}
+\bbeta \mid \sigma^2 \sim Normal_q(\mathbf{b},\sigma^2\mathbf{B})
+\end{equation*}
+
+en donde $\mathbf{b}$ es un vector de medias y $\mathbf{B}$ es una matriz de varianzas sim\'etrica y definida positiva. Por otro lado, la distribuci\'on previa del par\'ametro $\sigma^2$ tambi\'en se considera informativa y dada por
+\begin{equation*}
+\sigma^2 \sim Inversa-Gamma\left( \frac{n_0}{2}, \frac{n_0\sigma^2_0}{2} \right)
+\end{equation*}
+
+Bajo este marco de referencia se tienen los siguientes resultados.
+
+\begin{Res}
+La distribuci\'on posterior conjunta de los par\'ametros de inter\'es $\bbeta,\sigma^2$ est\'a dada por
+\begin{align}
+p(\bbeta,\sigma^2 \mid \mathbf{Y},\mathbf{X})
+&=(\sigma^2)^{-q/2}
+\exp\left\{-\frac{1}{2\sigma^2}(\bbeta-\mathbf{b}_q)'\mathbf{B}_q^{-1}(\bbeta-\mathbf{b}_q)\right\}
+\notag
+\\ &\hspace{3cm} \times
+(\sigma^2)^{-n_1/2-1}
+\exp\left\{-\frac{n_1\sigma^2_1}{2\sigma^2}\right\}
+\end{align}
+donde
+\begin{align*}
+\mathbf{B}_q &= \left(\mathbf{B}^{-1}+\mathbf{X}'\mathbf{X}\right)^{-1}\\
+\mathbf{b}_q &=\mathbf{B}_q\left(\mathbf{B}^{-1}\mathbf{b}+\mathbf{X}'\mathbf{Y}\right)
+\end{align*}
+
+y adem\'as
+\begin{align*}
+n_1&=n_0+n\\
+n_1\sigma^2_1&=
+n_0\sigma^2_0+(\mathbf{Y}-\mathbf{X}\mathbf{b}_q)'\mathbf{Y}+(\mathbf{b}-\mathbf{b}_q)'\mathbf{B}^{-1}\mathbf{b}
+\end{align*}
+\end{Res}
+
+\begin{proof}
+Antes de empezar con la prueba formal del resultado, es necesario verificar las siguientes identidades
+\begin{align}\label{5.2.9}
+(\bbeta-\mathbf{b})'\mathbf{B}^{-1}(\bbeta-\mathbf{b})+Q(\bbeta)&=
+(\bbeta-\mathbf{b}_q)'\mathbf{B}^{-1}_q(\bbeta-\mathbf{b}_q)+\mathbf{b}'\mathbf{B}^{-1}\mathbf{b}
+\notag \\
+&\hspace{2cm}
++\hat{\bbeta}'\mathbf{X}'\mathbf{X}\hat{\bbeta}
+-\mathbf{b}'_q\mathbf{B}_q^{-1}\mathbf{b}_q
+\end{align}
+
+que se tiene puesto que
+\begin{align*}
+&(\bbeta-\mathbf{b})'\mathbf{B}^{-1}(\bbeta-\mathbf{b})+Q(\bbeta)\\
+&=\bbeta'\mathbf{B}^{-1}\bbeta-2\bbeta'\mathbf{B}^{-1}\mathbf{b}+\mathbf{b}'\mathbf{B}^{-1}\mathbf{b}+\bbeta \mathbf{X}'\mathbf{X}\bbeta
+-2\bbeta'\mathbf{X}'\mathbf{X} \hat{\bbeta}+\hat{\bbeta}'\mathbf{X}'\mathbf{X} \hat{\bbeta}\\
+&=\bbeta'(\mathbf{B}^{-1}+\mathbf{X}'\mathbf{X})\bbeta-2\bbeta'(\mathbf{B}^{-1}\mathbf{b}+\mathbf{X}'\mathbf{X}\hat{\bbeta})+
+\mathbf{b}'\mathbf{B}^{-1}\mathbf{b}+\hat{\bbeta}'\mathbf{X}'\mathbf{X} \hat{\bbeta}\\
+&=\bbeta'(\mathbf{B}^{-1}_q)\bbeta-2\bbeta'(\mathbf{B}^{-1}\mathbf{b}+\mathbf{X}'\mathbf{Y})+
+\mathbf{b}'\mathbf{B}^{-1}\mathbf{b}+\hat{\bbeta}'\mathbf{X}'\mathbf{X} \hat{\bbeta}\\
+&=\bbeta'(\mathbf{B}^{-1}_q)\bbeta-2\bbeta'\mathbf{B}^{-1}_qb_q+
+\mathbf{b}'\mathbf{B}^{-1}\mathbf{b}+\hat{\bbeta}'\mathbf{X}'\mathbf{X} \hat{\bbeta}\\
+&=\bbeta'(\mathbf{B}^{-1}_q)\bbeta-2\bbeta'\mathbf{B}^{-1}_qb_q+\mathbf{b}_q'\mathbf{B}_q^{-1}\mathbf{b}_q
+\mathbf{b}'\mathbf{B}^{-1}\mathbf{b}+\hat{\bbeta}'\mathbf{X}'\mathbf{X} \hat{\bbeta}-\mathbf{b}_q'\mathbf{B}_q^{-1}\mathbf{b}_q\\
+&=(\bbeta-\mathbf{b}_q)'\mathbf{B}^{-1}_q(\bbeta-\mathbf{b}_q)+\mathbf{b}'\mathbf{B}^{-1}\mathbf{b}
++\hat{\bbeta}'\mathbf{X}'\mathbf{X}\hat{\bbeta}
+-\mathbf{b}'_q\mathbf{B}_q^{-1}\mathbf{b}_q
+\end{align*}
+
+Por otro lado, debe notarse que
+\begin{align}\label{5.2.10}
+n_0\sigma_0^2+S^2_e+\mathbf{b}'\mathbf{B}^{-1}\mathbf{b}+\hat{\bbeta}'\mathbf{X}'\mathbf{X}\hat{\bbeta}
+-\mathbf{b}'_q\mathbf{B}_q^{-1}\mathbf{b}_q=n_1\sigma_1^2
+\end{align}
+
+La anterior igualdad resulta de
+\begin{align*}
+&n_0\sigma_0^2+S^2_e+\mathbf{b}'\mathbf{B}^{-1}\mathbf{b}+\hat{\bbeta}'\mathbf{X}'\mathbf{X}\hat{\bbeta}
+-\mathbf{b}'_q\mathbf{B}_q^{-1}\mathbf{b}_q\\
+&=n_0\sigma_0^2+\mathbf{Y}'\mathbf{Y}-2\mathbf{Y}'\mathbf{X}\hat{\bbeta}+\hat{\bbeta}'\mathbf{X}'\mathbf{X}\hat{\bbeta}
++\mathbf{b}'\mathbf{B}^{-1}\mathbf{b}\\
+&\hspace{2cm}
++\hat{\bbeta}'\mathbf{X}'\mathbf{X}\hat{\bbeta}
+-\mathbf{b}'_q\mathbf{B}_q^{-1}\mathbf{B}_q(\mathbf{B}^{-1}\mathbf{b}+\mathbf{X}'\mathbf{Y})\\
+&=n_0\sigma_0^2+\mathbf{Y}'\mathbf{Y}-2\hat{\bbeta}'\mathbf{X}'\mathbf{X}\hat{\bbeta}
++\hat{\bbeta}'\mathbf{X}'\mathbf{X}\hat{\bbeta}
++\mathbf{b}'\mathbf{B}^{-1}\mathbf{b}\\
+&\hspace{2cm}
++\hat{\bbeta}'\mathbf{X}'\mathbf{X}\hat{\bbeta}
+-\mathbf{b}'_q(\mathbf{B}^{-1}\mathbf{b}+\mathbf{X}'\mathbf{Y})\\
+&=n_0\sigma_0^2+\mathbf{Y}'\mathbf{Y}-\mathbf{b}'_q\mathbf{X}'\mathbf{Y}+\mathbf{b}'\mathbf{B}^{-1}\mathbf{b}
+-\mathbf{b}'_q\mathbf{B}^{-1}\mathbf{b}\\
+&=n_0\sigma_0^2+(\mathbf{Y}-\mathbf{X}\mathbf{b}_q)'\mathbf{Y}+(\mathbf{b}'-\mathbf{b}_q'\mathbf{B}^{-1})\mathbf{b}\\
+&=n_1\sigma_1^2
+\end{align*}
+
+Utilizando las expresiones (\ref{5.2.9}) y (\ref{5.2.10}) logra concluirse que
+\begin{align}\label{5.2.11}
+&Q(\bbeta)+S^2_e+(\bbeta-\mathbf{b})'\mathbf{B}^{-1}(\bbeta-\mathbf{b})+n_0\sigma^2_0\notag\\
+&\hspace{3cm}
+=(\bbeta-\mathbf{b}_q)'\mathbf{B}^{-1}_q(\bbeta-\mathbf{b}_q)+n_1\sigma_1^2
+\end{align}
+
+despu\'es de haber probado las anteriores igualdades, el desarrollo de la prueba es m\'as sencillo. Puesto que ahora, de la definici\'on de distribuci\'on posterior, al utilizar la identidad dada por la expresi\'on (\ref{5.2.11}), se tiene que
+
+\begin{align*}
+p(\bbeta,\sigma^2 \mid \mathbf{Y},\mathbf{X})&\propto p(\mathbf{Y} \mid \bbeta,\sigma^2,\mathbf{X})p(\bbeta,\sigma^2)\\
+&\propto \left(\sigma^2\right)^{-\frac{q+n+n_0}{2}-1}\\
+&\hspace{0cm}\times
+\exp\left\{-\frac{1}{2\sigma^2}
+\left[Q(\bbeta)+S^2_e+(\bbeta-\mathbf{b})'\mathbf{B}^{-1}(\bbeta-\mathbf{b})+n_0\sigma^2_0\right]
+\right\}\\
+&= \left(\sigma^2\right)^{-\frac{q+n+n_0}{2}-1}\\
+&\hspace{2cm}\times
+\exp\left\{-\frac{1}{2\sigma^2}
+\left[(\bbeta-\mathbf{b}_q)'\mathbf{B}^{-1}_q(\bbeta-\mathbf{b}_q)+n_1\sigma_1^2 \right]
+\right\}\\
+&= \left(\sigma^2\right)^{-\frac{q}{2}}
+\exp\left\{-\frac{1}{2\sigma^2}
+\left[(\bbeta-\mathbf{b}_q)'\mathbf{B}^{-1}_q(\bbeta-\mathbf{b}_q)\right]
+\right\}\\
+&\hspace{2cm}\times
+\left(\sigma^2\right)^{-\frac{n_1}{2}-1}
+\exp\left\{-\frac{n_1}{2\sigma^2}\sigma_1^2 \right\}
+\end{align*}
+con lo que se concluye la prueba del resultado.
+\end{proof}
+
+La distribuci\'on posterior conjunta de los par\'ametros de inter\'es tiene la forma de la distribuci\'on Normal-Gamma y es f\'acil demostrar que \'esta es conjugada. adem\'as, acudiendo a las t\'ecnicas bien conocidas de condicionamiento posterior e integraci\'on anal\'itica se encuentran las distribuciones posterior de cada una de los par\'ametros de inter\'es enmarcadas en los siguientes resultados.
+
+\begin{Res}
+La distribuci\'on posterior del vector de par\'ametros $\bbeta$ condicionada a $\sigma^2,\mathbf{Y},\mathbf{X}$ es
+\begin{equation*}
+\bbeta \mid \sigma^2,\mathbf{Y},\mathbf{X} \sim Normal_q(\mathbf{b}_q,\sigma^2\mathbf{B}_q)
+\end{equation*}
+\end{Res}
+
+\begin{proof}
+Para encontrar la distribuci\'on posterior del vector de par\'ametros $bbeta$, el cual depende previa del par\'ametro $\sigma^2$, es necesario recurrir al condicionamiento posterior notando que
+\begin{equation*}
+p(\bbeta \mid \sigma^2,\mathbf{Y},\mathbf{X})=p(\bbeta,\underbrace{\sigma^2}_{fijo} \mid \mathbf{Y},\mathbf{X})
+\end{equation*}
+
+Por lo tanto, de la distribuci\'on posterior conjunta dada por (5.2.8) e incorporando los t\'erminos que no depende de $\bbeta$ en la constante de proporcionalidad, se tiene f\'acilmente que
+\begin{equation*}
+p(\bbeta \mid \sigma^2,\mathbf{Y},\mathbf{X})\propto
+\left(\sigma^2\right)^{-\frac{q}{2}}
+\exp\left\{-\frac{1}{2\sigma^2}
+\left[(\bbeta-\mathbf{b}_q)'\mathbf{B}^{-1}_q(\bbeta-\mathbf{b}_q)\right]
+\right\}
+\end{equation*}
+
+De la anterior igualdad, y factorizando convenientemente, se encuentra una expresi\'on id\'entica a la funci\'on de distribuci\'on de una vector aleatorio con distribuci\'on $Normal_q(\mathbf{b}_q,\sigma^2\mathbf{B}_q)$.
+\end{proof}
+
+\begin{Res}
+La distribuci\'on posterior del par\'ametro $\sigma^2$ condicionada es
+\begin{equation*}
+\sigma^2 \mid \mathbf{Y},\mathbf{X} \sim Inversa-Gamma\left(\frac{n_1}{2},\frac{\sigma^2_1}{2}\right)
+\end{equation*}
+\end{Res}
+
+\begin{proof}
+En este caso es posible servirse de la t\'ecnica de integraci\'on anal\'itica de la siguiente manera
+\begin{align*}
+p(\sigma^2 \mid \mathbf{Y},\mathbf{X})&=\int p(\bbeta,\sigma^2 \mid \mathbf{Y},\mathbf{X})\ d\bbeta\\
+&\propto\left(\sigma^2\right)^{-\frac{n_1}{2}-1}
+\exp\left\{-\frac{n_1}{2\sigma^2}\sigma_1^2 \right\}\\
+&\hspace{1cm}\times
+\int\left(2\pi \sigma^2\right)^{-\frac{q}{2}}
+\exp\left\{-\frac{1}{2\sigma^2}
+\left[(\bbeta-\mathbf{b}_q)'\mathbf{B}^{-1}_q(\bbeta-\mathbf{b}_q)\right]\right\}\ d\bbeta\\
+&=\left(\sigma^2\right)^{-\frac{n_1}{2}-1}
+\exp\left\{-\frac{n_1}{2\sigma^2}\sigma_1^2 \right\}
+\end{align*}
+
+Por lo tanto, factorizando convenientemente, se encuentra una expresi\'on id\'entica a la funci\'on de distribuci\'on de una variable aleatoria con distribuci\'on $Inversa-Gamma\left(\frac{n_1}{2},\frac{\sigma^2_1}{2}\right)$.
+\end{proof}
+
+\subsubsection*{par\'ametros independientes}\label{ML_Beta_Sigma2_Indepen}
+
+\citeasnoun{Gamer06} menciona que existe una mayor dificultad para encontrar distribuciones conjugadas conforme el modelo se torna m\'as complejo y la dimensi\'on del espacio de par\'ametros crece. En esta ocasi\'on se considera que los par\'ametros son independientes previa; es decir que la distribuci\'on previa conjunta est\'a dada por
+\begin{equation*}
+p(\bbeta,\sigma^2)=p(\bbeta)p(\sigma^2)
+\end{equation*}
+
+Como es natural, la distribuci\'on previa del vector de par\'ametros $\bbeta$ es normal, aunque esta vez la matriz de varianzas no va a depender del otro par\'ametro $\sigma^2$, por lo tanto se tiene que
+\begin{equation*}
+\bbeta \sim Normal_q(\mathbf{b},\mathbf{B})
+\end{equation*}
+
+Igualmente, el par\'ametro $\sigma^2$ no depende de $\bbeta$ y es posible asignarle la siguiente distribuci\'on previa
+\begin{equation*}
+\sigma^2\sim Inversa-Gamma\left(\frac{n_0}{2},\frac{n_0\sigma^2_0}{2}\right)
+\end{equation*}
+
+Empleando la forma de la verosimilitud dada en la expresi\'on (5.2.7), f\'acilmente se concluye que la distribuci\'on posterior conjunta puede ser escrita como
+\begin{align}
+p(\bbeta,\sigma^2 \mid \mathbf{Y},\mathbf{X})&\propto p(\mathbf{Y} \mid \bbeta,\sigma^2)p(\bbeta)p(\sigma^2)\notag \\
+&\propto (\sigma^2)^{-n/2} \exp\left\{-\frac{1}{2\sigma^2}\left(Q(\bbeta)+S^2_e\right)\right\}\notag\\
+&\times
+\exp\left\{-\frac{1}{2}(\bbeta-\mathbf{b})'\mathbf{B}^{-1}(\bbeta-\mathbf{b})\right\}
+(\sigma^2)^{-n_0/2-1} \exp\left\{-\frac{n_0\sigma^2_0}{2\sigma^2}\right\}\notag\\
+&=(\sigma^2)^{-\frac{n+n_0}{2}-1}
+\exp\left\{-\frac{1}{2\sigma^2}\left[Q(\bbeta)+S^2_e+n_0\sigma^2_0\right]\right\} \notag \\
+&\times
+\exp\left\{-\frac{1}{2}(\bbeta-\mathbf{b})'\mathbf{B}^{-1}(\bbeta-\mathbf{b})\right\}
+\end{align}
+
+\citeasnoun{Gamer06} concluye que no es posible reconocer la anterior distribuci\'on posterior como perteneciente a alguna forma anal\'itica conocida y por tanto no es una distribuci\'on conjugada (aunque la distribuci\'on previa sea un caso particular de esta \'ultima distribuci\'on).
+
+Una vez m\'as, dado esto, no es posible utilizar la t\'ecnica de integraci\'on anal\'itica para encontrar las distribuciones posterior marginales de los par\'ametros de inter\'es. Sin embargo, a pesar de las anteriores razones, s\'i es posible encontrar f\'acilmente tales distribuciones marginales utilizando el condicionamiento posterior.
+
+\begin{Res}
+La distribuci\'on posterior del par\'ametro $\bbeta$ condicionado a $\sigma^2,\mathbf{Y},\mathbf{X}$ es
+\begin{equation*}
+\bbeta \mid \sigma^2,\mathbf{Y},\mathbf{X} \sim Normal_q(\mathbf{b}_q,\mathbf{B}_q)
+\end{equation*}
+
+donde
+\begin{align*}
+\mathbf{B}_q &= \left(\mathbf{B}^{-1}+\frac{1}{\sigma^2}\mathbf{X}'\mathbf{X}\right)^{-1}\\
+\mathbf{b}_q &=\mathbf{B}_q\left(\mathbf{B}^{-1}\mathbf{b}+\frac{1}{\sigma^2}\mathbf{X}'\mathbf{Y}\right)
+\end{align*}
+\end{Res}
+
+\begin{proof}
+Utilizando el condicionamiento posterior en la expresi\'on (5.2.12), se tiene que
+
+\begin{align*}
+p(\bbeta \mid \sigma^2,\mathbf{Y},\mathbf{X})&\propto
+p(\bbeta,\underbrace{\sigma^2}_{fijo} \mid \mathbf{Y},\mathbf{X})\\
+&\propto \exp\left\{-\frac{1}{2}
+\left[\frac{1}{\sigma^2}Q(\bbeta)+(\bbeta-\mathbf{b})'\mathbf{B}^{-1}(\bbeta-\mathbf{b})\right]\right\}\\
+&= \exp\left\{-\frac{1}{2}
+\left[\frac{1}{\sigma^2}(\bbeta-\hat{\bbeta})'(\mathbf{X}'\mathbf{X})(\bbeta-\hat{\bbeta})
++(\bbeta-\mathbf{b})'\mathbf{B}^{-1}(\bbeta-\mathbf{b})\right]\right\}\\
+&\propto \exp\left\{-\frac{1}{2}
+\left[\frac{1}{\sigma^2}\bbeta'\mathbf{X}'\mathbf{X}\bbeta-
+\frac{2}{\sigma^2}\bbeta'\mathbf{X}'\mathbf{X}\hat{\bbeta}
++\bbeta'\mathbf{B}^{-1}\bbeta-2\bbeta'\mathbf{b}\mathbf{B}^{-1}\right]\right\}\\
+&=\propto \exp\left\{-\frac{1}{2}
+\left[\bbeta'\left( \frac{1}{\sigma^2}\mathbf{X}'\mathbf{X}+\mathbf{B}^{-1}\right)\bbeta
+-2\bbeta'\left(\frac{1}{\sigma^2}\mathbf{X}'\mathbf{Y}+\mathbf{B}^{-1}\mathbf{b}\right)\right]\right\}\\
+&= \exp\left\{-\frac{1}{2}
+\left[\bbeta'\mathbf{B}^{-1}_q\bbeta-2\bbeta'\mathbf{B}^{-1}_q\mathbf{b}_q\right]\right\}\\
+&\propto \exp\left\{-\frac{1}{2}
+\left[\bbeta'\mathbf{B}^{-1}_q\bbeta-2\bbeta'\mathbf{B}^{-1}_q\mathbf{b}_q
++\mathbf{b}_q'\mathbf{B}^{-1}_q\mathbf{b}_q\right]\right\}\\
+&\propto \exp\left\{-\frac{1}{2}
+(\bbeta-\mathbf{b}_q)'\mathbf{B}^{-1}_q(\bbeta-\mathbf{b}_q)\right\}
+\end{align*}
+Por lo tanto, factorizando convenientemente, se encuentra una expresi\'on id\'entica a la funci\'on de distribuci\'on de un vector aleatorio con distribuci\'on $Normal_q(\mathbf{b}_q,\mathbf{B}_q)$.
+\end{proof}
+
+\begin{Res}
+La distribuci\'on posterior del par\'ametro $\sigma^2$ condicionado a $\bbeta,\mathbf{Y},\mathbf{X}$ es
+\begin{equation*}
+\sigma^2 \mid \bbeta,\mathbf{Y},\mathbf{X} \sim Inversa-Gamma\left( \frac{n_1}{2}, \frac{n_1\sigma_{\bbeta}^2}{2}  \right)
+\end{equation*}
+
+donde $n_1=n+n_0$
+\begin{align*}
+n_1\sigma_{\bbeta}^2=Q(\bbeta)+S^2_e+n_0\sigma^2_0
+\end{align*}
+\end{Res}
+
+\begin{proof}
+Utilizando el condicionamiento posterior sobre la expresi\'on (5.2.12), se tiene que
+\begin{align*}
+p(\sigma^2 \mid \bbeta,\mathbf{Y},\mathbf{X})&\propto
+p(\sigma^2,\underbrace{\bbeta}_{fijo} \mid \mathbf{Y},\mathbf{X})\\
+&\propto(\sigma^2)^{-\frac{n+n_0}{2}-1}
+\exp\left\{-\frac{1}{2\sigma^2}\left[Q(\bbeta)+S^2_e+n_0\sigma^2_0\right]\right\}\\
+&\propto(\sigma^2)^{-\frac{n_1}{2}-1}
+\exp\left\{-\frac{n_1\sigma_{\bbeta}^2}{2\sigma^2}\right\}
+\end{align*}
+Por lo tanto, factorizando convenientemente, se encuentra una expresi\'on id\'entica a la funci\'on de distribuci\'on de un vector aleatorio con distribuci\'on $Inversa-Gamma\left( \frac{n_1}{2}, \frac{n_1\sigma_{\bbeta}^2}{2}  \right)$.
+\end{proof}
+
+\citeasnoun{Gamer06} afirma que las anteriores especificaciones tienen una alt\'isima relevancia pr\'actica y es concebible fijar un conjunto de valores iniciales e ir actualizando las estimaciones acerca de los par\'ametros de inter\'es.
+
+\begin{Eje}
+\citeasnoun[p. 100]{Carlin09} proponen una situaci\'on de valorizaci\'on de predios. Se tienen $n=389$ observaciones de precios de diferentes predios en Chicago (y sus \'areas metropolitanas). Se quiere crear un modelo lineal bayesiano donde las variables predictoras son $X_1$: la distancia del predio al lago Michigan; $X_2$: la distancia del predio al aeropuerto de Midway; $X_3$: la distancia del predio al aeropuerto de O'Hare. Por otro lado la variable respuesta es $Y$: los valores log-transformados del precio del predio. El modelo es el siguiente:
+
+\begin{equation*}
+Y_i=\beta_0+\beta_1Z_{i1}+\beta_2Z_{i2}+\beta_3Z_{i3}+\varepsilon_i \ \ \ \ \ \ \ \ \ \varepsilon_i\sim Normal(0,\sigma^2)
+\end{equation*}
+
+Donde $Z_{ij}$ denota la observaci\'on de la variable $X_j$ estandarizada en el $i$-\'esimo predio, para $i=1,\cdots,n$ y $j=1,2,3$. Estos datos se encuentran disponibles en la p\'agina \url{http://www.biostat.umn.edu/~brad/data/land_data.txt}. A continuaci\'on se cargan los datos, y se observa la relaci\'on entre las variables $X$ con la variables $Y$.
+<<fig.height=7>>=
+Datos <- read.table("Chicago_land.txt", header=T)
+y <- Datos$Y; X1 <- Datos$X1
+X2 <- Datos$X2; X3 <- Datos$X3
+par(mfrow=c(2,2))
+hist(y); plot(X1, y) 
+plot(X2, y); plot(X3, y)
+@
+
+En cuanto a la distribuci\'on previa para los par\'ametros, suponga que $\beta_0\sim N(7, 1)$, que fue obtenida a partir de datos sobre el valor promedio de predios en Chicago. Y consideramos distribuciones previa en el sentido \emph{vague} para los dem\'as coeficientes de regresi\'on. Para la varianza seguiremos la sugerencia de \citeasnoun{Gelman08} consiste en asignar una distribuci\'on previa uniforme acotando el l\'imite superior con un valor alto y el l\'imite inferior con un valor positivo cercano a cero. La sintaxis en \textsf{JAGS} para ajustar este modelo est\'a dada por el siguiente comando computacional, que considera la estandarizaci\'on de los valores de las variables explicativas. 
+
+\colorbox{black}{\textcolor{white}{\textbf{C\'odigo JAGS}}}
+<<fig.height=6>>=
+x <- cbind(X1,X2,X3)
+p <- ncol(x); n <- nrow(x)
+z <- matrix(NA, n, p)
+for(j in 1:p){
+  z[,j] <- (x[,j]-mean(x[,j]))/sd(x[,j])
+}
+
+Regre3.Model <- function(){
+for(i in 1:n){
+  y[i]~dnorm(mu[i], 1/sigma^2)
+  mu[i]<-beta0+beta1*z[i,1]+beta2*z[i,2]+beta3*z[i,3]
+}
+
+  # Distribuci\'on previa para los par\'ametros
+  beta0 ~ dnorm(7, 1)
+  beta1 ~ dnorm(0, 0.0001)
+  beta2 ~ dnorm(0, 0.0001)
+  beta3 ~ dnorm(0, 0.0001)
+  sigma ~ dunif(0.001, 1000)
+}
+
+Regre3.Model.data <- list("y", "z", "n")
+Regre3.Model.param <- c("beta0", "beta1", "beta2", "beta3", "sigma")
+Regre3.Model.inits <- function(){
+  list("beta0"=c(0), "beta1"=c(0),"beta2"=c(0),"beta3"=c(0), "sigma"=c(1))
+}
+
+Regre3.Model.fit <- jags(data=Regre3.Model.data, inits=Regre3.Model.inits, 
+                         Regre3.Model.param, n.iter=10000, n.burnin=1000, 
+                         model.file=Regre3.Model)
+
+print(Regre3.Model.fit)
+@
+
+Bajo el criterio de m\'inima perdida cuadr\'atica, los estimadores bayesianos para los coeficientes de regresi\'on y para el par\'ametro de precisi\'on y para la varianza son
+\begin{align*}
+\hat{\beta}_0&=5.58 \\
+\hat{\beta}_1&=-0.32\\
+\hat{\beta}_2&=0.35 \\
+\hat{\beta}_3&=0.15\\
+\hat{\sigma}&=0.74
+\end{align*}
+
+Como conclusi\'on, y respondiendo a las preguntas planteadas, el valor promedia (log-transformado) de la tierra dentro y cerca de Chicago est\'a cercano a los 5.58. Sin embargo, este valor aumenta para las propiedades cercanas al lago Michigan y para las propiedades alejadas de los dos aeropuertos. Cada unidad de distancia m\'as cerca al lago Michigan implica un aumento de 0.32 en el valor de la propiedad. Similarmente, cada unidad m\'as lejana del aeropuerto Midway implica un aumento de 0.35 en el valor de la propiedad y una unidad de distancia m\'as lejana al aeropuerto de O'Hare implica un aumento de 0.15 en el valor de la propiedad. Lo anterior tiene sentido pues la zona cercana al lago Michigan est\'a rodeado de lugares culturales dentro de Chicago y est\'a circundada por la zona de mayor actividad econ\'omica en Chicago: el \emph{loop}. Por otro lado, los aeropuertos est\'an muy alejados de la zona del lago Michigan y por consiguiente del centro de Chicago. Esto implica que las propiedades cercanas a estos aeropuertos se desvalorizan.
+
+\colorbox{black}{\textcolor{white}{\textbf{C\'odigo R}}}
+<<>>=
+library(MCMCpack)
+library(mvtnorm)
+Datos <- read.table("Chicago_land.txt", header=T)
+y <- Datos$Y; X1 <- Datos$X1
+X2 <- Datos$X2; X3 <- Datos$X3
+x <- cbind(X1,X2,X3)
+p <- ncol(x)
+# Estandarizar las variables X
+z <- matrix(NA, n, p)
+for(j in 1:p){
+  z[,j] <- (x[,j]-mean(x[,j]))/sd(x[,j])
+}
+z <- cbind(1,z)
+p <- ncol(z)
+# par\'ametros de las distribuciones previas
+b <- c(7, 0, 0, 0); B <- diag(c(1, 10000, 10000, 10000))
+n0 <- 0.001; sigma20 <- 0.001
+# Espacio para almacenar los valores muestreados de los par\'ametros
+nsim <- 10000
+beta.pos <- matrix(NA, nsim, p)
+sigma2.pos <- c()
+# Primera iteraci\'on del muestreador de Gibbs
+beta.pos[1,] <- b
+n1 <- n + n0
+sigma2.beta <- (sum((y - z%*%beta.pos[1,])^2) + n0*sigma20)/n1
+sigma2.pos[1] <- rinvgamma(1, n1/2, n1*sigma2.beta/2)
+# Muestreador de Gibbs
+for(i in 2:nsim){
+  Bq <- solve(solve(B) + t(z)%*%z/sigma2.pos[i-1])
+  bq <- Bq %*% (solve(B)%*%b + t(z)%*%y/sigma2.pos[i-1])
+  beta.pos[i,] <- rmvnorm(1, mean=bq, sigma=Bq)
+  sigma2.beta <- (sum((y-z%*%beta.pos[i-1,])^2) + n0*sigma20)/n1
+  sigma2.pos[i] <- rinvgamma(1, n1/2, n1*sigma2.beta/2)
+}
+# Se descartan los primeros 1000 resultados obtenidos
+beta.pos <- beta.pos[-(1:1000),]
+sigma2.pos <- sigma2.pos[-(1:1000)]
+par(mfrow=c(3,2))
+acf(beta.pos[, 1], lag=20); acf(beta.pos[, 2], lag=20)
+acf(beta.pos[, 3], lag=20); acf(beta.pos[, 3], lag=20)
+acf(sigma2.pos, lag=20)
+@
+
+Al observar que los valores muestreados no tienen correlaciones importantes entre ellos, por lo cual pueden ser utilizados directamente para el c\'alculo de las estimaciones. Estas son: 
+<<>>=
+res <- NULL
+for(j in 1:p){
+  res <- rbind(res, c(mean(beta.pos[,j]),quantile(beta.pos[,j],0.025),quantile(beta.pos[,j],0.975)))
+}
+res <- rbind(res, c(mean(sqrt(sigma2.pos)),quantile(sqrt(sigma2.pos),0.025),quantile(sqrt(sigma2.pos),0.975)))
+colnames(res) <- c('Estimacion','Lim.Inferior','Lim.Superior')
+rownames(res) <- c('beta0','beta1','beta2','beta3','sigma')
+res
+@
+Observamos que los resultados son similares a los obtenidos con \verb'JAGS'.
+\end{Eje}
+
+\textcolor{red}{Falta la predictiva para una nueva observaci\'on de y.}
+
+\section{Modelo lineal con varianzas desiguales}\label{Mod_Lin_general}
+
+\citeasnoun{Gelman03} se\~nala que las varianzas desiguales y los errores correlacionados pueden ser incluidos en el modelo lineal bayesiano mediante la incorporaci\'on de una matriz de varianzas $\bSigma$ - no es necesariamente proporcional a la matriz identidad - en la verosimilitud de los datos dada por
+\begin{equation*}
+Y \mid \bbeta,\bSigma \sim Normal_n(\mathbf{X}\bbeta,\bSigma)
+\end{equation*}
+
+Al igual que en la secci\'on anterior, se considera que los par\'ametros son independientes previa y que, la distribuci\'on previa del vector de par\'ametros $\bbeta$ es normal, la cual no depende de $\bSigma$ y tiene su propia estructura de varianza, por lo tanto se tiene que
+\begin{equation*}
+\bbeta \sim Normal_q(\mathbf{b},\mathbf{B})
+\end{equation*}
+
+Igualmente, la matriz de par\'ametros de dispersi\'on $\bSigma$ no depende de $\bbeta$ y es posible asignarle la siguiente distribuci\'on previa
+\begin{equation*}
+\bSigma\sim Inversa-Wishart_v(\bLambda)
+\end{equation*}
+
+n\'otese que la cantidad de par\'ametros individuales que se deben modelar crece a medida que el tama\~no de muestra crece. Por otro lado, para encontrar las distribuciones posterior que definan la estructura probabil\'istica posterior, es necesario utilizar la t\'ecnica del condicionamiento posterior notando que
+
+\begin{align}
+p(\mathbf{Y},\bbeta,\bSigma)&=p(\mathbf{Y} \mid \bbeta,\bSigma)p(\bbeta,\bSigma)\\
+&=p(\mathbf{Y} \mid \bbeta,\bSigma)p(\bbeta)p\bSigma)
+\end{align}
+
+y para encontrar las distribuciones posterior, se tiene que
+\begin{equation*}
+p(\bbeta \mid Y,\bSigma) \propto p(\bbeta,\mathbf{Y},\underbrace{\bSigma}_{fijo})
+\end{equation*}
+
+y an\'alogamente,
+\begin{equation*}
+p(\bSigma \mid Y,\bbeta) \propto p(\bSigma,\mathbf{Y},\underbrace{\bbeta}_{fijo})
+\end{equation*}
+
+Bajo este marco de referencia se tienen los siguientes resultados.
+
+\begin{Res}\label{res5.3.1}
+La distribuci\'on posterior del par\'ametro $\bbeta$ condicionado a $\bSigma,\mathbf{Y},\mathbf{X}$ es
+\begin{equation*}
+\bbeta \mid \mathbf{Y},\mathbf{X},\bSigma \sim Normal_q(\mathbf{b}_q,\mathbf{B}_q)
+\end{equation*}
+donde
+\begin{align*}
+\mathbf{B}_q &= \left(\mathbf{B}^{-1}+\mathbf{X}'\bSigma^{-1}\mathbf{X}\right)^{-1}\\
+\mathbf{b}_q &=\mathbf{B}_q\left(\mathbf{B}^{-1}\mathbf{b}+\mathbf{X}'\bSigma^{-1}\mathbf{Y}\right)
+\end{align*}
+\end{Res}
+
+\begin{proof}
+Utilizando el condicionamiento posterior, y un razonamiento an\'alogo al de la demostraci\'on del Resultado 5.1.2, se tiene que
+\begin{align*}
+p(\bbeta \mid \bSigma,\mathbf{Y},\mathbf{X})&\propto
+p(\bbeta,\mathbf{Y},\mathbf{X},\underbrace{\bSigma}_{fijo})\\
+&\propto
+p(\mathbf{Y} \mid \bbeta,\bSigma)p(\bbeta)\\
+&\propto\exp\left\{-\frac{1}{2}\left[(\mathbf{y}-\mathbf{X}\bbeta)'\bSigma^{-1}
+(\mathbf{y}-\mathbf{X}\bbeta)
++(\bbeta-\mathbf{b})'\mathbf{B}^{-1}(\bbeta-\mathbf{b})\right]\right\}\\
+&\propto
+\exp\left\{-\frac{1}{2}(\bbeta-\mathbf{b}_q)'\mathbf{B}^{-1}_q(\bbeta-\mathbf{b}_q)\right\}
+\end{align*}
+
+Por lo tanto, factorizando convenientemente, se encuentra una expresi\'on id\'entica a la funci\'on de distribuci\'on de un vector aleatorio con distribuci\'on $Normal_q(\mathbf{b}_q,\mathbf{B}_q)$.
+\end{proof}
+
+\begin{Res}
+La distribuci\'on posterior del par\'ametro $\bSigma$ condicionado a $\bbeta,\mathbf{Y},\mathbf{X}$ es
+\begin{equation*}
+\bSigma \mid \bbeta,\mathbf{Y},\mathbf{X}
+\sim Inversa-Whishart_{v+1}(\mathbf{S}_{\bbeta})
+\end{equation*}
+
+donde $\mathbf{S}_{\bbeta}=(Y-X\bbeta)(Y-X\bbeta)+\bLambda$.
+\end{Res}
+
+\begin{proof}
+Utilizando el condicionamiento posterior, y escribiendo la verosimilitud de las observaciones como
+\begin{equation*}
+p(\mathbf{Y} \mid \bbeta,\bSigma)\propto
+ \mid \bSigma \mid ^{-1/2}\exp\left\{-\frac{1}{2}
+traza[(\mathbf{y}-\mathbf{X}\bbeta)(\mathbf{y}-\mathbf{X}\bbeta)'\bSigma^{-1}]\right\}
+\end{equation*}
+
+entonces se tiene que
+\begin{align*}
+p(\bSigma \mid \bbeta,\mathbf{Y},\mathbf{X})&\propto
+p(\bSigma,\mathbf{Y},\mathbf{X},\underbrace{\bbeta}_{fijo})\\
+&\propto
+p(\mathbf{Y} \mid \bbeta,\bSigma)p(\bSigma)\\
+&\propto
+ \mid \bSigma \mid ^{-1/2}\exp\left\{-\frac{1}{2}
+traza[(\mathbf{y}-\mathbf{X}\bbeta)(\mathbf{y}-\mathbf{X}\bbeta)'\bSigma^{-1}]\right\}\\
+&\hspace{2cm}\times
+ \mid \bSigma \mid ^{-\frac{v+q+1}{2}}
+\exp\left\{-\frac{1}{2}traza[\bLambda\bSigma^{-1}]\right\}\\
+&= \mid \bSigma \mid ^{-\frac{v+1+q+1}{2}}\\
+&\hspace{2cm}\times
+\exp\left\{-\frac{1}{2}
+traza[((\mathbf{y}-\mathbf{X}\bbeta)(\mathbf{y}-\mathbf{X}\bbeta)'+\bLambda)\bSigma^{-1}]\right\}
+\end{align*}
+
+Por lo tanto, factorizando convenientemente, se encuentra una expresi\'on id\'entica a la funci\'on de distribuci\'on de una matriz aleatoria con distribuci\'on $Inversa-Whishart_{v+1}(\mathbf{S}_{\bbeta})$.
+\end{proof}
+
+\textbf{Previas no infomativas}
+
+En esta parte utilizamos la distribuci\'on previa no informativa para $\bbeta$ dada $\bSigma$, y denotamos la distribuci\'on previa de $\bSigma$ por $p(\bSigma)$, de esta forma, 
+\begin{equation*}
+p(\mathbf{\beta},\mathbf{\Sigma})\propto p(\bSigma)
+\end{equation*}
+
+Teniendo en cuenta la anterior distribuci\'on previa y aplicando un procesimiento similar al del resultado \ref{res5.3.1}, se tiene que 
+la distribuci\'on posterior condicional de $\mathbf{\beta}$ est\'a dada por
+\begin{equation}\label{ejer1.1}
+\mathbf{\beta}\mid\mathbf{\Sigma},\mathbf{X},\mathbf{Y}\sim N_q(\mathbf{b}_q,\mathbf{B}_q)
+\end{equation}
+
+con $\mathbf{b}_q=\mathbf{B}_q(\mathbf{X}'\mathbf{\Sigma}^{-1}\mathbf{Y})$ y $\mathbf{B}_q=(\mathbf{X}'\mathbf{\Sigma}^{-1}\mathbf{X})^{-1}$, mientras que la funci\'on de densidad posterior condicional de $\mathbf{\Sigma}$ est\'a dada por
+\begin{equation}\label{ejer1.2}
+p(\mathbf{\Sigma}\mid\mathbf{\beta},\mathbf{X},\mathbf{Y})\propto
+p(\bSigma)\mid\bSigma\mid^{-\frac{1}{2}}\mid\mathbf{X}'\bSigma^{-1}\mathbf{X}\mid^{-\frac{1}{2}}\exp\left\{-\frac{1}{2}(\mathbf{y}-\mathbf{X}\mathbf{b}_q)'\bSigma^{-1}(\mathbf{y}-\mathbf{X}\mathbf{b}_q)\right\}
+\end{equation}
+
+Muestrear valores de la anterior distribuci\'on para $\bSigma$ es complicado puesto que no se trata de ninguna distribuci\'on conocida y adem\'as consta de una distribuci\'on matricial por lo cual el dise\~no y la implementaci\'on de un m\'etodo de muestreo no ser\'ia f\'acil. Por lo cual se debe simplificar la estimaci\'on de $\bSigma$ considerando casos particulares. El caso de mayor uso es cuando $\bSigma$ es una matriz diagonal, la cual corresponde a una regresi\'on lineal ponderada, y es apropiado cuando hay estructura de varianza no constante en los datos $\mathbf{Y}$. En este caso la matriz de varianzas $\bSigma$ est\'a dada por
+\begin{equation*}
+\bSigma=\begin{pmatrix}
+\sigma_1^2\mathbf{I}_{n_1}&\mathbf{0}&\cdots&\mathbf{0}\\
+\mathbf{0}&\sigma_2^2\mathbf{I}_{n_2}&\cdots&\mathbf{0}\\
+\vdots&\vdots&\ddots&\vdots\\
+\mathbf{0}&\mathbf{0}&\cdots&\sigma_q^2\mathbf{I}_{n_m}\\
+\end{pmatrix}
+\end{equation*}
+
+con $n_1+\cdots+n_m=n$. Lo cual implica que los datos se pueden organizar en $m$ grupos, cada grupo con $n_j$ datos, y la varianza del grupo $j$ se denota con $\sigma_j^2$ con $j=1,\cdots,m$. El objetivo es estimar el vector de coeficientes de regresi\'on $\bbeta$ y las $m$ varianzas: $\sigma^2_1,\cdots,\sigma^2_m$. La distribuci\'on posterior condicional de $\bbeta$ est\'a dada en (\ref{ejer1.1}). En cuando a las varianzas $\sigma^2_1,\cdots,\sigma^2_m$, utilizamos la distribuci\'on previa 
+\begin{equation*}
+p(\sigma^2_1,\cdots,\sigma^2_m)\propto \sigma^{-2}_1\cdots\sigma^{-2}_m
+\end{equation*}
+
+As\'i, podemos obtener la distribuci\'on posterior condicional de (\ref{ejer1.2}) que est\'a dada por
+\begin{equation*}
+p(\sigma^2_1,\cdots,\sigma^2_m\mid\mathbf{\beta},\mathbf{X},\mathbf{Y})\propto \sigma^{-(n_1+2)}_1\cdots\sigma^{-(n_m+2)}_m\mid\mathbf{X}'\bSigma^{-1}\mathbf{X}\mid^{-\frac{1}{2}}\exp\left\{-\frac{1}{2}\sum_{i=1}^n\dfrac{(y_i-\mathbf{x}_i'\mathbf{b}_q)}{\sigma^2_i}\right\}
+\end{equation*}
+
+Para muestrear los valores de estas varianzas, se puede usar de nuevo el muestreador de Gibbs. A continuaci\'on se muestra un ejemplo de datos simulados, y la estimaci\'on de los par\'ametros.
+
+\begin{Eje}
+Se simularon 400 datos a partir de un modelo de regresi\'on simple $y_i=1+0.5x_i+e_i$ donde $e_i\sim Normal(0,1)$ para $i=1,\cdots,200$, y $e_i\sim Normal(0,9)$ para $i=201,\cdots,400$.
+
+<<fig.height=4>>=
+library(mvtnorm)
+set.seed(8)
+sigma1 <- 1; sigma2 <- 3
+n1 <- n2 <- 200; n <- c(n1, n2)
+e1 <- rnorm(n1,0,sigma1); e2 <- rnorm(n2,0,sigma2); e <- c(e1, e2)
+x <- rgamma(sum(n), 10, 2); X <- cbind(1, x)
+p <- ncol(X); q <- length(n)
+Level <- factor(rep(c("A","B"),c(n1,n2)))
+nombre.Level <- c("A", "B")
+@
+A continuaci\'on se ajusta un modelo de regresi\'on simple con los supuestos cl\'asicos de un modelo lineal usando la funci\'on \verb'lm'. Posteriormente examinamos el comportamiento de los residuales.
+<<fig.height=4>>=
+Y <- 1 + 0.5*x + e
+M <- lm(Y ~ x)
+summary(M)
+plot(residuals(M),col=Level); abline(h=0)
+boxplot(residuals(M) ~ Level)
+bartlett.test(residuals(M),Level)
+@
+Se puede observar que los residuales de los dos diferentes grupos tienen varianzas diferentes, por lo que se presenta el efecto de la heterocedasticidad. Los resultados de la prueba de homocedasticidad de Bartlett confirma esta hip\'otesis. Por lo tanto, se debe estimar la varianza de los dos grupos $\sigma_1^2$ y $\sigma_2^2$.
+
+Los c\'odigos en \verb'JAGS' para ajustar un modelo de regresi\'on con diferentes varianzas en los dos grupos son: 
+
+<<>>=
+
+Regre4.Model <- function(){
+  for(i in 1:n1){
+    Y[i]~dnorm(mu[i], w1)
+    mu[i]<-beta0+beta1*x[i]
+  }
+  for(i in (n1+1):(n1+n2)){
+    Y[i]~dnorm(mu[i], w2)
+    mu[i]<- beta0+beta1*x[i]
+  }
+  
+  # Distribuci\'on previa para los par\'ametros
+  beta0 ~ dnorm(7, 1)
+  beta1 ~ dnorm(0, 0.0001)
+  w1 ~ dgamma(0.001, 0.001)
+  w2 ~ dgamma(0.001, 0.001)
+  sigma1 <- 1/sqrt(w1)
+  sigma2 <- 1/sqrt(w2)
+}
+
+Regre4.Model.data <- list("Y", "x", "n1","n2")
+Regre4.Model.param <- c("beta0", "beta1", "sigma1", "sigma2")
+Regre4.Model.inits <- function(){
+  list("beta0"=c(0), "beta1"=c(0),"w1"=c(1),"w2"=c(1))
+}
+
+Regre4.Model.fit <- jags(data=Regre4.Model.data, inits=Regre4.Model.inits, 
+                         Regre4.Model.param, n.iter=10000, n.burnin=1000, 
+                         model.file=Regre4.Model)
+
+print(Regre4.Model.fit)
+@
+
+<<>>=
+# Funci\'on que evalua la densidad condicional de de sigma2_j
+f.sigma2.j <- function(sigma2.j, Sigma, beta, j){
+  Level.j <- which(Level==nombre.Level[j])
+  diag(Sigma)[Level.j] <- sigma2.j
+  sigma2.j^(-1)*sigma2.j^(-n[j]*0.5)*det(t(X)%*%solve(Sigma)%*%X)^(-0.5)*
+    exp(-0.5*sum((Y[Level.j]-(X%*%beta)[Level.j])^2/sigma2.j))
+}
+# Funci\'on que muestrea un valor de sigma2_j con el m\'etodo de la grilla
+sample.sigma2 <- function(beta, Sigma, j){
+  var.j <- var(M$residuals[which(Level==nombre.Level[j])])
+  sigma2.gri <- seq(var.j*0.1, var.j*10, length.out = 50)
+  densidad <- c()
+  for(k in 1:length(sigma2.gri)){
+    densidad[k] <- f.sigma2.j(sigma2.gri[k], Sigma, beta, j)
+  }
+  densidad <- densidad/sum(densidad)
+  sample(sigma2.gri, 1, prob = densidad)
+}
+# N??mero de simulaciones
+n.sim <- 10
+res_sigma2 <- matrix(NA, n.sim, q)
+res_beta <- matrix(NA, n.sim, p)
+# Valores iniciales para los coeficientes de regresi\'on beta
+res_beta[1,] <- M$coefficients
+# Simular los primeros valores de las dos varianzas
+Sigma <- diag(rep(1, sum(n)))
+for(j in 1:q){
+  res_sigma2[1,j] <- sample.sigma2(res_beta[1,], Sigma, j)
+  diag(Sigma)[which(Level==nombre.Level[j])] <- res_sigma2[1,j] 
+}
+# aqu\'i inicia el muestreador de Gibbs
+for(i in 2:n.sim){
+  Sigma <- diag(rep(res_sigma2[i-1,],n))
+  Bq <- solve(t(X)%*%solve(Sigma)%*%X)
+  bq <- Bq%*%t(X)%*%solve(Sigma)%*%Y
+  res_beta[i,] <- rmvnorm(1, bq, Bq)
+  for(j in 1:q){
+    res_sigma2[i,j] <- sample.sigma2(res_beta[i,], Sigma, j)
+    diag(Sigma)[which(Level==nombre.Level[j])] <- res_sigma2[i,j] 
+  }
+}
+# Calcula las estimaciones finales usando la segundad mitad de los valores simulados
+beta.final <- colMeans(res_beta[-(1:(n.sim/2)),])
+sigma2.final <- colMeans(res_sigma2[-(1:(n.sim/2)),])
+beta.final
+sigma2.final
+@
+Observamos que las estimaciones obtenidas son similares a los valores de los par\'ametros usados en la simulaci\'on. A continuaci\'on se calcula los residuales para verificar que se ha corregido el problema de la heterocedasticidad.
+<<fig.height=4>>=
+Sigma.final <- diag(rep(sigma2.final,n))
+res <- solve(sqrt(Sigma.final))%*%(Y - X%*%beta.final)
+plot(res, col=Level); abline(h=0)
+boxplot(res ~ Level)
+bartlett.test(res,Level)
+@
+Observamos que los residuales obtenidos de los dos grupos ahora tienen varianzas pr\'acticamente iguales en los dos grupos, as\'i como lo confirma tambi\'en la prueba de Bartlett. 
+\end{Eje}
+
+\section{ANOVA}
+
+Uno de los modelos de regresi\'on m\'as utilizados y a la vez m\'as simples es el an\'alisis de varianza ANOVA a una v\'ia, el cual es un caso particular del modelo lineal general. Este enfoque considera la partici\'on de las observaciones en bloques, estratos o subgrupos que el investigador conoce de antemano, antes de la realizaci\'on del experimento. Uno de los motivos de la realizaci\'on de la partici\'on es porque se conoce que la estructura probabil\'istica (de localizaci\'on, de escala, o ambas) cambia significativamente en las observaciones con respecto al grupo de pertenencia. De esta manera, este modelo est\'a dado por la ecuaci\'on general $\mathbf{Y}=\mathbf{X}\bbeta+\beps$ toma la siguiente forma
+\begin{equation}
+\begin{pmatrix}
+  \mathbf{Y}_1 \\
+  \mathbf{Y}_2 \\
+  \vdots \\
+  \mathbf{Y}_J \\
+\end{pmatrix}
+=
+\begin{pmatrix}
+  \mathbf{1}_{n_1} &       \mathbf{0} & \cdots & \mathbf{0} \\
+        \mathbf{0} & \mathbf{1}_{n_2} & \cdots & \mathbf{0} \\
+            \vdots &           \vdots & \ddots & \vdots \\
+        \mathbf{0} &       \mathbf{0} & \cdots & \mathbf{1}_{n_2} \\
+\end{pmatrix}
+\begin{pmatrix}
+  \bbeta_1 \\
+  \bbeta_2 \\
+  \vdots \\
+  \bbeta_J \\
+\end{pmatrix}
++
+\begin{pmatrix}
+  \beps_1 \\
+  \beps_2 \\
+  \vdots \\
+  \beps_J \\
+\end{pmatrix}
+\end{equation}
+
+en donde $\mathbf{Y}_j=[Y]_{ij}$ con $i=1,\ldots,n_j$ y $j=1,\ldots,J$ denota el vector de observaciones en el subgrupo $j$, $\mathbf{1}_{n_j}$ es un vector de unos de tama\~no $n_j$ y $\beps_j=[\varepsilon]_{ij}$ es el vector de errores en el subgrupo $j$. El an\'alisis bayesiano de este tipo de modelos est\'a supeditado a los resultados encontrados en este cap\'itulo al reemplazar la matriz de dise\~no $\mathbf{X}$ por una matriz cuyas columnas sean de unos y de ceros. Una formulaci\'on del modelo es la siguiente
+\begin{align*}
+Y_{ij} \mid \bbeta_j &\sim Normal(\bbeta_j,\sigma^2)\\
+\bbeta_j \mid \mu,\tau^2 &\sim Normal(\mu,\tau^2)
+\end{align*}
+
+con $\sigma^2$, $\mu$ y $\tau^2$ conocidos, pero estos \'ultimos reflejando las suposiciones previa que el investigador considera pertinentes. Tomando la verosimilitud de todo el vector de observaciones, notamos que
+\begin{equation}\label{4.4.2}
+p(\mathbf{Y} \mid \bbeta)=\prod_{j=1}^Jp(\mathbf{Y}_j \mid \beta_j)
+\end{equation}
+
+Y a su vez, n\'otese que
+\begin{align*}
+p(\mathbf{Y}_j \mid \beta_j)=\prod_{i=1}^{n_j}p(Y_{ij} \mid \beta_j)&\propto
+\exp\left\{-\frac{1}{2\sigma^2}\sum_{i=1}^{n_j}(Y_{ij}-\beta_j)^2 \right\}\\
+&\propto
+\exp\left\{-\frac{n_j}{2\sigma^2}(\bar{Y}_{j}-\beta_j)^2 \right\}
+\end{align*}
+
+Por lo tanto la expresi\'on (\ref{4.4.2}) queda completamente definida como
+
+\begin{align}
+p(\mathbf{Y} \mid \bbeta)\propto
+\prod_{j=1}^{J}\exp\left\{-\frac{1}{2\sigma^2_j}(\bar{Y}_{j}-\beta_j)^2 \right\}
+\end{align}
+
+donde $\sigma^2_j=\sigma^2/n_j$. Luego, siguiendo la regla de bayes, la distribuci\'on posterior del vector de par\'ametros de inter\'es $\bbeta=(\beta_1,\ldots,\beta_J)'$ es
+\begin{align}
+p(\bbeta\mid\mu,\tau^2, \mathbf{Y})
+&\propto p(\mathbf{Y} \mid \bbeta)p(\bbeta \mid \mu,\tau^2) \notag \\
+&\propto \prod_{j=1}^J p(\mathbf{Y}_j \mid \beta_j) \prod_{j=1}^J p(\beta_j \mid \mu,\tau^2)  \notag\\
+&\propto \exp\left\{\sum_{j=1}^J\frac{-1}{2\sigma^2_j}(\bar{y}_j-\beta_j)^2\right\}
+\frac{1}{\tau^J}\exp\left\{\frac{-1}{2\tau^2}\sum_{j=1}^J(\beta_j-\mu)^2\right\}\label{beta_diseno_experimento}
+\end{align}
+
+Bajo este marco de referencia se tienen el siguiente resultado
+
+\begin{Res}\label{est_beta_ANOVA}
+La distribuci\'on posterior del componente $\beta_j$ perteneciente al vector de par\'ametros de inter\'es $\bbeta$ es
+\begin{equation*}
+\beta_j\mid\mathbf{Y}\sim Normal(\mu_j,\tau_j^2)
+\end{equation*}
+en donde
+\begin{equation*}
+\mu_j=\frac{\frac{n_j}{\sigma^2}\bar{Y}_j+\frac{1}{\tau^2}\mu}{\frac{n_j}{\sigma^2}+\frac{1}{\tau^2}}
+\ \ \ \ \ \ \ \text{y} \ \ \ \ \ \ \
+\tau_j^2=\left(\frac{n_j}{\sigma^2}+\frac{1}{\tau^2}\right)^{-1}
+\end{equation*}
+
+Adicionalmente, observando la forma de la expresi\'on en \ref{beta_diseno_experimento}, se puede ver que la distribuci\'on posterior de los componentes de $\bbeta$ son independientes, esto es, la matriz de varianzas y covarianzas de la distribuci\'on posterior de $\bbeta$ es una matriz diagonal, con los elementos $\tau^2_j$ en la diagonal.
+\end{Res}
+
+\begin{proof}
+La prueba del resultado es an\'aloga a la demostraci\'on del resultado 2.6.4.
+\end{proof}
+
+n\'otese que la media de la distribuci\'on posterior se puede ver como un promedio ponderado de la media de la distribuci\'on previa y la media de las observaciones en la muestra. La ponderaci\'on de las anteriores medias son los par\'ametros de precisi\'on (el inverso de la varianza) de la distribuci\'on previa y de la verosimilitud. Por otro lado, el par\'ametro de precisi\'on de la distribuci\'on a posterior est\'a dado por la suma de las precisiones de la verosimilitud y de la distribuci\'on previa. Ahora, si el tama\~no de muestra es grande, para cualquier escogencia de los par\'ametros previa, se tiene que la distribuci\'on posterior converge a
+
+\begin{equation*}
+\beta_j\underset{n_j\rightarrow \infty}{\sim} Normal(\bar{Y}_j,\sigma^2/n)
+\end{equation*}
+
+Bajo este contexto, la distribuci\'on de los par\'ametros de inter\'es es id\'entica a la que se presenta en el caso frecuentista cl\'asico. tambi\'en, cuando se utiliza valores muy grandes para $\tau^2$, se tiene que la distribuci\'on de posterior de $\beta_j$ es $\beta_j\mid\mathbf{Y}\sim Normal(\bar{Y}_j,\sigma^2/n_j)$ para $j=1,\cdots,J$.
+
+\subsection{Varianza desconocida}
+El tratamiento de los modelos ANOVA cuando las varianza $\sigma^2$ con una previa no informativa para $(\bbeta,\sigma^2)$ se puede tomar de lo desarrollado de la secci\'on \ref{LM_Var_Des}, esto es
+\begin{align*}
+\sigma^2&|\mathbf{Y}\sim Inversa-Gamma\left(\frac{n-J}{2},\frac{S^2_e}{2}\right)\\
+\beta_j&|\sigma^2,\mathbf{Y}\sim Normal(\bar{Y}_j,\sigma^2/n_j)
+\end{align*}
+
+con $S^2_e=(\mathbf{Y}-\mathbf{X}\hat{\bbeta})'(\mathbf{Y}-\mathbf{X}\hat{\bbeta})$ donde $\hat{\bbeta}=(\mathbf{X}'\mathbf{X})^{-1}\mathbf{X}'\mathbf{Y}$. Se puede ver qua la anterior distribuci\'on posterior de $\beta_j$ es equivalente a la distribuci\'on posterior de $\bbeta$ dada en el resultado \ref{beta_sigma_Y_X}, esto es
+\begin{equation*}
+\bbeta|\sigma^2,\mathbf{Y},\mathbf{X}\sim Normal_J((\mathbf{X}'\mathbf{X})^{-1}\mathbf{X}'\mathbf{Y},\ \sigma^2(\mathbf{X}'\mathbf{X})^{-1})
+\end{equation*}
+
+En el siguiente ejemplo ilustramos el c\'omputo de las estimaciones:
+
+\begin{Eje}\label{Ejer_FFT}
+\citeasnoun[pg. 476]{Draper} reportan los datos del siguiente experimento: se escogieron 30 estudiantes universitarios de buen estado de salud con la misma edad y con habilidades f\'isicas similares, los cuales son divididos aleatoriamente a tres grupos, y se les suministran tratamiento de cafe\'ina de 0 mg, 100 mg y 200 mg, respectivamente. despu\'es de 2 horas del tratamiento, se les pide que realice la prueba de FTT (\emph{Finger Tapping Test}), en la siguiente tabla se muestran los datos de un minuto de prueba
+\begin{table}[!htb]\centering
+\begin{tabular}{ccc}\hline
+Grupo&Tratamiento & Observaciones\\\hline
+1&cafe\'ina de 0 mg&242, 245, 244, 248, 247,248, 242, 244, 246, 242\\
+2&cafe\'ina de 100 mg&248, 246, 245, 247, 248, 250, 247, 246, 243, 244\\
+3&cafe\'ina de 200&246, 248, 250, 252, 248, 250, 246, 248, 245, 250\\\hline
+\end{tabular}
+\caption{Resultados de la prueba FTT (\emph{Finger Tapping Test}) en 30 estudiantes al someter a diferentes dosis de cafe\'ina.}
+\end{table}
+
+A continuaci\'on se muestran los c\'odigos computacionales en \verb'R' para la estimaci\'on de los par\'ametros usando distribuci\'on previa no informativa y se deja como ejercicio la elaboraci\'on del programa en \verb'JAGS'.
+
+\colorbox{black}{\textcolor{white}{\textbf{C\'odigo JAGS}}}
+<<>>=
+library(MCMCpack)
+library(mvtnorm)
+Y <- c(242, 245, 244, 248, 247,248, 242, 244, 246, 242, 248, 246, 245, 247, 248, 250, 
+       247, 246, 243, 244, 246, 248, 250, 252, 248, 250, 246, 248, 245, 250)
+n1 <- n2 <- n3 <- 10; n <- n1 + n2 + n3
+J <- 3 # N??mero de betas
+Tra <- factor(rep(c("1","2","3"), c(n1,n2,n3)))
+X <- kronecker(diag(1,3),rep(1,n1))
+
+n.sim <- 10000
+beta.hat <- solve(t(X)%*%X)%*%t(X)%*%Y
+S2.e <- sum((Y-X%*%beta.hat)^2)
+# Simular valores para la varianza
+sigma2.res <- rinvgamma(n.sim, (n-J)/2, S2.e/2)
+# Simular valores para los coeficientes de regresi\'on
+beta.res <- matrix(NA,n.sim,J)
+for(i in 1:n.sim){
+  beta.res[i,] <- rmvnorm(1, beta.hat, sigma2.res[i]*solve(t(X)%*%X)) 
+}
+mean(sqrt(sigma2.res))
+colMeans(beta.res)
+apply(beta.res,2,sd)
+@
+A continuaci\'on se utiliza el enfoque cl\'asico para la estimaci\'on del modelo
+<<>>=
+summary(lm(Y ~ Tra-1))
+@
+Observamos que las estimaciones de $\bbeta$ y $\sigma^2$ con los dos enfoques son muy similares, aunque la desviaci\'on est\'andar de $\bbeta$ es levemente superior a los errores est\'andares de $\hat{\bbeta}$ en el foque cl\'asico. Es interesante se\~nalar la facilidad con la que se puede realizar inferencias con el enfoque bayesiano. Por ejemplo, suponga que queremos inspeccionar si los dos tratamientos con cafe\'ina tienen un efecto importante sobre los resultados de la prueba FTT, esto es, se quiere validar las hip\'otesis de que $\beta_2>\beta_1$ y $\beta_3>\beta_1$. Esto se puede llevar a cabo calculando $Pr(\beta_2>\beta_1)$ y $Pr(\beta_3>\beta_1)$ usando la distribuci\'on posterior de $\bbeta$. Estas proabalidades se pueden calcular como:
+<<>>=
+sum(beta.res[,1] < beta.res[,2])/n.sim
+sum(beta.res[,1] < beta.res[,3])/n.sim
+@
+De donde se concluye que el efecto de los dos tratamientos de cafe\'ina s\'i es significativo sobre las resultados de la pureba FTT.
+\end{Eje}
+
+\section{Selecci\'on bayesiana de modelo}
+
+\citeasnoun{hoeting1999} afirma que la pr\'actica habitual de la estad\'istica hace caso omiso de la incertidumbre de los modelos. Los estad\'isticos suelen seleccionar un modelo de alguna familia de modelos y luego proceden como si el modelo elegido hubiese generado esos datos. Este enfoque hace caso omiso de la incertidumbre en la selecci\'on del modelo, dando lugar a inferencias muy confiadas y a la toma de decisiones m\'as riesgosas de lo que uno pensar\'ia.
+
+Un promedio de modelos Bayesianos (BMA, por sus siglas en ingl\'es: \emph{Bayesian Model Averaging}) proporciona un mecanismo coherente para dar cuenta de la incertidumbre de los modelos. Existen varios m\'etodos de aplicaci\'on del BMA que han surgido recientemente y en esta secci\'on se utiliza los datos del paquete \verb'TeachingSampling' para explicar paso a paso la adecuaci\'on de esta metodolog\'ia que arroja coeficientes de regresi\'on que resultan ser un promedio de los coeficientes de cada posible modelo. m\'as a\'un, se trata de un promedio ponderado por la respectiva probabilidad a posteriori de cada modelo.
+
+Siguiendo la regla de Bayes, la probabilidad a posteriori de cada modelo (PMP, por sus siglas en ingl\'es: \verb'Posterior Model Probabilities') resulta ser proporcional a la verosimilitud marginal del modelo (la probabilidad de los datos dado el modelo) multiplicado por la distribuci\'on previa del modelo. En muchas ocasiones, la distribuci\'on previa del modelo se asume tipo g-Zelnner, que es una distribuci\'on normal con media nula y varianza dependiendo de un hiperpar\'ametro de incertidumbre $g$. Un valor peque\~no de $g$ implica un gran conocimiento previo de que los coeficientes del modelo son nulos, y un valor grande para $g$ implica que el investigador no est\'a muy seguro de que los coeficientes del modelo sean cero.
+
+Con base en el anterior razonamiento, se utilizar\'a la base de datos \verb'Lucy' para ilustrar el ajuste de un promedio de modelos bayesianos. En primer lugar, cargamos la librer\'ia \verb'TeachingSampling' para poder acceder a los daros y tambi\'en la librer\'ia \verb'BMS' \cite{BMS} para realizar el ajuste de los modelos. La base de datos la constituyen 2396 empresas del sector industrial, la variable de inter\'es es el n\'umero de empleados de cada empresa y las variables regresoras son el total de impuestos declarados, el total de ingresos, el nivel de industrializaci\'on, la zona de ubicaci\'on y el tipo de publicidad en el \'ultimo a\~no fiscal.
+<<>>=
+library(TeachingSampling)
+library(BMS)
+data(Lucy)
+databma <- data.frame(Emp=Lucy$Employees, Tax=Lucy$Taxes, Inc=Lucy$Income,
+  Lev=as.double(Lucy$Level), Zon=as.double(Lucy$Zone), Spa=as.double(Lucy$SPAM))
+@
+
+Para ajustar los modelos, se utiliza la funci\'on \verb'bms' de la librer\'ia \verb'BMS'. Esta funci\'on ajusta todos los $2^k$ posibles modelos (siendo k el n\'umero total de variables regresoras), computa todas las PMP, calcula todos los coeficientes de regresi\'on en cada uno de esos modelos, y al final promedia estos coeficientes utilizando como ponderador las PMPs. Una caracter\'istica importante en esta funci\'on es que la primera columna del archivo de datos debe ser la variable de inter\'es.
+<<>>=
+Lucybma <- bms(databma, burn=100000, iter=200000, g="BRIC", mprior="uniform", 
+               mcmc="bd", user.int=T)
+@
+
+De las dos gr\'aficas anteriores, la primera muestra las probabilidades previas y posteriores para modelos con diferentes n\'umero de variables regresoras, valor m\'inimo de 0 para el modelo solo con intercepto, y valor m\'aximo de 5 para el n\'umero total de posibles variables regresoras. Podemos concluir que el modelo con tres variables regresoras es la m\'as indicada. En la segunda gr\'afica, se muestran las probabilidades posteriores calculados con dos m\'etodos, uno usando la verosimilitud exacta, y la otra usando m\'etodos de MCMC. Observamos que los dos m\'etodos conducen a los mismos valores de estas probabilidades.
+
+La funci\'on \verb'coef' arroja las probabilidades de inclusi\'on posteriores (PIP) de cada variable en los modelos, la media posterior de cada coeficiente de regresi\'on (la misma estimaci\'on bayesiana) y el error est\'andar posterior. Cada PIP se calcula como la suma de las PMPs para cada modelo en donde esa covariable fue incluida. Por ejemplo, para \verb'Lucy', la variable m\'as importante es \verb'Tax' y la variable \verb'Inc', las cuales tienen probabilidad de inclusi\'on igual a uno pues fue incluida en todos los posibles modelos. Luego le sigue la variable \verb'Lev', con probabilidad de inclusi\'on 0.89. Para estas variables, la estimaci\'on bayesiana de sus respectivos coeficientes de regresi\'on son 0.66, 0.03 y -5.63, respectivamente.
+
+<<>>=
+coef(Lucybma,include.constant = T)
+@
+
+La funci\'on \verb'topmodels.bma' arroja una matriz de unos y ceros, donde las columnas representan el modelo ajustado y las filas las variables regresoras. Las entradas de esta matriz son uno, si la variable regresora fue incluida en el modelo, y cero, en otro caso. En las \'ultimas filas, se presentan las PMP. Para este caso, el mejor modelo, con una probabilidad a posteriori de 0.82, es el que incluye las variables regresoras \verb'Tax', \verb'Inc' y \verb'Lev'.
+
+<<>>=
+topmodels.bma(Lucybma) ## Mejores modelos seg??n la PMP
+@
+La funci\'on \verb'beta.draws.bma' da como resultado los coeficientes de regresi\'on para todos los modelos. n\'otese que promediando estos valores, con su respectiva ponderaci\'on, se tiene la estimaci\'on bayesiana posterior del promedio de modelos dada por la segunda columna de la funci\'on coef.
+
+<<>>=
+beta.draws.bma(Lucybma[1:5])  ## Los coeficientes de los 5 mejores modelos
+@
+La funci\'on \verb'image' arroja una gr\'afica que incluye cada variable. Si para esta variable el color es blanco, significa que no fue incluida en ese modelo, si el color es rojo, implica que el signo del coeficiente de regresi\'on es negativo, y si el color es azul, significa que el signo del coeficiente de regresi\'on es positivo. n\'otese que esta figura est\'a basada en probabilidades acumuladas; as\'i que entre m\'as ancha sean los cuadros, implica que el modelo tiene una mayor PMP. Por lo tanto, se puede ver que el mejor modelo cuenta las variables regresoras \verb'Tax', \verb'Inc' con coeficientes positivos de regresi\'on, y la variable \verb'Lev' tiene coeficiente negativo.
+
+<<>>=
+image(Lucybma[1:5])
+@
+
+Para tener un acercamiento completo a la distribuci\'on posterior de los coeficientes, la funci\'on \verb'density' proyecta una gr\'afica de la densidad posterior del coeficiente.
+
+<<>>=
+ density(Lucybma,"Tax")
+ density(Lucybma,"Inc")
+@
+
+\section{Ejercicios}
+\begin{enumerate}
+\item Para los datos de funcionamiento renal, utiliza los primeros 50 datos como informaci\'on previa, y los restantes como datos muestrales, realice la estimaci\'on bayesiana de la l\'inea de regresi\'on. 
+\item Demuestre las expresiones (\ref{ejer1.1}) y (\ref{ejer1.2}).
+\item Demuestre el resultado \ref{est_beta_ANOVA}.
+\item Elabore el programa computacional en \verb'JAGS' para la estimaci\'on de los par\'ametros $\bbeta$ y $\sigma^2$ para los datos del ejemplo \ref{Ejer_FFT}.
+\end{enumerate}
+
+

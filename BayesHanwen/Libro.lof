@@ -1,0 +1,25 @@
+\select@language {english}
+\select@language {spanish}
+\addvspace {10\p@ }
+\contentsline {figure}{\numberline {1.1}{\ignorespaces \emph {Plano del proceso industrial en la f\IeC {\'a}brica de bol\IeC {\'\i }grafos}}}{6}{figure.1.1}
+\addvspace {10\p@ }
+\contentsline {figure}{\numberline {2.1}{\ignorespaces \emph {Distribuci\'on previa no informativa de Jeffreys para el par\'ametro de una distribuci\'on Bernoulli}}}{26}{figure.2.1}
+\contentsline {figure}{\numberline {2.2}{\ignorespaces \emph {Distribuci\'on previa informativa (l\'inea punteada) y distribuci\'on posterior (l\'inea s\'olida) para el ejemplo de las encuestas electorales.}}}{29}{figure.2.2}
+\contentsline {figure}{\numberline {2.3}{\ignorespaces \emph {Distribuci\'on previa no informativa (l\'inea punteada) y distribuci\'on posterior (l\'inea s\'olida) para el ejemplo de las encuestas electorales.}}}{29}{figure.2.3}
+\contentsline {figure}{\numberline {2.4}{\ignorespaces \emph {Funci\'on de verosimilitud, funci\'on de densidad previa y posterior para $\alpha =2$, $\beta =5$, $s=8$ y $n=10$.}}}{31}{figure.2.4}
+\contentsline {figure}{\numberline {2.5}{\ignorespaces \emph {Estimaci\'on posterior de $\theta $ para diferentes valores de $n$ y $s$ con $\alpha =\beta =5$.}}}{32}{figure.2.5}
+\contentsline {figure}{\numberline {2.6}{\ignorespaces \emph {Funci\'on de densidad previa y funci\'on de densidad posterior para el ejemplo de bateo.}}}{38}{figure.2.6}
+\contentsline {figure}{\numberline {2.7}{\ignorespaces \emph {Funci\'on de densidad predictiva posterior para el jugador Max Alvis.}}}{39}{figure.2.7}
+\contentsline {figure}{\numberline {2.8}{\ignorespaces \emph {Distribuci\'on predictiva posterior para el n\'umero de entrevistas necesarias para encontrar 5 pacientes usando los datos del ejemplo 2.3.2}.}}{44}{figure.2.8}
+\contentsline {figure}{\numberline {2.9}{\ignorespaces \emph {Histograma para los datos de accidentes de tr\'ansito.}}}{49}{figure.2.9}
+\contentsline {figure}{\numberline {2.10}{\ignorespaces \emph {Distribuci\'on previa y distribuci\'on posterior para el ejemplo del tr\'ansito con dos distribuciones previas diferentes (el lado izquierdo representa el caso cuando se usa la previa no informativa, el lado derecho la previa informativa).}}}{50}{figure.2.10}
+\contentsline {figure}{\numberline {2.11}{\ignorespaces \emph {Distribuci\'on predictiva posterior para $n*=1$ para el ejemplo del tr\'ansito. La l\'inea s\'olida denota la distribuci\'on predictiva obtenida con la previa no informativa, la l\'inea continua denota la obtenida con la previa $Gamma(\alpha =38,\beta =9)$.}}}{51}{figure.2.11}
+\contentsline {figure}{\numberline {2.12}{\ignorespaces \emph {Distribuci\'on predictiva posterior para el tiempo promedio de sobrevivencia de transplante de coraz\'on.}}}{56}{figure.2.12}
+\contentsline {figure}{\numberline {2.13}{\ignorespaces \emph {Distribuci\'on previa, funci\'on de verosimilitud y distribuci\'on posterior del par\'ametro $\theta $ con $\mu =5$, $\tau ^2=0.01$, $\mathaccentV {bar}016{y}=2$, $\sigma ^2=1$ y $n=5,10,50,200$.}}}{58}{figure.2.13}
+\contentsline {figure}{\numberline {2.14}{\ignorespaces \emph {Funci\'on de densidad Inversa-Gamma para diferentes valores de $\sigma ^2_0$ y $n_0$.}}}{65}{figure.2.14}
+\contentsline {figure}{\numberline {2.15}{\ignorespaces \emph {Distribuci\'on previa, funci\'on de verosimilitud y distribuci\'on posterior de $\sigma ^2$ con $n_0=20$, $\sigma ^2_0=10$, $\mathaccentV {hat}05E{\sigma }^2_C=50$ y $n=5,20,50,100$.}}}{66}{figure.2.15}
+\contentsline {figure}{\numberline {2.16}{\ignorespaces \emph {Distribuci\'on previa no informativa de Jeffreys, funci\'on de verosimilitud y distribuci\'on posterior de $\sigma ^2$ con $n=50$ y $\mathaccentV {hat}05E{\sigma }^2_C=10$.}}}{67}{figure.2.16}
+\contentsline {figure}{\numberline {2.17}{\ignorespaces \emph {Histograma de 10 mil valores simulados de $\mathaccentV {tilde}07E{y}$ y la funci\'on de densidad de la distribuci\'on predictiva $t_{n_0+n}(\theta ,\frac {v_0}{n_0+n})$.}}}{69}{figure.2.17}
+\addvspace {10\p@ }
+\contentsline {figure}{\numberline {3.1}{\ignorespaces \emph {10 mil valores simulados de $\mathaccentV {tilde}07E{Y}$ y la funci\'on de densidad de la distribuci\'on predictiva de $\mathaccentV {tilde}07E{Y}$.}}}{91}{figure.3.1}
+\addvspace {10\p@ }

@@ -1,0 +1,414 @@
+<<echo=FALSE, message=FALSE>>=
+library(R2jags)
+library(coda)
+library(lattice)
+library(R2WinBUGS)
+library(rjags)
+library(superdiag)
+library(mcmcplots)
+library(xtable)
+library(ggplot2)
+library(plot3D)
+library(reshape2)
+library(gridExtra)
+options(scipen = 100, digits = 2)
+set.seed(12345)
+library(knitr)
+knit_theme$set("acid")
+@
+%--------------------
+\chapter{Modelos en poblaciones finitas}
+
+\section{Dise\~nos estad\'isticos}
+
+\citeasnoun{Gelman03} afirma que se debe ser un estad\'istico ingenuo si se afirma que toda inferencia deber\'ia ser condicional a los datos, sin importar de d\'onde o c\'omo fueron seleccionados. Esta es una concepci\'on errada del principio de verosimilitud. La noci\'on de que el m\'etodo de selecci\'on de la muestra es irrelevante en el an\'alisis inferencial puede ser contradicha con un argumento muy simple: Suponga que se tienen a disposici\'on diez datos provenientes del lanzamiento de diez dados; todos ellos correspondieron al n\'umero seis. La actitud del estad\'istico acerca de la naturaleza de los datos ser\'ia diferente si (1) s\'olo se hicieron diez lanzamientos, (2) se hicieron sesenta lanzamientos pero se decidi\'o reportar s\'olo los que resultaron ser seis, (3) aparecieron diez seis en quinientos lanzamientos y se decidi\'o reportar honestamente estas realizaciones. En tales situaciones es claro que la distribuci\'on de los datos observados sigue un patr\'on completamente distinto que no debe ser ignorado.
+
+Una \textbf{poblaci\'on finita} es un conjunto de $N$ elementos $\{e_1, e_2, ..., e_N\}$. Cada unidad puede ser identificada sin ambig\"uedad por un conjunto de r\'otulos. Sea $U=\{1,2,...,N\}$ el conjunto de r\'otulos de la poblaci\'on finita\footnote{El tama\~no de la poblaci\'on no es necesariamente conocido.}. En t\'erminos generales, es el conjunto de unidades que conforman el universo de estudio. $N$ es com\'unmente llamado el tama\~no poblacional. Se utilizar\'a el sub\'indice $i$ para denotar la existencia f\'isica del $i$-\'esimo elemento. En algunas ocasiones el objetivo de la investigaci\'on es poder estimar el tama\~no de la poblaci\'on.
+
+Para resolver los objetivos del estudio se recurre al planteamiento de una estrategia de muestreo con el fin de seleccionar una \textbf{muestra aleatoria} que representa un subconjunto de la poblaci\'on que ha sido extra\'ido mediante un mecanismo estad\'istico de selecci\'on. Notaremos con una letra may\'uscula $S$ a la muestra aleatoria\footnote{N\'otese que $S$ es una variable aleatoria.} y con una letra min\'uscula $s$ a una realizaci\'on de la misma. De tal forma que, sin ambig\"uedad, una muestra seleccionada (realizada) es el conjunto de unidades pertenecientes a
+
+\begin{equation*}
+s=\{1,...,k,...,n\}.
+\end{equation*}
+
+El n\'umero de componentes de $s$ es llamado el \textbf{tama\~no de muestra} y no siempre es fijo. Es decir, en algunos casos $n$ es una cantidad aleatoria. El conjunto de todas las posibles muestras se conoce como \textbf{soporte}. Haciendo una analog\'ia con la inferencia estad\'istica cl\'asica, el soporte generado por una muestra aleatoria corresponde al espacio muestral generado por una variable aleatoria.
+
+En t\'erminos generales, un dise\~no de muestreo no es sino una distribuci\'on de probabilidad multivariante definida sobre un conjunto de muestras que pertenecen a un soporte. Pero, una distribuci\'on de probabilidad no es m\'as sino un modelo que se asume; en este caso, es un modelo que permite la selecci\'on de muestras probabil\'isticas. Una muestra $s$ induce un vector de inclusi\'on $\mathbf{I}(s)=(I_1(s),\ldots,I_k(s),\ldots,I_N(s))'$, en donde $I_k(s)$ est\'a definida por (2.1.8). Dado el anterior esquema, otra forma de denotar el dise\~no de muestreo es $p(\mathbf{I})$ el cual se conoce para todos los posibles valores de $\mathbf{I}$ en todas las posibles muestras $s$. Por otro lado, si se asume que la medici\'on de la caracter\'istica de inter\'es $y_k$ en los individuos de la poblaci\'on est\'a sujeta a un error, entonces \'estas deben ser vistas como realizaciones de variables aleatorias $Y_k$. De esta forma, es necesario definir un modelo para los valores poblacionales que puede depender de cierto par\'ametro. En este caso, si $Y=(Y_1,\ldots,Y_k,\ldots,Y_N)'$ es el vector poblacional de la caracter\'istica de inter\'es, entonces $p(\mathbf{Y} \mid \theta)$ definir\'a tal modelo.
+
+Para realizar cualquier tipo de inferencias acerca del par\'ametro $\theta$ es necesario trabajar con una distribuci\'on de probabilidad conjunta de ($\mathbf{I},\mathbf{Y}$) que permita unificar todo el esquema anterior en un s\'olo proceso. La pregunta que ata\~ne al estad\'istico es la siguiente: c\'omo se puede expresar esa distribuci\'on conjunta en t\'erminos de $p(\mathbf{I})$ y de $p(\mathbf{I},\theta)$? \citeasnoun{CharSki} dan la respuesta a esta pregunta motivando la suposici\'on de que $\mathbf{Y}$ sea independiente de $\mathbf{I}$. En algunos caso como en \citeasnoun[cap\'itulo 8]{CharSki} el dise\~no de muestreo depende de los valores de la caracter\'istica de inter\'es; por ejemplo, en un estudio en de casos y controles, la respuesta $y_k$ es de tipo binario, indicando si la $k$-\'esima unidad corresponde a un caso o a un control. A su vez, los casos y controles inducen estratos cuyas muestras son seleccionadas independientemente. En este caso, el dise\~no de muestreo depende directamente de los valores de la caracter\'istica de inter\'es. Por lo tanto, la relaci\'on entre $\mathbf{I},\mathbf{Y}$ debe ser expresada como
+\begin{equation*}
+p(\mathbf{I},\mathbf{Y} \mid \theta)=
+p(\mathbf{I} \mid \mathbf{Y})p(\mathbf{Y} \mid \theta)
+\end{equation*}
+
+En este caso, se dice que el dise\~no de muestreo es \emph{informativo} y no puede ser ignorado en t\'erminos de inferencia para $\theta$. Por otro lado, si el dise\~no de muestreo es \emph{no informativo}, la relaci\'on entre $\mathbf{I},\mathbf{Y}$ debe ser expresada como
+\begin{equation*}
+p(\mathbf{I},\mathbf{Y} \mid \theta)=
+p(\mathbf{I})p(\mathbf{Y} \mid \theta)
+\end{equation*}
+
+y claramente, el dise\~no de muestreo puede ser ignorado. \citeasnoun{CharSki} afirman que los dise\~nos de muestreo que dependen directamente de la variable de inter\'es no son raros en la pr\'actica. Sin emabargo, los dise\~nos de muestreo implementados cuando el marco de muestreo es muy deficiente como el muestreo en dos fases, en donde se selecciona una primera muestra y con base en los resultados de esta se dise\~na la estrategia para una segunda submuestra, no puede ser catalogado como no informativo y por tanto no puede ser ignorado. Por otro lado, es m\'as com\'un encontrar que el dise\~no de muestreo dependa de otras variables de informaci\'on auxiliar, como en el dise\~no estratificado o el dise\~no proporcional al tama\~no. A continuaci\'on se presenta el marco general dado por \citeasnoun{Valliant2000} para modelar conjuntamente el dise\~no de muestreo y el mecanismo probabil\'istico que origina a la variable de inter\'es. Adem\'as, \citeasnoun{Sudgen1984} afirman que dise\~nos de muestreo como el aleatorio simple, aleatorio estratificado, proporcional al tama\~no, el muestreo a conveniencia o el muestreo balanceado corresponde a casos en donde es posible ignorar el mecanismo de selecci\'on. Tambi\'en concluyen que aunque algunas veces los dise\~nos de muestreo pueden ser ignorados en t\'erminos de inferencia para $\bbeta$, es equivocado pensar que siempre pueden ser ignorados en t\'erminos de inferencia predictiva para el total poblacional $T_y$.
+
+Aunque en este cap\'itulo s\'olo abordaremos la inferencia Bayesiana en donde el dise\~no de muestreo se considera no informativo, pero los autores recalcan que en la pr\'actica los dise\~nos estad\'isticos son mayormente complejos y no pueden ser ignorados tan f\'acilmente. Por ejemplo, el siguiente dise\~no de muestreo, conocido como dise\~no aleatorio simple, es muy utilizado en la pr\'actica en las \'ultimas etapas de dise\~nos de muestreo complejos.
+\begin{equation}
+p(\mathbf{I})=
+\begin{cases}
+\frac{1}{\binom{N}{n}} &\text{si $\sum_{k\in U}I_k=n$}\\
+0  &\text{en otro caso}
+      \end{cases}
+\end{equation}
+
+Claramente este dise\~no de muestreo no depende de la caracter\'istica de inter\'es y puede catalogarse como no informativo. Otro dise\~no de muestreo con estas caracter\'isticas es el dise\~no aleatorio estratificado dado por
+\begin{equation}
+p(\mathbf{I})=
+\begin{cases}
+\prod_{h=1}^H\frac{1}{\binom{N_h}{n_h}}, &\text{si $\sum_{h=1}^Hn_h=n$}\\
+0,                                       &\text{en otro caso}
+\end{cases}
+\end{equation}
+
+Los anteriores dise\~nos de muestreo cumplen la siguiente propiedad
+\begin{equation*}
+p(\mathbf{I},\mathbf{Y} \mid \theta)=
+p(\mathbf{I})p(\mathbf{Y} \mid \theta)
+\end{equation*}
+
+y por lo tanto en t\'erminos de inferencia pueden ser ignorados. Este cap\'itulo est\'a enfocado en la inferencia de par\'ametros para poblaciones finitas cuando el dise\~no de muestreo es ignorado. La inferencia bayesiana para poblaciones finitas supone el uso de informaci\'on auxiliar que relaciona a la caracter\'istica de inter\'es con las variables auxiliares mediante un modelo de superpoblaci\'on, $\xi$. Bajo esta perspectiva la observaci\'on de la caracter\'istica de inter\'es en las unidades poblacionales $y_k$ se define como la realizaci\'on de una variable aleatoria $Y_k$. Partiendo de que el total poblacional se puede escribir como
+
+\begin{equation}
+T_y=\sum_{k\in s} Y_k+\sum_{k\notin s} Y_k,
+\end{equation}
+
+la tarea es estimar por medio del modelo bayesiano, las respectivas observaciones $y_k$ de los elementos que no fueron seleccionados en la muestra. Denotando esta estimaci\'on como $E(Y_k)$, un predictor para el total estar\'ia dado por:
+
+\begin{equation}
+\hat{T}_y=\sum_{k\in s} Y_k+\sum_{k\notin s} E_{\xi}(Y_k)
+\end{equation}
+
+y por tanto la realizaci\'on de $\hat{T}_y$ con los datos espec\'ificos de la muestra seleccionada $s$ estar\'ia definida como
+
+\begin{equation}
+\hat{t}_y=\sum_{k\in s} y_k + \sum_{k\notin s} \hat{E}_{\xi}(Y_k)
+\end{equation}
+
+donde $\hat{E}_{\xi}(Y_k)$ es una estimaci\'on de $E_{\xi}(Y_k)$ realizada con los datos obtenidos de la muestra seleccionada $s$. Suponga que el vector de las variables de inter\'es es $\mathbf{Y}=(Y_1,Y_2,\ldots,Y_N)'$ y para cada elemento de la poblaci\'on la realizaci\'on de estas variables aleatorias es $\mathbf{y}=(y_1,y_2,\ldots,y_N)'$. Suponga que el objetivo es estimar una combinaci\'on lineal\footnote{Si el objetivo es estimar el total poblacional, entonces $\mathbf{l}'=(1,1,\ldots,1)$. Si el objetivo es estimar la media poblacional, entonces $\mathbf{l}'=(1/N,1/N,\ldots,1/N)$.} $\mathbf{l}'\mathbf{y}$. Para tal fin, se selecciona una muestra $s$ de tama\~no $n$. N\'otese que tanto $\mathbf{y}$ como $\mathbf{l}$ se pueden particionar de la siguiente manera: $\mathbf{y}=(\mathbf{y}_s',\mathbf{y}_r')'$ y $\mathbf{l}=(\mathbf{l}_s', \mathbf{l}_r')'$; en donde el sub\'indice $s$ se refiere a que el vector contiene los $n$ elementos de la muestra seleccionada y el sub\'indice $r$ se refiere a que el vector contiene los $N-n$ elementos que no fueron seleccionados en la muestra. En este orden de ideas, \citeasnoun{Bol} desarrollaron el siguiente marco de referencia con los siguientes resultados que dan cuenta de la estimaci\'on de par\'ametros poblacionales de inter\'es en inferencia de poblaciones finitas como lo son totales o medias.
+
+\begin{Res}
+Para cualquier cantidad lineal poblacional $\mathbf{l}'\mathbf{Y}$, el predictor Bayesiano que minimiza la p\'erdida del error cuadr\'atico bajo cualquier modelo, para el cual $Var_{\xi}(\mathbf{Y}_r \mid \mathbf{Y}_s)$ existe, est\'a dado por
+\begin{equation}
+\mathbf{l}_s'\mathbf{Y}_s+\mathbf{l}'_rE_{\xi}(\mathbf{Y}_r \mid \mathbf{Y}_s)
+\end{equation}
+\end{Res}
+
+Existe una infinidad de modelos bayesianos que se pueden proponer, por tanto la l\'ogica que sigue este cap\'itulo es la revisi\'on de los modelos m\'as simples que van a ser generalizados en secciones posteriores para dar as\'i una visi\'on amplia, m\'as no exhaustiva, del espectro que siguen los modelos bayesianos en inferencia de poblaciones finitas.
+
+\section{Modelo simple}
+
+Suponga que $\mathbf{Y}=(Y_1,\ldots,Y_N)'$ y adem\'as asuma que el modelo de superpoblaci\'on $\xi$ que rige el comportamiento de la estructura probabil\'istica de la variable de inter\'es en la poblaci\'on finita est\'a dado por
+\begin{equation}
+Y_i=\theta+e_i \ \ \ \ \ \ \ \ \ \ i=1,\ldots,N
+\end{equation}
+
+Adem\'as suponga que $e_i\sim N(0,\sigma^2)$ y que las distribuciones \emph{a priori} de cada una de las variables de inter\'es y del par\'ametro $\theta$ son
+\begin{align*}
+Y_i \mid \theta &\sim N(\theta,\sigma^2)\\
+\theta &\sim N(\mu,\tau^2)
+\end{align*}
+
+Donde $\sigma^2$, $\mu$ y $\tau^2$ se asumen conocidas. Asuma entonces que cada uno de los errores del modelo $e_i$ es independiente de $\theta$ para todo $i=1,\ldots,N$.
+
+\begin{Res}
+Si $\mathbf{Y}$ se particiona como $\mathbf{Y}=(\mathbf{Y}_r',\mathbf{Y}_s')$, donde $\mathbf{Y}_r$ y $\mathbf{Y}_s$ son de tama\~no $N-n$ y $n$, respectivamente. Entonces se tiene que $\mathbf{Y}_r \mid \mathbf{Y}_s$ tiene distribuci\'on normal multivariante con esperanza com\'un $\mu_r=\dfrac{n\bar{y}_s\tau^2+\mu\sigma^2}{n\tau^2+\sigma^2}$, varianza com\'un $\tau_r=\sigma^2+\dfrac{\sigma^2\tau^2}{n\tau^2+\sigma^2}$ y covarianza com\'un $\dfrac{\sigma^2\tau^2}{n\tau^2+\sigma^2}$.
+\end{Res}
+\begin{proof}
+En primer lugar, tenemos las siguientes propiedades acerca de las variables $Y_1$, $\ldots$, $Y_N$. Para $i=1,\ldots,N$, tenemos que
+\begin{equation*}
+E(Y_i)=E(\theta+e_i)=\mu,
+\end{equation*}
+
+\begin{equation*}
+Var(Y_i)=Var(\theta)+Var(e_i)=\tau^2+\sigma^2,
+\end{equation*}
+y
+\begin{align*}
+Cov(Y_i,Y_j)&=Cov(\theta+e_i,\theta+e_j)\\
+&=Var(\theta)+Cov(e_i,e_j)\\
+&=\tau^2
+\end{align*}
+para $i\neq j$.
+
+Ahora consideramos el estimador de $\theta$ en la muestra observada $\bar{Y}_s$. Usando $Y_i \mid \theta\sim N(\theta,\sigma^2)$ para $i=1,\ldots,n$, se tiene que $\bar{Y}_s \mid \theta\sim N(\theta,\sigma^2/n)$, adem\'as $\theta\sim N(\mu,\tau^2)$, entonces utilizando el resultado A.3.5., se tiene que el vector $(\bar{Y}_s,\theta)$ tiene distribuci\'on normal bivariante. Para encontrar el vector de medias y matriz de varianzas y covarianzas, tenemos
+\begin{equation*}
+E(\bar{Y}_s)=E(Y_1)=\mu,
+\end{equation*}
+
+\begin{align*}
+Var(\bar{Y}_s)&=\frac{1}{n^2}Var(\sum_{k\in s}Y_k)\\
+&=\frac{1}{n^2}\left[\sum_{k\in s}Var(Y_k)+\sum\sum_{i\neq j}Cov(Y_i,Y_j)\right]\\
+&=\frac{1}{n^2}\left[n(\tau^2+\sigma^2)+(n^2-n)\tau^2\right]\\
+&=\tau^2+\frac{\sigma^2}{n}
+\end{align*}
+y
+\begin{align*}
+Cov(\bar{Y}_s,\theta)&=\frac{1}{n}\sum_{k\in s}Cov(Y_k,\theta)\\
+&=\frac{1}{n}\sum_{k\in s}\tau^2\\
+&=\tau^2.
+\end{align*}
+En conclusi\'on, se tiene que
+\begin{equation*}
+\begin{pmatrix}
+\bar{Y}_s\\
+\theta
+\end{pmatrix}\sim N_2\left(\begin{pmatrix}
+\mu\\
+\mu
+\end{pmatrix},\begin{pmatrix}
+\tau^2+\frac{\sigma^2}{n}&\tau^2\\
+\tau^2&\tau^2
+\end{pmatrix}\right).
+\end{equation*}
+Ahora, usando la anterior distribuci\'on y la propiedad 4 del resultado A.3.3 de la distribuci\'on multivariante, se tiene que
+\begin{equation*}
+\theta \mid \bar{Y}_s\sim N(\mu+\tau^2(\tau^2+\frac{\sigma^2}{n})^{-1}(\bar{y}_s-\mu),\tau^2-\tau^2(\tau^2+\frac{\sigma^2}{n})^{-1}\tau^2).
+\end{equation*}
+Para simplificar la esperanza y la varianza de esta distribuci\'on, tenemos
+\begin{align*}
+\mu+\tau^2(\tau^2+\frac{\sigma^2}{n})^{-1}(\bar{y}_s-\mu)&=\mu+\frac{n\tau^2}{n\tau^2+\sigma^2}(\bar{y}_s-\mu)\\
+&=\frac{n\tau^2\bar{y}_s}{n\tau^2+\sigma^2}+(1-\frac{n\tau^2}{n\tau^2+\sigma^2})\mu\\
+&=\frac{n\tau^2\bar{y}_s+\sigma^2\mu}{n\tau^2+\sigma^2},
+\end{align*}
+y
+\begin{align*}
+\tau^2-\tau^2(\tau^2+\frac{\sigma^2}{n})^{-1}\tau^2&=\tau^2-\frac{n\tau^4}{n\tau^2+\sigma^2}\\
+&=\tau^2(1-\frac{n\tau^2}{n\tau^2+\sigma^2})\\
+&=\frac{\tau^2\sigma^2}{n\tau^2+\sigma^2}.
+\end{align*}
+En conclusi\'on,
+\begin{equation*}
+\theta \mid \bar{Y}_s\sim N(\frac{n\tau^2\bar{y}_s+\sigma^2\mu}{n\tau^2+\sigma^2},\frac{\tau^2\sigma^2}{n\tau^2+\sigma^2}).
+\end{equation*}
+Ahora, por hip\'otesis, se tiene que
+\begin{equation*}
+\begin{pmatrix}
+\mathbf{Y}_r\\
+\mathbf{Y}_s
+\end{pmatrix} \mid \theta\sim N\left(\begin{pmatrix}
+\theta\mathbf{1}_{N-n}\\
+\theta\mathbf{1}_{n}
+\end{pmatrix},\begin{pmatrix}
+\sigma^2\mathbf{I}_{N-n}&\mathbf{0}\\
+\mathbf{0}&\sigma^2\mathbf{I}_n
+\end{pmatrix}\right),
+\end{equation*}
+de donde
+\begin{equation*}
+\mathbf{Y}_r \mid \mathbf{Y}_s,\theta\sim N(\theta\mathbf{1}_{N-n},\sigma^2\mathbf{I}_{N-n}).
+\end{equation*}
+Por otro lado, la estad\'istica $\mathbf{Y}_s$ es suficiente bayesianamente, \cite{Zack} entonces la distribuci\'on de inter\'es $\mathbf{Y}_r \mid \mathbf{Y}_s$ es la misma de $\mathbf{Y}_r \mid \bar{Y}_s$. Y podemos encontrar la distribuci\'on de $\mathbf{Y}_r \mid \mathbf{Y}_s$ usando la distribuci\'on de $(\mathbf{Y}_r',\mathbf{Y}_s)'$ encontrada anteriormente. Tenemos que
+\begin{align}\label{Y_rY_s}
+p(\mathbf{Y}_r \mid \bar{Y}_s)&=\frac{p(\mathbf{Y}_r,\bar{Y}_s)}{p(\bar{Y}_s)}\notag\\
+&=\frac{\int p(\mathbf{Y}_r \mid \bar{Y}_s,\theta)p(\theta \mid \bar{Y}_s)p(\bar{Y}_s)d\theta}{p(\bar{Y}_s)}\notag\\
+&=\int p(\mathbf{Y}_r \mid \bar{Y}_s,\theta)p(\theta \mid \bar{Y}_s)d\theta.
+\end{align}
+De nuevo, usando la suficiencia de $\bar{Y}_s$, se tiene que la distribuci\'on de $\mathbf{Y}_r \mid \bar{Y}_s,\theta$ coincide con la de $\mathbf{Y}_r \mid \mathbf{Y}_s,\theta$ que corresponde a una distribuci\'on normal multivariante. Entonces la expresi\'on $p(\mathbf{Y}_r \mid \bar{Y}_s,\theta)$ contiene una forma cuadr\'atica de $\mathbf{Y}_r$, y por consiguiente, tambi\'en lo contiene la expresi\'on (\ref{Y_rY_s}), de donde se concluye que la distribuci\'on de $\mathbf{Y}_r \mid \bar{Y}_s$ es normal multivariante. Para encontrar la respectiva esperanza y varianza. Tenemos que
+\begin{align*}
+E(\mathbf{Y}_r \mid \bar{Y}_s)&=E(E(\mathbf{Y}_r \mid \mathbf{Y}_s,\theta) \mid \bar{Y}_s)\\
+&=E(\theta\mathbf{1}_{N-n} \mid \bar{Y}_s)\\
+&=\mathbf{1}_{N-n}E(\theta \mid \bar{Y}_s)\\
+&=\mathbf{1}_{N-n}\frac{n\tau^2\bar{y}_s+\sigma^2\mu}{n\tau^2+\sigma^2}.
+\end{align*}
+Y
+\begin{align*}
+Var(\mathbf{Y}_r \mid \bar{Y}_s)&=E(Var(\mathbf{Y}_r \mid \mathbf{Y}_s,\theta) \mid \bar{Y}_s)+Var(E(\mathbf{Y}_r \mid \mathbf{Y}_s,\theta) \mid \bar{Y}_s)\\
+&=E(\sigma^2\mathbf{I}_{N-n} \mid \bar{Y}_s)+Var(\theta\mathbf{I}_{N-n} \mid \bar{Y}_s)\\
+&=\sigma^2\mathbf{I}_{N-n}+\mathbf{1}_{(N-n)\times(N-n)}\frac{\tau^2\sigma^2}{n\tau^2+\sigma^2},
+\end{align*}
+donde $\mathbf{1}_{(N-n)\times(N-n)}$ denota la matriz de dimensi\'on $(N-n)\times(N-n)$ de entradas iguales a 1. En conclusi\'on, $\mathbf{Y}_r \mid \mathbf{Y}_s$ tiene distribuci\'on normal multivariante con esperanza com\'un $\dfrac{n\bar{y}_s\tau^2+\mu\sigma^2}{n\tau^2+\sigma^2}$, varianza com\'un $\sigma^2+\dfrac{\sigma^2\tau^2}{n\tau^2+\sigma^2}$ y covarianza com\'un $\dfrac{\sigma^2\tau^2}{n\tau^2+\sigma^2}$.
+\end{proof}
+
+Con base en este resultado, se procede a la utilizaci\'on de XXXXXX para poder calcular las predicciones para los par\'ametros de inter\'es en la encuesta o el estudio por muestreo.
+
+\begin{Res}
+Para cualquier cantidad lineal poblacional $\mathbf{l}'\mathbf{Y}$, el predictor Bayesiano que minimiza la p\'erdida del error cuadr\'atico bajo el modelo simple est\'a dado por
+\begin{equation}
+\mathbf{l}_s'\mathbf{Y}_s+\mathbf{l}'_r\bmu_r
+\end{equation}
+donde $\bmu_r=(\mu_r,\ldots,\mu_r)'$
+\end{Res}
+
+En particular la predicci\'on para el total poblacional $T_y$ est\'a dada por la siguiente expresi\'on
+\begin{equation}
+\hat{T}_y=\sum_{k\in s}Y_k + (N-n)\mu_r
+\end{equation}
+
+Si el par\'ametro de inter\'es es la media poblacional, entonces el predictor Bayesiano estar\'ia dado por
+\begin{equation}
+\bar{Y}_U=\frac{\hat{T}_y}{N}=\frac{\sum_{k\in s}Y_k + (N-n)\mu_n}{N}
+\end{equation}
+
+\section{Modelo general}
+
+Asuma que el modelo de superpoblaci\'on $\xi$ que rige el comportamiento de la estructura probabil\'istica de la variable de inter\'es en la poblaci\'on finita est\'a dado por
+\begin{equation}
+\mathbf{Y}=\mathbf{X}\bbeta+\mathbf{e}
+\end{equation}
+
+Adem\'as suponga que las distribuciones \emph{a priori} de cada una del vector de variables de inter\'es y del vector de par\'ametros $\bbeta$ son
+\begin{align*}
+\mathbf{Y} \mid \bbeta,\mathbf{X} &\sim N(\mathbf{X}\bbeta,\mathbf{V})\\
+\bbeta &\sim N(\mathbf{b},\mathbf{B})
+\end{align*}
+
+Donde $\mathbf{V}$ es la matriz de varianzas poblacional y se supone conocida. Adem\'as $\mathbf{e}$ y $\bbeta$ son independientes.
+
+\begin{Res}
+Si $\mathbf{Y}$ se particiona como $\mathbf{Y}=(\mathbf{Y}_r',\mathbf{Y}_s')$, donde $\mathbf{Y}_r$ y $\mathbf{Y}_s$ son de tama\~no $N-n$ y $n$, respectivamente. Entonces se tiene que $\mathbf{Y}_r \mid \mathbf{Y}_s$ tiene distribuci\'on normal multivariante con esperanza dada por
+\begin{equation*}
+E(\mathbf{Y}_r \mid \mathbf{Y}_s)=\bmu_r=\mathbf{X}_r\hat{\bbeta}_B+\mathbf{V}_{rs}\mathbf{V}_s^{-1}(\mathbf{y}_s-\mathbf{X}_s)\hat{\bbeta}_B
+\end{equation*}
+y matriz de varianzas dada por
+\begin{multline*}
+Var(\mathbf{Y}_r \mid \mathbf{Y}_s)=\bSigma_r=\mathbf{V}_r-\mathbf{V}_{rs}\mathbf{V}_s^{-1}\mathbf{V}_{sr}+\\(\mathbf{X}_r-\mathbf{V}_{rs}\mathbf{V}_s^{-1}\mathbf{X}_s)(\mathbf{X}_s'\mathbf{V}_s^{-1}\mathbf{X}_s+\mathbf{B}^{-1})^{-1}(\mathbf{X}_r-\mathbf{V}_{rs}\mathbf{V}_s^{-1}\mathbf{X}_s)',
+\end{multline*}
+donde $\mathbf{X}_s$, $\mathbf{X}_r$, $\mathbf{V}_r$, $\mathbf{V}_{rs}$ y $\mathbf{V}_{sr}$ corresponden a las submatrices de $\mathbf{X}$ y $\mathbf{V}$ correspondiente a la partici\'on de $\mathbf{Y}$. Y
+\begin{equation*}
+\hat{\bbeta}_B=(\mathbf{X}_s'\mathbf{V}_s^{-1}\mathbf{X}_s+\mathbf{B}^{-1})^{-1}(\mathbf{X}_s'\mathbf{V}_s^{-1}\mathbf{y}_s+\mathbf{B}^{-1}\mathbf{b}).
+\end{equation*}
+\end{Res}
+\begin{proof}
+En primer lugar consideramos el estimador de $\bbeta$ que es suficiente en el sentido Bayesiano \cite{Zack} dado por
+\begin{equation*}
+\hat{\bbeta}_s=(\mathbf{X}_s'\mathbf{V}_s\mathbf{X}_s)^{-1}\mathbf{X}_s'\mathbf{V}_s^{-1}\mathbf{Y}_s.
+\end{equation*}
+Por hip\'otesis, se tiene que $\mathbf{Y}_s \mid \bbeta$ tiene distribuci\'on normal multivariante, entonces $\hat{\bbeta}_s \mid \bbeta$ tambi\'en tiene distribuci\'on normal multivariante con
+\begin{align*}
+E(\hat{\bbeta}_s \mid \bbeta)&=(\mathbf{X}_s'\mathbf{V}_s\mathbf{X}_s)^{-1}\mathbf{X}_s'\mathbf{V}_s^{-1}E(\mathbf{Y}_s \mid \bbeta)\\
+&=(\mathbf{X}_s'\mathbf{V}_s\mathbf{X}_s)^{-1}\mathbf{X}_s'\mathbf{V}_s^{-1}\mathbf{X}_s\bbeta\\
+&=\bbeta
+\end{align*}
+y
+\begin{align*}
+Var(\hat{\bbeta}_s \mid \bbeta)&=(\mathbf{X}_s'\mathbf{V}_s\mathbf{X}_s)^{-1}\mathbf{X}_s'\mathbf{V}_s^{-1}Var(\mathbf{Y}_s \mid \bbeta)\mathbf{V}_s^{-1}\mathbf{X}_s(\mathbf{X}_s'\mathbf{V}_s\mathbf{X}_s)^{-1}\\
+&=(\mathbf{X}_s'\mathbf{V}_s\mathbf{X}_s)^{-1}\mathbf{X}_s'\mathbf{V}_s^{-1}\mathbf{V}_s\mathbf{V}_s^{-1}\mathbf{X}_s(\mathbf{X}_s'\mathbf{V}_s\mathbf{X}_s)^{-1}\\
+&=(\mathbf{X}_s'\mathbf{V}_s\mathbf{X}_s)^{-1}.
+\end{align*}
+En conclusi\'on, $\hat{\bbeta}_s \mid \bbeta\sim N(\bbeta,(\mathbf{X}_s'\mathbf{V}_s\mathbf{X}_s)^{-1})$. Por otro lado, $\bbeta\sim N(\mathbf{b},\mathbf{B})$, entonces por el resultado A.3.5, se tiene que $(\hat{\bbeta}_s',\bbeta')$ tiene distribuci\'on normal multivariante, con
+\begin{align*}
+E(\hat{\bbeta}_s)&=(\mathbf{X}_s'\mathbf{V}_s\mathbf{X}_s)^{-1}\mathbf{X}_s'\mathbf{V}_s^{-1}E(\mathbf{Y}_s)\\
+&=(\mathbf{X}_s'\mathbf{V}_s\mathbf{X}_s)^{-1}\mathbf{X}_s'\mathbf{V}_s^{-1}\mathbf{X}_sE(\bbeta)\\
+&=E(\bbeta)\\
+&=\mathbf{b},
+\end{align*}
+
+\begin{align*}
+Var(\hat{\bbeta}_s)&=(\mathbf{X}_s'\mathbf{V}_s\mathbf{X}_s)^{-1}\mathbf{X}_s'\mathbf{V}_s^{-1}Var(\mathbf{Y}_s)\mathbf{V}_s^{-1}\mathbf{X}_s(\mathbf{X}_s'\mathbf{V}_s\mathbf{X}_s)^{-1}\\
+&=(\mathbf{X}_s'\mathbf{V}_s\mathbf{X}_s)^{-1}\mathbf{X}_s'\mathbf{V}_s^{-1}(\mathbf{X}_s\mathbf{B}\mathbf{X}_s'+\mathbf{V}_s)\mathbf{V}_s^{-1}\mathbf{X}_s(\mathbf{X}_s'\mathbf{V}_s\mathbf{X}_s)^{-1}\\
+&=(\mathbf{X}_s'\mathbf{V}_s\mathbf{X}_s)^{-1}+\mathbf{B}
+\end{align*}
+y
+\begin{align*}
+Cov(\hat{\bbeta}_s,\bbeta)&=(\mathbf{X}_s'\mathbf{V}_s\mathbf{X}_s)^{-1}\mathbf{X}_s'\mathbf{V}_s^{-1}Cov(\mathbf{Y}_s,\bbeta)\\
+&=(\mathbf{X}_s'\mathbf{V}_s\mathbf{X}_s)^{-1}\mathbf{X}_s'\mathbf{V}_s^{-1}\mathbf{X}_sCov(\bbeta,\bbeta)\\
+&=\mathbf{B}.
+\end{align*}
+En conclusi\'on, se tiene que
+\begin{equation*}
+\begin{pmatrix}
+\hat{\bbeta}_s\\
+\bbeta
+\end{pmatrix}\sim N\left(\begin{pmatrix}
+\mathbf{b}\\
+\mathbf{b}
+\end{pmatrix},\begin{pmatrix}
+(\mathbf{X}_s'\mathbf{V}_s\mathbf{X}_s)^{-1}+\mathbf{B}&\mathbf{B}\\
+\mathbf{B}&\mathbf{B}
+\end{pmatrix}\right).
+\end{equation*}
+Usando la propiedad 4 del resultado A.3.3, se tiene que $\bbeta \mid \hat{\bbeta}_s$ tiene distribuci\'on normal multivariante con esperanza
+\begin{equation*}
+E(\bbeta \mid \hat{\bbeta}_s)=\mathbf{b}+\mathbf{B}[(\mathbf{X}_s'\mathbf{V}_s\mathbf{X}_s)^{-1}+\mathbf{B}]^{-1}(\hat{\bbeta}_s-\mathbf{b})
+\end{equation*}
+al definir $\hat{\bbeta}_B=E(\bbeta \mid \hat{\bbeta}_s)$, se puede ver que $\hat{\bbeta}_B=(\mathbf{X}_s'\mathbf{V}_s^{-1}\mathbf{X}_s+\mathbf{B}^{-1})^{-1}(\mathbf{X}_s'\mathbf{V}_s^{-1}\mathbf{y}_s+\mathbf{B}^{-1}\mathbf{b})$
+y matriz de covarianzas
+\begin{equation*}
+Var(\bbeta \mid \hat{\bbeta}_s)=\mathbf{B}-\mathbf{B}[(\mathbf{X}_s'\mathbf{V}_s\mathbf{X}_s)^{-1}+\mathbf{B}]^{-1}\mathbf{B}
+\end{equation*}
+que resulta ser igual a $(\mathbf{X}_s'\mathbf{V}_s\mathbf{X}_s+\mathbf{B}^{-1})^{-1}$.
+
+Ahora, por hip\'otesis se tiene que
+\begin{equation*}
+\begin{pmatrix}
+\mathbf{Y}_r\\
+\mathbf{Y}_s
+\end{pmatrix} \mid \bbeta,\mathbf{X}\sim N\left(\begin{pmatrix}
+\mathbf{X}_r\bbeta\\
+\mathbf{X}_s\bbeta
+\end{pmatrix},\begin{pmatrix}
+\mathbf{V}_r&\mathbf{V}_{rs}\\
+\mathbf{V}_{sr}&\mathbf{V}_s
+\end{pmatrix}\right),
+\end{equation*}
+entonces la distribuci\'on de $\mathbf{Y}_r \mid \mathbf{Y}_s,\bbeta$ es una distribuci\'on normal multivariante con
+\begin{equation*}
+E(\mathbf{Y}_r \mid \mathbf{Y}_s,\bbeta)=\mathbf{X}_r\bbeta+\mathbf{V}_{rs}\mathbf{V}_s^{-1}(\mathbf{y}_s-\mathbf{X}_s\bbeta)
+\end{equation*}
+y
+\begin{equation*}
+Var(\mathbf{Y}_r \mid \mathbf{Y}_s,\bbeta)=\mathbf{V}_r-\mathbf{V}_{rs}\mathbf{V}_s^{-1}\mathbf{V}_{sr}.
+\end{equation*}
+Ahora, $\hat{\bbeta}_s$ es simplemente una matriz de constantes multiplicado por $\mathbf{Y}_s$, por lo tanto, la distribuci\'on de $\mathbf{Y}_r \mid \hat{\bbeta}_s,\bbeta$ tambi\'en es normal multivariante.
+
+Por otro lado, la suficiencia de $\hat{\bbeta}_s$ implica que la distribuci\'on de inter\'es $\mathbf{Y}_r \mid \mathbf{Y}_s$ es la misma que $\mathbf{Y}_r \mid \hat{\bbeta}_s$. Tenemos que
+\begin{align}
+p(\mathbf{Y}_r \mid \hat{\bbeta}_s)&=\frac{p(\mathbf{Y}_r,\hat{\bbeta}_s)}{p(\hat{\bbeta}_s)}\notag\\
+&=\frac{\int p(\mathbf{Y}_r \mid \hat{\bbeta}_s,\bbeta)p(\bbeta \mid \hat{\bbeta}_s)p(\hat{\bbeta}_s)d\bbeta}{p(\hat{\bbeta}_s)}\notag\\
+&=\int p(\mathbf{Y}_r \mid \hat{\bbeta}_s,\bbeta)p(\bbeta \mid \hat{\bbeta}_s)d\bbeta.
+\end{align}
+Como se coment\'o antes, $\mathbf{Y}_r \mid \hat{\bbeta}_s,\bbeta$ tiene distribuci\'on normal multivariante, y por consiguiente, $p(\mathbf{Y}_r \mid \hat{\bbeta}_s,\bbeta)$ contiene una forma cuadr\'atica de $\mathbf{Y}_r$. Luego, $p(\mathbf{Y}_r \mid \hat{\bbeta}_s)$ tambi\'en contiene esa forma cuadr\'atica, y  se concluye que la distribuci\'on de $\mathbf{Y}_r \mid \hat{\bbeta}_s$ es normal multivariante. Entonces se tiene que $\mathbf{Y}_r \mid \mathbf{Y}_s$ tambi\'en tiene distribuci\'on normal multivariante.
+
+Ahora,
+\begin{align*}
+E(\mathbf{Y}_r \mid \mathbf{Y}_s)&=E(\mathbf{X}_r\bbeta+\mathbf{V}_r \mid \mathbf{Y}_s)\\
+&=E(\mathbf{X}_r\bbeta \mid \mathbf{Y}_s)+E(\mathbf{V}_r \mid \mathbf{Y}_s)\\
+&=\mathbf{X}_rE(\bbeta \mid \mathbf{Y}_s)+\mathbf{V}_r\\
+&=\mathbf{X}_rE(\bbeta \mid \hat{\bbeta}_s)+E(\mathbf{V}_r \mid \hat{\bbeta}_s)\\
+&=E(\mathbf{X}_r\bbeta+\mathbf{V}_r \mid \hat{\bbeta}_s)\\
+&=E(\mathbf{Y}_r \mid \hat{\bbeta}_s)
+\end{align*}
+
+pero
+\begin{align*}
+E(\mathbf{Y}_r \mid \hat{\bbeta}_s)&=E(E(\mathbf{Y}_r \mid \mathbf{Y}_s,\bbeta) \mid \hat{\bbeta}_s)\\
+&=E(\mathbf{X}_r\bbeta+\mathbf{V}_{rs}\mathbf{V}_s^{-1}(\mathbf{y}_s-\mathbf{X}_s\bbeta) \mid \hat{\bbeta}_s)\\
+&=\mathbf{X}_rE(\bbeta \mid \hat{\bbeta}_s)+\mathbf{V}_{rs}\mathbf{V}_s^{-1}(\mathbf{y}_s-\mathbf{X}_sE(\bbeta \mid \hat{\bbeta}_s))\\
+&=\mathbf{X}_r\hat{\bbeta}_B+\mathbf{V}_{rs}\mathbf{V}_s^{-1}(\mathbf{y}_s-\mathbf{X}_s\hat{\bbeta}_B).
+\end{align*}
+De donde se concluye que $E(\mathbf{Y}_r \mid \mathbf{Y}_s)=\mathbf{X}_r\hat{\bbeta}_B+\mathbf{V}_{rs}\mathbf{V}_s^{-1}(\mathbf{y}_s-\mathbf{X}_s\hat{\bbeta}_B)$.
+
+An\'alogamente, se tiene que
+\begin{align*}
+Var(\mathbf{Y}_r \mid \mathbf{Y}_s)&=Var(\mathbf{Y}_r \mid \hat{\bbeta}_s)\\
+&=E(Var(\mathbf{Y}_r \mid \mathbf{Y}_s,\bbeta) \mid \hat{\bbeta}_s)+Var(E(\mathbf{Y}_r \mid \mathbf{Y}_s,\bbeta) \mid \hat{\bbeta}_s)\\
+&=E(\mathbf{V}_r-\mathbf{V}_{rs}\mathbf{V}_s^{-1}\mathbf{V}_{sr} \mid \hat{\bbeta}_s)+Var(\mathbf{X}_r\bbeta+\mathbf{V}_{rs}\mathbf{V}_s^{-1}(\mathbf{y}_s-\mathbf{X}_s\bbeta) \mid \hat{\bbeta}_s)\\
+&=\mathbf{V}_r-\mathbf{V}_{rs}\mathbf{V}_s^{-1}\mathbf{V}_{sr}+Var(\mathbf{X}_r\bbeta-\mathbf{V}_{rs}\mathbf{V}_s^{-1}\mathbf{X}_s\bbeta \mid \hat{\bbeta}_s)\\
+&=\mathbf{V}_r-\mathbf{V}_{rs}\mathbf{V}_s^{-1}\mathbf{V}_{sr}+(\mathbf{X}_r-\mathbf{V}_{rs}\mathbf{V}_s^{-1}\mathbf{X}_s)Var(\bbeta \mid \hat{\bbeta}_s)(\mathbf{X}_r-\mathbf{V}_{rs}\mathbf{V}_s^{-1}\mathbf{X}_s)'\\
+&=\mathbf{V}_r-\mathbf{V}_{rs}\mathbf{V}_s^{-1}\mathbf{V}_{sr}+(\mathbf{X}_r-\mathbf{V}_{rs}\mathbf{V}_s^{-1}\mathbf{X}_s)(\mathbf{X}_s'\mathbf{V}_s\mathbf{X}_s+\mathbf{B}^{-1})^{-1}(\mathbf{X}_r-\mathbf{V}_{rs}\mathbf{V}_s^{-1}\mathbf{X}_s)'.
+\end{align*}
+Con lo anterior, se completa la demostraci\'on.
+\end{proof}
+
+Con base en el anterior resultado, se procede a la utilizaci\'on de XXXXXX para poder calcular las predicciones para los par\'ametros de inter\'es en la encuesta o el estudio por muestreo.
+
+\begin{Res}
+Para cualquier cantidad lineal poblacional $\mathbf{l}'\mathbf{Y}$, el predictor Bayesiano que minimiza la p\'erdida del error cuadr\'atico bajo el modelo simple est\'a dado por
+\begin{equation}
+\mathbf{l}_s'\mathbf{Y}_s+\mathbf{l}'_r\bmu_r
+\end{equation}
+\end{Res}
+
+En particular la predicci\'on para el total poblacional $T_y$ est\'a dada por la siguiente expresi\'on
+\begin{equation}
+\hat{T}_y=\sum_{k\in s}Y_k + \mathbf{1}'_r\mu_r
+\end{equation}
+
+donde $\mathbf{1}'_r$ es un vector de unos de tama\~no $N-n$. 

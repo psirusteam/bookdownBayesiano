@@ -1,0 +1,597 @@
+<<echo=FALSE, message=FALSE>>=
+library(R2jags)
+library(coda)
+library(lattice)
+library(R2WinBUGS)
+library(rjags)
+library(superdiag)
+library(mcmcplots)
+library(xtable)
+library(ggplot2)
+library(plot3D)
+library(reshape2)
+library(gridExtra)
+options(scipen = 100, digits = 2)
+set.seed(12345)
+library(knitr)
+knit_theme$set("acid")
+@
+%--------------------
+\chapter{Modelo lineal din\'amico}
+
+Los modelos lineales din\'amicos se pueden considerar como un caso particular de los modelos de estado espacio, y la estimaci\'on y el pron\'ostico para estos modelos se puede llevar a cabo usando el filtro de Kalman.
+
+
+\section{Representaci\'on de estado espacio y filtro de Kalman}
+\subsection{Modelo de estado espacio}
+Siguiendo la notaci\'on de \citeasnoun{Harvey1989}, la representaci\'on de estado espacio asume que en el tiempo $t$ el vector de una serie de tiempo multivariado de dimensi\'on $N\times 1$ est\'a relacionado con un vector $\bbeta_t$ (llamado vector de estado) de dimensi\'on $m\times 1$ de la siguiente forma:
+\begin{equation}\label{ec_obs}
+\mathbf{y}_t=\mathbf{Z}_t\bbeta_t+\mathbf{d}_t+\boldsymbol{\epsilon}_t
+\end{equation}
+
+para $t=1,\cdots,T$, $\mathbf{Z}_t$ es una matriz de dimensi\'on $N\times m$, $\mathbf{d}_t$ es un vector de dimensi\'on $N\times 1$ y $\boldsymbol{\epsilon}_t$ es un vector de ruidos de dimensi\'on $N\times 1$ con $E(\boldsymbol{\epsilon}_t)=\mathbf{0}$, $Var(\boldsymbol{\epsilon}_t)=\Sigma_t$ y $Cov(\boldsymbol{\epsilon}_t,\boldsymbol{\epsilon}_{t'})=\mathbf{0}$ para $t\neq t'$. La anterior ecuaci\'on se conoce como la ecuaci\'on de observaci\'on. 
+
+En muchos casos, el vector $\bbeta_t$ contiene componentes no observables, y sigue la siguiente ecuaci\'on
+\begin{equation}\label{ec_estado}
+\bbeta_t=\mathbf{G}_t\bbeta_{t-1}+\mathbf{P}_t+\mathbf{R}_t\boldsymbol{\omega}_t
+\end{equation}
+
+donde $\mathbf{G}_t$ es una matriz de dimensi\'on $m\times m$, $\mathbf{P}_t$ es un vector de dimensi\'on $m\times 1$, $\mathbf{R}_t$ es una matriz de dimensi\'on $m\times g$, $\boldsymbol{\omega}_t$ es un vector de ruidos de dimensi\'on $g\times 1$ con $E(\boldsymbol{\omega}_t)=\mathbf{0}$, $Var(\boldsymbol{\omega}_t)=\mathbf{W}_t$ y $Cov(\boldsymbol{\omega}_t,\boldsymbol{\omega}_{t'})=\mathbf{0}$ para $t\neq t'$. La anterior ecuaci\'on se conoce como la ecuaci\'on de transici\'on o ecuaci\'on de estado pues describe la evoluci\'on del vector de estado $\bbeta_t$. Se asume las siguientes propiedades para el vector de estado inicial: $E(\bbeta_0)=\mathbf{b}_0$ y $Var(\bbeta_0)=\mathbf{P}_0$. Finalmente se tiene que $Cov(\boldsymbol{\epsilon}_t,\ \boldsymbol{\omega}_{t'})=\mathbf{0}$ para todo $t$ y $t'$, $Cov(\boldsymbol{\epsilon}_t,\ \balpha_{0})=\mathbf{0}$ y $Cov(\boldsymbol{\omega}_t,\ \balpha_{0})=\mathbf{0}$  para todo $t$.
+
+Un gran n\'umero de modelos estacionarios y no estacionarios puede ser escritos en forma de modelo de estado-espacio, a continuaci\'on se ilustran algunos m\'as representativos. 
+
+\begin{Eje}\label{AR_p}
+\textbf{Modelos autorregresivos}. En general, un modelo autoregresivo $AR(p)$  dado por $y_t=\phi_0\phi_1y_{t-1}+\phi_2y_{t-2}+\cdots+\phi_py_{t-p}+e_t$, se puede escribir como un modelo lineal din\'amico. , al definir $\bbeta_t=(
+y_t,y_{t-1},\cdots,y_{t-p+1})'$, vector de dimensi\'on $p\times 1$, se tiene que
+\begin{equation*}
+y_t=\underbrace{\begin{pmatrix}
+1&0&\cdots&0
+\end{pmatrix}}_{\mathbf{Z}_t}\underbrace{\begin{pmatrix}
+y_t\\y_{t-1}\\\vdots\\y_{t-p+1}
+\end{pmatrix}}_{\bbeta_t}+\underbrace{\phi_0}_{\mathbf{d}_t},
+\end{equation*}
+
+\begin{equation*}
+\underbrace{\begin{pmatrix}
+y_t\\y_{t-1}\\\vdots\\y_{t-p+1}
+\end{pmatrix}}_{\bbeta_t}=\underbrace{\begin{pmatrix}
+\phi_1&\phi_2&\cdots&\phi_{p-1}&\phi_p\\
+1&0&\cdots&0&0\\
+0&1&\cdots&0&0\\
+\vdots&\vdots&\ddots&\vdots&\vdots\\
+0&0&\cdots&1&0
+\end{pmatrix}}_{\mathbf{G}_t}\underbrace{\begin{pmatrix}
+y_{t-1}\\y_{t-2}\\\vdots\\y_{t-p}
+\end{pmatrix}}_{\bbeta_{t-1}}+\underbrace{\begin{pmatrix}
+1\\0\\\vdots\\0
+\end{pmatrix}}_{\mathbf{R}_t}\underbrace{e_t}_{\boldsymbol{\omega}_t}
+\end{equation*}
+
+N\'otese que en la anterior representaci\'on de modelo de estado-espacio, las matrices $\mathbf{Z}_t$, $\mathbf{d}_t$ $\mathbf{G}_t$ y $\mathbf{R}_t$ son matrices constantes que no dependen del tiempo, lo anterior se conoce como un modelo invariante en el tiempo.
+\end{Eje}
+
+\begin{Eje}
+\textbf{Medias m\'oviles}. Un modelo de medias m\'oviles de \'orden $q$, $MA(q)$, se puede escribir como $y_t=\mu+e_t+\theta_1e_{t-1}+\cdots+\theta_qe_{t-q}$ definiendo el vector de estado como $\bbeta_t=(y_t,e_t,e_{t-1},\cdots,e_{t-q+1})'$. La ecuaci\'on de observaci\'on se establece con $\mathbf{Z}_t=(1,0,\cdots,0)$, $\mathbf{d}_t=\mu$. La ecuaci\'on de transici\'on queda expresada como
+\begin{equation*}
+\underbrace{\begin{pmatrix}
+y_t\\\theta_1e_{t}\\\theta_2e_{t-1}\\\vdots\\\theta_qe_{t-q+1}
+\end{pmatrix}}_{\bbeta_t}=\underbrace{\begin{pmatrix}
+0&1&\cdots&1&1&1\\
+0&0&\cdots&0&0&0\\
+0&\frac{\theta_1}{\theta_2}&\cdots&0&0&0\\
+\vdots&\vdots&\ddots&\vdots&\vdots&\vdots\\
+0&0&\cdots&0&\frac{\theta_{q-1}}{\theta_q}&0
+\end{pmatrix}}_{\mathbf{G}_t}\underbrace{\begin{pmatrix}
+y_{t-1}\\\theta_1e_{t-1}\\\theta_2e_{t-2}\\\vdots\\\theta_qe_{t-q}
+\end{pmatrix}}_{\bbeta_{t-1}}+\underbrace{\begin{pmatrix}
+1\\\theta_1\\0\\\vdots\\0
+\end{pmatrix}}_{\mathbf{R}_t}\underbrace{e_t}_{\boldsymbol{\omega}_t}
+\end{equation*}
+\end{Eje}
+
+La representaci\'on en modelo de estado-espacio es particularmente \'util para los modelos estructurales. A continuaci\'on se ilustra la representaci\'on en forma de estado-espacio de uno de estos modelos
+
+\begin{Eje}\label{ModEstBas}
+\textbf{Modelo estructural b\'asico} Este modelo asume que la serie observada $y_t$ es la suma de un componente de nivel $\mu_t$, un componente estacional $\gamma_t$ y un componente del ruido. El modelo est\'a dado por:
+\begin{align*}
+y_t&=\mu_t+\gamma_t+\epsilon_t\\
+\mu_t&=\mu_{t-1}+\beta_{t-1}+\eta_t\\
+\beta_t&=\beta_{t-1}+\psi_t
+\end{align*}
+
+donde $\mu_t$ denota el componente de la tendencia, $\{\epsilon_t\}$ es un proceso ruido blanco, y $\gamma_t$ es el componente de estascionalidad que cumple $\sum_{i=0}^{s-1}\gamma_{t-i}=\omega_t$ donde $s$ denota el n\'umero de observaciones por a\~no, y $\{\omega_t\}$ es un proceso ruido blanco. 
+
+El vector de estado contiene todos los componentes no observables del modelo: el nivel $\mu_t$, la pendiente $\beta_t$ y $s-1$ efectos estacionales, de esta forma $\bbeta_t=(\mu_t,\beta_t,\gamma_t,\gamma_{t-1},\cdots,\gamma_{t-s+1})'$. La ecuaci\'on de observaci\'on y de estado quedan definidas como
+\begin{align*}
+y_t&=(1,0,1,0,\cdots,0)'\bbeta_t+\epsilon_t\\
+\bbeta_t&=\begin{pmatrix}\mu_t\\\beta_t\\\gamma_t\\\gamma_{t-1}\\\vdots\\\gamma_{t-s+3}\\\gamma_{t-s+2}\end{pmatrix}
+=\begin{pmatrix}1&1&0&0&\cdots&0&0\\
+0&1&0&0&\cdots&0&0\\
+0&0&-1&-1&\cdots&-1&-1\\
+0&0&1&0&\cdots&0&0\\
+\vdots&\vdots&\vdots&\vdots&\ddots&\vdots&\vdots\\
+0&0&0&0&\cdots&1&0
+\end{pmatrix}
+\begin{pmatrix}\mu_{t-1}\\\beta_{t-1}\\\gamma_{t-1}\\\gamma_{{t-2}}\\\vdots\\\gamma_{t-s+2}\\\gamma_{t-s+1}\end{pmatrix}+
+\begin{pmatrix}
+1&0&0\\
+0&1&0\\
+0&0&1\\
+0&0&0\\
+0&0&0\\
+\vdots&\vdots&\vdots\\
+0&0&0\\
+\end{pmatrix}
+\begin{pmatrix}\eta_t\\\psi_t\\\omega_t\end{pmatrix}
+\end{align*}
+\end{Eje}
+
+\subsection{Filtro de Kalman}
+Tal como se v\'io en los ejemplos de la secci\'on anterior, en algunos modelos de estado espacio el vector de estado $\bbeta_t$ contiene componentes no observables de la serie $y_t$, y es de inter\'es extraer (estimar) estos componentes, esto es particularmente cierto en los modelos estructurales. El filtro de Kalman permite estimar estos componentes usando la serie observada $y_t$.
+
+En otros modelos de estado espacio, es de inter\'es estimar los elementos de las matrices $\mathbf{Z}_t$, $\mathbf{d}_t$, $\mathbf{G}_t$ o $\mathbf{P}_t$, por ejemplo, en el ejemplo \ref{AR_p} donde se encuentra una representaci\'on en modelo de estado espacio de los modelos autoregresivos, el inter\'es radica en estimar $\mathbf{d}_t$ y $\mathbf{G}_t$ ya que estos contienen los coeficientes $\phi_0,\phi_1,\cdots,\phi_p$ del modelo autoregresivo; adicionalmente tambi\'en es de inter\'es estimar la varianza del ruido $\omega_t$. La estimaci\'on de estos coeficientes se lleva a cabo usando el m\'etodo de m\'axima verosimilitud, y se efect\'ua tambi\'en por medio del filtro de Kalman.
+
+\subsubsection{Las dos fases del filtro de Kalman}
+El filtro de Kalman consta de dos fases: el fase de filtro y el fase de suavizamiento:
+\begin{itemize}
+\item \emph{Fase de filtro}: Esta fase tiene objetivo encontrar el \'optimo estimador del vector de estado en el tiempo $t$, $\bbeta_t$ con base en la informaci\'on disponible hasta ese punto de tiempo: $y_1,y_2,\cdots,y_t$.
+\item \emph{Fase de suavizamiento}: Esta fase se ejecuta despu\'es de la fase de filtro, y tiene objetivo encontrar el \'optimo estimador de $\bbeta_t$ con base en toda la informaci\'on disponible: $y_1,y_2,\cdots,y_n$.
+\end{itemize}
+
+Denotando $\mathbf{y}^t$ como toda la informaci\'on disponible hasta el tiempo $t$, es decir, $\mathbf{y}_1,\mathbf{y}_2,\cdots,\mathbf{y}_t$, se define el \'optimo estimador de $\bbeta_t$ como $\mathbf{m}_t$ el cual est\'a dado por $E(\bbeta_t\mid y^t)$, y se denota la matriz de covarianzas del error de estimaci\'on como $\mathbf{P}_t=E[(\bbeta_t-\mathbf{m}_t)(\bbeta_t-\mathbf{m}_t)']$. Se tiene las siguientes ecuaciones recursivas (conocidas como ecuaciones de actualizaci\'on):
+\begin{align}
+\mathbf{m}_t&=\mathbf{m}_{t|t-1}+\mathbf{P}_{t|t-1}\mathbf{Z}'_t\mathbf{F}^{-1}_t(\mathbf{y}_t-\mathbf{Z}_t\mathbf{m}_{t|t-1}-\mathbf{d}_t)\label{actua_1}\\
+\mathbf{P}_t&=\mathbf{P}_{t|t-1}-\mathbf{P}_{t|t-1}\mathbf{Z}_t'\mathbf{F}_t^{-1}\mathbf{Z}_t\mathbf{P}_{t|t-1}\label{actua_2}
+\end{align}
+
+donde $\mathbf{F}_t=\mathbf{Z}_t\mathbf{P}_{t|t-1}\mathbf{Z}'_t+\Sigma_t$, $\mathbf{m}_{t|t-1}=E(\bbeta_{t}|\mathbf{y}^{t-1})$ es el estimador \'optimo de $\bbeta_t$ dada informaci\'on hasta el tiempo $t-1$, y est\'a dada por
+\begin{equation}\label{actua_3}
+\mathbf{m}_{t|t-1}=\mathbf{G}_{t}\mathbf{m}_{t-1}+\mathbf{P}_{t}
+\end{equation}
+
+y la matriz de covarianzas del error de estimaci\'on $\mathbf{P}_{t|t-1}=E[(\bbeta_t-\mathbf{m}_{t|t-1})(\bbeta_t-\mathbf{m}_{t|t-1})']$ est\'a dada por
+\begin{equation}\label{actua_4}
+\mathbf{P}_{t|t-1}=\mathbf{G}_{t}\mathbf{P}_{t-1}\mathbf{G}_t'+\mathbf{R}_{t}\mathbf{W}_{t}\mathbf{R}_{t}'
+\end{equation}
+
+Asumiendo las condiciones iniciales $\mathbf{m}_0$ y $\mathbf{P}_0$, la fase de filtro se ejecuta de la siguiente forma:
+\begin{enumerate}
+\item Calcular $\mathbf{m}_{1|0}$ y $\mathbf{P}_{1|0}$ usando las condiciones iniciales $\mathbf{m}_0$ y $\mathbf{P}_0$ a partir de (\ref{actua_3}) y (\ref{actua_4}) 
+\item Calcular $\mathbf{m}_{1}$ y $\mathbf{P}_{1}$ usando $\mathbf{m}_{1|0}$ y $\mathbf{P}_{1|0}$ a partir de (\ref{actua_1}) y (\ref{actua_2}) 
+\item Calcular $\mathbf{m}_{2|1}$ y $\mathbf{P}_{2|1}$ usando las condiciones iniciales $\mathbf{m}_1$ y $\mathbf{P}_1$ a partir de (\ref{actua_3}) y (\ref{actua_4}) 
+\item $\ \ \ \ \ \ \ \cdots$
+\item Calcular $\mathbf{m}_{T}$ y $\mathbf{P}_{T}$ usando $\mathbf{m}_{T|T-1}$ y $\mathbf{P}_{T|T-1}$ a partir de (\ref{actua_1}) y (\ref{actua_2}) 
+\end{enumerate}
+
+Al finalizar el fase del filtro, se cuenta con las estimaciones $\mathbf{m}_1,\mathbf{m}_2,\cdots,\mathbf{m}_T$, sin embargo, la estimaci\'on de cada $\mathbf{m}_t$ solo se basa en la informaci\'on disponible hasta el tiempo $t$, y no utilizando toda la informaci\'on disponible, por lo cual se recurre a la fase de suavizamiento cuyo objetivo es encontrar los estimadores $\mathbf{m}_1^T,\mathbf{m}_2^T,\cdots,\mathbf{m}_T^T$ donde para cada $t$, $\mathbf{m}_t^T=E(\bbeta_t\mid\mathbf{y}^T)$. Las ecuaciones de esta fase est\'an dadas por
+\begin{equation}\label{Suavi_1}
+\mathbf{m}_t^T=\mathbf{m}_t+\mathbf{P}_t^*(\mathbf{m}_{t+1}^T-\mathbf{G}_{t+1}\mathbf{m}_t)
+\end{equation}
+
+con la matriz de covarianzas del error de estimaci\'on dada por
+\begin{equation}\label{Suavi_2}
+\mathbf{P}_t^T=\mathbf{P}_t+\mathbf{P}_t^*(\mathbf{P}_{t+1}^T-\mathbf{P}_{t+1|t}(\mathbf{P}_t^*)')
+\end{equation}
+
+donde 
+\begin{equation}\label{Suavi_3}
+\mathbf{P}_t^*=\mathbf{P}_t\mathbf{G}_{t+1}'\mathbf{P}_{t+1|t}^{-1}
+\end{equation}
+
+donde $\mathbf{P}_{t+1|t}=\mathbf{G}_{t+1}\mathbf{P}_{t}\mathbf{G}_{t+1}'+\mathbf{R}_{t+1}\mathbf{W}_{t+1}\mathbf{R}_{t+1}'$. Observando la forma de las anteriores ecuaciones, se puede ver que la fase de suavizamiento se aplica comenzando en el tiempo $T-1$ y se va retrocediendo en tiempo hasta el tiempo $1$; para el tiempo $T$ no es necesario el c\'alculo puesto que $\mathbf{m}_T=\mathbf{m}_T^T$. En conclusi\'on, una vez concluida la fase del filtro, la implementaci\'on de la fase de suavizamiento es como sigue:
+\begin{enumerate}
+\item Calcular $\mathbf{P}_{T-1}^*$ usando (\ref{Suavi_3})
+\item Calcular $\mathbf{m}_{T-1}^T$ y $\mathbf{P}_{T-1}^T$ usando (\ref{Suavi_1}) y (\ref{Suavi_2})
+\item Calcular $\mathbf{P}_{T-2}^*$ usando (\ref{Suavi_3})
+\item Calcular $\mathbf{m}_{T-2}^T$ y $\mathbf{P}_{T-2}^T$ usando (\ref{Suavi_1}) y (\ref{Suavi_2})
+\item $\ \ \ \ \ \ \ \cdots$
+\item Calcular $\mathbf{P}_{1}^*$ usando (\ref{Suavi_3})
+\item Calcular $\mathbf{m}_{1}^T$ y $\mathbf{P}_{1}^T$ usando (\ref{Suavi_1}) y (\ref{Suavi_2})
+\end{enumerate}
+
+Una vez concluida la fase de suavizamiento, se cuenta con el \'optimo estimador del vector de estado $\bbeta_t$ dada toda la informaci\'on disponible $\mathbf{y}^T$, y se puede extraer el componente de $\bbeta_t$ que sea de inter\'es. En el ejemplo \ref{ModEstBas}, si el inter\'es est\'a en estimar la tendencia de la serie $y_t$, entonces de los resultados del filtro de Kalman, se extrae el primer componente de $\mathbf{m}_t^T$ que corresponde a la tendencia $\mu_t$, y si el inter\'es es observar la evoluci\'on de la estacionalidad en el tiempo, se extrae los \'ultimos $s$ componentes del vector $\mathbf{m}_t^T$ para $t=1,\cdots,T$.  
+
+\subsubsection{estimaci\'on de m\'axima verosimilitud}
+Para la aplicaci\'on del filtro de Kalman es necesario conocer los par\'ametros de la ecuaci\'on de observaci\'on y la ecuaci\'on de estado, es decir, las matrices y los vectores $\mathbf{Z}_t$, $\mathbf{d}_t$, $\Sigma_t$, $\mathbf{G}_t$, $\mathbf{P}_t$ y $\mathbf{W}_t$. Para la estimaci\'on de estos par\'ametros en el \'ambito de la inferencia cl\'asica, se hace uso de la funci\'on de verosimilitud condicional dado por
+\begin{equation*}
+L(\mathbf{y},\boldsymbol{\theta})=\prod_{t=1}^Tp(\mathbf{y}_t\mid \mathbf{y}^{t-1})
+\end{equation*}
+
+donde $\mathbf{\theta}$ denota todos los par\'ametros del modelo. Si asumimos que la distribuci\'on del ruido de la ecuaci\'on de observaci\'on (\ref{ec_obs}) es normal multivariante, al igual que el vector de estado inicial, entonces se puede concluir que $\mathbf{y}_t\mid \mathbf{y}^{t-1}\sim N_N(\mathbf{Z}_t\mathbf{a}_{t\mid t-1}+\mathbf{d}_t,\ \mathbf{F}_t)$ con $\mathbf{F}_t=\mathbf{Z}_t\mathbf{P}_{t\mid t-1}\mathbf{Z}_t'+\Sigma_t$. De esta forma, se tiene que
+\begin{equation*}
+p(\mathbf{y}_t\mid \mathbf{y}^{t-1})=(2\pi)^{-N/2}\mid F_t\mid^{-1/2}\exp\left\{-\frac{1}{2}\mathbf{v}_t'\mathbf{F}_t^{-1}\mathbf{v}_t\right\}
+\end{equation*}
+
+con $\mathbf{v}_t=\mathbf{y}_t-E(\mathbf{y}_t\mid\mathbf{y}^{t-1})=\mathbf{y}_t-\mathbf{Z}_t\mathbf{a}_{t\mid t-1}-\mathbf{d}_t$ que denota los errores de predicci\'on en el tiempo $t$. 
+
+Dado lo anterior, la funci\'on de verosimilitud condicional est\'a dada por
+\begin{equation*}
+L(\mathbf{y},\mathbf{\theta})=(2\pi)^{-NT/2}\prod_{t=1}^T\mid F_t\mid^{-1/2}\exp\left\{-\frac{1}{2}\sum_{t=1}^T\mathbf{v}_t'\mathbf{F}_t^{-1}\mathbf{v}_t\right\}
+\end{equation*}
+
+y la funci\'on de log verosimilitud condicional est\'a dada por:
+\begin{equation*}
+l(\mathbf{y},\mathbf{\theta})=-\frac{NT}{2}\log (2\pi)-\frac{1}{2}\sum_{t=1}^T\log\mid F_t\mid-\frac{1}{2}\sum_{t=1}^T\mathbf{v}_t'\mathbf{F}_t^{-1}\mathbf{v}_t
+\end{equation*}
+
+Recomendamos la lectura de la secci\'on 3.4 de \citeasnoun{Harvey1989} para consultar los diferentes aspectos t\'ecnicos de la estimaci\'on de m\'axima verosimilitud. 
+
+En cuanto a la implementaci\'on computacional del filtro de Kalman en \verb'R', se encuentran varios paquetes disponibles, entre ellos \verb'dse', \verb'dlm', \verb'FKF' y \verb'sspir'. En el art\'iculo de \citeasnoun{Kalman_R} se encuentra una descripci\'on detallada y comparaci\'on entre estos paquetes.
+
+\section{Modelos bayesianos din\'amicos}
+
+Los modelos lineales din\'amicos son un caso particular de los modelos de estado espacio lineal y Gaussiano. Adicionalmente, aqu\'i se considera \'unicamente el caso de series univariadas. Por lo tanto, estos modelos quedan especificados por las dos siguientes ecuaciones,
+\begin{align}
+y_t&=\mathbf{Z}_t\bbeta_t+\epsilon_t,\ \ \ \ \epsilon_t\sim N(0,\sigma_t^2)\\
+\bbeta_t&=\mathbf{G}_t\bbeta_{t-1}+\boldsymbol{\omega}_t,\ \ \ \ \omega_t\sim N_m(\mathbf{0},\mathbf{W}_t)
+\end{align}
+
+donde $\{y_t\}$ es una serie de tiempo observada univariada, condicionalmente independiente dado $\bbeta_t$ y $\sigma^2_t$, $\mathbf{Z}_t$ es un vector de variables aleatorias de dimensi\'on $1\times m$, y $\bbeta_t$ es el vector de estado o el vector de coeficientes de regresi\'on en el tiempo $t$ de dimensi\'on $m\times1$, $\mathbf{G}_t$ es de dimensi\'on $m\times m$. Los errores $\epsilon_t$ y $\boldsymbol{\omega}_t$ son independientes, con varianza $\sigma^2_t$ y $\mathbf{W}_t$, respectivamente. Adicionalmente se asume que la condicional inicial de $\bbeta_1\sim N_m(\mathbf{m}_1,\ \mathbf{P}_1)$.
+
+Algunos caso especiales de los modelos lineales din\'amicos son los modelos de regresi\'on din\'amico que se dan cuando $\mathbf{G}_t=\mathbf{I}_m$ para todo $t$. Los modelos de regresi\'on cl\'asicos o est\'aticos tambi\'en es un caso particular de los modelos lineales din\'amicos con $\mathbf{G}_t=\mathbf{I}_m$ y $\mathbf{W}_t=0$ para todo $t$.
+
+\begin{Eje}\label{MCL}
+Gamerman (2003) afirma que el modelo de crecimiento lineal dado por
+\begin{align*}
+y_t&=\beta_{1t}+\epsilon_t\ \ \ \ \epsilon_t\sim N(0,\sigma^2_t)\\
+\beta_{1t}&=\beta_{1,t-1}+\beta_{2t}+\omega_{1t}\\
+\beta_{2t}&=\beta_{2,t-1}+\omega_{2t}
+\end{align*}
+
+es un modelo lineal din\'amico con $\bbeta_t=(\beta_{1t},\beta_{2t})'$, $\mathbf{Z}_t=(1,0)$, $\mathbf{G}_t=\begin{pmatrix}
+1&1\\
+1&0
+\end{pmatrix}$ y $\boldsymbol{\omega}_t=(\omega_{1t},\omega_{2t})'\sim N_2(\mathbf{0},\mathbf{W}_t)$.
+\end{Eje}
+
+El objetivo del an\'alisis es encontrar la distribuci\'on a posteriori de los coeficientes de regresi\'on $\bbeta_t$ para todo $t=1,\ldots,T$. Esto se lleva a cabo usando procedimientos recursivos que constan de los procesos del filtro y del suavizamiento que se describen a continuaci\'on. Para la implementaci\'on de estos procesos, se supone que $\sigma^2_t$, $\mathbf{W}_t$, $\mathbf{F}_t$ y $\mathbf{G}_t$ son conocidas; de lo contrario, se debe incluir la estimaci\'on de estos par\'ametros en los procedimientos recursivos.
+
+\subsection{Fase de filtro}
+El proceso del filtro tiene como objetivo encontrar la distribuci\'on de $\bbeta_t$ dada toda la informaci\'on $y_1,\ldots,y_t$ para todo $t=1,\ldots,T$, esto es, $p(\bbeta_t\mid y^t)$, donde $y^t$ denota el conjunto de informaci\'on disponible hasta el tiempo $t$. Para eso, utilizamos el resultado de construcci\'on de distribuci\'on conjunta de una distribuci\'on normal est\'andar tomada de \citeasnoun{Gamer06}, el cual afirma que:
+\begin{Res}
+Si $x_1\mid x_2\sim N_{d_1}(\mu_1+B_1(x_2-\mu_2),\ B_2)$ para matrices de constantes $B_1$ y $B_2$ de dimensi\'on $d_1\times d_1$ y $d_2\times d_2$, respectivamente, y si $x_2\sim N_{d_2}(\mu_2,\ \Sigma_{22})$, entonces se tiene que 
+\begin{equation*}
+x=\begin{pmatrix}x_1\\x_2\end{pmatrix}\sim N_d\left[\begin{pmatrix}\mu_1\\\mu_2\end{pmatrix},\ \begin{pmatrix}\Sigma_{11}&\Sigma_{12}\\\Sigma_{21}&\Sigma_{22}\end{pmatrix}\right]
+\end{equation*}
+
+donde $\Sigma_{11}=B_2+B_1\Sigma_{22}B_1'$ y $\Sigma_{21}'=\Sigma_{12}=B_1\Sigma_{22}$.
+\end{Res}
+
+Se aplica el anterior resultado al tomar $\bbeta_{t} \mid y^{t-1}$  como $x_1$ y tomar $\bbeta_{t-1} \mid y^{t-1}$ como $x_2$, de donde se tiene que $x_1 \mid x_2=\bbeta_t \mid \bbeta_{t-1}$ cuya distribuci\'on es $N_p(\mathbf{G}_t\bbeta_{t-1},\mathbf{W}_t)$ (obtenida de la ecuaci\'on de estado), es decir, $\mathbf{G}_t\bbeta_{t-1}=\mu_1+B_1(x_2-\mu_2)$. Por otro lado, suponga que en el tiempo $t-1$ la distribuci\'on de $\bbeta_{t-1} \mid y^{t-1}$ es $N_m(\mathbf{m}_{t-1},\mathbf{P}_{t-1})$, de esta forma, $\mu_2=\mathbf{m}_{t-1}$ y $\Sigma_{22}=\mathbf{P}_{t-1}$. Ahora, teniendo en cuenta que $\mathbf{G}_t\bbeta_{t-1}=\mathbf{G}_t\mathbf{m}_{t-1}+\mathbf{G}_t(\bbeta_{t-1}-\mathbf{m}_{t-1})$, se puede concluir que $\mu_1=\mathbf{G}_t\mathbf{m}_{t-1}$ y $B_1=\mathbf{G}_t$, y del resultado anterior, se concluye que
+\begin{equation}\label{t_t-1}
+\bbeta_t \mid y^{t-1}\sim N_m(\mathbf{m}_{t\mid t-1},\mathbf{P}_{t\mid t-1})
+\end{equation}
+
+con $\mathbf{m}_{t\mid t-1}=\mathbf{G}_t\mathbf{m}_{t-1}$ y $\mathbf{P}_{t\mid t-1}=\mathbf{W_t}+\mathbf{G}_t\mathbf{P}_{t-1}\mathbf{G}_t'$.
+
+Cuando se observa la observaci\'on $t$, se debe actualizar la distribuci\'on de $\bbeta_t$ calculando la distribuci\'on $p(\bbeta_t \mid y^t)$, tenemos que
+\begin{align*}
+p(\bbeta_t \mid y^t)&=p(\bbeta_t \mid y_t,y^{t-1})\\
+&\propto p(y_t,y^{t-1},\bbeta_t)\\
+&\propto p(y_t,y^{t-1},\bbeta_t)\frac{1}{p(y^{t-1})}\\
+&=\frac{p(y_t,y^{t-1},\bbeta_t)}{p(\bbeta_t,y^{t-1})}\frac{p(\bbeta_t,y^{t-1})}{p(y^{t-1})}\\
+&=p(y_t \mid \bbeta_t,y^{t-1})p(\bbeta_t \mid y^{t-1})\\
+&=p(y_t \mid \bbeta_t)p(\bbeta_t \mid y^{t-1})
+\end{align*}
+
+puesto que dado $\bbeta_t$, la distribuci\'on de $y_t$ es independiente de informaciones previas. Ahora usando $y_t \mid \bbeta_t\sim N(\mathbf{Z}_t\bbeta_t,\sigma^2_t)$ y $\bbeta_t \mid y^{t-1}\sim N_m(\mathbf{m}_{t\mid t-1},\mathbf{P}_{t\mid t-1})$, se tiene que
+\begin{align*}
+p(\bbeta_t \mid y^t)&\propto \exp\left\{-\frac{1}{2\sigma_t^2}(y_t-\mathbf{Z}_t\bbeta_t)^2\right\}\exp\left\{-\frac{1}{2}(\bbeta_t-\mathbf{m}_{t\mid t-1})'\mathbf{P}_{t\mid t-1}^{-1}(\bbeta_t-\mathbf{m}_{t\mid t-1})\right\}\\
+&\propto\exp\left\{-\frac{1}{2}\left[\bbeta_t'(\sigma^{-2}_t\mathbf{Z}'_t\mathbf{Z}_t+\mathbf{P}_{t\mid t-1}^{-1})\bbeta_t-2\bbeta_t'(\sigma^{-2}_t\mathbf{Z}'_ty_t+\mathbf{P}_{t\mid t-1}^{-1}\mathbf{m}_{t\mid t-1})\right]\right\}\\
+&=\exp\left\{-\frac{1}{2}\left[\bbeta_t'\mathbf{P}_t^{-1}\bbeta_t-2\bbeta_t'\mathbf{P}_t^{-1}\mathbf{P}_t(\sigma^{-2}_t\mathbf{Z}'_ty_t+\mathbf{P}_{t\mid t-1}^{-1}\mathbf{m}_{t\mid t-1})\right]\right\}
+\end{align*}
+
+con $\mathbf{P}_t^{-1}=\sigma^{-2}_t\mathbf{Z}'_t\mathbf{Z}_t+\mathbf{P}_{t\mid t-1}^{-1}$. De lo anterior, se tiene que 
+\begin{equation}\label{tt}
+\bbeta_t\mid y^t \sim N_m(\mathbf{m}_t,\ \mathbf{P}_t)
+\end{equation}
+
+con $\mathbf{m}_t=\mathbf{P}_t(\sigma^{-2}_t\mathbf{Z}'_ty_t+\mathbf{P}_{t\mid t-1}^{-1}\mathbf{m}_{t\mid t-1})$. Gamerman (2003) afirma que 
+\begin{equation}\label{demostrarP}
+\mathbf{P}_t=\mathbf{P}_{t\mid t-1}-\mathbf{A}_t\mathbf{A}_t'\mathbf{Q}_t
+\end{equation}
+
+con $\mathbf{Q}_t=\mathbf{Z}_t\mathbf{P}_{t\mid t-1}\mathbf{Z}'_t+\sigma^2_t$ y $\mathbf{A}_t=\mathbf{P}_{t\mid t-1}\mathbf{Z}'_t/\mathbf{Q}_t$. Entonces se tiene que
+\begin{align*}
+\mathbf{m}_t&:=\mathbf{P}_t(\sigma^{-2}_t\mathbf{Z}'_ty_t+\mathbf{P}_{t\mid t-1}^{-1}\mathbf{m}_{t\mid t-1})\\
+&=\left(\mathbf{P}_{t\mid t-1}-\frac{\mathbf{P}_{t\mid t-1}\mathbf{Z}'_t\mathbf{Z}_t\mathbf{P}_{t\mid t-1}}{\mathbf{Q}_t}\right)\left(\sigma^{-2}_t\mathbf{Z}'_ty_t+\mathbf{P}_{t\mid t-1}^{-1}\mathbf{m}_{t\mid t-1}\right)\\
+&=\mathbf{m}_{t\mid t-1}+\sigma^{-2}_t\mathbf{P}_{t\mid t-1}\mathbf{Z}'_ty_t-\frac{\sigma^{-2}_t\mathbf{P}_{t\mid t-1}\mathbf{Z}'_t\mathbf{Z}_t\mathbf{P}_{t\mid t-1}\mathbf{Z}'_ty_t}{\mathbf{Q}_t}-\frac{\mathbf{P}_{t\mid t-1}\mathbf{Z}'_t\mathbf{Z}_t\mathbf{m}_{t\mid t-1}}{\mathbf{Q}_t}\\
+&=\mathbf{m}_{t\mid t-1}+\frac{\mathbf{P}_{t\mid t-1}\mathbf{Z}'_t}{\mathbf{Q}_t}(\underbrace{\sigma^{-2}_ty_t\mathbf{Q}_t-\sigma^{-2}_t\mathbf{Z}_t\mathbf{P}_{t\mid t-1}\mathbf{Z}'_ty_t}_{y_t}-\mathbf{Z}_t\mathbf{m}_{t\mid t-1})\\
+&=\mathbf{m}_{t\mid t-1}+\mathbf{A}_t(y_t-\mathbf{Z}_t\mathbf{m}_{t\mid t-1}).
+\end{align*}
+
+En resumen, el proceso del filtro consta de los siguientes pasos:
+\begin{enumerate}
+    \item Fijar una distribuci\'on a priori $\bbeta_1 \mid y^0\sim N_p(\mathbf{m}_{1\mid 0},\mathbf{P}_1)$
+    \item Obtener la distribuci\'on actualizada $\bbeta_1 \mid y^1$ usando (\ref{tt})
+    \item Calcular la distribuci\'on de $\bbeta_2 \mid y^1$ usando (\ref{t_t-1})
+    \item Calcular la distribuci\'on de $\bbeta_2 \mid y^2$ usando (\ref{tt})
+    \item $\ldots$
+    \item Obtener la distribuci\'on de $\bbeta_T \mid y^T$ usando (\ref{tt}).
+\end{enumerate}
+
+De esta forma, se tiene disponible la distribuci\'on de $\bbeta_t\mid y^t$, para todo $t=1,\cdots,T$, en la siguiente secci\'on, se presenta la fase de suavizamiento, con el fin de usar toda la informaci\'on disponible $y^T$.
+
+\subsection{Fase de suavizamiento}
+Una vez concluido la fase del filtro, se procede con el suavizamiento que tiene como fin encontrar la distribuci\'on de $\beta_t$ dada toda la informaci\'on $y_1,\ldots,y_T$ para todo $t=1,\ldots,T$. En primer lugar, se encuentra la distribuci\'on conjunta de las observaciones $y_t$ y los coeficientes de regresi\'on $\bbeta_t$ para $t=1,\ldots,T$.
+
+\begin{Res}
+La funci\'on de densidad de la distribuci\'on conjunta de $y^T=(y_1,\ldots,y_T)'$ y $\bbeta=(\bbeta_1,\ldots,\bbeta_T)'$ est\'a dada por
+\begin{equation}
+p(y^T,\bbeta)=\prod_{t=1}^Tp(\mathbf{y}_t \mid \bbeta_t)\prod_{t=2}^Tp(\bbeta_t \mid \bbeta_{t-1})p(\bbeta_1).
+\end{equation}
+\end{Res}
+
+\begin{proof}
+Tenemos que
+\begin{equation*}
+p(y^T,\bbeta)=p(y_1,\ldots,y_T \mid \bbeta_1,\ldots,\bbeta_T)p(\bbeta_1,\ldots,\bbeta_n).
+\end{equation*}
+
+Ahora
+\begin{align*}
+&\ \ \ \ \ p(y_1,\ldots,y_T \mid \bbeta_1,\ldots,\bbeta_T)\\
+&=p(y_1 \mid y_2,\ldots,y_T,\bbeta_1,\ldots,\bbeta_T)p(y_2 \mid y_3,\ldots,y_T,\bbeta_1,\ldots,\bbeta_T)\ldots p(y_T \mid \bbeta_1,\ldots,\bbeta_T)\\
+&=p(y_1 \mid \bbeta_1)p(y_2 \mid \bbeta_2)\ldots p(y_T \mid \bbeta_T),
+\end{align*}
+
+puesto que para todo $t=1,\ldots,T$, dado $\bbeta_t$, $y_t$ es independiente de $y_s$ para todo $s>t$.
+
+Por otro lado
+\begin{align*}
+&\ \ \ \ \ p(\bbeta_1,\ldots,\bbeta_T)\\
+&=p(\bbeta_T \mid \bbeta_{T-1},\ldots,\bbeta_1)p(\bbeta_{T-1} \mid \bbeta_{T-2},\ldots,\bbeta_1)\ldots p(\bbeta_2 \mid \bbeta_1)p(\bbeta_1)\\
+&=p(\bbeta_T \mid \bbeta_{T-1})p(\bbeta_{T-1} \mid \bbeta_{T-2})\ldots p(\bbeta_2 \mid \bbeta_1)p(\bbeta_1),
+\end{align*}
+
+puesto que para todo $t=1,\ldots,T-1$, dado $\bbeta_t$, $\bbeta_{t+1}$ es independiente de $\bbeta_s$ para todo $s<t+1$.
+\end{proof}
+
+Usando la anterior funci\'on de densidad conjunto, se puede encontrar la distribuci\'on posteriori de $\bbeta_t$ dada toda la informaci\'on $y_1,\ldots,y_T$ para todo $t=1,\ldots,T$, como lo ilustra el siguiente resultado.
+\begin{Res}\label{res_suaviza_Bayes}
+Dado $y_1,\ldots,y_T$, $\bbeta_1$, $\ldots$, $\bbeta_{t-1}$, $\bbeta_{t+1}$, $\ldots$, $\bbeta_T$, la distribuci\'on posteriori de $\bbeta_t$ es $N_m(\mathbf{m}^T_t,\mathbf{P}^T_t)$ con
+\begin{equation*}
+\mathbf{m}^T_t=
+\begin{cases}
+\mathbf{B}_1(\sigma^{-2}_1\mathbf{Z}'_1y_1+\mathbf{G}_2'\mathbf{W}_2^{-1}\bbeta_2+\mathbf{P}_{1\mid 0}^{-1}\mathbf{a}_1)&\ t=1\\
+\mathbf{B}_t(\sigma^{-2}_t\mathbf{Z}'_ty_t+\mathbf{G}_{t+1}'\mathbf{W}_{t+1}^{-1}\bbeta_{t+1}+\mathbf{W}_t^{-1}\mathbf{G}_t\bbeta_{t-1})&\ t=2,\ldots,T-1\\
+\mathbf{B}_n(\sigma^{-2}_T\mathbf{Z}'_Ty_T+\mathbf{W}_T^{-1}\mathbf{G}_T\bbeta_{T-1})&\ t=T\\
+\end{cases}
+\end{equation*}
+y
+\begin{equation*}
+\mathbf{P}^T_t=
+\begin{cases}
+(\sigma^{-2}_1\mathbf{Z}'_1\mathbf{Z}_1\mathbf{I}_m+\mathbf{G}_2'\mathbf{W}_2^{-1}\mathbf{G}_2+\mathbf{P}_{1\mid 0}^{-1})^{-1}&\ t=1\\
+(\sigma^{-2}_t\mathbf{Z}'_t\mathbf{Z}_t\mathbf{I}_m+\mathbf{G}_{t+1}'\mathbf{W}_{t+1}^{-1}\mathbf{G}_{t+1}+\mathbf{W}_t^{-1})^{-1}&\ t=2,\ldots,T-1\\
+(\sigma^{-2}_T\mathbf{Z}'_T\mathbf{Z}_T\mathbf{I}_m+\mathbf{W}_T^{-1})^{-1}&\ t=T\\
+\end{cases}
+\end{equation*}
+\end{Res}
+
+\begin{proof}
+\begin{align*}
+&\ \ \ \ p(\bbeta_t \mid y_1,\ldots,y_T,\bbeta_1,\ldots,\bbeta_{t-1},\bbeta_{t+1}, \ldots,\bbeta_n)\\
+&\propto p(y_1,\ldots,y_T,\bbeta_1,\ldots,\bbeta_T)\\
+&=p(y_1 \mid \bbeta_1,\ldots,\bbeta_T,y_2,\ldots,y_T)p(y_2 \mid \bbeta_1,\ldots,\bbeta_T,y_3,\ldots,y_T)\ldots p(y_T \mid \bbeta_1,\ldots,\bbeta_T)p(\bbeta_1,\ldots,\bbeta_T)\\
+&=p(y_1 \mid \bbeta_1)\ldots p(y_T \mid \bbeta_T)p(\bbeta_1,\ldots,\bbeta_T)\\
+&\propto p(y_t \mid \bbeta_t)p(\bbeta_1,\ldots,\bbeta_T)\\
+&=p(y_t \mid \bbeta_t)p(\bbeta_T \mid \bbeta_{T-1},\ldots,\bbeta_1)p(\bbeta_{T-1} \mid \bbeta_{T-2},\ldots,\bbeta_1)\ldots p(\bbeta_1)\\
+&= p(y_t \mid \bbeta_t)p(\bbeta_T \mid \bbeta_{T-1})p(\bbeta_{T-1} \mid \bbeta_{T-2})\ldots p(\bbeta_1)\\
+&\propto p(y_t \mid \bbeta_t)p(\bbeta_{t+1} \mid \bbeta_{t})p(\bbeta_t \mid \bbeta_{t-1})
+\end{align*}
+
+para $t=2,\cdots,T-2$. Mientras que para $t=1$
+\begin{equation}\label{posbeta1}
+p(\bbeta_1 \mid y_1,\ldots,y_T,\bbeta_2, \ldots,\bbeta_T)\propto p(y_1 \mid \bbeta_1)p(\bbeta_2 \mid \bbeta_1)p(\bbeta_1),
+\end{equation}
+
+y para $t=T$
+\begin{equation}\label{posbetan}
+p(\bbeta_T \mid y_1,\ldots,y_T,\bbeta_1, \ldots,\bbeta_{T-1})\propto p(y_T \mid \bbeta_T)p(\bbeta_T \mid \bbeta_{T-1}).
+\end{equation}
+
+En primer lugar, consideramos $t=2,\ldots,T-2$. Recurriendo a la ecuaci\'on de observaci\'on y la distribuci\'on normal de $\epsilon_t$, se tiene que $y_t \mid \bbeta_t\sim N(\mathbf{Z}_t\bbeta_t,\sigma_t^2)$; por otro lado, la ecuaci\'on de sistema y la distribuci\'on normal de $\boldsymbol{\omega}_t$ conducen a $\bbeta_{t+1} \mid \bbeta_t\sim N_m(\mathbf{G}_{t+1}\bbeta_t,\mathbf{W}_{t+1})$ y $\bbeta_t \mid \bbeta_{t-1}\sim N_m(\mathbf{G}_t\bbeta_{t-1},\mathbf{W}_t)$. Usando estas distribuciones, se tiene que para $t=2,\cdots,T-2$, 
+\begin{align*}
+&\ \ \ \ \ \ p(\bbeta_t \mid y_1,\ldots,y_T)\\&\propto
+\exp\left\{-\frac{1}{2\sigma_t^2}(y_t-\mathbf{Z}_t\bbeta_t)^2\right\}\exp\left\{-\frac{1}{2}(\bbeta_{t+1}-\mathbf{G}_{t+1}\bbeta_t)'\mathbf{W}_{t+1}^{-1}(\bbeta_{t+1}-\mathbf{G}_{t+1}\bbeta_t)\right\}\\
+&\hspace{6cm}\exp\left\{-\frac{1}{2}(\bbeta_t-\mathbf{G}_t\bbeta_{t-1})'\mathbf{W}_t^{-1}(\bbeta_t-\mathbf{G}_t\bbeta_{t-1})\right\}\\
+&\propto \exp\left\{\frac{1}{2}\left[\bbeta_t'(\sigma^{-2}_t\mathbf{Z}'_t\mathbf{Z}_t\mathbf{I}_m+\mathbf{G}_{t+1}'\mathbf{W}_{t+1}^{-1}\mathbf{G}_{t+1}+\mathbf{W}_t^{-1})\bbeta_t-2\bbeta_t'(\sigma^{-2}_t\mathbf{Z}'_ty_t+\mathbf{G}_{t+1}'\mathbf{W}_{t+1}^{-1}\bbeta_{t+1}+\mathbf{W}_t^{-1}\mathbf{G}_t\bbeta_{t-1})\right]\right\}
+\end{align*}
+
+Al definir $\mathbf{P}^T_t=(\sigma^{-2}_t\mathbf{Z}'_t\mathbf{Z}_t\mathbf{I}_m+\mathbf{G}_{t+1}'\mathbf{W}_{t+1}^{-1}\mathbf{G}_{t+1}+\mathbf{W}_t^{-1})^{-1}$, se tiene que
+\begin{align*}
+p(\bbeta_t \mid y_1,\ldots,y_T)&\propto\exp\left\{\frac{1}{2}\left[\bbeta_t'\mathbf{B}_t^{-1}\bbeta_t-2\bbeta_t'\mathbf{B}_t^{-1}\mathbf{B}_t(\sigma^{-2}_t\mathbf{Z}'_ty_t+\mathbf{G}_{t+1}'\mathbf{W}_{t+1}^{-1}\bbeta_{t+1}+\mathbf{W}_t^{-1}\mathbf{G}_t\bbeta_{t-1})\right]\right\}\\
+&=\exp\left\{\frac{1}{2}\left[\bbeta_t'\mathbf{B}_t^{-1}\bbeta_t-2\bbeta_t'\mathbf{B}_t^{-1}\mathbf{b}_t\right]\right\}
+\end{align*}
+
+con $\mathbf{m}^T_t=\mathbf{B}_t(\sigma^{-2}_t\mathbf{Z}'_ty_t+\mathbf{G}_{t+1}'\mathbf{W}_{t+1}^{-1}\bbeta_{t+1}+\mathbf{W}_t^{-1}\mathbf{G}_t\bbeta_{t-1})$, de donde se concluye que $\bbeta_t \mid y_1,\ldots,y_T\sim N_m(\mathbf{b}_t,\mathbf{B}_t)$ para $t=2,\ldots,T-2$.
+
+Ahora, considera $t=1$, en cuyo caso la distribuci\'on a posteriori de $\bbeta_1$ est\'a dada en (\ref{posbeta1}). Tenemos que $y_1 \mid \bbeta_1\sim N(\mathbf{Z}_1\bbeta_1,\sigma_1^2)$, $\bbeta_2 \mid \bbeta_1\sim N_m(\mathbf{G}_2\bbeta_1,\mathbf{W}_2)$ y $\bbeta_1\sim N_m(\mathbf{m}_1,\mathbf{P}_1)$. Entonces tenemos que
+\begin{align*}
+&\ \ \ \ \ \ p(\bbeta_1 \mid y_1,\ldots,y_T)\\
+&\propto p(y_1 \mid \bbeta_1)p(\bbeta_2 \mid \bbeta_1)p(\bbeta_1)\\
+&\propto \exp\left\{-\frac{1}{2\sigma_1^2}(y_1-\mathbf{Z}_1\bbeta_1)^2\right\}\exp\left\{-\frac{1}{2}(\bbeta_2-\mathbf{G}_2\bbeta_1)'\mathbf{W}_2^{-1}(\bbeta_2-\mathbf{G}_2\bbeta_1)\right\}\\
+&\hspace{6cm}\exp\left\{-\frac{1}{2}(\bbeta_1-\mathbf{m}_1)'\mathbf{P}_{1}^{-1}(\bbeta_1-\mathbf{m}_1)\right\}\\
+&\propto \exp\left\{-\frac{1}{2}\left[\bbeta_1'(\sigma^{-2}_1\mathbf{Z}'_1\mathbf{Z}_1\mathbf{I}_m+\mathbf{G}_2'\mathbf{W}_2^{-1}\mathbf{G}_2+\mathbf{P}_1^{-1})\bbeta_1-2\bbeta_1'(\sigma^{-2}_1\mathbf{Z}'_1y_1+\mathbf{G}_2'\mathbf{W}_2^{-1}\bbeta_2+\mathbf{P}_{1}^{-1}\mathbf{m}_1)\right]\right\}\\
+&=\exp\left\{-\frac{1}{2}\left[\bbeta_1'\mathbf{B}_1^{-1}\bbeta_1-2\bbeta_1'\mathbf{B}_1^{-1}\mathbf{B}_1(\sigma^{-2}_1\mathbf{Z}'_1y_1+\mathbf{G}_2'\mathbf{W}_2^{-1}\bbeta_2+\mathbf{P}_{1}^{-1}\mathbf{m}_1)\right]\right\}\\
+&=\exp\left\{-\frac{1}{2}\left[\bbeta_1'\mathbf{B}_1^{-1}\bbeta_1-2\bbeta_1'\mathbf{B}_1^{-1}\mathbf{b}_1\right]\right\}\\
+\end{align*}
+
+con $\mathbf{B}_1=(\sigma^{-2}_1\mathbf{Z}'_1\mathbf{Z}_1\mathbf{I}_m+\mathbf{G}_2'\mathbf{W}_2^{-1}\mathbf{G}_2+\mathbf{P}_{1\mid 0}^{-1})^{-1}$ y $\mathbf{b}_1=\mathbf{B}_1(\sigma^{-2}_1\mathbf{Z}'_1y_1+\mathbf{G}_2'\mathbf{W}_2^{-1}\bbeta_2+\mathbf{P}_{1\mid 0}^{-1}\mathbf{m}_1)$. De donde se concluye que $\bbeta_1 \mid y_1,\ldots,y_T\sim N_m(\mathbf{b}_1,\mathbf{B}_1)$.
+
+El procedimiento para $t=T$ es an\'alogo, y se deja como ejercicio.
+\end{proof}
+
+Las distribuciones del anterior resultado permite llevar a cabo un algoritmo de muestreador de Gibbs. (Ver Gaberman MCMC, p. 173)
+
+Para encontrar la distribuci\'on suavizada $\bbeta_t \mid y^T$ para $t=1,\ldots,T$, se encuentra en primer lugar la distribuci\'on suavizada conjunta de $\bbeta_1$, $\ldots$, $\bbeta_T$. Tenemos que
+\begin{align}\label{betapos}
+p(\bbeta_1,\ldots,\bbeta_T \mid y^T)&=\frac{p(\bbeta_1,\ldots,\bbeta_T,y^T)}{p(y^T)}\notag\\
+&=\frac{p(\bbeta_1 \mid \bbeta_2,\ldots,\bbeta_T, y^T)p(\bbeta_2 \mid \bbeta_3,\ldots,\bbeta_T,y^T)\ldots p(\bbeta_{T-1} \mid \bbeta_T,y^T)p(\bbeta_T,y^T)}{p(y^T)}\notag\\
+&=p(\bbeta_1 \mid \bbeta_2,\ldots,\bbeta_T \mid y^T)p(\bbeta_2 \mid \bbeta_3,\ldots,\bbeta_T,y^T)\ldots p(\bbeta_{T-1} \mid \bbeta_T,y^T)p(\bbeta_T \mid y^T)\notag\\
+&=p(\bbeta_T \mid y^T)\prod_{t=1}^{T-1}p(\bbeta_t \mid \bbeta_{t+1},\ldots,\bbeta_T,y^T)\notag\\
+&=p(\bbeta_T \mid y^T)\prod_{t=1}^{T-1}p(\bbeta_t \mid \bbeta_{t+1},y^t)
+\end{align}
+
+la \'ultima igualdad se tiene por el hecho de que dado $\bbeta_{t+1}$, $\bbeta_t$ es independiente de $y_s$ y $\bbeta_s$ con $s>t$.
+
+Integrando la ecuaci\'on (\ref{betapos}) con respecto a $\bbeta_1$, se tiene que
+\begin{align*}
+p(\bbeta_2,\ldots,\bbeta_T \mid y^T)&=p(\bbeta_T \mid y^T)\prod_{t=2}^{T-1}p(\bbeta_t \mid \bbeta_{t+1},y^t)\int p(\bbeta_1 \mid \bbeta_2,\ldots,\bbeta_T,y^t)d\bbeta_1\\
+&=p(\bbeta_T \mid y^T)\prod_{t=2}^{T-1}p(\bbeta_t \mid \bbeta_{t+1},y^t),
+\end{align*}
+
+puesto que la integral de una funci\'on de densidad condicional vale 1. De forma an\'aloga, integrando sucesivamente con respecto a $\bbeta_2$, $\ldots$, $\bbeta_{t-1}$, se tiene que
+\begin{equation*}
+p(\bbeta_t,\ldots,\bbeta_T \mid y^T)=p(\bbeta_T \mid y^T)\prod_{i=t}^{T-1}p(\bbeta_i \mid \bbeta_{i+1},y^i),
+\end{equation*}
+
+y adem\'as
+\begin{align*}
+p(\bbeta_t,\bbeta_{t+1} \mid y^T)&=\frac{p(\bbeta_t,\bbeta_{t+1},y^T)}{p(y^T)}\\
+&=\frac{p(\bbeta_t \mid \bbeta_{t+1},y^T)p(\bbeta_{t+1},y^T)}{p(y^T)}\\
+&=p(\bbeta_t \mid \bbeta_{t+1},y^T)p(\bbeta_{t+1} \mid y^T)\\
+&=p(\bbeta_t \mid \bbeta_{t+1},y^t)p(\bbeta_{t+1} \mid y^T)
+\end{align*}
+
+\begin{Res} 
+La distribuci\'on posterior de $\bbeta_T$ condicionado en todal informaci\'on disponible $y^T$ para $t=1,\cdots,T-1$ est\'a dada por:
+\begin{equation}
+\bbeta_t \mid y^T\sim N(\mathbf{m}^*_t,\mathbf{P}^*_t)
+\end{equation}
+con $\mathbf{m}^*_t=\mathbf{m}_t+\mathbf{P}_t\mathbf{G}'_{t+1}\mathbf{P}_{t+1\mid t}^{-1}(\mathbf{m}^*_{t+1}-\mathbf{a}_{t+1})$ y $\mathbf{P}^*_t=\mathbf{P}_t-\mathbf{P}_t\mathbf{G}'_{t+1}\mathbf{P}^{-1}_{t+1\mid t}(\mathbf{P}_{t+1\mid t}-\mathbf{P}^*_{t+1})\mathbf{P}^{-1}_{t+1\mid t}\mathbf{G}_{t+1}\mathbf{P}_t$
+\end{Res}
+
+En conclusi\'on, la aplicaci\'on del filtro de Kalman consta de los siguientes pasos:
+\begin{enumerate}
+\item \emph{Fase de filtro}: obtener las distribuciones filtrados $\bbeta_1 \mid y^1$, $\bbeta_2 \mid y ^2$, $\ldots$, $\bbeta_T \mid y^T$ (los detalles de esta fase se encuentran en la secci\'on anterior).
+\item \emph{Fase de suavizamiento}: obtener las distribuciones suavizadas $\bbeta_1 \mid y^T$, $\bbeta_2 \mid y^T$, $\ldots$, $\bbeta_T \mid y^T$. Esto se lleva a cabo de la siguiente forma,
+\begin{enumerate}[(a)]
+\item Usando la distribuci\'on de $\bbeta_T \mid y^T\sim N(\mathbf{m}_T,\mathbf{P}_T)$ y notando que $\mathbf{m}_T=\mathbf{m}_T^*$ y $\mathbf{P}_T=\mathbf{P}_T^*$, calcular $\mathbf{m}_{T-1}^*$ y $\mathbf{P}_{T-1}^*$, y as\'i obtener la distribuci\'on de $\bbeta_{T-1} \mid y^T$.
+\item usar la distribuci\'on de $\bbeta_{T-1} \mid y^T$ para encontrar la de $\bbeta_{T-2} \mid y^T$ similarmente.
+\item Repetir el proceso hasta obtener la distribuci\'on de $\bbeta_1 \mid y^T$.
+\end{enumerate}
+\end{enumerate}
+
+\subsection{$\sigma^2_t$ y $\mathbf{W}_t$ desconocidos}
+Los resultados presentados anteriormente asumen que tanto las varianzas de los errores como las matrices $\mathbf{Z}_t$ y $\mathbf{G}_t$ son conocidas. En esta parte, suponemos que las varianzas  de los errores $\sigma^2_t$ y $\mathbf{W}_t$ son desconocidas, y por lo cual necesitan ser estimadas. En este caso, las distribuciones encontradas anteriormente siguen siendo v\'alidas condicionando sobre $\sigma^2_t$ y $\mathbf{W}_t$.
+
+Para encontrar las distribuciones concernientes a $\sigma^2_t$ y $\mathbf{W}_t$, suponga que \'estas son constantes a trav\'es del tiempo, esto es, $\sigma^2_t=\sigma^2$ y $\mathbf{W}_t=\mathbf{W}$ para $t=1,\ldots,T$. Tenemos las siguientes distribuciones a posteriori condicionales de $\sigma^2$ y $\mathbf{W}$.
+\begin{align*}
+&\ \ \ \ \ p(\sigma^2 \mid \bbeta,\mathbf{W},y_1,\ldots,y_T)\\
+&=\frac{p(\sigma^2,\bbeta,\mathbf{W},y_1,\ldots,y_T)}{p(\bbeta,\mathbf{W},y_1,\ldots,y_T)}\\
+&\propto p(y_1 \mid \sigma^2,\bbeta,\mathbf{W},y_2,\ldots,y_T)p(y_2 \mid \sigma^2,\bbeta,\mathbf{W},y_3,\ldots,y_T)\ldots p(y_T \mid \sigma^2,\bbeta,\mathbf{W})p(\sigma^2,\bbeta,\mathbf{W})\\
+&=p(y_1 \mid \sigma^2,\bbeta_1)p(y_2 \mid \sigma^2,\bbeta_2)\ldots p(y_T \mid \sigma^2,\bbeta_T)p(\sigma^2 \mid \bbeta,\mathbf{W})p(\bbeta,\mathbf{W})\\
+&\propto \prod_{t=1}^Tp(y_t \mid \sigma^2,\bbeta_t)p(\sigma^2 \mid \bbeta,\mathbf{W})
+\end{align*}
+
+y de forma an\'alogo, se tiene que
+\begin{equation}\label{po\mathbf{S}_W}
+p(\mathbf{W} \mid \bbeta,\sigma^2,y_1,\ldots,y_T)\propto\prod_{t=2}^Tp(\bbeta_t \mid \bbeta_{t-1},\mathbf{W})p(\mathbf{W} \mid \bbeta,\sigma^2)
+\end{equation}
+
+Suponiendo que las distribuciones a priori son $\sigma^2\sim IG(n_\sigma/2,n_\sigma S^2_\sigma/2)$ y $\mathbf{W}\sim IW(n_W/2,n_W\mathbf{S}_W/2)$, y adem\'as son independientes, de esta forma, $p(\sigma^2\mid \bbeta,\mathbf{W})=p(\sigma^2)$ y $p(\mathbf{W}\mid \bbeta,\sigma^2)=p(\mathbf{W})$. Tenemos que:
+\begin{align*}
+&\ \ \ \ \ p(\sigma^2 \mid \bbeta,\mathbf{W},y_1,\ldots,y_n)\\
+&\propto \prod_{t=1}^T(2\pi\sigma^2)^{-1/2}\exp\left\{-\frac{1}{2\sigma^2}(y_t-\mathbf{Z}_t\bbeta_t)^2\right\}\frac{(n_\sigma S^2_\sigma/2)^{n_\sigma/2}}{\Gamma(n_\sigma/2)}(\sigma^{-2})^{\frac{n_\sigma}{2}-1}\exp\left\{-\frac{n_\sigma S^2_\sigma}{2\sigma^2}\right\}\\
+&\propto (\sigma^{-2})^{\frac{T+n_\sigma}{2}-1}\exp\left\{-\frac{1}{2\sigma^2}\left[\sum_{t=1}^T(y_t-\mathbf{Z}_t\bbeta_t)^2+n_\sigma S^2_\sigma\right]\right\}\\
+&=(\sigma^{-2})^{\frac{n_\sigma^*}{2}-1}\exp\left\{-\frac{1}{2\sigma^2}n_\sigma^*S^2_\sigma^*\right\}
+\end{align*}
+
+con $n_\sigma^*=T+n_\sigma$ y $n_\sigma^* S^2_\sigma^*=\sum_{t=1}^T(y_t-\mathbf{Z}_t\bbeta_t)^2+n_\sigma S^2_\sigma$. De lo anterior se concluye que $\sigma^2 \mid \bbeta,\mathbf{W},y_1,\ldots,y_T\sim IG(n_\sigma^*/2,n_\sigma^* S^2_\sigma^*/2)$.
+
+Por otro lado,
+\begin{align*}
+&\ \ \ \ p(\mathbf{W} \mid \bbeta,\sigma^2,y_1,\ldots,y_T)\\
+&\propto \prod_{t=2}^T \mid \mathbf{W} \mid ^{1/2}\exp\left\{-\frac{1}{2}(\bbeta_t-\mathbf{G}_t\bbeta_{t-1})'\mathbf{W}^{-1}(\bbeta_t-\mathbf{G}_t\bbeta_{t-1})\right\} \mid \mathbf{W} \mid ^{-\frac{n_W}{2}+\frac{m+1}{2}}\exp\left\{-tr(\frac{n_W\mathbf{S}_W}{2}\mathbf{W}^{-1})\right\}\\
+&\propto \mid \mathbf{W} \mid ^{-\frac{T-1}{2}-\frac{n_W}{2}+\frac{m+1}{2}}\exp\left\{-tr(\frac{1}{2}\sum_{t=2}^T (\bbeta_t-\mathbf{G}_t\bbeta_{t-1})(\bbeta_t-\mathbf{G}_t\bbeta_{t-1})'\mathbf{W}^{-1})\right\}\exp\left\{-tr(\frac{n_W\mathbf{S}_W}{2}\mathbf{W}^{-1})\right\}\\
+&= \mid \mathbf{W} \mid ^{-\frac{T+n_W-1}{2}+\frac{m+1}{2}}\exp\left\{-tr\left[\frac{1}{2}(\sum_{t=2}^T (\bbeta_t-\mathbf{G}_t\bbeta_{t-1})(\bbeta_t-\mathbf{G}_t\bbeta_{t-1})'+n_W\mathbf{S}_W)\mathbf{W}^{-1}\right]\right\}\\
+&= \mid \mathbf{W} \mid ^{-\frac{n_W^*}{2}+\frac{m+1}{2}}\exp\left\{-tr\left[\frac{1}{2}n_W^*\mathbf{S}_W^*\mathbf{W}^{-1}\right]\right\}\\
+\end{align*}
+con $n_W^*=n_W+T-1$ y $n_W^*\mathbf{S}_W^*=\sum_{t=2}^T (\bbeta_t-\mathbf{G}_t\bbeta_{t-1})(\bbeta_t-\mathbf{G}_t\bbeta_{t-1})'+n_W\mathbf{S}_W$. De lo anterior se concluye que $\mathbf{W} \mid \bbeta,\sigma^2,y_1,\ldots,y_T\sim IW(n_W^*/2,n_W^*\mathbf{S}_W^*/2)$.
+
+\begin{Eje}
+En este ejemplo se analiza la serie de tiempo trimestral correpondiente a producto interno bruto entre el a\~no 1978 y el 1987, esta serie ha sido ajustada por la estacionalidad, diferenciada y transformada logar\'itmicamente. En primer lugar, se observa la gr\'afica de los datos. 
+<<>>=
+library(dlm)
+data(USecon)
+ts.plot(USecon[,2])
+@
+Se observa que la serie presenta un nivel no constante en el tiempo, y no se observa visibles cambios variaciones peri\'odicas asociadas a los 4 trimestre, lo cual se debe al hecho de que ya ha sido ajustado por estacionalidad. El modelo que se proceder\'a a ajustar es el modelo de crecimiento lineal expuesto en el ejemplo \ref{MCL}, esto es, se extraer\'a los componentes de nivel $\beta_{1t}$ y pendiente $\beta_{2t}$. Para eso se debe: (1) estimar los par\'ametros desconocidos del modelo que en este corresponde a la varianza de la ecuaci\'on de observaci\'on y la ecuaci\'on de estado, (2) implementar la fase de filtro del filtro de Kalman, y finalmente, (3) implementar la fase de suavizado del filtro de Kalman.
+<<>>=
+# Encontrar las varianzas de los errores de la ecuaci\'on de observaci\'on y ecuaci\'on de estado
+build <- function(param){
+  dlm(m0 = rep(0,2), C0 = 1e3 * diag(2), FF = matrix(c(1,0), nr = 1), GG = matrix(c(1,0,1,1), nr = 2), V = exp(param[1]), W = diag(exp(param[2:3])))
+}
+# estimaci\'on de m\'axima verosimilitud de las varianzas desconocidas
+fit <- dlmMLE(USecon[,2], rep(0,3), build)
+unlist(build(fit$par)[c("V", "W")])
+# Especificar el modelo lineal din\'amico
+modelo <- dlm(m0 = rep(0,2), C0 = 1e3 * diag(2), FF = matrix(c(1,0), nr = 1), GG = matrix(c(1,0,1,1), nr = 2), V = build(fit$par)$V, W = build(fit$par)$W)
+# Implementar la fase de filtro 
+Fil <- dlmFilter(USecon[,2], modelo)
+# Implementar la fase de suavizamiento
+Suav <- dlmSmooth(Fil)
+@
+A continuaci\'on se explora gr\'aficamente los resultados obtenidos de la aplicaci\'on del filtro de Kalman. 
+<<>>=
+# Calcular la varianza de estimaci\'on para el primer componente filtrado del vector de estados
+var.level <- c()
+N <- nrow(USecon)
+for(i in 1:N){
+  var.level[i] <- (Fil$U.C[[i]] %*% diag(Fil$D.C[i,]^2) %*% t(Fil$U.C[[i]]))[1,1]
+}
+var.level[1]<-1
+ts.plot(USecon[,2], Fil$m[-1,1], Fil$m[-1,1] - sqrt(var.level) * qnorm(0.975), Fil$m[-1,1] + sqrt(var.level) * qnorm(0.975), col=c(1,2,3,3), lty=c(1,1,2,2))
+sqrt(var.level)
+@
+En la gr\'afica se observa la serie observada en l\'inea negra, el primer componente del vector de estado (el componente nivel) y las respectivas bandas de confianza del 95\%. Num\'ericamente se observa que la varianza de la estimaci\'on en la fase de filtro se aumenta a medida que se avanza en el tiempo, esto es de esperarse puesto que se va utilizando m\'as datos para el c\'alculo.
+
+<<>>=
+# Calcular la varianza de estimaci\'on para el primer componente del vector de estados
+var.f.level <- c()
+for(i in 1:N){
+  var.f.level[i] <- (Suav$U.S[[i]] %*% diag(Suav$D.S[i,]^2) %*% t(Suav$U.S[[i]]))[1,1]
+}
+ts.plot(USecon[,2], Suav$s[-1,1], Suav$s[-1,1] - sqrt(var.f.level) * qnorm(0.975), Suav$s[-1,1] + sqrt(var.f.level) * qnorm(0.975), col=c(1,2,3,3), lty=c(1,1,2,2))
+sqrt(var.f.level)
+@
+
+Podemos ver que, en primer lugar, el nivel suavizado de la serie tiende a terner un comportamiento m\'as suave comparado con el nivel filtrado, y tambi\'en tiene una varianza m\'as peque\~na comparado los resultados de la fase de filtro, pues sin importar el punto de tiempo, siempre se tiene en cuenta la totalidad de los datos.
+
+Finalmente, se observa la gr\'afica del segundo componente ($\beta_{2t}$) suavizado del vector de estados que representa la pendiente o la velocidad de crecimiento de la serie
+<<>>=
+ts.plot(Suav$s[-1,2])
+@
+
+Se puede ver que el valor de este componente siempre toma valores extremamente peque\~nos sin una mayor variaci\'on, y teniendo en cuenta adem\'as que la varianza estimada de este componente es peque\~na (6.68E-08, tal como se muestra en las salidas anteriores), se concluye que un modelo m\'as parsimonio es dejando el componente $\beta_{2t}$ est\'atico, es decir, el modelo se convierte en 
+\begin{align}\label{USecon_ejer1}
+y_t&=\beta_{1t}+\epsion_t\\
+\beta_{1t}&=\beta_{1,t-1}+\beta_2+\eta_t
+\end{align}
+
+Se deja como ejercicio la estimaci\'on del anterior modelo en el paquete \verb'dlm'.
+\end{Eje}
+
+\section{Ejercicios}
+\begin{enumerate}
+\item Encuentra una representaci\'on en modelo de espacio-estado para los modelo $AR(p)$ diferente a la dada en el ejemplo \ref{AR_p} definiendo el vector de estado como $\bbeta=(y_t,\phi_2y_{t-1},\phi_3y_{t-2},\cdots,\phi_py_{t-p+1})'$.
+\item En el ejemplo \ref{ModEstBas}, escribe la ecuaci\'on de estado asumiendo que el componente estacional $\gamma_t$ es trigonom\'etrico definido como sigue:
+\begin{align*}
+\gamma_t=\sum_{j=1}^{[s/2]}\gamma_{jt}
+\end{align*}
+
+donde
+\begin{align*}
+\gamma_{jt}&=\gamma_{j,t-1}\cos\lambda_j+\gamma*_{j,t-1}\sin\lambda_j+\omega_{jt}\\
+\gamma*_{jt}&=-\gamma_{j,t-1}\sin\lambda_j+\gamma*_{j,t-1}\cos\lambda_j+\omega*_{jt}
+\end{align*}
+
+$\{\omega_{jt}\}$ y $\{\omega*_{jt}\}$ procesos ruido blanco incorrelacionados con varianza com\'un $\sigma^2_j$ para $j=1,\cdots,[s/2]$.
+\item Demostrar la ecuaci\'on (\ref{demostrarP}).
+\item Demostrar el resultado \ref{res_suaviza_Bayes} para el caso de $t=T.$
+\item Verifique la ecuaci\'on (\ref{po\mathbf{S}_W}).
+\item Ajuste el modelo (\ref{USecon_ejer1}) a la serie de producto interno bruno contenido en \verb'USecon' del paquete \verb'dlm'.
+\end{enumerate}
+

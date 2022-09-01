@@ -1,0 +1,46 @@
+{\rtf1\ansi\ansicpg1252\cocoartf1561\cocoasubrtf100
+{\fonttbl\f0\fswiss\fcharset0 Helvetica;}
+{\colortbl;\red255\green255\blue255;}
+{\*\expandedcolortbl;;}
+\margl1440\margr1440\vieww10800\viewh8400\viewkind0
+\pard\tx566\tx1133\tx1700\tx2267\tx2834\tx3401\tx3968\tx4535\tx5102\tx5669\tx6236\tx6803\pardirnatural\partightenfactor0
+
+\f0\fs24 \cf0 #\'97\'97\'97\'97\'97\'97\'97\'97\'97\'97\'97\'97\'97\'97\'97\'97\'97\'97\'97\'97\'97\'97\'97\'97\'97\'97\'97\'97\'97\'97\'97\'97\'97\'97\'97\'97 \
+# 	C\'f3digos en R para el ejemplo 3.3.3. \
+# 	Calcular directamente los par\'e1metros de la posterior de theta y Sigma\
+#\'97\'97\'97\'97\'97\'97\'97\'97\'97\'97\'97\'97\'97\'97\'97\'97\'97\'97\'97\'97\'97\'97\'97\'97\'97\'97\'97\'97\'97\'97\'97\'97\'97\'97\'97\'97 \
+\
+library(MCMCpack)\
+library(mvtnorm)\
+y <- as.matrix(data.frame(M1=sleep[1:10,1], M2=sleep[-(1:10),1]))\
+n <- nrow(y)\
+y.bar <- colMeans(y); S <- var(y)*(n-1)\
+\
+nsim <- 10000\
+theta.pos <- matrix(NA, nsim, 2)\
+Sigma.pos <- array(NA, c(nsim,2,2))\
+\
+for(i in 1:nsim)\{\
+  #simulacion de la distribucion posterior condicional de Sigma\
+  Sigma.pos[i,,] <- riwish(n-1, S)\
+  #simulacion de la distribucion posterior condicional de theta\
+  theta.pos[i,] <- rmvnorm(1, y.bar, Sigma.pos[i,,]/n)\
+\}\
+theta.Bayes <- colMeans(theta.pos)\
+Sigma.Bayes <- matrix(c(mean(Sigma.pos[,1,1]),mean(Sigma.pos[,2,1]),\
+                        mean(Sigma.pos[,1,2]),mean(Sigma.pos[,2,2])), 2, 2)\
+theta.Bayes\
+Sigma.Bayes\
+\
+# Comparaci\'f3n entre el intervalo de credibilidad e intervalo de confianza para las medias\
+quantile(theta.pos[,1], c(0.025,0.975))\
+t.test(y[,1])$conf.int\
+quantile(theta.pos[,2], c(0.025,0.975))\
+t.test(y[,2])$conf.int\
+\
+# Comparaci\'f3n entre el intervalo de credibilidad e intervalo de confianza para la primera varianza\
+library(pscl)\
+qigamma(0.025, alpha=8/2, beta=28.81/2)\
+qigamma(0.975, alpha=8/2, beta=28.81/2)\
+quantile(Sigma.pos[,1,1], c(0.025, 0.975))\
+c(9*var(y[,1])/qchisq(0.975,9), 9*var(y[,2])/qchisq(0.025,9))}

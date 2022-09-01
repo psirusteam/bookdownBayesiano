@@ -1,0 +1,1570 @@
+<<echo=FALSE, message=FALSE>>=
+library(R2jags)
+library(coda)
+library(lattice)
+library(R2WinBUGS)
+library(rjags)
+library(superdiag)
+library(mcmcplots)
+library(xtable)
+library(ggplot2)
+library(plot3D)
+library(reshape2)
+library(gridExtra)
+library(data.table)
+options(scipen = 100, digits = 2)
+set.seed(12345)
+library(knitr)
+knit_theme$set("acid")
+setwd("/Users/hanwenzhang/Dropbox/Bayes")
+library(faraway)
+library(TeachingSampling)
+library(MASS)
+@
+
+
+\chapter{Modelo lineal generalizado}
+
+\section{Familia exponencial}
+
+En esta parte, se estudia la familia exponencial que es \'util en algunos temas tratados en este libro, estos son, teor\'ia de estimaci\'on puntual y prueba de hip\'otesis; y adem\'as resulta ser \'util en la teor\'ia bayesiana, para mayores detalles consultar \citeasnoun{Zhang}.
+
+\subsection{Familia exponencial uniparam\'etrica}
+\begin{Defi}
+Una distribuci\'on de probabilidad con par\'ametro $\theta$ pertenece a la familia exponencial uniparam\'etrica si la funci\'on de densidad se puede escribir de la forma
+    \begin{equation}\label{uniexpo}
+    f_Y(y,\theta)=\exp\{d(\theta)T(y)-c(\theta)\}h(y)
+    \end{equation}
+donde $T(y)$ y $h(y)$ son funciones que depende de $y$ \'unicamente, y $d(\theta)$ y $c(\theta)$ son funciones que depende de $\theta$ \'unicamente.
+\end{Defi}
+
+A continuaci\'on se muestran algunas distribuciones que son parte de la familia exponencial uniparam\'etrica.
+\begin{Eje}
+La distribuci\'on Poisson con par\'ametro $\theta$ pertenece a la familia exponencial uniparam\'etrica puesto que
+\begin{align*}
+f(y,\theta)&=\frac{e^{-\theta}\theta^y}{y!}I_{\{0,1,\cdots\}}(y)\\
+           &=\exp\{y\ln\theta-\theta\}\frac{I_{0,1,\cdots}(y)}{y!},
+\end{align*}
+en conclusi\'on $f(y,\theta)$ es de la forma (\ref{uniexpo}) con $d(\theta)=\ln\theta$, $T(y)=y$, $c(\theta)=\theta$ y $h(y)=\frac{I_{\{0,1,\cdots\}}(y)}{y!}$.
+\end{Eje}
+
+\begin{Eje}
+La distribuci\'on Gamma con par\'ametro de forma $k$ conocida pertenece a la familia exponencial uniparam\'etrica puesto que
+\begin{align*}
+f(y,\theta)&=\frac{y^{k-1}e^{-y/\theta}}{\theta^k\Gamma(k)}I_{(0,\infty)}(y)\\
+           &=\exp\left\{-\frac{y}{\theta}-k\ln\theta\right\}\frac{y^{k-1}I_{(0,\infty)}(y)}{\Gamma(k)},
+\end{align*}
+el cual es de la forma (\ref{uniexpo}) con $d(\theta)=-1/\theta$, $T(y)=y$, $c(\theta)=k\ln\theta$ y $h(y)=\frac{y^{k-1}I_{(0,\infty)}(y)}{\Gamma(k)}$. 
+\end{Eje}
+
+
+
+El siguiente resultado evidencia que la funci\'on de densidad conjunta de una muestra aleatoria con distribuci\'on en la familia exponencial siguen pertenenciendo a esta familia.
+\begin{Res}
+Si $Y_1$, $\cdots$, $Y_n$ son variables aleatorias independientes e id\'enticamente distribuidas con funci\'on de densidad com\'un perteneciente a la familia exponencial uniparam\'etrica, entonces la funci\'on de densidad conjunta $f(y_1,\cdots,y_n)$ tambi\'en pertenece a la familia exponencial uniparam\'etrica.
+\end{Res}
+\begin{proof}
+\begin{align*}
+f(y_1,\cdots,y_n,\theta)&=\prod_{i=1}^nf(y_i,\theta)\\
+                        &=\prod_{i=1}^n\exp\{d(\theta)T(y_i)-c(\theta)\}h(y_i)\\
+                        &=\exp\left\{d(\theta)\sum_{i=1}^nT(y_i)-nc(\theta)\right\}\prod_{i=1}^nh(y_i)
+\end{align*}
+el cual es de la forma (\ref{uniexpo}).
+\end{proof}
+
+\subsection{Familia exponencial multi-param\'etrica}
+
+En esta secci\'on, introducimos la familia exponencial para distribuciones que depende de un vector de par\'ametros.
+\begin{Defi}
+Una distribuci\'on de probabilidad pertenece a la familia exponencial multi-param\'etrica si la funci\'on de densidad se puede escribir de la forma
+    \begin{equation}\label{multiexpo}
+    f_Y(y,\Theta)=\exp\{d(\Theta)'T(y)-c(\Theta)\}h(y)
+    \end{equation}
+donde $T(y)$ y $d(\Theta)$ son funciones vectoriales, $h(y)$ y $c(\Theta)$ son funciones reales.
+\end{Defi}
+
+\begin{Eje}
+La distribuci\'on Gamma con par\'ametro de forma $k$ y par\'ametro de escala $\theta$ pertenece a la familia exponencial multi-param\'etrica pues
+\begin{align*}
+f_Y(y)&=\frac{y^{k-1}e^{-y/\theta}}{\theta^k\Gamma(k)}I_{(0,\infty)}(y)\\
+      &=\exp\{-\frac{y}{\theta}+(k-1)\ln{y}-k\ln{\theta}-\ln{\Gamma(k)}\}I_{(0,\infty)}(y)\\
+      &=\exp\left\{\Bigl(-\frac{1}{\theta},k-1\Bigr)\begin{pmatrix}y\\ \ln{y}\end{pmatrix}-(k\ln{\theta}+\ln{\Gamma(k)})\right\}I_{(0,\infty)}(y)
+\end{align*}
+el cual es de la forma (\ref{multiexpo}) con $\Theta=(\theta,k)'$, $d(\Theta)=(-\frac{1}{\theta},k-1)'$,
+$c(\Theta)=k\ln{\theta}+\ln{\Gamma(k)}$, $T(y)=(y,\ln{y})'$ y $h(y)=I_{(0,\infty)}(y)$.
+\end{Eje}
+
+La representaci\'on en forma de la familia exponencial no es \'unica, pues n\'otese que en el ejemplo anterior tambi\'en se puede tomar
+$\eta(\mathbf{\theta})=(\frac{1}{\theta},k-1)'$ y $T(y)=(-y,\ln{y})'$.
+
+Las distribuciones normal, gamma, exponencial, chi-cuadrado, beta, Bernoulli, binomial, binomial negativa, Multinomial, Poisson y Geom\'etrica todas pertenecen a la familia exponencial. tambi\'en la distribuci\'on Weibull pertenecen a la familia exponencial cuando el par\'ametro de forma es conocida. Por el otro lado, las distribuciones Cauchy, Laplace, uniforme y Weibull cuando el par\'ametro de forma es desconocida no pertenecen a la familia exponencial.
+
+\section{Parametrizaci\'on y funciones de v\'inculo}\label{GLM_Aprox_Normal_Chap}
+
+Teniendo en cuenta que en la familia exponencial se encuentran una gran variedad de distribuciones que pueden tomar valores en diferentes rangos, por ejemplo, la distribuci\'on Bernoulli solo admite valores dicot\'omicos, la distribuci\'on Poisson solo valores enteros positivos, y la distribuci\'on Gamma solo valores positivos, cuando se quiere explicar variables pertenencientes a esta familia en t\'erminos de variables auxiliares, no es conveniente usar el modelo $Y_i=\mathbf{X}_i\bbeta$ tal como en modelos lineales, puesto que las variables auxiliares en $\mathbf{X}_i$ pueden tomar todo tipo de valores. Por lo tanto, se formula los modelos lineales generalizados que buscan relacionar la esperanza de la variable de inter\'es con $\mathbf{X}'\bbeta$ por medio de una funci\'on, estos modelos parten de las siguientes igualdades:
+\begin{align}
+\eta_i&=\mathbf{X}_i'\bbeta\\
+E(Y_i)&=\theta_i\\
+\eta_i&=g(\theta_i)
+\end{align}
+
+En t\'erminos del modelamiento bayesiano, se debe tener en cuenta que:
+
+\begin{itemize}
+  \item El primer paso es calcular la inversa de la funci\'on $g(\cdot)$, puesto que la verosimilitud de los datos debe estar en t\'erminos de $\theta_i=g^{-1}(\eta_i)=g^{-1}(\mathbf{X}_i'\bbeta)$. De esta forma, se garantiza que la verosimilitud est\'a en t\'erminos de los par\'ametros de inter\'es $\bbeta$.
+  \item En segundo lugar, se debe proponer una distribuci\'on a priori para $\bbeta$; en este libro siempre trabajaremos con distribuciones a priori normales, aunque se recalca que no necesariamente deben especificarse distribuciones a priori normales.
+  \item Por \'ultimo, se escribe la distribuci\'on a posteriori, que por lo general no tiene una forma cerrada, y se utilizan m\'etodos num\'ericos y de simulaci\'on para hacer inferencias a posteriori sobre $\bbeta$.
+\end{itemize}
+
+\subsection{Aproximaci\'on del GLM por un modelo lineal normal}
+
+Una forma de estimar los par\'ametros $\bbeta$ directamente desde una distribuci\'on conocida se encuentra en \citeasnoun{Gelman95}. El m\'etodo consiste en aproximar la funci\'on de verosimilitud del modelo lineal generalizado de los datos observados $Y_i$ por la funci\'on de verosimilitud de un modelo lineal usando pseudo observaciones $Z_i$. En este caso, el modelo lineal est\'a dado por $E(z_i)=\eta_i=\mathbf{X}_i'\bbeta$. Lo anterior implica que se debe aproximar la funci\'on de verosimilitud de los datos observados $Y_1,\cdots,Y_n$ por la funci\'on de verosimilitud de los pseudo datos $z_i$ cuya varianza se denota por $\sigma^2_i$. Por lo tanto, se tiene que para todo $i=1,\cdots,n$
+\begin{equation*}
+p(Y_i|\eta_i)\approx ke^{-\frac{1}{2\sigma_i^2}(z_i-\eta_i)^2}
+\end{equation*}
+
+donde $k$ es una constante. Tomando el logaritmo natural en ambos lados, se tiene que 
+\begin{equation}\label{aprox_normal_GLM}
+\ln p(Y_i|\eta_i)\approx -\frac{1}{2\sigma_i^2}(z_i-\eta_i)^2+cte
+\end{equation}
+
+Denotamos $\ln p(Y_i|\eta_i)$ con $L(Y_i|\eta_i)$, el cual visto como una funci\'on de $\eta_i$ al desarrollar la aproximaci\'on de Taylor de segundo grado en el punto $\eta_i=\hat{\eta}_i=\mathbf{X}_i'\bbeta$, se tiene que
+\begin{align*}
+L(Y_i|\eta_i)\approx L(Y_i|\hat{\eta}_i)+L'(Y_i|\hat{\eta}_i)(\eta_i-\hat{\eta}_i)+\frac{L''(Y_i|\hat{\eta}_i)}{2}(\eta_i-\hat{\eta}_i)^2
+\end{align*}
+
+donde $L'(Y_i|\hat{\eta}_i)$ y $L''(Y_i|\hat{\eta}_i)$ son derivadas de primer y segundo orden de $L$ con respecto a $\eta_i$ evaluadas en $\hat{\eta}_i$. Teniendo en cuenta la ecuaci\'on (\ref{aprox_normal_GLM}), se tiene que
+\begin{equation*}
+ L(Y_i|\hat{\eta}_i)+L'(Y_i|\hat{\eta}_i)(\eta_i-\hat{\eta}_i)+\frac{L''(Y_i|\hat{\eta}_i)}{2}(\eta_i-\hat{\eta}_i)^2\approx -\frac{1}{2\sigma_i^2}(z_i-\eta_i)^2+cte
+ \end{equation*}
+
+de donde al igualr los coeficientes de $\eta_i$ y $\eta_i^2$ en los dos lados de la ecuaci\'on, se tiene que:
+\begin{align*}
+    \frac{L''(Y_i|\hat{\eta}_i)}{2}&=-\frac{1}{2\sigma^2_i}\\
+    L'(Y_i|\hat{\eta}_i)-L''(Y_i|\hat{\eta}_i)\hat{\eta}_i&=\frac{z_i}{\sigma^2_i}
+\end{align*}
+
+De donde se obtiene que
+\begin{align*}
+    \sigma^2_i&=-\frac{1}{L''(Y_i|\hat{\eta}_i)}\\
+    z_i&=\hat{\eta}_i-\frac{L'(Y_i|\hat{\eta}_i)}{L''(Y_i|\hat{\eta}_i)}
+\end{align*}
+
+As\'i, la estimaci\'on de m\'axima verosimilitud del vector de par\'ametros $\bbeta$ se puede calcular siguiendo los siguientes pasos:
+\begin{enumerate}
+\item Fijar valores iniciales para $\bbeta$, lo denotamos como $\bbeta^{(0)}$.
+\item En la iteraci\'on $g$, calcular los pseudo datos $z_i^{(g)}$ y sus varianzas $\sigma^2_{i,(g)}$ con base en el valor de $\bbeta^{(g-1)}$.
+\item Ajustar un modelo lineal heteroced\'astico con varianzas iguales a $\sigma^2_{i,(g)}$ para los pseudo datos $z_i$ con $\mathbf{X}_i$ como variables regresoras. Los coeficientes estimados obtenidos son denotados por $\bbeta^{(g)}$.
+\item Repetir los paso 2 y 3 hasta completar un n\'umero predeterminado de iteraciones o hasta obtener convergencia en los valores de $\bbeta$
+\end{enumerate}
+
+Dentro del marco de la estimaci\'on bayesiana de los par\'ametros, denotamos la distribuci\'on previa $\bbeta\sim N(\mathbf{b},\mathbf{B})$, el algoritmo para la estimaci\'on de $\bbeta$ es similar al algoritmo anterior para hallar la estimaci\'on de m\'axima verosimilitud. Solo se debe hacer un cambio peque\~no en el paso 3, donde $\bbeta^{(g)}$ se calcula usando la media de la distribuci\'on posterior dada en la ecuaci\'on (\ref{media_pos_beta_Sigma_conocida}) donde $\bSigma$ es la matriz diagonal que contien los valores de $\sigma^2_{i,(g)}$. 
+
+\subsection{A \emph{posteriori} generalizada}
+
+
+
+\section{Modelo Normal}
+
+El \'unico caso en donde la distribuci\'on a posteriori tiene una forma conocida se presenta cuando la funci\'on de v\'inculo es la funci\'on identidad que corresponde al caso cuando se asume la distribuci\'on normal para la variable de inter\'es. Suponga que $\mathbf{Y}=\{Y_1, \ldots, Y_n\}$ es un conjunto de variables aleatorias intercambiables cada una con distribuci\'on normal est\'andar de media $\theta_i$ y varianza $\sigma^2$. Como la esperanza de una distribuci\'on normal puede tomar cualquier valor en el conjunto de los reales, \'este puede ser ser relacionado directamente con el vector de variables auxiliares $\mathbf{X}_i$. Luego, cuando la funci\'on de vinculo es la funci\'on de identidad, y el modelo queda expresado como
+\begin{equation}
+E(Y_i)=\theta_i=g^{-1}(\eta_i)=\mathbf{X}_i'\bbeta.
+\end{equation}
+En este caso, cuando la distribuci\'on a priori de los par\'ametros de inter\'es es normal multivariante, entonces se llega f\'acilmente al caso del modelo lineal bayesiano que fue discutido en detalle en el cap\'itulo \ref{Capitulo_ML}. Como se puede comprender en ese cap\'itulo, en la verosimilitud de los datos no necesariamente se conoce la matriz de covarianzas; de esta forma, se tienen varios acercamientos para que la distribuci\'on a posteriori final del vector de par\'ametros de inter\'es $\bbeta$ sea conjugada.
+
+\section{Modelo Bernoulli con v\'inculo log\'istico}
+
+Este caso es t\'ipico en donde la variable respuesta s\'olo toma dos valores, uno en caso de un evento exitoso y cero, cuando se presenta un fracaso. Se supone que $\mathbf{Y}=\{Y_1, \ldots, Y_n\}$ es un conjunto de variables aleatorias intercambiables cada una con distribuci\'on bernoulli de par\'ametro $\theta_i$, y se quiere estudiar la relaci\'on entre $\theta_i$ y las variables auxiliares $\mathbf{X}_i$ por medio de la funci\'on de enlace $g(\theta_i)=\mathbf{X}_i'\bbeta$. Aqu\'i consideramos las funciones de enlace log\'istica y probit.
+
+\subsection{v\'inculo log\'istico}\label{Ber_logit}
+En este apartado, se considera que la funci\'on de v\'inculo\footnote{\citeasnoun{Fara} afirma que es inconveniente fijar la funci\'on de v\'inculo como $\eta_i=\theta_i$, puesto que se debe garantizar que $0 \leq \theta_i \leq 1$.} es log\'istica, de tal manera que
+\begin{equation}
+\eta_i=g(\theta_i)=logit(\theta_i)=\log\left(\frac{\theta_i}{1-\theta_i}\right)
+\end{equation}
+
+
+Esta funci\'on de v\'inculo es apropiado puesto que el rango de la funci\'on es conjunto de todos los n\'umeros reales, por lo cual es apropiado formular el modelo $logit(\theta_i)=\mathbf{X}_i'\bbeta$. En la siguiente gr\'afica se observamos la funci\'on de v\'inculo log\'istico 
+\begin{figure}[!h]
+\centering
+\includegraphics[scale=0.4]{Vinculo_Logit.pdf}
+\caption{\emph{Funci\'on de v\'inculo log\'istico $logit(\theta_i)$.}}
+\label{betan}
+\end{figure}
+
+f\'acilmente se encuentra que la funci\'on inversa para $g(\cdot)$, est\'a dada por
+\begin{equation*}
+\theta_i=g^{-1}(\eta_i)=\frac{\exp(\eta_i)}{1+\exp(\eta_i)}
+\end{equation*}
+
+Notando que $\eta_i=\mathbf{X}_i'\bbeta$ y siguiendo con el modelamiento, se tiene que la verosimilitud de los datos est\'a dada por
+\begin{align}
+p(\mathbf{Y}\mid \btheta)&=\prod_{i=1}^n\theta_i^{y_i}(1-\theta_i)^{1-y_i} \notag \\
+p(\mathbf{Y}\mid \bbeta)&=\prod_{i=1}^n\left(\frac{\exp(\mathbf{X}_i'\bbeta)}{1+\exp(\mathbf{X}_i'\bbeta)}\right)^{y_i}
+\left(1-\left(\frac{\exp(\mathbf{X}_i'\bbeta)}{1+\exp(\mathbf{X}_i'\bbeta)}\right)\right)^{1-y_i}
+\end{align}
+
+Suponga que la distribuci\'on a priori para $\bbeta$ est\'a regida por la siguiente estructura probabil\'istica
+\begin{equation*}
+\bbeta\sim Normal_q(\mathbf{b},\mathbf{B})
+\end{equation*}
+
+En la pr\'actica, cuando se desconoce el comportamiento de los par\'ametros de inter\'es, es com\'un proponer que todas las entradas del vector de medias de la distribuci\'on previa de $\mathbf{b}$ sean nulas y que la diagonal de la matriz de covarianzas a priori $\mathbf{B}$ sea valores grandes para reflejar mediante la dispersi\'on, el desconocimiento del problema que se trate; si se quiere, tambi\'en es posible que las entradas afuera de la diagonal sean nulas, lo cual induce que los par\'ametros se consideren independientes a priori.
+
+De esta manera, la distribuci\'on a posteriori toma la siguiente forma.
+\begin{align*}
+p(\bbeta \mid \mathbf{Y}, \mathbf{X})&\propto
+\prod_{i=1}^n\left(\frac{\exp(\mathbf{X}_i'\bbeta)}{1+\exp(\mathbf{X}_i'\bbeta)}\right)^{y_i}
+\left(1-\left(\frac{\exp(\mathbf{X}_i'\bbeta)}{1+\exp(\mathbf{X}_i'\bbeta)}\right)\right)^{1-y_i}\\
+&\hspace{2cm}\times
+\exp\left\{\frac{-1}{2}(\bbeta-\mathbf{b})'\mathbf{B}^{-1}(\bbeta-\mathbf{b})\right\}
+\end{align*}
+
+La anterior expresi\'on no tiene una forma cerrada y no es sencillo, en primera instancia, simular observaciones u obtener inferencias a posteriori. Sin embargo, con ayuda de la t\'ecnica del condicionamiento sucesivo, el algoritmo de Gibbs y el m\'etodo de simulaci\'on de la grilla es posible obtener f\'acilmente observaciones multivariantes provenientes de la distribuci\'on a posteriori del vector $\bbeta$.
+
+\subsubsection{Algoritmo de Gibbs}
+\begin{itemize}
+\item Fijar valores iniciales para el vector de par\'ametros de inter\'es; por ejemplo, estos valores iniciales pueden estar dados por $\bbeta^0=(\beta_1^0,\beta_2^0,\ldots,\beta_q^0)'$.
+\item Para simular un valor de la distribuci\'on a posteriori condicional para $\beta_0$ se tiene en cuenta que
+\begin{equation*}
+p(\beta_1 \mid \beta_2, \ldots, \beta_q, \mathbf{D})\propto(\beta_1,\underbrace{\beta_2\ldots, \beta_q}_{fijos} \mid \mathbf{D})
+\end{equation*}
+
+Por tanto, utilizando los valores iniciales $\beta_2^0,\ldots, \beta_q^0$ en la distribuci\'on conjunta y dejando a $\beta_1$ como una variable, entonces es posible utilizar el m\'etodo de la grilla para simular una nueva observaci\'on, $\beta_1^1$, de esta distribuci\'on univariada. Este nuevo valor $\beta_1^1$ reemplaza al valor $\beta_1^0$.
+\item Realizar el anterior procedimiento para simular una nueva observaci\'on $\beta_2^1$ de
+\begin{equation*}
+p(\beta_2 \mid \beta_1,\beta_3 \ldots, \beta_q, \mathbf{D})\propto(\beta_2,\underbrace{\beta_1,\beta_3\ldots, \beta_q}_{fijos} \mid \mathbf{D})
+\end{equation*}
+\item Repetir este proceso hasta que todos los componentes del vector de valores iniciales $\bbeta^0$ sean reemplazados en su totalidad por un nuevo vector de valores dado por $\bbeta^1=(\beta_1^1,\beta_2^1,\ldots,\beta_q^1)'$.
+\item ...
+\item Simular un n\'umero grande de vectores $\bbeta$ hasta obtener convergencia. Al final, todos los vectores simulados son considerados como realizaciones de la distribuci\'on multivariada a posteriori conjunta del vector de par\'ametros de inter\'es dada por el anterior resultado.
+\end{itemize}
+
+Una vez que se tengan las observaciones simuladas de la distribuci\'on a posteriori del vector $\bbeta$, es posible realizar todo tipo de inferencias a posteriori para $\bbeta$.\begin{Eje}
+\citeasnoun[p. 220]{Carlin09} consideran una aplicaci\'on ecol\'ogica en donde la variable predictora $X$ es la distancia hasta el borde del bosque y la variable respuesta $Y$ es la variable binaria indicando la copresencia de dos especies en un sector forestal en donde se seleccion?? una muestra de $n=603$ locaciones. Suponga que se quiere ajustar el siguiente modelo de regresi\'on log\'istica.
+\begin{equation*}
+logit(\theta_i)=\beta_0+\beta_1X_i \ \ \ \ \ \ \ i=1,\ldots,n.
+\end{equation*}
+
+Los datos se encuentran disponibles en \url{http://www.biostat.umn.edu/~brad/data/copresence_data.txt}, los cuales se cargan a continuaci\'on
+<<>>=
+copresence <- fread('http://www.biostat.umn.edu/~brad/data/copresence_data.txt')
+@
+Antes de ajustar un modelo log\'istico para la variable $Y$, examinamos la relaci\'on entre ??sta y la variable $X$:
+<<>>=
+y <- as.numeric(copresence$Y)
+x <- copresence$X
+spineplot(factor(y)~x)
+@
+Observamos que al incrementar el valor de la variable $X$, es decir, a medida que se adentre m\'as al bosque, con menor frecuencia se observa la copresencia de las dos especies. A continuaci\'on, se ajusta el modelo bernoulli con el link log\'istico. 
+
+Considerando distribuciones a priori en el sentido vague para los dos par\'ametros del modelo, entonces la sintaxis en \verb'JAGS' para ajustar este modelo est\'a dada por el siguiente comando computacional
+
+\colorbox{black}{\textcolor{white}{\textbf{C\'odigo JAGS}}}
+<<>>=
+n <- length(y)
+Logit.Model <- function(){
+for(i in 1 : n){
+  y[i] ~ dbern(theta[i])	
+  theta[i] <- exp(beta0+beta1*x[i])/(1+exp(beta0+beta1*x[i]))
+}
+  beta0 ~ dnorm(0, 0.0001)
+  beta1 ~ dnorm(0, 0.0001)
+}
+
+Logit.Model.data <- list("y", "x", "n")
+Logit.Model.param <- c("beta0", "beta1")
+Logit.Model.inits <- function(){
+  list("beta0"=c(0), "beta1"=c(0))
+}
+
+Logit.Model.fit <- jags(data=Logit.Model.data, inits=Logit.Model.inits, 
+        Logit.Model.param, n.iter=10000, n.burnin=1000, model.file=Logit.Model)
+
+print(Logit.Model.fit)
+@
+
+Como estamos interesados en conocer si la proximidad al eje del bosque es un predictor significativo de la copresencia de las especies. En otras palabras, estamos interesados en conocer si el par\'ametro $\beta_1$ es significativo. A primera vista, fij\'andonos en los valores de estimaci\'on puntual del par\'ametro, estar\'iamos tentados a responder afirmativamente. Lo anterior se corrobora mediante los siguientes criterios:
+
+
+\begin{itemize}
+\item El intervalo de credibilidad al 95\% no contiene al valor cero: la interpretaci\'on de las regiones de credibilidad bayesianas difiere de la interpretaci\'on de las regiones de confianza frecuentista. La primera se refiere a la probabilidad de que el verdadero valor de $\beta_1$ est\'a contenido en el intervalo. Por tanto la probabilidad de que $\beta_1$ difiera de cero es mayor que 0.95.
+\item Probabilidad de inclusi\'on: Siguiendo el razonamiento de \citeasnoun[p. 89]{Carlin09}, se crea un  nuevo par\'ametro $\pi_1$, que denota la probabilidad de incluir a la variable $X$ en el modelo. De esta manera, el nuevo modelo que redefine la estructura de la media de la variable $logit(p_i)$ est\'a dado por
+      \begin{equation*}
+      logit(p_i)=\beta_0+p\beta_1X_i \ \ \ \ \ \ \ i=1,\ldots,n.
+      \end{equation*}
+
+La distribuci\'on a priori para $p$ seguir\'a el patr\'on de una distribuci\'on no informativa, la distribuci\'on $Bernoulli(0.5)$. En t\'erminos de la inclusi\'on de $X$ en el modelo, estamos interesados en conocer el comportamiento estructural de $p$ a  posteriori, el cual se muestra a continuaci\'on. El modelo en \verb'JAGS' est\'a dado por 
+
+<<>>=
+Logit2.Model <- function(){
+for(i in 1 : n){
+  y[i] ~ dbern(theta[i])	
+  theta[i] <- exp(beta0 + p*beta1*x[i])/(1 + exp(beta0 + p*beta1*x[i]))
+}
+  beta0 ~ dnorm(0, 0.0001)
+  beta1 ~ dnorm(0, 0.0001)
+  p ~ dbern(0.5)
+}
+
+Logit2.Model.data <- list("y", "x", "n")
+Logit2.Model.param <- c("beta0", "beta1", "p")
+Logit2.Model.inits <- function(){
+  list("beta0"=c(0), "beta1"=c(0), "p"=c(0.5))
+}
+
+Logit2.Model.fit <- jags(data=Logit2.Model.data, inits=Logit2.Model.inits, 
+        Logit2.Model.param, n.iter=10000, n.burnin=1000, model.file=Logit2.Model)
+
+print(Logit2.Model.fit)
+@
+
+De lo anterior se concluye que  el par\'ametro siempre tom\'o el mismo valor igual a uno para todas las iteraciones de la cadena, mostrando una fuerte y rotunda evidencia a favor de la inclusi\'on de la variable $X$. 
+
+\item DIC: Este es un criterio de informaci\'on bayesiana, que se puede considerar como una generalizaci\'on del criterio de informaci\'on de Akaike. Para el modelo ajustado con la variable proximidad al eje del bosque, este criterio da un valor de 728.4. Por otro lado, el DIC para el modelo que no incluye esta variable dado por
+\begin{equation*}
+logit(p_i )=\beta_0
+\end{equation*}
+
+es de 821.0 (se deja como ejercicio la escritura de los c\'odigos en \verb'JAGS'). Este \'ultimo valor muestra que el valor del DIC para el modelo que s\'i contiene a X es mucho menor con respecto al valor del DIC del modelo que no tiene en cuenta a esta variable. Como conclusi\'on, el modelo ajusta mucho mejor cuando X es considerada como la variable predictora.
+\end{itemize}
+
+Por otro lado, este mismo modelo se puede implementar con el algoritmo de Metropolis-Hastings en \textsf{R}. En general, no existe un paquete que realice este tipo de ajustes (seg\'un el conocimiento de los autores), por tanto es necesario crear una funci\'on en \textsf{R}.
+<<>>=
+library(MCMCpack)
+M <- MCMClogit(y ~ x)
+plot(M)
+summary(M)
+@
+
+Para conseguir similares resultados que los obtenidos usando \textsf{BUGS}, es necesario replicar el ejercicio bajo las mismas condiciones; es decir, utilizando distribuciones a priori en el sentido vague, que ser\'an traducidas como distribuciones uniformes. De esta manera se tienen los siguientes comentarios:
+
+\begin{itemize}
+  \item La distribuci\'on a posteriori para el vector de coeficientes de regresi\'on es proporcional a la verosimilitud de los datos.
+  \item La funci\'on generadora de valores candidatos en la iteraci\'on $t$ para el algoritmo (com\'unmente conocida como Jumping distribution) corresponde a una densidad normal bivariada para $\beta_0$ y para $\beta_1$ con vector de medias $(\beta_0(t-1), \beta_1(t-1))'$ y matriz de varianzas diagonal $(0.01, 0.01)$. Esto implica que $\beta_0$ y $\beta_1$ se consideran condicionalmente independientes dados los valores de los coeficientes en la iteraci\'on anterior. Como es bien sabido, bajo estas condiciones la distribuci\'on normal bivariada se convierte en el producto de las dos distribuciones marginales.
+  \item Como la base de datos consta de un gran volumen de informaci\'on, se procede a reescribir la verosimilitud, aplicando logaritmos, puesto que de lo contrario surgen problemas num\'ericos debido a que la verosimilitud para cada $y_i$ toma valores menores que uno y al multiplicarlos m\'as de 600 veces (el tama\~no de la muestra) esta funci\'on se convierte en cero bajo el ambiente computacional de \textsf{R}.
+\end{itemize}
+
+La funci\'on construida es la siguiente:
+
+<<>>=
+MHlogit <- function(beta0, beta1, x, y, Nsim){
+
+# Creaci\'on de la distribuci\'on a posteriori.
+# Toma la forma de la verosimilitud pues las apriori son vagues
+post <- function(beta0, beta1, x, y) {
+lp <- beta0 + beta1 * x
+p <- exp(lp)/(1 + exp(lp))
+#modificaci\'on para evitar problemas num\'ericos
+sum(y*log(p)+(1-y)*log(1-p))
+}
+
+ind <-rep(0,Nsim)
+
+betas <- matrix(NA,ncol=2,nrow=Nsim)
+for(k in 1:Nsim){
+betas[k,1] <- beta0
+betas[k,2] <- beta1
+
+#Genera un valor candidato
+beta0.can <- rnorm(1,beta0,0.1)
+beta1.can <- rnorm(1,beta1,0.1)
+
+#Jumping distribution
+q1 <- dnorm(beta0,beta0.can,0.1)*dnorm(beta1,beta1.can,0.1)
+q2 <- dnorm(beta0.can,beta0,0.1)*dnorm(beta1.can,beta1,0.1)
+
+#A posteriori
+p1 <- post(beta0.can,beta1.can, x, y)
+p2 <- post(beta0,beta1, x, y)
+
+#Aceptaci\'on beta0
+#modificaci\'on para evitar problemas num\'ericos
+T.val <- min(1,(exp(p1-p2)*(q1/q2)))
+u <- runif(1)
+if (u<= T.val){
+beta0=beta0.can
+beta1=beta1.can
+ind[k]<-1
+}  }
+return(list(ind=ind,betas=betas))
+}
+@
+
+La implementaci\'on para este modelo en particular est\'a dada por el siguiente c\'odigo, que describe que el procedimiento tuvo 50 mil iteraciones y para efectos de estimaci\'on se conservan las \'ultimas 30 mil.
+
+<<>>=
+# Valores iniciales
+beta0=1
+beta1=1
+
+res <- MHlogit(beta0,beta1,x,y,Nsim=50000)
+
+mean(res$betas[-(1:20000),1])
+mean(res$betas[-(1:20000),2])
+@
+
+Como se puede observar, los resultados del algoritmo Metropolis-Hastings en \textsf{R} coinciden plenamente con los obtenidos usando el algoritmo de Gibbs en  \textsf{BUGS}. La siguiente gr\'afica muestra la evoluci\'on de las cadenas para los dos coeficientes de regresi\'on.
+
+<<>>=
+par(mfrow=c(1,2))
+ts.plot(res$betas[,1])
+ts.plot(res$betas[,2])
+@
+
+Por ultimo, la raz\'on de aceptaci\'on fue del 43\% As\'i como lo demuestra la siguiente salida
+<<>>=
+sum(res$ind)/50000
+@
+\end{Eje}
+
+\textbf{Aproximaci\'on a la distribuci\'on normal}
+
+En este apartado, ilustramos la estimaci\'on del vector de par\'ametros $\bbeta$ usando la aproximaci\'on a la distribuci\'on normal. Para cada observaci\'on $Y_i$ la distribuci\'on est\'a dada por $Y_i\sim Bernoulli(\theta_i)$, de esta forma
+\begin{equation*}
+p(Y_i|\theta_i)\propto \theta_i^{Y_i}(1-\theta_i)^{1-Y_i}
+\end{equation*}
+
+de esta forma, 
+\begin{align*}
+L(Y_i|\theta_i)&\propto Y_i\log\theta_i+ (1-Y_i)\log(1-\theta_i)\\
+&=Y_i\log\frac{e^{\mathbf{X}_i\bbeta}}{1+e^{\mathbf{X}_i\bbeta}}+ (1-Y_i)\log\frac{1}{1+e^{\mathbf{X}_i\bbeta}}\\
+&=Y_i\log\frac{e^{\eta_i}}{1+e^{\eta_i}}+ (1-Y_i)\log\frac{1}{1+e^{\eta_i}}\\
+&=y_i\eta_i-\log(1+e^\eta_i)
+\end{align*}
+
+de donde se puede obtener:
+\begin{align*}
+\frac{\partial L}{\partial\eta_i}&=y_i-\frac{e^{\eta_i}}{1+e^{\eta_1}}\\
+\frac{\partial^2 L}{\partial\eta^2_i}&=-\frac{e^{\eta_i}}{(1+e^{\eta_1})^2}
+\end{align*}
+
+De esta forma los pseudo datos y sus varianzas se pueden calcular como
+\begin{align*}
+z_i&=\hat{\eta}_i-\frac{L'(y_i|\hat{\eta}_i)}{L''(y_i|\hat{\eta}_i)}\\
+&=\hat{\eta}_i+\frac{(1+e^{\hat{\eta}_i})^2}{e^{\hat{\eta}_i}}\left(y_i-\frac{e^{\hat{\eta}_i}}{1+e^{\hat{\eta}_i}}\right)
+\end{align*}
+
+y
+\begin{equation*}
+\sigma^2_i=\frac{(1+e^{\hat{\eta}_i})^2}{e^{\hat{\eta}_i}}
+\end{equation*}
+
+As\'i, la estimaci\'on de m\'axima verosimilitud del vector de par\'ametros se puede calcular siguiendo los pasos presentados al final de la secci\'on \ref{GLM_Aprox_Normal_Chap}. La implementaci\'on en \verb'R' es como sigue:
+<<fig.height=4>>=
+n.sim <- 200
+beta0 <- beta1 <- rep(0, n.sim)
+for(i in 2:n.sim){
+  eta <- beta0[i-1] + beta1[i-1]*x
+  z <- eta + (1+exp(eta))^2/exp(eta)*(y-exp(eta)/(1+exp(eta)))
+  sigma2 <- (1+exp(eta))^2/exp(eta)
+  M <- lm(z ~ x, weight=1/(sigma2))
+  beta0[i] <- M$coef[1]
+  beta1[i] <- M$coef[2]
+}
+mean(beta0)
+mean(beta1)
+par(mfrow=c(1,2))
+ts.plot(beta0)
+ts.plot(beta1)
+@
+
+En cuanto a la estimaci\'on bayesiana, esta se puede llevar a cabo siguiendo los siguientes c\'odigos
+<<>>=
+n.sim <- 200
+b <- rep(0, 2) 
+B <- diag(rep(10^3, 2))
+beta <- matrix(0, n.sim, 2)
+X <- cbind(1, x)
+for(i in 2:n.sim){
+  eta <- beta[i-1,1] + beta[i-1,2]*x
+  z <- eta + (1+exp(eta))^2/exp(eta)*(y-exp(eta)/(1+exp(eta)))
+  Z <- cbind(1, z)
+  sigma2 <- (1+exp(eta))^2/exp(eta)
+  Sigma <- diag(sigma2)
+  Bq <- solve(solve(B) + t(X)%*%solve(Sigma)%*%X)
+  beta[i,] <- Bq %*% (solve(B)%*%b + t(X)%*%solve(Sigma)%*%z)
+}
+mean(beta[,1])
+mean(beta[,2])
+@
+Podemos observar que con el uso de las previas no informativas $N(0,20^3)$ para cada coeficinete de regresi\'on, las estimaciones obtenidas son las mismas que las estimaciones de m\'axima verosimilitud. Ahora revisamos los resultados de la estimaci\'on bayesiana cuando se var\'ia la varianza de la distribuci\'on previa manteniendo el valor fijo de la estimaci\'on previa. 
+<<fig.height=4>>=
+n.sim <- 200
+b <- rep(0, 2) 
+B.seq <- c(0.01, 0.1, 0.5, 1, 2, 5, 10)
+Beta.res <- matrix(NA, length(B.seq), 2)
+X <- cbind(1, x)
+for(r in 1:length(B.seq)){
+  B <- diag(rep(B.seq[r], 2))  
+  beta <- matrix(0, n.sim, 2)
+  for(i in 2:n.sim){
+    eta <- beta[i-1,1] + beta[i-1,2]*x
+    z <- eta + (1+exp(eta))^2/exp(eta)*(y-exp(eta)/(1+exp(eta)))
+    Z <- cbind(1, z)
+    sigma2 <- (1+exp(eta))^2/exp(eta)
+    Sigma <- diag(sigma2)
+    Bq <- solve(solve(B) + t(X)%*%solve(Sigma)%*%X)
+    beta[i,] <- Bq %*% (solve(B)%*%b + t(X)%*%solve(Sigma)%*%z)
+  }  
+  Beta.res[r,1] <- mean(beta[,1])
+  Beta.res[r,2] <- mean(beta[,2])
+}
+par(mfrow=c(1,2))
+ts.plot(Beta.res[,1], ylim=c(-0.5,3), type="o", main=expression(paste("Estimaci\'on de ", beta[0])))
+abline(h=0)
+abline(h=2.9)
+ts.plot(Beta.res[,2], ylim=c(-2,0.5), type="o",main=expression(paste("Estimaci\'on de ", beta[1])))
+abline(h=0)
+abline(h=-1.7)
+@
+Podemos observar que a medida que la varianza de la distribuci\'on previa se aumenta, la estimaci\'on bayesiana se acerca m\'as a la estimaci\'on cl\'asica.
+
+\subsection{v\'inculo probit}\label{Ber_probit}
+En estos modelos, la variable de inter\'es tiene distribuci\'on Bernoulli, al igual que en la secci\'on anterior, la diferencia consiste en utilizar la funci\'on de enlace probit, dada por 
+\begin{equation*}
+\eta_i=g(\theta_i)=\Phi^{-1}(\theta_i)
+\end{equation*}
+
+donde $\Phi(\cdot)$ denota la funci\'on distribuci\'on de la distribuci\'on normal est\'andar. En la siguiente gr\'afica se muestra un comparativo entre esta funci\'on de v\'inculo con la funci\'on de v\'inculo log\'istica
+\begin{figure}[!h]
+\centering
+\includegraphics[scale=0.4]{Vinculo_logit_probit.pdf}
+\caption{\emph{Funci\'on de v\'inculo log\'istico $logit(\theta_i)$ y el v\'inculo probit $\Phi^{-1}(\theta_i)$.}}
+\end{figure}  
+
+De esta forma, la funci\'on de verosimilitud viene dada por
+\begin{align}
+p(\mathbf{Y}|\bbeta)= \prod_{i=1}^n(\Phi(\mathbf{X}_i'\bbeta)^y_i)((1-\Phi(\mathbf{X}_i'\bbeta))^{1-y_i})
+\end{align}
+
+La cual combinando con la distribuci\'on previa de $\bbeta$ dada por $\bbeta\sim N(\mathbf{b},\mathbf{B})$. La distribuci\'on posterior de $\bbeta$ est\'a dada por 
+\begin{align}
+p(\mathbf{Y}|\bbeta)\propto \prod_{i=1}^n(\Phi(\mathbf{X}_i'\bbeta)^y_i)((1-\Phi(\mathbf{X}_i'\bbeta))^{1-y_i})\exp\left\{-\frac{1}{2}(\bbeta-\mathbf{b})'\mathbf{B}^{-1}(\bbeta-\mathbf{b})  \right\}
+\end{align}
+
+\textbf{Aproximaci\'on a la normal}
+
+\begin{align*}
+L(Y_i|\theta_i)&\propto Y_i\log\theta_i+(1-Y_i)\log(1-\theta_i)\\
+&=Y_i\log\Phi(\mathbf{X}_i'\bbeta)+(1-Y_i)\log(1-\Phi(\mathbf{X}_i'\bbeta))\\
+&=Y_i\log\Phi(\eta_i)+(1-Y_i)\log(1-\Phi(\eta_i))\\
+\end{align*}
+
+de donde se tiene que 
+\begin{align}
+\frac{\partial L}{\partial\eta_i}&=\frac{\phi(\eta_i)(y_i-\Phi(\eta_i))}{\Phi(\eta_i)(1-\Phi(\eta_i))}\label{Primer_Partial}\\
+\frac{\partial^2L}{\partial\eta^2_i}&=\frac{\Phi(\eta_i)\phi'(\eta_i)(1-\Phi(\eta_i))-\phi(\eta_i)}{\Phi^2(\eta_i)(1-\Phi(\eta_i))}\label{Segundo_Partial}
+\end{align}
+
+
+donde 
+\begin{equation*}
+\phi'(\eta_i)=-\frac{1}{\sqrt{2\pi}}\eta_ie^{-\frac{1}{2}\eta_i^2}
+\end{equation*}
+
+De esta forma, los pseudo datos y sus varianzas se calculan como
+\begin{align*}
+z_i&=\hat{\eta}_i-\frac{L'(y_i|\hat{\eta}_i)}{L''(y_i|\hat{\eta}_i)}\\
+&=\hat{\eta}_i-\frac{\phi(\hat{\eta}_i)\Phi(\hat{\eta}_i)(y_i-\Phi(\hat{\eta}_i))}{\phi'(\hat{\eta}_i)\Phi(\hat{\eta}_i)(1-\Phi(\hat{\eta}_i))-\phi(\hat{\eta}_i)}
+\end{align*}
+
+y 
+\begin{equation*}
+\sigma_i^2=\frac{\phi(\hat{\eta}_i)-\Phi(\hat{\eta}_i)\phi'(\hat{\eta}_i)(1-\Phi(\hat{\eta}_i))}{\Phi^2(\hat{\eta}_i)(1-\Phi(\hat{\eta}_i))}
+\end{equation*}
+
+Basando en los pseudo valores $z_i$ y sus varianzas $\sigma^2_i$, se puede implementar el algoritmo dado al inicio de cap\'itulo para lograr una estimaci\'on aproximada del vector de coeficientes $\bbeta$. Los c\'odigos en \verb'R' son como siguen:
+
+\colorbox{black}{\textcolor{white}{\textbf{c\'odigo R}}}
+<<>>=
+n.sim <- 200
+b <- rep(0, 2) 
+B <- diag(rep(10^3, 2))
+beta <- matrix(0, n.sim, 2)
+phi <- function(x){dnorm(x)} # Funci\'on de densidad normal est\'andar
+Phi <- function(x){pnorm(x)} # Funci\'on de distribuci\'on normal est\'andar
+phi.p <- function(x){-x*dnorm(x)} # Derivada de la funci\'on de densidad normal est\'andar
+X <- cbind(1, x)
+for(i in 2:n.sim){
+  eta <- beta[i-1,1] + beta[i-1,2]*x
+  z <- eta - phi(eta)*Phi(eta)*(y-Phi(eta))/((1-Phi(eta))*phi.p(eta)*Phi(eta)-phi(eta))
+  Z <- cbind(1, z)
+  sigma2 <- (phi(eta)-Phi(eta)*phi.p(eta)*(1-Phi(eta)))/(Phi(eta)^2*(1-Phi(eta)))
+  Sigma <- diag(sigma2)
+  Bq <- solve(solve(B) + t(X)%*%solve(Sigma)%*%X)
+  beta[i,] <- Bq %*% (solve(B)%*%b + t(X)%*%solve(Sigma)%*%z)
+}
+mean(beta[-(1:50),1])
+mean(beta[-(1:50),2])
+@
+
+Los anteriores resultados pueden ser comparados con los obtenidos con el m\'etodo de m\'axima verosimilitud:
+<<>>=
+glm(y~x,family=binomial(link=probit))
+@
+
+
+Por otro lado, la estimaci\'on del vector de par\'ametros $\bbeta$ tambi\'en se puede obtener simulando directamente de la distribuci\'on posterior modificando levemente la funci\'on \verb'MHlogit' de la secci\'on anterior
+<<>>=
+MHprobit <- function(beta0, beta1, x, y, Nsim){
+  
+  # Creaci\'on de la distribuci\'on a posteriori.
+  # Toma la forma de la verosimilitud pues las apriori son vagues
+  post <- function(beta0, beta1, x, y) {
+    lp <- beta0 + beta1 * x
+    p <- pnorm(lp)
+    #modificaci\'on para evitar problemas num\'ericos
+    sum(y*log(p)+(1-y)*log(1-p))
+  }
+  
+  ind <-rep(0,Nsim)
+  
+  betas <- matrix(NA,ncol=2,nrow=Nsim)
+  for(k in 1:Nsim){
+    betas[k,1] <- beta0
+    betas[k,2] <- beta1
+    
+    #Genera un valor candidato
+    beta0.can <- rnorm(1,beta0,0.1)
+    beta1.can <- rnorm(1,beta1,0.1)
+    
+    #Jumping distribution
+    q1 <- dnorm(beta0,beta0.can,0.1)*dnorm(beta1,beta1.can,0.1)
+    q2 <- dnorm(beta0.can,beta0,0.1)*dnorm(beta1.can,beta1,0.1)
+    
+    #A posteriori
+    p1 <- post(beta0.can,beta1.can, x, y)
+    p2 <- post(beta0,beta1, x, y)
+    
+    #Aceptaci\'on beta0
+    #modificaci\'on para evitar problemas num\'ericos
+    T.val <- min(1,(exp(p1-p2)*(q1/q2)))
+    u <- runif(1)
+    if (u<= T.val){
+      beta0=beta0.can
+      beta1=beta1.can
+      ind[k]<-1
+    }  }
+  return(list(ind=ind,betas=betas))
+}
+  # Valores iniciales
+  beta0=0
+  beta1=0
+  
+  res <- MHprobit(beta0,beta1,x,y,Nsim=50000)
+  
+  mean(res$betas[-(1:20000),1])
+  mean(res$betas[-(1:20000),2])
+@
+
+\colorbox{black}{\textcolor{white}{\textbf{C\'odigo JAGS}}}
+<<>>=
+n <- length(y)
+Probit.Model <- function(){
+for(i in 1 : n){
+  y[i] ~ dbern(theta[i])	
+  theta[i] <- pnorm(beta0+beta1*x[i], 0, 1)
+}
+  beta0 ~ dnorm(0, 0.0001)
+  beta1 ~ dnorm(0, 0.0001)
+}
+
+Probit.Model.data <- list("y", "x", "n")
+Probit.Model.param <- c("beta0", "beta1")
+Probit.Model.inits <- function(){
+  list("beta0"=c(0), "beta1"=c(0))
+}
+
+Probit.Model.fit <- jags(data=Probit.Model.data, inits=Probit.Model.inits, 
+        Probit.Model.param, n.iter=10000, n.burnin=1000, model.file=Probit.Model)
+
+print(Probit.Model.fit)
+@
+
+
+\subsection{Modelo Binomial}
+En este caso la variable respuesta representa conteos de \'exitos que se tuvieron en un conjunto de distintos experimentos. Se supone que $\mathbf{Y}=\{Y_1, \ldots, Y_n\}$ es un conjunto de variables aleatorias intercambiables cada una con distribuci\'on binomial de par\'ametro $\theta_i$ y $n_i$. El modelo binomial busca relacionar las probabilidades de \'exito $\theta_i$ con variables auxiliares $\mathbf{X}_i$. Se considera a continuaci\'on la funci\'on de enlace log\'istica y probit.
+
+\subsection{v\'inculo log\'istico}
+
+ Con la funci\'on de v\'inculo log\'istica dada por $g(\theta_i)=\log\left(\frac{\theta_i}{1-\theta_i}\right)$, y denotando $\eta_i=\mathbf{X}_i'\bbeta=g(\theta_i)$, se tiene que la verosimilitud de los datos est\'a dada por
+\begin{align}
+p(\mathbf{Y}\mid \btheta)&=\prod_{i=1}^n\binom{n}{y_i}\theta_i^{y_i}(1-\theta_i)^{n-y_i} \notag \\
+&=\prod_{i=1}^n\binom{n}{y_i}\left(\frac{\exp(\mathbf{X}_i'\bbeta)}{1+\exp(\mathbf{X}_i'\bbeta)}\right)^{y_i}
+\left(1-\left(\frac{\exp(\mathbf{X}_i'\bbeta)}{1+\exp(\mathbf{X}_i'\bbeta)}\right)\right)^{n-y_i}
+\end{align}
+
+Suponga que la distribuci\'on a priori para $\bbeta$ est\'a regida por la siguiente estructura probabil\'istica
+\begin{equation*}
+\bbeta\sim Normal_q(\mathbf{b},\mathbf{B})
+\end{equation*}
+
+De esta manera, la distribuci\'on a posteriori toma la siguiente forma.
+\begin{align*}
+p(\bbeta \mid \mathbf{Y}, \mathbf{X})&\propto
+\prod_{i=1}^n\left(\frac{\exp(\mathbf{X}_i'\bbeta)}{1+\exp(\mathbf{X}_i'\bbeta)}\right)^{y_i}
+\left(1-\left(\frac{\exp(\mathbf{X}_i'\bbeta)}{1+\exp(\mathbf{X}_i'\bbeta)}\right)\right)^{n-y_i}\\
+&\hspace{2cm}\times
+\exp\left\{\frac{-1}{2}(\bbeta-\mathbf{b})'\mathbf{B}^{-1}(\bbeta-\mathbf{b})\right\}
+\end{align*}
+
+Una vez m\'as, la anterior expresi\'on no tiene una forma cerrada; sin embargo, con ayuda de la t\'ecnica del condicionamiento sucesivo, el algoritmo de Gibbs y el m\'etodo de simulaci\'on de la grilla o el m\'etodo de Metropolis-Hastings es posible obtener f\'acilmente observaciones multivariantes provenientes de la distribuci\'on a posteriori del vector $\bbeta$.
+
+En cuanto a la estimaci\'on de $\bbeta$ usando la aproximaci\'on a la distribuci\'on normal, se puede verificar que 
+\begin{equation}\label{Ejer_binom_1}
+L(Y_i|\theta_i)\propto y_i\eta_i-n_i\log(1+e^{\eta_i})
+\end{equation}
+
+de donde
+\begin{align}
+\frac{\partial L}{\partial\eta_i}&=y_i-\frac{n_i\eta_i}{1+e^{\eta_i}}\label{Ejer_binom_2}\\
+\frac{\partial^2 L}{\partial\eta^2_i}&=-\frac{n_ie^{\eta_i}}{(1+e^{\eta_i})^2}\label{Ejer_binom_3}
+\end{align}
+
+Por lo tanto, los pseudo datos y sus varianzas est\'an dadas por 
+\begin{align}
+z_i&=\hat{\eta}_i+\frac{(1+e^{\hat{\eta}_i})^2}{e^{\hat{\eta}_i}}\left(\frac{y_i}{n_i}-\frac{e^{\hat{\eta}_i}}{1+e^{\hat{\eta}_i}}\right)\label{Ejer_binom_4}\\
+\sigma^2_i&=\frac{(1+e^{\eta_i})^2}{n_ie^{\eta_i}}\label{Ejer_binom_5}
+\end{align}
+
+\begin{Eje}\label{Ejemplo_Orings}
+En \citeasnoun{Fara} se menciona el siniestro del transportador espacial Challenger de los Estados Unidos en el 1986. Se investig\'o sobre un tipo de sellante en forma de anillo utilizado en los cohetes propulsores, que no tiene buen desempe\~no como sellante con temperaturas bajas. En el paquete \verb'faraway', se encuentran datos registrados en 23 misiones espaciales anteriores, donde se dispone de 6 anillos en cada misi\'on, y se cuentan con el n\'umero de anillos que presentan alg\'un da\~no, As\'i como la temperatura correspondiente (medida en grado Farenheit). 
+<<>>=
+attach(orings)
+plot(temp, damage/6)
+@
+
+En la gr\'afica anterior se observa que para temperaturas m\'as bajas, se tiende a observar mayor porcentaje de anillos con da\~no. De hecho, la \'unica misi\'on que tuvo 5 anillos ocurri\'o con temperatura de 53 grados farenheit, la m\'as baja temperatura de las 23 misiones. Con el fin de establecer una relaci\'on num\'erica entre la temperatura y el porcentaje de anillos da\~nados, se asume que los datos $Y_1,\cdots,Y_{23}$ son descritos con la distribuci\'on $Y_i\sim Binomial(6,\theta_i)$. En el siguiente cuadro se muestran los resultados de la estimaci\'on del modelo binomial con funci\'on de enlace log\'istica.
+
+\begin{table}[!htb]\centering
+\begin{tabular}{|c|cc|cc|}\hline
+&\multicolumn{2}{c}{$\beta_0$}&\multicolumn{2}{|c|}{$\beta_1$}\\\hline
+&Estimaci\'on&Error est\'andar&Estimaci\'on&Error est\'andar\\\hline
+Estimaci\'on de m\'axima verosimilitud&11.66&3.30&-0.22&0.05\\\hline
+Bayesiano con aproximaci\'on a la normal&11.54&3.26&-0.21&0.05\\\hline
+Bayesiano Gibbs MH en \verb'R' &13.62&3.52&-0.25&0.06\\\hline
+Bayesiano Gibbs en \verb'JAGS' &12.17&3.42&-0.23&0.06\\\hline
+\end{tabular}
+\end{table}
+%library(faraway)
+% glm(cbind(damage,6-damage) ~ temp, family=binomial, orings)
+%n.sim <- 200
+%b <- rep(0, 2) 
+%B <- diag(rep(10^3, 2))
+%beta <- matrix(0, n.sim, 2)
+%B.var <- array(NA, c(n.sim,2,2))
+%X <- cbind(1, temp)
+%for(i in 2:n.sim){
+%  eta <- beta[i-1,1] + beta[i-1,2]*temp
+%  z <- eta + (1+exp(eta))^2/exp(eta)*(damage/6-exp(eta)/(1+exp(eta)))
+%  Z <- cbind(1, z)
+%  sigma2 <- (1+exp(eta))^2/(6*exp(eta))
+%  Sigma <- diag(sigma2)
+%  Bq <- solve(solve(B) + t(X)%*%solve(Sigma)%*%X)
+%  B.var[i,,] <- Bq
+%  beta[i,] <- Bq %*% (solve(B)%*%b + t(X)%*%solve(Sigma)%*%z)
+%}
+%mean(beta[-(1:(n.sim/2)),1])
+%mean(beta[-(1:(n.sim/2)),2])
+%sqrt(mean(B.var[-(1:(n.sim/2)),1,1]))
+%sqrt(mean(B.var[-(1:(n.sim/2)),2,2]))
+
+Podemos observar que en general los resultados de estimaci\'on de los cuatro m\'etodos en general son cercanos entre ellos, aunque la combinaci\'on entre el muestreo de Gibbs y el algoritmo de Metropolis Hastings arroja resultados levemente diferentes.
+\end{Eje}
+
+
+\section{Modelo Binomial con v\'inculo Probit}
+
+Para la distribuci\'on binomial, tambi\'en es posible trabajar con la funci\'on de v\'inculo probit, de tal manera que
+\begin{equation}
+\eta_i=g(\theta_i)=probit(\theta_i)=\Phi^{-1}(\theta_i)
+\end{equation}
+
+f\'acilmente se encuentra que la funci\'on inversa para $g(\cdot)$, est\'a dada por
+\begin{equation}
+\theta_i=g^{-1}(\eta_i)=\Phi(\eta_i)
+\end{equation}
+
+Notando que $\eta_i=\mathbf{X}_i'\bbeta$ y siguiendo con el modelamiento, se tiene que la verosimilitud de los datos est\'a dada por
+\begin{align}
+p(\mathbf{Y}\mid \theta)&=\prod_{i=1}^n\binom{n}{y_i}\theta_i^{y_i}(1-\theta_i)^{n-y_i} \notag \\
+&=\prod_{i=1}^n\binom{n}{y_i}(\Phi(\mathbf{X}_i'\bbeta))^{y_i}(1-\Phi(\mathbf{X}_i'\bbeta))^{n-y_i}
+\end{align}
+
+Suponiendo que la distribuci\'on a priori para $\bbeta$ est\'a regida por la siguiente estructura probabil\'istica
+\begin{equation*}
+\bbeta\sim Normal_q(\mathbf{b},\mathbf{B})
+\end{equation*}
+
+De esta manera, la distribuci\'on a posteriori toma la siguiente forma.
+\begin{align*}
+p(\bbeta \mid \mathbf{Y}, \mathbf{X})&\propto
+\prod_{i=1}^n(\Phi(\mathbf{X}_i'\bbeta))^{y_i}(1-\Phi(\mathbf{X}_i'\bbeta))^{n-y_i}\\
+&\hspace{2cm}\times
+\exp\left\{\frac{-1}{2}(\bbeta-\mathbf{b})'\mathbf{B}^{-1}(\bbeta-\mathbf{b})\right\}
+\end{align*}
+
+Una vez m\'as, la anterior expresi\'on no tiene una forma cerrada; sin embargo, con ayuda de la t\'ecnica del condicionamiento sucesivo, el algoritmo de Gibbs y el m\'etodo de simulaci\'on de la grilla es posible obtener f\'acilmente observaciones multivariantes provenientes de la distribuci\'on a posteriori del vector $\bbeta$.
+
+\section{Modelo Poisson con v\'inculo logaritmico}
+
+Este caso es t\'ipico en donde la variable respuesta toma valores enteros positivos, denotando el n\'umero de ocurrencias de un evento. Se supone que $\mathbf{Y}=\{Y_1, \ldots, Y_n\}$ es un conjunto de variables aleatorias intercambiables cada una con distribuci\'on Poisson de par\'ametro $\theta_i$. Teniendo en cuenta que $\theta_i>0$, la funci\'on de enlace logar\'itmica permite asociar $\theta_i$ y $\mathbf{X}_i'\bbeta$, de tal manera que
+\begin{equation}
+\eta_i=g(\theta_i)=\log(\theta_i)
+\end{equation}
+
+Teniendo en cuenta que la funci\'on inversa para $g(\cdot)$, est\'a dada por
+\begin{equation}
+\theta_i=g^{-1}(\eta_i)=\exp(\eta_i)
+\end{equation}
+
+Notando que $\eta_i=\mathbf{X}_i'\bbeta$ se tiene que la verosimilitud de los datos est\'a dada por
+\begin{align}
+p(\mathbf{Y}\mid \theta)&=\prod_{i=1}^n\frac{e^{-\theta_i}\theta_i^{y_i}}{y_i!}\notag \\
+&=\prod_{i=1}^n\frac{e^{-e^{\mathbf{X}_i'\bbeta}}(e^{\mathbf{X}_i'\bbeta})^{y_i}}{y_i!}\notag \\
+&=\frac{1}{\prod_{i=1}^ny_i!}\exp\left\{\sum_{i=1}^n\left(y_i\mathbf{X}_i'\bbeta-e^{\mathbf{X}_i'\bbeta}\right)\right\}
+\end{align}
+
+Suponga que la distribuci\'on a priori para $\bbeta$ est\'a regida por la siguiente estructura probabil\'istica
+\begin{equation*}
+\bbeta\sim Normal_q(\mathbf{b},\mathbf{B})
+\end{equation*}
+
+De esta manera, la distribuci\'on a posteriori toma la siguiente forma.
+\begin{align*}
+p(\bbeta \mid \mathbf{Y}, \mathbf{X})&\propto
+\exp\left\{\sum_{i=1}^n\left(y_i\mathbf{X}_i'\bbeta-e^{\mathbf{X}_i'\bbeta}\right)
+-\frac{1}{2}(\bbeta-\mathbf{b})'\mathbf{B}^{-1}(\bbeta-\mathbf{b})\right\}
+\end{align*}
+
+Una vez m\'as, la anterior expresi\'on no tiene una forma cerrada; sin embargo, con ayuda de la t\'ecnica del condicionamiento sucesivo, el algoritmo de Gibbs y el m\'etodo de simulaci\'on de la grilla es posible obtener f\'acilmente observaciones multivariantes provenientes de la distribuci\'on a posteriori del vector $\bbeta$.
+
+\textbf{Aproximaci\'on a la normal}
+
+En el modelo Poisson con funci\'on de enlace logar\'itmica, se tiene que $p(Y_i\mid \eta_i)\propto \exp\{y_i\eta_i-e^{\eta_i}\}$, de donde se tiene que $\ln p(Y_i\mid \eta_i)=L(Y_i\mid \eta_i)\propto y_i\eta_i-e^{\eta_i}$. Y As\'i:
+\begin{align*}
+\frac{\partial L(Y_i\mid \eta_i}{\partial \eta_i})&=y_i-e^{\eta_i}\\
+\frac{\partial^2 L(Y_i\mid \eta_i}{\partial \eta^2_i})&=-e^{\eta_i}\\
+\end{align*}
+
+Dado lo anterior, los pseudo datos $z_i$ y sus varianzas $\sigma^2_i$ vienen dados por
+\begin{align*}
+z_i&=\hat{\eta}_i-\frac{y_i-e^{\hat{\eta}_i}}{-e^{\hat{\eta_i}}}=\hat{\eta}_i+y_ie^{-\hat{\eta}_i}-1\\
+\sigma^2_i&=e^{-\hat{\eta}_i}\\
+\end{align*}
+
+As\'i, la estimaci\'on de los coeficientes de regresi\'on $\bbeta$ se puede obtener ajustando un modelo lineal Gaussiano entre los pseudo datos $z_i$ y las variables regresoras $\mathbf{X}_i$ con varianzas conocidas $\sigma^2_i$. A continuaci\'on se ilustra los detalles computacionales en \verb'R' usando los datos de registros de 30 islas de Gal\'opagos disponible en el paquete \verb'faraway'. El objetivo es establecer una relaci\'on entre el n\'umero de especies de plantas con las caracter\'isticas de la isla, entre ellas, el \'area, distancia hacia la isla Santa Cruz, entre otras.  
+
+\colorbox{black}{\textcolor{white}{\textbf{C\'odigo R}}}
+<<>>=
+data(gala)
+n.sim <- 1000
+p <- 6 # n\'umero de variables X, incluyendo el intercepto
+b <- rep(0, p) 
+B <- diag(rep(10^4, p))
+X <- as.matrix(cbind(1, gala[,-(1:2)]))
+y <- gala$Species
+# Se usa 
+beta <- matrix(lm(log(y)~X-1)$coef, n.sim, p, byrow=T)
+B.var <- array(NA, c(n.sim, p, p))
+for(i in 2:n.sim){
+  eta <- X %*% matrix(beta[i-1,])
+  z <- eta + y*exp(-eta) - 1
+  sigma2 <- exp(-eta)
+  Sigma <- diag(c(sigma2))
+  Bq <- solve(solve(B) + t(X)%*%(diag(1/c(sigma2)))%*%X)
+  beta[i,] <- Bq %*% (solve(B)%*%b + t(X)%*%(diag(1/c(sigma2))%*%z))
+  B.var[i,,] <- Bq
+}
+colMeans(beta[-(1:(n.sim/2)),])
+@
+
+Los c\'odigos en \verb'JAGS' se muestran a continuaci\'on, los cuales arrojan resultados similares a los obtenidos con la aproxiamci\'on a la distribuci\'on normal. 
+
+\colorbox{black}{\textcolor{white}{\textbf{C\'odigo JAGS}}}
+<<>>=
+Poisson.Model <- function(){
+for(i in 1 : 30){
+  gala[i,1] ~ dpois(theta[i])	
+  theta[i] <- exp(b0 + b1*gala[i,3] + b2*gala[i,4] + b3*gala[i,5] + b4*gala[i,6] + b5*gala[i,7])
+}
+  b0 ~ dnorm(0, 0.0001)
+  b1 ~ dnorm(0, 0.0001)
+  b2 ~ dnorm(0, 0.0001)
+  b3 ~ dnorm(0, 0.0001)
+  b4 ~ dnorm(0, 0.0001)
+  b5 ~ dnorm(0, 0.0001)
+}
+
+Poisson.Model.data <- list("gala")
+Poisson.Model.param <- c("b0", "b1","b2","b3","b4","b5")
+Poisson.Model.inits <- function(){
+  list("b0"=c(0), "b1"=c(0), "b2"=c(0),"b3"=c(0),"b4"=c(0),"b5"=c(0))
+}
+
+Poisson.Model.fit <- jags(data=Poisson.Model.data, inits=Poisson.Model.inits, 
+        Poisson.Model.param, n.iter=10000, n.burnin=1000, model.file=Poisson.Model)
+
+print(Poisson.Model.fit)
+@
+
+\section{Modelo Poisson inflado en cero}
+En algunas situaciones, los eventos que representan conteos no pueden ser descritos por medio de una distribuci\'on Poisson de forma apropiada, debido a la alta presencia del valor cero que representa la ausencia del fen\'omeno de inter\'es. Por ejemplo, si se pregunta a los habitantes de una ciudad, cu\'antas veces a la semana hace uso del servicio de taxi, muchas personas pueden responder NINGUNO, si se trata de bajos recursos econ\'omicos, o si cuentan con un sistema eficiente de transporte p\'ublico. Ahora, en una distribuci\'on Poisson, la probabilidad del valor cero usualmente no es muy alto en comparaci\'on con los dem\'as valores, excepto para valores peque\~nos del par\'ametro $\lambda$. 
+Una soluci\'on natural a la presencia excesiva de ceros es sumar una probabilidad adicional $\pi_i$ a la probabilidad del valor cero de la $i$-\'esima variable $Y_i$, adicionalmente a las probabilidades originales de la distribuci\'on Poisson deben ser multiplicados por $1-\pi_i$ con el fin de garantizar que la suma de las probabilidades sea igual a 1. En resumen, la funci\'on de densidad de la variable $Y_i$ est\'a dada por:
+\begin{align}
+P(Y_i=0\mid \pi_i,\lambda_i)&=\pi_i+(1-\pi_i)e^{-\lambda_i}\\
+P(Y_i=y\mid \pi_i,\lambda_i)&=(1-\pi_i)\frac{\lambda_i^ye^{-\lambda_i}}{y!}\ \ \ \text{para $y>0$}
+\end{align}
+
+El objetivo en el anterior planteamiento es la estimaci\'on de los par\'ametros $\pi_i$ y $\lambda_i$. Al contar con variables auxiliares $\mathbf{X}_i$ para todo $i$, el modelo se puede plantear como
+\begin{align}
+log(\lambda_i)&=\mathbf{X}_i'\bbeta\\
+logit(\pi_i)&=\mathbf{X}_i'\bgamma
+\end{align}
+
+En el anterior modelo, tambi\'en podemos considerar los siguientes variantes: 
+\begin{itemize}
+    \item Se puede usar otras funciones de enlace para $\lambda_i$ y $\pi_i$, por ejemplo usar el enlace probit para $\pi_i$.
+    \item La informaci\'on auxiliare para explicar $\lambda_i$ y $\pi_i$ puede ser diferente, en este caso, el modelo puede ser descrito como $log(\lambda_i)=\mathbf{X}_i'\bbeta$ y $logit(\pi_i)=\mathbf{Z}_i'\bgamma$ donde $\mathbf{X}_i$ y $\mathbf{Z}_i$ denotan vector de informaci\'on auxiliar en el individuo $i$.
+    \item La probabilidad de los valores extras de cero $\pi_i$ puede ser constante, es decir, $\pi_i=\pi$ para todo $i$. Esto es, la probabilidad de los ceros extras no depende de caracter\'isticas individuales $\mathbf{Z}_i$.
+    \item El anterior supuesto tambi\'en se puede aplicar para $\lambda_i$, es decir, $\lambda_i=\lambda$ y $logit(\pi_i)=\mathbf{X}_i'\bgamma$.
+\end{itemize}
+
+A continuaci\'on, simulamos un conjunto de $n=1000$ datos asumiendo $\pi_i=\pi=0.3$ para todo $i$, $log(\lambda_i)=-0.3+0.1x_i$ donde los $x_i$ son obtenidos de una distribuci\'on Gamma con media 5 y varianza 5. La forma de introducir los ceros extras es simplemente reemplazar aleatoriamente $n\pi$ datos por el valor cero. Esta simulaci\'on de datos se lleva a cabo con los siguientes c\'odigos. 
+<<>>=
+pi <- 0.3
+n <- 1000
+x <- rgamma(n, 5,1)
+beta0 <- -0.3; beta1 <- 0.1
+lambda <- exp(beta0 + beta1 * x)
+y <- rpois(n, lambda)
+y[sample(n, n*pi)] <- 0
+@
+
+
+Ahora, la funci\'on de densidad del modelo Poisson inflado en cero se puede ver, en general, como una mezcla de distribuciones:
+\begin{equation}
+    p(Y_i\mid \pi_i,\lambda_i)=\pi_i Poisson(0) + (1-\pi_i)Poisson(\lambda_i)
+\end{equation}
+
+puesto que la distribuci\'on Poisson con media cero corresponde a la distribuci\'on concentrada en el valor cero (el valor cero tiene probabilidad 1, y los dem\'as valores probabilidad 0). Lo anterior indica que la distribuci\'on de $Y_i$ corresponde a $Poisson(0)$ con probabilidad $\pi_i$ y corresponde a $Poisson(\lambda_i)$ con probabilidad $1-\pi_i$, de donde los c\'odigos en \verb'JAGS' hacen uso de una distribuci\'on $Bernoulli(\pi_i)$. En nuestros datos simulados, $\pi_i=\pi$ para todo $i$, por lo cual los c\'odigos computacionales en \verb'JAGS' son como siguen:
+
+<<>>=
+ZIP.Model <- function(){
+for(i in 1 : n){
+  y[i] ~ dpois(mu[i])	
+  mu[i] <- (1-u[i])*lambda[i]
+  u[i] ~ dbern(p0)
+  log(lambda[i]) <- beta0 + beta1 * x[i]
+}
+  beta0 ~ dnorm(0, 0.0001)
+  beta1 ~ dnorm(0, 0.0001)
+  p0 ~ dbeta(1, 1)
+}
+
+ZIP.Model.data <- list("y", "x", "n")
+ZIP.Model.param <- c("beta0", "beta1", "p0")
+ZIP.Model.inits <- function(){
+  list("beta0"=c(0), "beta1"=c(0), "p0"=c(0.5))
+}
+
+ZIP.Model.fit <- jags(data=ZIP.Model.data, inits=ZIP.Model.inits, 
+        ZIP.Model.param, n.iter=10000, n.burnin=1000, model.file=ZIP.Model)
+
+print(ZIP.Model.fit)
+@
+
+Podemos observar que la estimaci\'on de los par\'ametros $\beta_0$, $\beta_1$ y $\pi$ son similares a los valores usados para la simulaci\'on de datos. A continuaci\'on, ajustamos el modelo regresi\'on corriente, y comparamos los resultados.
+
+<<>>=
+Pois.Model <- function(){
+for(i in 1 : n){
+  y[i] ~ dpois(lambda[i])	
+  log(lambda[i]) <- beta0 + beta1 * x[i]
+}
+  beta0 ~ dnorm(0, 0.0001)
+  beta1 ~ dnorm(0, 0.0001)
+}
+
+Pois.Model.data <- list("y", "x", "n")
+Pois.Model.param <- c("beta0", "beta1")
+Pois.Model.inits <- function(){
+  list("beta0"=c(0), "beta1"=c(0))
+}
+
+Pois.Model.fit <- jags(data=Pois.Model.data, inits=Pois.Model.inits, 
+        Pois.Model.param, n.iter=10000, n.burnin=1000, model.file=Pois.Model)
+
+print(Pois.Model.fit)
+@
+
+Observamos que para el modelo Poisson inflado en cero, la devianza  es 1933.8, menor que la del modelo Poisson, 2506.3; aunque el valor del criterio DIC de este modelo (3498.8) es mayor que el del modelo Poisson (2510.0), esto se debe a que el n\'umero efectivo de par\'ametros del modelo Poisson inflado en cero es mucho mayor que el modelo Poisson, el cual penaliza el valor del DIC (lo cual implica que el modelo Poisson inflado en cero tiene un grado de complejidad mayor que el modelo Poisson, aunque el ajuste del modelo inflado en cero es mejor que el modelo Poisson). Por otro lado, el valor de la estad\'istica Chi cuadrado del modelo Poisson inflado en cero es 1236.105, mientras que para el modelo Poisson, el valor de esta estad\'istica es de 1270.41. Dado lo anterior, se concluye que el ajuste del modelo inflado en cero es mejor que el modelo Poisson. 
+% Y.hat del modelo ZIP se calcul\'o como hat2 <- (1-0.31)*exp(-0.36+0.11*x)
+
+
+\section{Modelos de sobredispersi\'on}
+
+Cuando se tienen datos provenientes de conteos, se pueden tomar la distribuci\'on binomial o la distribuci\'on Poisson para modelarlos. Sin embargo, si la varianza de los datos es mucho mayor que su media, ser\'ia dif\'acil argumentar que puedan provenir de la distribuci\'on binomial - puesto que para esta distribuci\'on siempre la media es m\'as grande que su varianza - o que provengan de una distribuci\'on Poisson - puesto que para esta distribuci\'on siempre su media es igual a su varianza. El anterior fen\'omeno se conoce con el nombre de sobredispersi\'on, y necesita un tratamiento especial para lograr un buen ajuste a los datos. 
+
+\begin{Eje}
+Ejemplo
+\end{Eje}
+\subsection{Modelo de regresi\'on Binomial negativa}
+
+
+Se supone que $\mathbf{Y}=\{Y_1, \ldots, Y_n\}$ es un conjunto de variables aleatorias intercambiables cada una con distribuci\'on Binomial negativa con par\'ametros $\theta$ y $\mu_i$. La funci\'on de densidad de cada $Y_i$ est\'a dada por
+\begin{equation*}
+p(Y_i\mid \theta, \mu_i)=\frac{\Gamma(y_i+\theta)}{\Gamma(y_i+1)\Gamma(\theta)}\left(\frac{\theta}{\theta+\mu_i}\right)^\theta\left(\frac{\mu_i}{\theta+\mu_i}\right)^{y_i}
+\end{equation*}
+
+para $y_i=0,1,2,\cdots$, $\mu_i>0$ y $\theta\geq 0$. En esta parametrizaci\'on de la distribuci\'on binomial negativa, se puede ver que los dos primeros momentos de $Y_i$ est\'an dados por
+\begin{align*}
+    E(Y_i\mid \theta, \mu_i)&=\mu_i\\
+    Var(Y_i\mid \theta, \mu_i)&=\mu_i+\frac{\mu_i^2}{\theta}\\
+\end{align*}
+
+De las anteriores propiedades se puede ver que la varianza de la variable $Y_i$ siempre es mayor que la esperanza, lo cual hace que esta distribuci\'on sea apropiada cuando se presenta la sobre dispersi\'on. $\theta$ es denominado el par\'ametro de dispersi\'on y define qu\'e tan grande es la sobre dispersi\'on; espec\'ific amente, si $\theta$ es peque\~no, la varianza ser\'a mucho m\'as grande comparado con la media.s Ahora, siguiendo con la idea de relacionar la esperanza de la variable $Y_i$ con el vector de variables auxiliares $\mathbf{X}_i$, tenemos que 
+\begin{equation*}
+    \mu_i=g^{-1}(\eta_i)=g^{-1}(\mathbf{X}_i'\bbeta)=e^{\mathbf{X}_i'\bbeta}
+\end{equation*}
+
+se tiene que la verosimilitud de los datos est\'a dada por
+\begin{align*}
+p(\mathbf{Y}\mid \theta, \mu_i)
+&=\prod_{i=1}^n\frac{\Gamma(y_i+\theta)}{\Gamma(y_i+1)\Gamma(\theta)}\left(\frac{\theta}{\theta+\mu_i}\right)^\theta\left(\frac{\mu_i}{\theta+\mu_i}\right)^{y_i} \\
+&=\prod_{i=1}^n\frac{\Gamma(y_i+\theta)}{\Gamma(y_i+1)\Gamma(\theta)}\left(\frac{\theta}{\theta+e^{\mathbf{X}_i'\bbeta}}\right)^\theta\left(\frac{e^{\mathbf{X}_i'\bbeta}}{\theta+e^{\mathbf{X}_i'\bbeta}}\right)^{y_i}
+\end{align*}
+
+Suponga que la distribuci\'on a priori para $\bbeta$ est\'a regida por la siguiente estructura probabil\'istica
+\begin{equation*}
+\bbeta\sim Normal_q(\mathbf{b},\mathbf{B})
+\end{equation*}
+
+De esta manera, la distribuci\'on a posteriori de $\bbeta$ toma la siguiente forma.
+\begin{align*}
+p(\bbeta \mid \mathbf{Y}, \mathbf{X}, \theta)&\propto
+\prod_{i=1}^n\left(\frac{\theta}{\theta+e^{\mathbf{X}_i'\bbeta}}\right)^\theta\left(\frac{e^{\mathbf{X}_i'\bbeta}}{\theta+e^{\mathbf{X}_i'\bbeta}}\right)^{y_i}\\
+&\hspace{2cm}\times
+\exp\left\{\sum_{i=1}^n -\frac{1}{2}(\bbeta-\mathbf{b})'\mathbf{B}^{-1}(\bbeta-\mathbf{b})\right\}
+\end{align*}
+
+Una vez m\'as, la anterior expresi\'on no tiene una forma cerrada; sin embargo, con ayuda de la t\'ecnica del condicionamiento sucesivo, el algoritmo de Gibbs y el m\'etodo de simulaci\'on de la grilla (o el algoritmo de Metropolis Hastings) es posible obtener f\'acilmente observaciones multivariantes provenientes de la distribuci\'on a posteriori del vector $\bbeta$.
+
+
+\textbf{Aproximaci\'on a la distribuci\'on normal}
+
+En primer lugar, consideramos el caso cuando el par\'ametro de dispersi\'on $\theta$ es conocida y se quiere estimar el vector de coeficientes de regresi\'on $\bbeta$. Asumiendo constante $\theta$, de la funci\'on de densidad $p(Y_i\mid\theta,\mu_i)$, tenemos que
+\begin{align*}
+L=\ln p(Y_i\mid\mu_i)&\propto y_i\ln \mu_i-(\theta+y_i)\ln(\theta+\mu_i)\\
+&=y_i\eta_i-(\theta+y_i)\ln(\theta+e^{\eta_i})
+\end{align*}
+
+con $\eta_i=\mathbf{X}_i'\bbeta=\ln \mu_i$. De esta forma:
+\begin{equation}\label{L1_BN}
+L'(Y_i\mid\hat{\eta}_i)=y_i-\frac{\theta+y_i}{\theta+e^{\hat{\eta}_i}}e^{\hat{\eta}_i}
+\end{equation}
+
+y 
+\begin{equation}\label{L2_BN}
+L''(Y_i\mid\hat{\eta}_i)=-\frac{(\theta+y_i)\theta e^{\hat{\eta}_i}}{(\theta+e^{\hat{\eta}_i})^2}
+\end{equation}
+
+Dado lo anterior, los pseudo datos y sus varianzas en la aproximaci\'on a la distribuci\'on normal est\'an dados por
+\begin{equation}\label{zi_BN}
+z_i=\hat{\eta}_i+\frac{(\theta+e^{\hat{\eta}_i})(y_i-e^{\hat{\eta}_i})}{e^{\hat{\eta}_i}(\theta+y_i)}
+\end{equation}
+
+y 
+\begin{equation}\label{sigma2i_BN}
+\sigma_i^2=\frac{(\theta+e^{\hat{\eta}_i})^2}{\theta e^{\hat{\eta}_i}(\theta+y_i)}
+\end{equation}
+
+Con los anteriores resultados, cuando $\theta$ es conocido, se puede estimar el vector de coeficientes $\bbeta$ ajustando un modelo de regresi\'on Gaussiana entre los pseudo datos $z_i$ y las variables regresoras $\mathbf{X}_i$ con varianza $\sigma^2_i$. Con el fin de ilustrar la eficacia de la estimaci\'on, se simulan 200 datos del modelo $Y_i\sim BN(\mu_i,\theta)$ con $\theta=2$ $\mu_i=\exp{0.5+0.7x_i}$ con $x_i\sim Unif(1,4)$ para $i=1,\cdots,200$. La simulaci\'on de estos datos se efect\'ua con los siguientes c\'odigos, (se debe cargar el paquete \verb'MASS')
+<<>>=
+set.seed(123456)
+n <- 200
+b0 <- 0.5
+b1 <- 0.7
+x <- runif(n, 1, 4)
+eta <- b0 + b1*x
+y <- rnegbin(n, mu=exp(eta), theta=2)
+@
+A continuaci\'on, se fija el valor de $\theta$ en 2, y se procede a estimar el vector de coeficientes de regresi\'on $\bbeta$ usando el enfoque de la aproximaci\'on a la distribuci\'on normal.
+<<>>=
+n.sim <- 1000
+b <- rep(0, 2) 
+B <- diag(rep(10^3, 2))
+beta <- matrix(0, n.sim, 2)
+X <- cbind(1, x)
+theta <- 2
+for(i in 2:n.sim){
+  eta <- beta[i-1,1] + beta[i-1,2]*x
+  z <- eta + (theta+exp(eta))*(y-exp(eta))/(exp(eta)*(theta+y))
+  Z <- cbind(1, z)
+  sigma2 <- (theta+exp(eta))^2/(theta*exp(eta)*(theta+y))
+  Sigma <- diag(sigma2)
+  Bq <- solve(solve(B) + t(X)%*%solve(Sigma)%*%X)
+  beta[i,] <- Bq %*% (solve(B)%*%b + t(X)%*%solve(Sigma)%*%z)
+}
+mean(beta[,1])
+mean(beta[,2])
+@
+Observamos que usando distribuciones previas no informativas, la estimaci\'on de los coeficientes de regresi\'on son cercanos a los utilizados para generar los datos. Ahora, teniendo en cuenta que en la pr\'actica, el valor de $\theta$ es desconocido, es necesario desarrollar su estimaci\'on, espec\'ific amente se debe hallar la forma de muestrear valores de la distribuci\'on posterior de $\theta$ condicionado en los datos y $\bbeta$. Teniendo en cuenta que $\theta>0$, una distribuci\'on previa apropiada es la distribuci\'on $Gamma(\alpha, \beta)$. Esto es $p(\theta)\propto\theta^{\alpha-1} e^{-\beta\theta}$, y tenemos que la distribuci\'on posterior de $\theta$ est\'a dado por
+\begin{align*}
+p(\theta\mid \mathbf{Y},\bbeta)
+\propto \prod_{i=1}^n\left[\frac{\Gamma(y_i+\theta)}{\Gamma(y_i+1)\Gamma(\theta)}\frac{\theta^\theta}{(\theta+e^{\mathbf{X}_i'\bbeta})^{\theta+y_i}}\right]\theta^{\alpha-1} e^{-\beta\theta}
+\end{align*}
+Esta distribuci\'on claramente no tiene forma cerrada, por lo cual debe usar m\'etodos de simulaci\'on como Metropolis Hastings o el m\'etodo de la grilla para muestrear valores de esta distribuci\'on. Finalmente, la estimaci\'on conjunta de $\theta$ y $\bbeta$ se puede llevar acabo usando el muestreador de Gibbs usando $p(\theta\mid \mathbf{Y},\bbeta)$ para muestrear valores de $\theta$ y la aproximaci\'on a la distribuci\'on normal para la estimaci\'on de $\bbeta$. A continuaci\'on se muestran los c\'odigos en \verb'R' para la estimaci\'on de los par\'ametros donde para muestrear valores de $\theta$ se utiliz\'o el m\'etodo de la grilla. Cabe resaltar que para evitar problemas num\'ericos en el c\'omputo de la funci\'on $p(\theta\mid\mathbf{Y},\bbeta)$, se calcul\'o $\ln p(\theta\mid\mathbf{Y},\bbeta)$ y posteriormente se le aplica la funci\'on exponencial. Para la distribuci\'on previa de $\theta$ se utiliz\'o $p(\theta)\propto\theta^{-1}$.
+
+<<>>=
+n.sim <- 1000
+b <- rep(0, 2) 
+B <- diag(rep(10^3, 2))
+X <- cbind(1, x)
+beta <- matrix(0, n.sim, 2)
+theta <- rep(1, n.sim)
+theta.grid <- seq(0.1, 10, by =0.05)
+logpos.theta <- function(theta, b){
+  sum(log(gamma(y+theta))-log(gamma(y+1))-log(gamma(theta))) + (n*theta)*log(theta) - 
+  sum((theta+y)*log(theta+exp(b[1]+b[2]*x))) - log(theta)
+}
+for(i in 2:n.sim){
+  # Muestrear un valor de theta
+  aux.theta <- c()
+  for(j in 1:length(theta.grid)){
+    aux.theta[j] <- logpos.theta(theta.grid[j], beta[i-1,])
+  }
+  weig.theta <- exp(aux.theta-max(aux.theta))
+
+  theta[i] <- theta.grid[sample(length(theta.grid),1,prob=weig.theta/sum(weig.theta))]
+  # Muestrear un valor del vector beta
+  
+  eta <- beta[i-1,1] + beta[i-1,2]*x
+  z <- eta + (theta[i]+exp(eta))*(y-exp(eta))/(exp(eta)*(theta[i]+y))
+  sigma2 <- (theta[i]+exp(eta))^2/(theta[i]*exp(eta)*(theta[i]+y))
+  Sigma <- diag(sigma2)
+  Bq <- solve(solve(B) + t(X)%*%solve(Sigma)%*%X)
+  beta[i,] <- Bq %*% (solve(B)%*%b + t(X)%*%solve(Sigma)%*%z)
+}
+mean(beta[-(1:(n.sim/2)),1])
+mean(beta[-(1:(n.sim/2)),2])
+mean(theta[-(1:(n.sim/2))])
+@
+
+Las estimaciones obtenidas para $\bbeta$ y $\theta$ son relativamente cercanas a los par\'ametros de donde se generaron los datos. En \verb'JAGS', la distribuci\'on binomial negativa est\'a dada en t\'erminos de los par\'ametros $\theta$ y $p_i=\frac{\theta}{\theta+\mu_i}$, esto es, la funci\'on de densidad queda dada por 
+\begin{equation*}
+p(Y_i\mid \theta,\ p_i)=\frac{\Gamma(y_i+\theta)}{\Gamma(y_i+1)\Gamma(\theta)}p_i^\theta(1-p_i)^{y_i}
+\end{equation*}
+
+Teniendo en cuenta la anterior parametrizaci\'on de la funci\'on de densidad, los c\'odigos en \verb'JAGS' para ajustar una regresi\'on binomial negativa entre los datos simulados $y$ y $x$ est\'an dados por:
+<<>>=
+Binom.Neg.Model <- function(){
+for(i in 1 : n){
+  y[i] ~ dnegbin(p[i], theta)	
+  p[i] <- theta/(theta+mu[i])
+  log(mu[i]) <- beta0 + beta1 * x[i]
+}
+  beta0 ~ dnorm(0, 0.0001)
+  beta1 ~ dnorm(0, 0.0001)
+  theta ~ dgamma(0.001, 0.001)
+}
+
+Binom.Neg.Model.data <- list("y", "x", "n")
+Binom.Neg.Model.param <- c("beta0", "beta1", "theta")
+Binom.Neg.Model.inits <- function(){
+  list("beta0"=c(0), "beta1"=c(0), "theta"=c(1))
+}
+
+Binom.Neg.Model.fit <- jags(data=Binom.Neg.Model.data, inits=Binom.Neg.Model.inits, 
+        Binom.Neg.Model.param, n.iter=10000, n.burnin=1000, model.file=Binom.Neg.Model)
+
+print(Binom.Neg.Model.fit)
+@
+
+Vemos que las estimaciones obtenidas son muy similares a las obtenidas anteriormente en \verb'R'.
+
+\subsection{Regresi\'on Poisson jer\'arquica}
+
+mirar en gelman
+
+\section{Modelo Gamma con v\'inculo rec\'iproco}
+
+En este apartado se considera que la variable respuesta toma valores positivos y reales; lo anterior es muy conveniente a la hora de modelar los distintos tipos de variables econ\'omicas y financieras. Asuma que $\mathbf{Y}=\{Y_1, \ldots, Y_n\}$ es un conjunto de variables aleatorias intercambiables cada una con distribuci\'on Gamma de par\'ametros $(\alpha,\beta)$. Antes de continuar, y siguiendo las ideas de \citeasnoun{Fara}, es conveniente reparametrizar la distribuci\'on haciendo $\beta=\alpha/\theta$; luego, la forma funcional de la distribuci\'on de una variable $Y$, est\'a dada por:
+\begin{equation}
+p(y\mid \theta, \alpha)=
+\frac{1}{\Gamma(\alpha)}\left(\frac{\alpha}{\theta}\right)^{\alpha}y^{\alpha-1}\exp\left\{-\frac{y\alpha}{\theta}\right\}
+\end{equation}
+
+Con esta transformaci\'on, $E(Y)=\theta$ y $Var(Y)=\theta^2/\alpha$. Dado lo anterior, se asume que $Y_i\sim Gamma(\theta_i,\alpha)$; ahora, considerando la funci\'on de v\'inculo rec\'iproco, se tiene que
+\begin{equation}
+\eta_i=g(\theta_i)=\theta_i^{-1}
+\end{equation}
+
+Teniendo en cuenta que la funci\'on inversa para $g(\cdot)$, est\'a dada por
+\begin{equation}
+\theta_i=g^{-1}(\eta_i)=\eta_i^{-1}
+\end{equation}
+
+Notando que $\eta_i=\mathbf{X}_i'\bbeta$ y siguiendo con el modelamiento, se tiene que la verosimilitud de los datos est\'a dada por
+\begin{align}
+p(\mathbf{Y}\mid \bbeta, \alpha)&=\prod_{i=1}^n \frac{1}{\Gamma(\alpha)}
+\left(\frac{\alpha}{\eta_i^{-1}}\right)^{\alpha}y_i^{\alpha-1}\exp\left\{-\frac{y_i\alpha}{\eta_i^{-1}}\right\}
+\notag \\
+&=\prod_{i=1}^n\frac{1}{\Gamma(\alpha)}
+\left(\mathbf{X}_i'\bbeta\alpha\right)^{\alpha}y_i^{\alpha-1}\exp\left\{-\mathbf{X}_i'\bbeta y_i\alpha\right\}
+\end{align}
+
+Suponiendo que la distribuci\'on a priori para $\bbeta$ est\'a regida por la siguiente estructura probabil\'istica
+\begin{equation*}
+\bbeta\sim Normal_q(\mathbf{b},\mathbf{B})
+\end{equation*}
+
+De esta manera, la distribuci\'on a posteriori toma la siguiente forma.
+\begin{align*}
+p(\bbeta \mid \mathbf{Y}, \mathbf{X}, \alpha)&\propto
+\prod_{i=1}^n
+\left(\mathbf{X}_i'\bbeta\alpha\right)^{\alpha}\exp\left\{-\mathbf{X}_i'\bbeta y_i\alpha
+-\frac{1}{2}(\bbeta-\mathbf{b})'\mathbf{B}^{-1}(\bbeta-\mathbf{b})\right\}
+\end{align*}
+
+Una vez m\'as, la anterior expresi\'on no tiene una forma cerrada; sin embargo, con ayuda de la t\'ecnica del condicionamiento sucesivo, el algoritmo de Gibbs y el m\'etodo de simulaci\'on de la grilla es posible obtener f\'acilmente observaciones multivariantes provenientes de la distribuci\'on a posteriori del vector $\bbeta$.
+
+\citeasnoun{BUGS} anota que es muy importante tener claro que utilizando la funci\'on can\'unica de v\'inculo rec\'iproco $g(\theta)=\theta^{-1}$, pueden aparecer problemas con los m\'etodos de Monte Carlo puesto que el par\'ametro $\theta$ debe ser positivo; de esta manera, y dependiendo de las covariables, puede suceder que las estimaciones a posteriori para $\bbeta$ induzcan valores negativos para $\theta_i$. Para evitar este problema, es recomendable trabajar con otras funciones de v\'inculo, como la logar\'itmica, o incluso la funci\'on lineal \cite{Fara}.
+
+\begin{Eje}\label{GLM_Gamma}
+En el paquete \verb'TeachingSampling' se encuentra la base de datos \verb'Lucy', la cual contiene informaci\'on de empresas en cuanto al ingreso, n\'umero de empleados, ubicaci\'on, entre otros. A continuaci\'on se procede a ajustar un modelo Gamma para relacionar el comportamiento de la variable \verb'Income' en t\'erminos del n\'umero de empleados para las empresas medianas. En primer lugar se procede a cargar los datos y visualizar la relaci\'on entre estas dos variables.
+<<>>=
+library(TeachingSampling)
+data(Lucy)
+attach(Lucy)
+x <- Employees[which(Level=="Medium")]
+y <- Income[which(Level=="Medium")]
+plot(x,y)
+@
+A continuaci\'on se ajusta el modelo en \verb'JAGS' usando la funci\'on de enlace rec\'iproco.
+<<>>=
+n <- length(x)
+Gamma.Model <- function(){
+for(i in 1 : n){
+  y[i] ~ dgamma(alpha, b[i])	
+  b[i] <- alpha/theta[i]
+  theta[i] <- 1/(beta0 + beta1 * x[i])
+}
+  beta0 ~ dnorm(0, 0.0001)
+  beta1 ~ dnorm(0, 0.0001)
+  alpha ~ dgamma(0.001, 0.001)
+}
+
+Gamma.Model.data <- list("y", "x", "n")
+Gamma.Model.param <- c("beta0", "beta1", "alpha")
+Gamma.Model.inits <- function(){
+  list("beta0"=c(1), "beta1"=c(1), "alpha"=c(1))
+}
+
+Gamma.Model.fit <- jags(data=Gamma.Model.data, inits=Gamma.Model.inits, 
+        Gamma.Model.param, n.iter=10000, n.burnin=1000, model.file=Gamma.Model)
+
+print(Gamma.Model.fit)
+@
+De los resultados arrojados se observa que el coeficiente $\beta_1$ es positivo, lo cual no resulta coherente con lo observado en la gr\'afica de dispersi\'on entre las dos variables. Pues al usar la funci\'on de enlace rec\'iproco, un valor positivo en $\beta_1$ indica que entre m\'as empleado tenga una empresa, menor es el ingreso esperado. Dado esta deficiencia, se procede a estimar el modelo Gamma con la funci\'on de enlace logar\'itmico. Los c\'odigos se muestran a continuaci\'on:
+<<>>=
+Gamma2.Model <- function(){
+for(i in 1 : n){
+  y[i] ~ dgamma(alpha, b[i])	
+  b[i] <- alpha/theta[i]
+  theta[i] <- exp(beta0 + beta1 * x[i])
+}
+  beta0 ~ dnorm(0, 0.0001)
+  beta1 ~ dnorm(0, 0.0001)
+  alpha ~ dgamma(0.001, 0.001)
+}
+
+Gamma2.Model.data <- list("y", "x", "n")
+Gamma2.Model.param <- c("beta0", "beta1", "alpha")
+Gamma2.Model.inits <- function(){
+  list("beta0"=c(0), "beta1"=c(0), "alpha"=c(1))
+}
+
+Gamma2.Model.fit <- jags(data=Gamma2.Model.data, inits=Gamma2.Model.inits, 
+        Gamma2.Model.param, n.iter=10000, n.burnin=1000, model.file=Gamma2.Model)
+
+print(Gamma2.Model.fit)
+@
+De los resultados obtenidos observamos que el signo del coeficiente $\beta_1$ es positivo, lo cual es acorde con la relaci\'on entre la variable Ingreso y el n\'umero de empleados. Por otro lado, el valor de la devianza usando el enlace logar\'itmico es mucho menor que usando el enlace rec\'iproco. Por lo anterior, observamos que para este conjunto de datos, el uso del enlace rec\'iproco no es adecuado. 
+\end{Eje}
+
+\section{Regresi\'on Beta con v\'inculo log-log-complementario}
+
+Este tipo de distribuciones es ideal cuando la variable respuesta representa porcentajes o proporciones que toma valores entre cero y uno. Se supone que $\mathbf{Y}=\{Y_1, \ldots, Y_n\}$ es un conjunto de variables aleatorias intercambiables cada una con distribuci\'on Beta de par\'ametros $(\alpha,\beta)$. Al igual de en la anterior secci\'on, es conveniente reparametrizar siguiendo la propuesta de \citeasnoun{Ferra} al definir $\theta=\alpha/(\alpha+\beta)$ y $\phi=\alpha+\beta$; entonces, la nueva estructura de la distribuci\'on de una variable $Y$, est\'a dada por:
+\begin{equation}
+p(y\mid \theta, \phi)=
+\frac{\Gamma(\phi)}{\Gamma(\theta\phi)\Gamma(\phi-\theta\phi)}y^{\theta\phi-1}(1-y)^{\phi-\phi\theta-1}
+\end{equation}
+
+Con esto, $E(Y)=\theta$ y $Var(Y)=\theta(1-\theta)/(1+\phi)$. El par\'ametro $\phi$ se conoce como el par\'ametro de precisi\'on, pues entre m\'as grande es $\phi$, m\'as peque\~na es la varianza de la distribuci\'on. El modelo b\'asico de regresi\'on Beta asume $\phi$ constante para todo $i$ y busca relacionar la esperanza $\theta_i$ con variables auxiliares $\mathbf{X}_i$, para lo cual, se consideran funciones de v\'inculo apropiadas, entre las cuales se encuentran la funci\'on logit $g(\theta_i)=log(\theta_i/(1-\theta_i))$, probit $g(\theta_i)=\Phi^{-1}(\theta_i)$, log-log $g(\theta_i)=-log(-log(\theta_i))$, log-log complementario $g(\theta_i)=\log(-\log(1-\theta_i))$. En particular, consideramos la funci\'on de enlace log-log complementario, esto es,
+\begin{equation}
+\eta_i=\mathbf{X}_i\bbeta=g(\theta_i)=\log(-\log(1-\theta))
+\end{equation}
+
+\begin{figure}[!h]
+\centering
+\includegraphics[scale=0.4]{Link_Log_Log_Complementario.pdf}
+\caption{\emph{Funci\'on de v\'inculo log-log complementario $log(-log(1-\theta))$.}}
+\end{figure}
+
+Teniendo en cuenta que la funci\'on inversa para $g(\cdot)$, est\'a dada por
+\begin{equation}
+\theta_i=g^{-1}(\eta_i)=1-\exp(-\exp(\eta_i))
+\end{equation}
+
+Notando que $\eta_i=\mathbf{X}_i'\bbeta$, se tiene que la verosimilitud de los datos est\'a dada por
+\begin{align}
+p(\mathbf{Y}\mid \bbeta, \phi)&=\prod_{i=1}^n\frac{\Gamma(\phi)}{\Gamma(\theta_i\phi)\Gamma(\phi-\theta_i\phi)}
+y_i^{\theta_i\phi-1}(1-y_i)^{\phi-\phi\theta_i-1}
+\notag \\
+&=\prod_{i=1}^n\frac{\Gamma(\phi)}{\Gamma((1-\exp(-\exp(\mathbf{X}_i'\bbeta)))\phi)\Gamma(\phi-(1-\exp(-\exp(\mathbf{X}_i'\bbeta)))\phi)}
+y_i^{(1-\exp(-\exp(\mathbf{X}_i'\bbeta)))\phi-1} \notag \\
+&\hspace{2cm}\times
+(1-y_i)^{\phi-\phi(1-\exp(-\exp(\mathbf{X}_i'\bbeta)))-1}
+\end{align}
+
+Suponiendo que la distribuci\'on a priori para $\bbeta$ est\'a regida por la siguiente estructura probabil\'istica
+\begin{equation*}
+\bbeta\sim Normal_q(\mathbf{b},\mathbf{B})
+\end{equation*}
+
+De esta manera, la distribuci\'on a posteriori toma la siguiente forma.
+\begin{align*}
+p(\bbeta \mid \mathbf{Y}, \mathbf{X}, \alpha)&\propto
+\prod_{i=1}^n\frac{\Gamma(\phi)}{\Gamma((1-\exp(-\exp(\mathbf{X}_i'\bbeta)))\phi)\Gamma(\phi-(1-\exp(-\exp(\mathbf{X}_i'\bbeta)))\phi)}y_i^{(1-\exp(-\exp(\mathbf{X}_i'\bbeta)))\phi-1}
+(1-y_i)^{\phi-\phi(1-\exp(-\exp(\mathbf{X}_i'\bbeta)))-1}\\
+&\hspace{2cm}\times
+\exp\left\{-\frac{1}{2}(\bbeta-\mathbf{b})'\mathbf{B}^{-1}(\bbeta-\mathbf{b})\right\}
+\end{align*}
+
+Una vez m\'as, la anterior expresi\'on no tiene una forma cerrada; sin embargo, con ayuda de la t\'ecnica del condicionamiento sucesivo, el algoritmo de Gibbs y el m\'etodo de simulaci\'on de la grilla es posible obtener f\'acilmente observaciones multivariantes provenientes de la distribuci\'on a posteriori del vector $\bbeta$.
+
+\citeasnoun{BUGS} anota que es muy importante tener claro que utilizando la funci\'on can\'unica de v\'inculo rec\'iproco $g(\theta)=\theta^{-1}$, pueden aparecer problemas con los m\'etodos de Monte Carlo puesto que el par\'ametro $\theta$ debe ser positivo; de esta manera, y dependiendo de las covariables, puede suceder que las estimaciones a posteriori para $\bbeta$ induzcan valores negativos para $\theta_i$. Para evitar este problema, es recomendable trabajar con otras funciones de v\'inculo, como la logar\'itmica, o incluso la funci\'on lineal \cite{Fara}.
+
+\begin{Eje}\label{Eje_Beta}
+En la p\'agina \url{http://www.sdp.gov.co/portal/page/portal/PortalSDP/InformacionTomaDecisiones/Estadisticas/Inventarios/Social1} se encuentra informaci\'on sobre la distribuci\'on de habitantes en diferentes estratos socio-econ\'omicos en los 120 barrios de Bogot\'a de los recientes a\~nos; estos barrios a la vez est\'an agrupados en 20 localidades. Para este ejemplo, se utilizan los datos sobre el porcentaje de habitantes de estratos bajos en 19 barrios correspondientes a las localidades de San Crist\'obal (6 barrios), Usme (8 barrios) y Bosa (5 barrios) correspondientes al a\~no 2011. Se quiere determinar si la pertenencia a diferentes localidades afecta a dicho porcentaje, y tambi\'en se quiere examinar si hay diferencias significativas entre el porcentaje de habitantes en estratos bajos entre la localidad de San Crist\'obal y la localidad de Suba. A continuaci\'on se muestran los datos
+<<>>=
+y <- c(0.995, 0.232, 0.724, 0.997, 0.998, 0.807, 0.985, 0.849, 0.996, 0.999, 0.998, 0.429, 0.979, 0.865, 0.534, 0.978, 0.994, 0.752, 0.965)
+barrio <- c(rep(1,6), rep(2,8), rep(3,5))
+@
+Los c\'odigos en \verb'JAGS' se muestran a continuaci\'on
+<<>>=
+n <- length(y)
+Beta.Model <- function(){
+for(i in 1 : n){
+  y[i] ~ dbeta(a[i], b[i])	
+  a[i] <- theta[i]*phi
+  b[i] <- phi - theta[i]*phi
+  theta[i] <- 1-exp(-exp(alpha[barrio[i]]))
+}
+  dif <- alpha[1]-alpha[3]
+  for(j in 1:3){
+    alpha[j] ~ dnorm(0, 0.0001)
+  }
+  phi ~ dgamma(0.001, 0.001)
+}
+
+Beta.Model.data <- list("y", "barrio", "n")
+Beta.Model.param <- c("alpha","phi","dif")
+Beta.Model.inits <- function(){
+  list("alpha"=rep(0.5,3), "phi"=c(1))
+}
+
+Beta.Model.fit <- jags(data=Beta.Model.data, inits=Beta.Model.inits, 
+        Beta.Model.param, n.iter=10000, n.burnin=1000, model.file=Beta.Model)
+
+print(Beta.Model.fit)
+@
+De los anteriores resultados, podemos ver que el nivel promedio estimado del porcentaje de habitantes en estratos bajos de las tres localidades corresponden a $1-exp(-exp(0.511))=0.81$, $1-exp(-exp(0.61))=0.84$ y $1-exp(-exp(0.44))=0.79$, respectivamente. Y en cuanto a la diferencia entre las localidades de San Crist\'obal y Suba, se observa que la diferencia entre los dos coeficientes de regresi\'on \verb'dif' no es estad\'isticamente diferente a cero, pues el intervalo de credibilidad de 95\% para este par\'ametro est\'a dado por $(-0.582, 0.72)$, el cual tiene el valor cero.
+\end{Eje}
+ \section{Regresi\'on multinomial con v\'inculo logit}
+
+La distribuci\'on multinomial es una extensi\'on de la distribuci\'on binomial, ??sta se aplica en situaciones donde hay un n\'umero fijo de ensayos independientes, donde cada el resultado de cada ensayo corresponde a una de $K$ categor\'ias. El vector que contiene el n\'umero de ensayos en las $K$ categor\'ias sigue una distribuci\'on multinomial. \citeasnoun{Fara} considera un ejemplo en donde la variable respuesta denota la identificaci\'on pol\'itica de una persona que puede ser dem\'ocrata, republicano o independiente. Cuando se considera esta situaci\'on en diferentes regiones de los Estados Unidos, entonces se tiene un conjunto de vectores aleatorias con distribuci\'on multinomial, y estos vectores se pueden relacionar con factores como grupo de edad, nivel educativo y nivel socioecon\'omico.
+
+Generalizando lo anterior, se considera $\mathbf{Y}=\{\mathbf{Y}_1, \ldots, \mathbf{Y}_n\}$ un conjunto de vectores aleatorios intercambiables cada una con distribuci\'on multinomial de par\'ametros $(n_i, \btheta_i)$. Note que todos lo vectores tienen $K$ categorias; en particular, el $i$-\'esimo vector del conjunto se define como $\mathbf{Y}_i=(Y_{i1}, \ldots, Y_{iK})'$, el vector de par\'ametros de inter\'es es $\btheta_i=(\theta_{i1},\ldots, \theta_{iK})$ con $\sum_{k=1}^K\theta_{ik}=1$, y $n_i=\sum_{k=1}^K Y_{ik}$, y por ende se tiene que la distribuci\'on, condicional a $n_i$, de $\mathbf{Y}_{i}$ sigue una distribuci\'on multinomial tal que:
+\begin{equation}
+p(\mathbf{Y}_{i}\mid n_i, \btheta_i)=\binom{n_i}{y_{i1}, \ldots, y_{iK}}\prod_{k=1}^K\theta_{ik}^{y_{ik}}
+\end{equation}
+
+Con base en lo anterior, la verosimilitud de los datos se tiene mediante la siguiente expresi\'on
+\begin{equation}
+p(\mathbf{Y} \mid n, \btheta)=\prod_{i=1}^n \binom{n_i}{y_{i1}, \ldots, y_{iK}}\prod_{k=1}^K\theta_{ik}^{y_{ik}}
+\end{equation}
+
+Antes de proseguir con el modelamiento bayesiano, es \'util notar que en este caso el v\'inculo no es un vector sino una matriz que responde a una relaci\'on lineal entre las covariables y una matriz de coeficientes de regresi\'on, como se puede ver a continuaci\'on.
+\begin{equation*}
+\begin{bmatrix}
+  \eta_{11} & \eta_{12} & \cdots & \eta_{1K} \\
+  \vdots & \vdots & \ddots & \vdots \\
+  \eta_{n1} & \eta_{n2} & \cdots & \eta_{nK}
+\end{bmatrix}
+=
+\begin{bmatrix}
+  X_{11} & X_{12} & \cdots & X_{1q} \\
+  \vdots & \vdots & \ddots & \vdots \\
+  X_{n1} & X_{n2} & \cdots & X_{nq}
+\end{bmatrix}
+\begin{bmatrix}
+  \beta_{11} & \beta_{12} & \cdots & \beta_{1K} \\
+  \vdots & \vdots & \ddots & \vdots \\
+  \beta_{q1} & \beta_{q2} & \cdots & \beta_{qK}
+\end{bmatrix}
+\end{equation*}
+
+Es decir,
+\begin{equation}
+\bEta=\mathbf{X}'\bbeta
+\end{equation}
+
+Lo anterior conlleva a que $\eta_{ik}=\mathbf{X}_i'\bbeta_k$, donde $\mathbf{X}_i$ es la $i$-\'esima fila de la matriz $\mathbf{X}$ y $\bbeta_k$ es la $k$-\'esima columna de la matriz $\bbeta$. Ahora, tomando como l\'inea de base la primera columnna de la matriz $\bEta$ (es decir, el vector de las probabilidades de la categor\'ia 1 para los $n$ individuos), y utilizando la funci\'on de vinculo log\'istico, se tiene que para los elementos en las restantes columnnas de $\bEta$,
+\begin{equation}
+\eta_{ik}=g(\theta_{ik})=\log\left(\frac{\theta_{ik}}{\theta_{i1}}\right)=\log\left(\frac{\theta_{ik}}{\theta_{i1}}\right)
+\end{equation}
+
+Con un poco de \'algebra se comprueba que la funci\'on inversa para $g(\cdot)$ est\'a dada por la siguiente expresi\'on
+\begin{equation}\label{theta_ik}
+\theta_{ik}=g^{-1}(\eta_{ik})=\theta_{i1}\exp(\eta_{ik}) \ \ \ \ \ \forall k=2,\ldots,K
+\end{equation}
+
+Ahora, para la primera columna de $\bEta$, es decir, el vector de probabilidades de la primera categor\'ia, se tiene que
+\begin{equation*}
+\theta_{i1}=1-\sum_{j=2}^K\theta_{ij}=1-\sum_{j=2}^K\theta_{i1}\exp(\eta_{ij})
+\end{equation*}
+
+de donde se tiene que
+\begin{equation}\label{theta_i1}
+\theta_{i1}=\frac{1}{1+\sum_{j=2}^K\exp(\eta_{ij})}
+\end{equation}
+
+Finalmente, de (\ref{theta_ik}) y (\ref{theta_i1}) se tiene que 
+\begin{equation*}
+\theta_{ik}=\frac{\exp(\eta_{ik})}{1+\sum_{k=2}^K\exp(\eta_{ik})} \ \ \ \ \forall k=1,\ldots,K
+\end{equation*}
+
+con $\bbeta_1=0$, esto es $\eta_{i1}=0$ para todo $i$. Notando que $\eta_{ik}=\mathbf{X}_i'\bbeta_k$, se tiene que la verosimilitud de los datos toma la siguiente forma
+
+\begin{align*}
+p(\mathbf{Y} \mid n, \btheta)=&\prod_{i=1}^n \binom{n_i}{y_{i1}, \ldots, y_{iK}}\prod_{k=1}^K\theta_{ik}^{y_{ik}}\\
+p(\mathbf{Y} \mid n, \bbeta)=&\prod_{i=1}^n \binom{n_i}{y_{i1}, \ldots, y_{iK}}
+\prod_{k=1}^K\left(\frac{\exp(\mathbf{X}_i'\bbeta_k)}{1+\sum_{k=2}^K\exp(\mathbf{X}_i'\bbeta_k)}\right)^{y_{ik}}\\
+\end{align*}
+
+
+Suponiendo que la distribuci\'on a priori para $\bbeta_k$ est\'a regida por la siguiente estructura probabil\'istica
+\begin{equation*}
+\bbeta_k\sim Normal_q(\mathbf{b}_k,\mathbf{B}_k)
+\end{equation*}
+
+De esta manera, la distribuci\'on a posteriori para el $k$ \'esimo vector $\bbeta_k$ toma la siguiente forma.
+\begin{align*}
+p(\bbeta_k \mid \mathbf{Y}, \mathbf{X}, n)&\propto
+\prod_{i=1}^n \left(\frac{\exp(\mathbf{X}_i'\bbeta_k)}{1+\sum_{k=2}^K\exp(\mathbf{X}_i'\bbeta_k)}\right)^{y_{ik}}\\
+&\hspace{2cm}\times
+\exp\left\{-\frac{1}{2}(\bbeta-\mathbf{b})'\mathbf{B}^{-1}(\bbeta-\mathbf{b})\right\}
+\end{align*}
+
+Una vez m\'as, la anterior expresi\'on no tiene una forma cerrada; sin embargo, con ayuda de la t\'ecnica del condicionamiento sucesivo, el algoritmo de Gibbs y el m\'etodo de simulaci\'on de la grilla es posible obtener f\'acilmente observaciones multivariantes provenientes de la distribuci\'on a posteriori del vector $\bbeta$. n\'otese que por la restricci\'on $\eta_{i1}=0$, es necesario fijar el primer valor de $
+\bbeta_k$ igual a cero para todo $k$.
+
+\begin{Eje}
+En la librer\'ia \verb'faraway' se encuentra la base de datos \verb'nes96' correspondiente a un conjunto de 10 variables provenientes de \emph{American National Election Study}. La variable que se utiliza en este ejemplo para ilustrar el ajuste de un modelo de regresi\'on multinomial es la variable \verb'PID' la cual describe la identificaci\'on partidaria. Esta variable tiene 7 categor\'ias: \verb'strDem' (fuertemente dem\'ocrata), \verb'weakDem' (d\'ebilmente dem\'ocrata), \verb'indDem' (dem\'ocrata independiente), \verb'indind' (independiente), \verb'indRep' (republicano independiente), \verb'weakRep' (d\'ebilmente republicano), \verb'strRep' (fuertemente republicano). Con el fin de simplificar la estructura de los datos, se fusionar las categor\'ias de la siguiente forma: las dos primeras categor\'ias se fusionan en la categor\'ia \verb'dem\'ocrata', las tres siguientes categor\'ias en la categor\'ia \verb'independiente' y las dos \'ultimas en la categor\'ia \verb'republicano'. De esta forma, se busca un modelo que asocia la probabilidad de las tres categor\'ias $\theta_{i1}$, $\theta_{i2}$ y $\theta_{i3}$ con las variables edad: $Age_i$ y el nivel educativo: $Educ_i$; para prop\'ositos de este ejemplo, se utiliza como l\'inea base la categor\'ia de \verb'independiente'. Los nivele de la variable nivel educativo son: \verb'MS' (8 a\~nos o menos), \verb'HSdrop' (deserci\'on en la secundaria), \verb'GED', HS (graduado de la secundaria o \emph{General Educational Development}), \verb'Coll' (alg\'un estudio de educaci\'on superior), \verb'CCdeg' (graduado de colegios univeritarios, \emph{community or junior college}), \verb'BAdeg' (t\'itulo profesional), y \verb'MAdeg' (t\'itulo de posgrado). 
+<<>>=
+data(nes96)
+sPID <- nes96$PID
+levels(sPID) <- c("Democrat","Democrat","Independent","Independent",
+  "Independent","Republican","Republican")
+n <- length(sPID)
+K <- 3
+y <- Domains(sPID)
+Educ <- as.numeric(factor(nes96$educ))
+Age <- nes96$age
+
+Multi.Reg.Model <- function(){
+for(i in 1 : n){
+  y[i,1:K] ~ dmulti(p[i,1:K], 1)
+  eta[i,1] <- b1[1]*Age[i] + alpha1[Educ[i]]
+  eta[i,3] <- b1[2]*Age[i] + alpha2[Educ[i]]
+  eta[i,2] <- 0 # Baseline: Independent
+  for(k in 1:K){
+    p[i,k] <- expeta[i,k]/sum(expeta[i,1:K])
+    expeta[i,k] <- exp(eta[i,k])
+  }
+}
+  for(m in 1:max(Educ)){
+    alpha1[m] ~ dnorm(0, 0.0001)
+    alpha2[m] ~ dnorm(0, 0.0001)
+  }
+  for(j in 1:(K-1)){
+    b1[j] ~ dnorm(0, 0.0001)
+  }
+}
+
+Multi.Reg.Model.data <- list("y", "Age", "Educ", "n", "K")
+Multi.Reg.Model.param <- c("b1","alpha1","alpha2")
+Multi.Reg.Model.inits <- function(){
+  list("b1"=c(0,0), "alpha1"=rep(0,max(Educ)),"alpha2"=rep(0,max(Educ)))
+}
+
+Multi.Reg.Model.fit <- jags(data=Multi.Reg.Model.data, inits=Multi.Reg.Model.inits, 
+        Multi.Reg.Model.param, n.iter=10000, n.burnin=1000, model.file=Multi.Reg.Model)
+
+print(Multi.Reg.Model.fit)
+@
+
+De los par\'ametros estimados, podemos ver que el modelo de regresi\'on multinomial est\'a dada por
+\begin{align*}
+\theta_{i1}&=\frac{\exp(0*Age+\alpha_{1,Educ_i})}{1+\exp(0*Age+\alpha_{1,Educ_i})+\exp(0.008*Age+\alpha_{2,Educ_i})}\\
+\theta_{i2}&=\frac{1}{1+\exp(0*Age+\alpha_{1,Educ_i})+\exp(0.008*Age+\alpha_{2,Educ_i})}\\
+\theta_{i3}&=\frac{\exp(0.008*Age+\alpha_{2,Educ_i})}{1+\exp(0*Age+\alpha_{1,Educ_i})+\exp(0.008*Age+\alpha_{2,Educ_i})}
+\end{align*}
+En las anteriores ecuaciones, $\alpha_{1,Educ_i}$ depende del nivel educativo del individuo $i$, por ejemplo, para los respondientes con algunos estudios de educaci\'on superior (\verb'Coll'), que corresponde a los par\'ametros $\alpha_{1,4}$ y $\alpha_{2,4}$, el modelo viene dado por
+
+
+\begin{align*}
+\theta_{i1}&=\frac{\exp(0*Age+0.607)}{1+\exp(0*Age+0.607)+\exp(0.008*Age+0.256)}\\
+\theta_{i2}&=\frac{1}{1+\exp(0*Age+0.607)+\exp(0.008*Age+0.256)}\\
+\theta_{i3}&=\frac{\exp(0.008*Age+0.256)}{1+\exp(0*Age+0.607)+\exp(0.008*Age+0.256)}
+\end{align*}
+
+o equivalentemente 
+\begin{align*}
+\log\left(\frac{\theta_{i1}}{\theta_{i2}}\right)&=0*Age+0.607\\
+\log\left(\frac{\theta_{i3}}{\theta_{i2}}\right)&=0.008*Age+0.256
+\end{align*}
+
+Teniendo en cuenta que $\theta_{i1}$ denota la preferencia por el partido dem\'ocrata del individuo $i$ y $\theta_{i3}$ el partido republicano, se puede concluir que las personas con algunos estudios de educaci\'on superior tiene mayor probabilidad de estar identificado con el partido dem\'ocrata, seguida del republicano, y tiene menor probabilidad de ser independiente (pues esta es la categor\'ia base y por consiguiente, y por consiguiente el par\'ametro de regresi\'on respectivo es cero). Adicionalmente, comparando los siete valores de $\alpha_{1,}$ para ver que los niveles educativos que m\'as favorecen a la identificaci\'on al partido dem\'ocrata son \verb'MS', \verb'HSdrop', y \verb'Coll', y las categor\'ias que menos favorecen son \verb'MAdeg', \verb'CCdeg' y \verb'BAdeg'. Conclusiones an\'alogas se pueden obtener para la identificaci\'on al partido republicano.
+\end{Eje}
+
+\section{t\'ecnicas de aproximaci\'on y algoritmos iterativos}
+
+\subsection{t\'ecnica de la aproximaci\'on de la log-verosimilitud a la normal}
+Gelman 422 y 423
+
+\subsection{t\'ecnica de la aproximaci\'on de la verosimilitud a la normal}
+Gammerman pg 217 Algoritmo IRLS
+
+\chapter{Modelos longitudinales}
+pg 335 de Carlin 2009 
+
+\section{Ejercicios}
+Ejemplo econom\'etrico del libro de R
+\begin{enumerate}
+\item Compruebe as expresiones (\ref{Primer_Partial}) y (\ref{Segundo_Partial})
+\item Modifique las funciones \verb'MHlogit' y \verb'MHprobit' de las secciones \ref{Ber_logit} y \ref{Ber_probit} teniendo en cuenta que las distribuciones previas para $\beta_0$ y $\beta_1$ son $N(1, 1)$ y $N(-1, 1)$. Compare los resultados con los obtenidos usando \verb'JAGS' con estas mismas distribuciones previas. 
+\item Verifique las expresiones (\ref{Ejer_binom_1}), (\ref{Ejer_binom_2}), (\ref{Ejer_binom_3}), (\ref{Ejer_binom_4}) y (\ref{Ejer_binom_5}).
+\item Escribe los c\'odigos computacionales para las estimaciones del ejemplo \ref{Ejemplo_Orings}.
+\item En el paquete \verb'AER' de \citeasnoun{Christian} se encuentra la base de datos \verb'RecreationDemand', la cual contiene registros sobre el n\'umero de viajes en bote de recreaci\'on al lago Somerville en el estado de Texas de los Estados Unidos en el a\~no 1980. Estos datos fueron obtenidos de una encuesta a due\~nos de botes de recreaci\'on en este Estado. 
+\begin{itemize}
+\item En \verb'JAGS' ajuste un modelo Poisson inflado en cero $p(Y_i\mid \pi_i,\lambda_i)=\pi_iPoisson(0)+(1-\pi_i)Poisson(\lambda_i)$, $log(\lambda_i)=\mathbf{X}_i\bbeta$ y $logit(\pi_i)=\mathbf{Z}_i\bgamma$ para la variable \verb'trips' (n\'umero de viajes), para las variables $\mathbf{X}_i$ utilice \verb'quality' (ranking de calidad), \verb'ski' (variable factor que indica si el respondiente practica el esqu\'e acu\'atico en el lago), \verb'userfree' (variable factor que indica si el respondiente pag\'o el costo anual de usuario en el lago), para las variables $\mathbf{Z}_i$ utiliza \verb'quality' e \verb'income' (ingreso familiar anual del respondiente).
+\item Ajuste el anterior modelo usando el link de la funci\'on probit para $\pi_i$.
+\item Simplifique el modelo asumiendo $p_i=p$ para todo $i$. Compare los resultados de los tres modelos, en t\'erminos del ajuste del modelo y el grado de complejidad, comente.
+\end{itemize}
+\item Verifique las expresiones (\ref{L1_BN}), (\ref{L2_BN}), (\ref{zi_BN}) y (\ref{sigma2i_BN}).
+\item En el ejemplo \ref{GLM_Gamma}, ajuste el modelo Gamma con la funci\'on de enlace identidad, y compare los resultados obtenidos usando el enlace rec\'iproco y enlace logar\'itmico.
+\item Repita el ejemplo \ref{Eje_Beta}, usando la funci\'on de enlace logit y probit. Compara el ajuste de estos dos modelos con lo obtenido con la funci\'on de enlace log-log complemento. tambi\'en calcula el nivel promedio estimado del porcentaje de habitantes de estratos bajos seg\'un estos dos modelos.
+\end{enumerate}

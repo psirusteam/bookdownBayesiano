@@ -1,0 +1,1116 @@
+<<echo=FALSE, message=FALSE>>=
+library(R2jags)
+library(coda)
+library(lattice)
+library(R2WinBUGS)
+library(rjags)
+library(superdiag)
+library(mcmcplots)
+library(xtable)
+library(ggplot2)
+library(plot3D)
+library(reshape2)
+library(gridExtra)
+options(scipen = 100, digits = 2)
+set.seed(12345)
+library(knitr)
+knit_theme$set("acid")
+@
+%--------------------
+ 
+\chapter{Modelos emp\'iricos y jer\'arquicos}
+
+En las \'ultimas d\'ecadas la formulaci\'on de modelos estad\'isticos ha evolucionado mucho En un principio, los modelos establecidos obedec\'ian a reglas est\'andares que se supon\'ian ciertas para toda la poblaci\'on. Sin embargo, el estado de la naturaleza de la mayor\'ia de los problemas pr\'acticos no sigue una regla com\'un para todos y cada uno de los elementos de una poblaci\'on aleatoria. De hecho el sentido com\'un establece que para una misma poblaci\'on, pueden existir tendencias comunes entre diferentes miembros de la misma y la estructura de dispersi\'on de los elementos puede obedecer comportamientos dis\'imiles a trav\'es de \'estos.
+
+Lo anterior ha permitido que el investigador pueda proponer modelos que siguen comportamientos estructurales distintos y en algunos casos que se encuentran anidados en modelos m\'as complejos. En el caso bayesiano, es claro que el momento de coyuntura en el cual el investigador no contempla un punto de retorno est\'a dado en la formulaci\'on de la distribuci\'on previa para el vector de par\'ametros de inter\'es $\btheta$. M\'as a\'un, la influencia de la distribuci\'on previa en la resultante distribuci\'on posterior est\'a dada por la asignaci\'on del vector de hiperpar\'ametros $\bEta$ que parametriza la distribuci\'on previa. Cuando los valores exactos de los hiperpar\'ametros se desconocen o cuando no se tiene plena certeza del comportamiento estructural de la distribuci\'on previa, entonces es necesario estimarlos pues de estos dependen los resultados en cualquier investigaci\'on de tipo causal. En otras palabras, una mala asignaci\'on de los valores de los hiperpar\'ametros conduce a una distribuci\'on previa que no es acorde con la realidad y esto puede conllevar a su vez a que la distribuci\'on posterior no concuerde con la realidad, produciendo as\'i resultados enga\~nosos.
+
+Siguiendo los fundamentos filos\'oficos de la estad\'istica bayesiana, tener que estimar el vector de hiperpar\'ametros envuelve al investigador en una paradoja cuya soluci\'on no siempre est\'a dada por m\'etodos bayesianos. En primer lugar, n\'otese la forma de la distribuci\'on previa del vector de par\'ametros de inter\'es: $p(\btheta \mid \bEta)$. A simple vista se puede concluir que $\bEta$ hace parte de la distribuci\'on previa la cual, seg\'un la l\'ogica de la filosof\'ia bayesiana, involucra el conocimiento del investigador antes de la recolecci\'on de los datos. Por tanto la pregunta directa que surge es Por qu\'e estimar algo que se deber\'ia suponer conocido?. En segundo lugar y si se concibe tal estimaci\'on, la otra pregunta natural es: Se deben utilizar los datos para estimar tales hiperpar\'ametros?. Las posibles respuestas a las anteriores preguntas han creado toda una nueva corriente alterna a la bayesiana pura llamada <<corriente bayesiana emp\'irica>>\footnote{\citeasnoun{Carlin96} menciona que el an\'alisis emp\'irico toma este nombre por dos razones: En primer lugar porque estima el vector de hiper-par\'ametros $\bEta$ con los datos observados, contradiciendo de alguna manera el esp\'iritu y la filosof\'ia de la corriente bayesiana radical. En segundo lugar, porque esta estimaci\'on se realiza con m\'etodos frecuentistas ya sean param\'etricos o no-param\'etricos} la cual utiliza los m\'etodos de estimaci\'on puntual frecuentista para estimar estos hiperpar\'ametros y por consiguiente definir la distribuci\'on previa del vector de par\'ametros de inter\'es.
+
+LADY TASTING TEA SOBRE EMPIRICAL Y BAYES
+
+Por supuesto, existe la contraparte te\'orica a la corriente emp\'irica y es la llamada <<corriente bayesiana jer\'arquica>> la cual asume una posici\'on totalmente bayesiana desde su concepci\'on y establece un modelo posterior para los hiperpar\'ametros.
+
+Suponga entonces que la variable de inter\'es sigue un modelo com\'un a toda la poblaci\'on aunque parametrizado por par\'ametros que toman distintos valores para cada individuo y que est\'a regido por la siguiente expresi\'on
+\begin{equation*}
+Y_i\sim p(Y_i \mid \theta_i)
+\end{equation*}
+
+\section{an\'alisis emp\'irico}
+
+COLOCAR LOS TIPOS DE an\'alisis: param\'etricO Y NO param\'etricO Y LOS PRINCIPALES RESULTADOS
+
+Este enfoque, criticado por muchos bayesianos radicales, se centra en la escogencia de una estimaci\'on $\hat{\bEta}$ de $\bEta$ obtenida como el valor que hace maxima la verosimilitud marginal previa dada por
+\begin{align}\label{ecua1}
+p(\mathbf{Y} \mid \bEta)=\int p(\mathbf{Y} \mid \btheta)p(\btheta \mid \bEta) \ d\btheta
+\end{align}
+
+Por lo tanto todo el andamiaje inferencial est\'a supeditado a la distribuci\'on posterior estimada, $p(\btheta \mid Y,\hat{\bEta})$. Una vez que \'esta est\'a bien definida, el proceso de estimaci\'on puntual, estimaci\'on por intervalo y pruebas de hip\'otesis sigue su curso bayesiano id\'enticamente como en los cap\'itulos anteriores.
+
+En t\'erminos pr\'acticos suponga que se tiene un modelo en dos etapas para cada una de las observaciones. Se asume que existen $n$ observaciones que, si bien no conforman una muestra aleatoria, conservan la caracter\'istica de intercambiebilidad y est\'an definidas en los siguientes t\'erminos
+\begin{equation*}
+Y_i \sim p(Y_i \mid \theta_i) \ \ \ \ \ \ \ i=1,\ldots,n
+\end{equation*}
+
+La segunda etapa comienza con la asignaci\'on de una distribuci\'on\footnote{En esta etapa la distribuci\'on previa no est\'a completamente especificada puesto que se desconocen los hiperpar\'ametros que la indexan.} previa para los par\'ametros de inter\'es $\theta_i$.
+\begin{equation*}
+\theta_i \sim p(\theta_i \mid \bEta) \ \ \ \ \ \ \ i=1,\ldots,n
+\end{equation*}
+
+n\'otese que detr\'as de la asignaci\'on de la estructura probabil\'istica para cada uno de los $\theta_i$, se supone que \'estos \'ultimos determinan una muestra aleatoria de la distribuci\'on $p(\btheta \mid \bEta)$.
+El objetivo de este enfoque es encontrar estimadores que maximicen la verosimilitud marginal previa la cual, para este caso particular y considerando independencia marginal entre las observaciones y el vector de hiperpar\'ametros, es
+\begin{align}
+p(Y_i \mid \bEta)&=\int p(Y_i,\theta_i \mid \bEta) \ d\theta_i \notag \\
+&=\int p(Y_i \mid \theta_i,\bEta)p(\theta_i \mid \bEta) \ d\theta_i \notag \\
+&=\int p(Y_i \mid \theta_i)p(\theta_i \mid \bEta) \ d\theta_i
+\end{align}
+
+De lo anterior, la verosimilitud marginal previa del vector de observaciones dada por la expresi\'on (\ref{ecua1}) queda convertida en
+\begin{align}
+p(Y \mid \bEta)&=\prod_{i=1}^np(Y_i \mid \bEta) \notag \\
+&=\prod_{i=1}^n\int p(Y_i \mid \theta_i)p(\theta_i \mid \bEta) \ d\theta_i
+\end{align}
+
+A continuaci\'on, examninamos algunas distribuciones 
+
+\subsection{Modelo Binomial-Beta}\label{Binomial-Beta}
+Suponga el siguiente modelo binomial (intercambiable) en una primera etapa
+\begin{equation*}
+Y_i \mid \theta_i \sim Binomial(n_i,\theta_i)  \ \ \ \ \ \ \ i=1,\ldots,p
+\end{equation*}
+
+Para la segunda etapa, se supone una muestra aleatoria (independientes e id\'enticamente distribuidos) proveniente de una misma distribuci\'on tal que
+\begin{equation*}
+\theta_i \sim Beta(\alpha, \beta)  \ \ \ \ \ \ \ i=1,\ldots,p
+\end{equation*}
+
+puesto que cada $\theta_i$ se encuentra en el intervalo $(0,1)$ y es apropiado asignarle una distribuci\'on Beta.
+\subsubsection{an\'alisis preliminar}
+
+Es bien sabido que la distribuci\'on posterior para cada uno de los par\'ametros de inter\'es involucrados en el anterior contexto est\'a dada por
+\begin{equation*}
+\theta_i \mid Y_i \sim Beta(\alpha+Y_i, \beta+n_i-y_i)
+\end{equation*}
+
+para todo $i=1,\cdots,p$. Sin embargo, como se desconoce totalmente el valor de los hiperpar\'ametros $\alpha$ y $\beta$, entonces se debe encontrar una estimaci\'on de estos, $\hat{\alpha}$ y $\hat{\beta}$, respectivamente, para proseguir normalmente con la inferencia bayesiana, pero esta vez enfocados en la estimaci\'on de la distribuci\'on posterior dada por
+\begin{equation*}
+\theta_i \mid Y_i \sim Beta(\hat{\alpha}+Y_i, \hat{\beta}+n_i-y_i)
+\end{equation*}
+
+Para tal fin, n\'otese que la esperanza y la varianza previa de $\theta_i$ est\'an dadas por las siguientes expresiones
+\begin{align}
+E(\theta_i)&=\frac{\alpha}{\alpha+\beta}\label{ecua2}\\
+Var(\theta_i)&=\frac{\alpha\beta}{(\alpha+\beta)^2(\alpha+\beta+1)}\label{ecua3}
+\end{align}
+
+De donde se tiene que
+\begin{align}\label{ecua5}
+\alpha=E(\theta_i)(\alpha+\beta)
+\end{align}
+
+y tambi\'en que
+\begin{align}\label{ecua4}
+1-E(\theta_i)=\frac{\beta}{\alpha+\beta}
+\end{align}
+
+por lo tanto
+\begin{align}\label{ecua6}
+\beta=(1-E(\theta_i))(\alpha+\beta)
+\end{align}
+
+y reemplazando (\ref{ecua2}) y (\ref{ecua4}) en (\ref{ecua3}) se concluye que
+\begin{align*}
+Var(\theta_i)&=\frac{E(\theta_i)(1-E(\theta_i))}{(\alpha+\beta+1)}
+\end{align*}
+
+por tanto
+\begin{align}
+\alpha+\beta=\frac{E(\theta_i)(1-E(\theta_i))}{Var(\theta_i)}-1
+\end{align}
+
+Con el anterior razonamiento, es posible encontrar los estimadores basados en el m\'etodo frecuentista de los momentos los cuales corresponden a
+\begin{align}
+\widehat{\alpha+\beta}&=\frac{\bar{Y}(1-\bar{Y})}{S^2}-1
+\end{align}
+
+Donde $\bar{Y}$ y $S^2$ es el promedio y la varianza de las cantidades $Y_1/n_1, Y_2/n_2,\ldots, Y_p/n_p$, respectivamente. Ahora, teniendo en cuenta que (\ref{ecua5}) y (\ref{ecua6}), se tiene que:
+\begin{align}
+\hat{\alpha}&=(\widehat{\alpha+\beta})\bar{Y}\\
+\hat{\beta}&=(\widehat{\alpha+\beta})(1-\bar{Y})
+\end{align}
+
+ Con las anteriores estimaciones es posible ahora conectarlas a la distribuci\'on posterior de $\theta_i$.
+
+\subsubsection{an\'alisis leg\'itimo}
+
+seg\'un \citeasnoun[p. 119]{Gelman03}, el anterior an\'alisis no implica simplemente un punto de partida que da pie a la exploraci\'on de la idea de la estimaci\'on de los par\'ametros de la distribuci\'on posterior y, de ninguna manera, constituye un c\'alculo bayesiano puesto que no est\'a basado en ning\'un modelo de probabilidad. Sin embargo, el an\'alisis emp\'irico de esta situaci\'on, hace uso de la  esperanza y varianza condicional a la distribuci\'on beta de los par\'ametros $\theta_i$ ($i=1,\ldots, p$).
+
+Para realizar este tipo de an\'alisis, vamos a suponer que contamos con una variable $Y$, distribuida de forma binomial en $n$ ensayos y con probabilidad de \'exito $\theta$. De esta manera, se tiene que el primer momento est\'a dado por
+
+\begin{align}\label{ecua7}
+E_{binom}\left(\frac{Y}{n}\right)&=E_{beta}\left(E_{binom}\left(\frac{Y}{n} \mid \theta\right)\right) \notag \\
+&=E_{beta}\left(\theta\right) \notag \\
+&=\frac{\alpha}{\alpha+\beta}
+\end{align}
+
+Por otro lado, se tiene que la varianza, que es funci\'on del primer y segundo momento, est\'a dada por
+
+\begin{align*}
+Var_{binom}\left(\frac{Y}{n}\right)
+&=E_{beta}\left(Var_{binom}\left(\frac{Y}{n} \mid \theta\right)\right)
++ Var_{beta}\left(E_{binom}\left(\frac{Y}{n} \mid \theta\right)\right)  \\
+&=E_{beta}\left( \frac{1}{n}\theta(1-\theta)\right)
++ Var_{beta}\left(\theta\right)  \\
+&=\frac{1}{n}E_{beta}(\theta) - \frac{1}{n}E_{beta}(\theta^2)+ Var_{beta}\left(\theta\right)  \\
+&=\frac{1}{n}E_{beta}(\theta) - \frac{1}{n}Var_{beta}(\theta)- \frac{1}{n}(E_{beta}\theta)^2+ Var_{beta}\left(\theta\right)  \\
+&=\frac{n-1}{n}Var_{beta}(\theta) + \frac{1}{n}E_{beta}(\theta)(1-E_{beta}(\theta))  \\
+&=\frac{n-1}{n}\frac{\alpha\beta}{(\alpha+\beta)^2(\alpha+\beta+1)} +
+\frac{1}{n}\frac{\alpha\beta}{(\alpha+\beta)^2}   \\
+&=\frac{1}{n}\frac{\alpha}{\alpha+\beta}\frac{\beta}{\alpha+\beta}
+\left(\frac{n-1}{\alpha+\beta+1}+1\right)   \\
+&=\frac{1}{n}E_{binom}\left(\frac{Y}{n}\right)\left(1-E_{binom}\left(\frac{Y}{n}\right)\right)
+\left(\frac{n-1}{\alpha+\beta+1}+1\right)
+\end{align*}
+
+De esta \'ultima expresi\'on, y despejando $\alpha +\beta$, se tiene que
+
+\begin{align}
+\alpha+\beta&=\frac{(n-1)E_{binom}\left(\frac{Y}{n}\right)\left(1-E_{binom}\left(\frac{Y}{n}\right)\right)}
+{nVar_{binom}\left(\frac{Y}{n}\right)-
+E_{binom}\left(\frac{Y}{n}\right)\left(1-E_{binom}\left(\frac{Y}{n}\right)\right)}-1\notag \\
+&=\frac{E_{binom}\left(\frac{Y}{n}\right)\left(1-E_{binom}\left(\frac{Y}{n}\right)\right)-Var_{binom}\left(\frac{Y}{n}\right)}
+{Var_{binom}\left(\frac{Y}{n}\right)-\frac{1}{n}E_{binom}\left(\frac{Y}{n}\right)\left(1-E_{binom}\left(\frac{Y}{n}\right)\right)}
+\end{align}
+
+Ahora, despejando $\alpha$ de la expresi\'on (\ref{ecua7}) se tiene que
+\begin{align}
+\alpha=E_{binom}\left(\frac{Y}{n}\right)\frac{E_{binom}\left(\frac{Y}{n}\right)\left(1-E_{binom}\left(\frac{Y}{n}\right)\right)
+-Var_{binom}\left(\frac{Y}{n}\right)}{Var_{binom}\left(\frac{Y}{n}\right)
+-\frac{1}{n}E_{binom}\left(\frac{Y}{n}\right)\left(1-E_{binom}\left(\frac{Y}{n}\right)\right)}
+\end{align}
+
+adem\'as, tambi\'en despejando $\beta$ de (\ref{ecua7}) se tiene que
+\begin{align}
+\beta&=\frac{\alpha\left(1-E_{binom}\left(\frac{Y}{n}\right)\right)}{E_{binom}\left(\frac{Y}{n}\right)} \notag \\
+&=\frac{E_{binom}\left(\frac{Y}{n}\right)\left(1-E_{binom}\left(\frac{Y}{n}\right)\right)-Var_{binom}\left(\frac{Y}{n}\right)}
+{Var_{binom}\left(\frac{Y}{n}\right)-\frac{1}{n}E_{binom}\left(\frac{Y}{n}\right)\left(1-E_{binom}\left(\frac{Y}{n}\right)\right)}\left(1-E_{binom}\left(\frac{Y}{n}\right)\right)
+\end{align}
+
+El anterior enfoque nos ha llevado a poder expresar los par\'ametros de inter\'es en t\'erminos de $E_{binom}\left(\frac{Y}{n}\right)$, $Var_{binom}\left(\frac{Y}{n}\right)$ y $n$. Una vez que podamos estimar las anteriores cantidades, es posible realizar la inferencia bayesiana emp\'irica de la manera correcta. Para lo anterior, es necesario observar al naturaleza de las observaciones que, aunque no representan una muestra aleatoria, s\'i son una sucesi\'on de variables aleatorias intercambiables. Por lo anterior, y teniendo en cuenta que la inferencia se realiza con las cantidades $Y_1/n_1, Y_2/n_2, \ldots, Y_p/n_p$, es posible proponer los siguientes estimadores
+\begin{align}
+\hat{E}_{binom}\left(\frac{Y}{n}\right)&=\bar{Y} \\
+\hat{Var}_{binom}\left(\frac{Y}{n}\right)&=S^2 \\
+\hat{n}&=\frac{1}{p}\sum_{i=1}^pn_i
+\end{align}
+
+Con base en lo anterior, unas estimaciones emp\'iricas de los par\'ametros $\alpha$ y $\beta$ son
+\begin{align}
+\hat{\alpha}=\bar{Y}\left(\frac{\bar{Y}\left(1-\bar{Y}\right)
+-S^2}{S^2-\frac{1}{\hat{n}}\bar{Y}\left(1-\bar{Y}\right)}\right)
+\end{align}
+
+y
+\begin{align}
+\hat{\beta}&=(1-\bar{Y})\frac{\bar{Y}\left(1-\bar{Y}\right)-S^2}{S^2-\frac{1}{\hat{n}}\bar{Y}\left(1-\bar{Y}\right)}
+\end{align}
+
+respectivamente. Cuando la cantidad de ensayos $n_i$ es diferente en cada experimento, existen otras formas de obtener estimaciones para los par\'ametros $\alpha$ y $\beta$ \cite[p. 81]{Carlin96}.
+
+\begin{Eje}\label{Beisbol_jerarquico}
+En el ejemplo \ref{Beisbol} se estudi\'o datos que corresponden al porcentaje de bateo en 18 jugadores profesionales de beisbol. 
+<<>>=
+library(pscl)
+data(EfronMorris)
+attach(EfronMorris)
+y <- p # Porcentaje de bateo de los 18 jugadores
+y.bar <- mean(y)
+S2 <- var(y)
+n.hat <- mean(n)
+alfa <- y.bar*(y.bar*(1-y.bar)-S2)/(S2-y.bar*(1-y.bar)/n.hat)
+beta <- (1-y.bar)*(y.bar*(1-y.bar)-S2)/(S2-y.bar*(1-y.bar)/n.hat)
+alfa
+beta
+@
+De donde podemos concluir que la distribuci\'on previa para cada $\theta_i$ es la distribuci\'on $Beta(57, 158)$, observamos que la esperanza de esta distribuci\'on coincide con el porcentaje de bateo promedio de los datos de los 18 jugadres. Ahora, podemos calcular los par\'ametros de la distribuci\'on para cada $\theta_i$ con $i=1,\cdots,18$ como sigue:
+<<>>=
+alfa.new <- alfa + p*n
+beta.new <- beta + (1-p)*n
+head(alfa.new)
+head(beta.new)
+@
+Y as\'i podemos realizar inferencias para cualquier $\theta_i$. Por ejemplo, para primer jugador, Roberto Clemente, la distribuci\'on posterior para el porcentaje de bateo es $Beta(184, 398)$, por consiguiente la estimaci\'on para el porcentaje de bateo de este jugador es $184/(184+398)=0.3162$ y un intervalo de credibilidad est\'a dada por $(0.279,0.354)$. 
+\end{Eje}
+
+\subsection{Modelo Poisson-Gamma}
+
+Suponga el siguiente modelo de Poisson intercambiable
+\begin{align*}
+Y_i  \mid  \theta_i \sim Poisson(\theta_i)
+\end{align*}
+
+para $i=1,\ldots,n$. Y considerando que cada $\theta_i$ debe ser estrictamente positivo, entonces la distribuci\'on del par\'ametro $\theta_i$ es
+\begin{align*}
+\theta_i \sim Gamma(\alpha,\beta)
+\end{align*}
+
+Donde $\alpha$ y $\beta$ son hiperpar\'ametros desconocidos. Utilizando el resultado \ref{ResPoissonPost}, se tiene que la distribuci\'on posterior de cada par\'ametro $\theta_i$ est\'a dada por
+\begin{align*}
+\theta_i \mid \mathbf{Y} \sim Gamma\left(\sum_{i=1}^n Y_i+\alpha,\beta+n\right)
+\end{align*}
+
+Por supuesto, la distribuci\'on anterior no es \'util a no ser que los hiperpar\'ametros puedan ser estimados. Para realizar esta estimaci\'on, el enfoque emp\'irico sugiere utilizar el m\'etodo de los momentos. Para esto, n\'otese que el primer momento est\'a dado por
+\begin{align}\label{ESP_Poisson_Gamma}
+E_{Poisson}(Y_i)&=E_{Gamma}\left(E_{Poisson}(Y_i \mid \theta_i)\right)\notag \\
+&=E_{Gamma}\left(\theta_i\right) \notag \\
+&=\frac{\alpha}{\beta}
+\end{align}
+
+Mientras que la varianza, funci\'on del primer y segundo momento, est\'a dada por
+\begin{align}\label{var_Poisson_Gamma}
+Var_{Poisson}(Y_i)&=E_{Gamma}\left(Var_{Poisson}(Y_i \mid \theta_i)\right)+Var_{Gamma}\left(E_{Poisson}(Y_i \mid \theta_i)\right) \notag \\
+&=E_{Gamma}\left(\theta_i\right)+Var_{Gamma}\left(\theta_i\right) \notag \\
+&=\frac{\alpha}{\beta}+\frac{\alpha}{\beta^2} \notag \\
+&=\frac{\alpha}{\beta^2}(\beta+1)
+\end{align}
+
+Ahora, siguiendo el enfoque del m\'etodo de los momentos, es claro que la expresi\'on (\ref{ESP_Poisson_Gamma}) puede ser estimada con  la media muestral, $\bar{Y}$; mientras que la expresi\'on (\ref{var_Poisson_Gamma}) puede ser estimada con la varianza muestral, $S^2$. Por otro lado, al dividir estas expresiones se tiene que
+\begin{align}
+\frac{\frac{\alpha}{\beta^2}(\beta+1)}{\frac{\alpha}{\beta}}
+&=1+\frac{1}{\beta}
+\end{align}
+
+y, siguiendo un razonamiento similar, esta \'ultima expresi\'on es estimada por $S^2/\bar{Y}$. Por tanto, un estimador del m\'etodo de los momentos para $\beta$ es
+\begin{align}
+\hat{\beta}=\frac{1}{\frac{S^2}{\bar{Y}}-1}=\frac{\bar{Y}}{S^2-\bar{Y}}
+\end{align}
+
+De la expresi\'on (4.1.12), se nota que $\alpha=\beta E_{Poisson}(Y_i)$. Por tanto, un estimador del m\'etodo de los momentos para $\alpha$ es
+\begin{align}
+\hat{\alpha}=\hat{\beta}\bar{Y}=\frac{\bar{Y}^2}{S^2-\bar{Y}}
+\end{align}
+
+De lo anterior, se tiene que, siguiendo el enfoque bayesiano emp\'irico, la distribuci\'on posterior para $\theta_i$ est\'a dada por
+
+\begin{align*}
+\theta_i \mid \mathbf{Y} \sim Gamma\left(\sum_{i=1}^n Y_i+\hat{\alpha},\hat{\beta}+n\right)
+\end{align*}
+
+y la obtenci\'on de estimaci\'on de $\theta_i$ se sigue lo expuesto en cap\'itulos anteriores.
+
+\begin{Eje}
+Retomamos los datos del ejemplo \ref{Datos_Poisson} sobre la ocurrencia de accidentes de tr\'ansito relacionados con conductores en estado de embriaguez. En los siguientes c\'odigos mostramos el procedmiento para calcular $\hat{\alpha}$ y $\hat{\beta}$ y las estimaciones obtenidas para $\theta$ que denota el n\'umero prommedio diario de accidentes. 
+<<>>=
+Trans <- c(22, 9, 9, 20, 10, 14, 11, 14, 11, 11, 19, 12, 8, 9, 16, 8, 13, 8, 14, 12, 
+           14, 11, 14, 13, 11, 14, 13, 11, 7, 12 )
+y.bar <- mean(Trans); S2 <- var(Trans); n <- length(Trans)
+beta <- y.bar/(S2-y.bar)
+alpha <- beta*y.bar
+alpha/beta
+(sum(Trans)+alpha)/(beta+n)
+y.bar
+# Intervalo con enfoque jer\'arquico
+qgamma(c(0.025,0.975), shape=sum(Trans)+alpha, rate=beta+n)
+# Intervalo con enfoque cl??sico
+c(qchisq(alpha/2, df=2*y.bar*n)/(2*n), qchisq(1-alpha/2, df=2*(y.bar*n+1))/(2*n))
+# Intervalo con previa no informativa de Jeffreys
+qgamma(c(0.025,0.975), shape=sum(Trans)+0.5, rate=n)
+@
+En primer lugar, observamos que el no es posible calcular el intervalo de confianza para $\theta$ puesto que el grado de libertad de la distribuci\'on $\chi^2$ es muy grande. Por otro lado, vemos que la estimaci\'on bayesina obtenida de esta forma es exactamente igual a la estimaci\'oncl\'asica $\bar{y}$, con un intervalo de credibilidad de menor longitud que el intervalo de confianzacl\'asico. tambi\'en se calcul\'o el intervalo de credilidad para $\theta$ usando una previa no informativa de Jeffreys, el cual es m\'as ancho que el obtenido con el enfoque emp\'irico.
+\end{Eje}
+
+\subsection{Modelo Normal-Normal}\label{Normal_Normal}
+Uno de los modelos m\'as utilizados en la aplicaciones pr\'acticas se da cuando la distribuci\'on com\'un de los datos es la distribuci\'on normal. Considere el siguiente modelo en dos etapas en donde cada una de las observaciones se supone intercambiable y para la primera etapa se tiene que
+\begin{equation*}
+Y_i \mid \theta_i \sim Normal(\theta_i,\sigma^2) \ \ \ \ \ \ \ i=1,\ldots,n
+\end{equation*}
+
+en donde el par\'ametro $\sigma^2$ se supone conocido. En la segunda etapa, la distribuci\'on previa para los par\'ametros de inter\'es $\theta_i$ es
+\begin{equation*}
+\theta_i \mid \mu \sim Normal(\mu, \tau^2) \ \ \ \ \ \ \ i=1,\ldots,n
+\end{equation*}
+en donde el par\'ametro $\tau^2$ se supone conocido.Para poder proseguir con el an\'alisis emp\'irico bayesiano, podemos calcular la esperanza de la variable $Y_i$ similar a como se hizo en las secciones anteriores y encontrar que $\mu$ se puede calcular como $\bar{y}$. Otra forma de hallar el valor de $\mu$ es encontrar la estimaci\'on de m\'axima verosimilitud de $\mu$ escribiendo la densidad de $Y_i$ como funci\'on de $\mu$, el siguiente resultado nos da la expresi\'on.
+
+\begin{Res}
+La verosimilitud marginal previa de una observaci\'on condicional al hiperpar\'ametro $\mu$ es
+\begin{equation*}
+Y_i \mid \mu\sim Normal(\mu,\sigma^2+ \tau^2) \ \ \ \ \ \ \ i=1,\ldots,n
+\end{equation*}
+\end{Res}
+
+\begin{proof}
+Desarrollando la expresi\'on (4.1.2) se tiene que
+\begin{align*}
+p(Y_i \mid \mu)&=\int p(Y_i \mid \theta_i)p(\theta_i \mid \mu) \ d\theta_i\\
+&=\int \frac{1}{\sqrt{2\pi\sigma^2}}\exp\left\{-\frac{1}{2}\frac{(y_i-\theta_i)^2}{\sigma^2}\right\} \frac{1}{\sqrt{2\pi\tau^2}}\exp\left\{-\frac{1}{2}\frac{(\theta_i-\mu)^2}{\tau^2}\right\}\ d\theta_i\\
+&=\int \frac{1}{2\pi\sqrt{\sigma^2\tau^2}}
+\exp\left\{-\frac{1}{2}\frac{\tau^2(\theta_i-y_i)^2+\sigma^2(\theta_i-\mu)^2}{\sigma^2\tau^2}\right\}\ d\theta_i\\
+&=\int \frac{1}{2\pi\sqrt{\sigma^2\tau^2}}
+\exp\left\{-\frac{1}{2\sigma^2\tau^2}\left[\theta_i^2(\tau^2+\sigma^2)
+-2\theta_i(y_i\tau^2+\mu\sigma^2)+\tau^2y_i^2+\sigma^2\mu^2\right]\right\}\ d\theta_i\\
+&=\int \frac{1}{2\pi\sqrt{\sigma^2\tau^2}}
+\exp\left\{-\frac{\tau^2+\sigma^2}{2\sigma^2\tau^2}
+\left[\theta_i^2-2\theta_i\frac{y_i\tau^2+\mu\sigma^2}{\tau^2+\sigma^2}
++\frac{\tau^2y_i^2+\sigma^2\mu^2}{\tau^2+\sigma^2}\right]\right\}\ d\theta_i\\
+&=\int \frac{1}{2\pi\sqrt{\sigma^2\tau^2}}
+\exp\left\{-\frac{\tau^2+\sigma^2}{2\sigma^2\tau^2}
+\left[(\theta_i-\frac{y_i\tau^2+\mu\sigma^2}{\tau^2+\sigma^2})^2
+-\left(\frac{y_i\tau^2+\mu\sigma^2}{\tau^2+\sigma^2}\right)^2
++\frac{\tau^2y_i^2+\sigma^2\mu^2}{\tau^2+\sigma^2}\right]\right\}\ d\theta_i\\
+&=\int \frac{1}{\sqrt{2\pi}\sqrt{\frac{\sigma^2\tau^2}{\tau^2+\sigma^2}}}
+\exp\left\{-\frac{1}{2\frac{\sigma^2\tau^2}{\tau^2+\sigma^2}}
+\left(\theta_i-\frac{y_i\tau^2+\mu\sigma^2}{\tau^2+\sigma^2}\right)^2\right\}\ d\theta_i \\
+& \times \frac{1}{\sqrt{2\pi}\sqrt{\sigma^2\tau^2}}\sqrt{\frac{\sigma^2\tau^2}{\tau^2+\sigma^2}}
+\exp\left\{\frac{(y_i\tau^2+\mu\sigma^2)^2}{2\sigma^2\tau^2(\tau^2+\sigma^2)}
+-\frac{\tau^2y_i^2+\sigma^2\mu^2}{2\sigma^2\tau^2}\right\}\\
+&=\frac{1}{\sqrt{2\pi(\tau^2+\sigma^2)}}
+\exp\left\{-\frac{1}{2(\tau^2+\sigma^2)}
+\left[\frac{(\tau^2y_i^2+\sigma^2\mu^2)(\tau^2+\sigma^2)}{\sigma^2\tau^2}
+-\frac{(y_i\tau^2+\mu\sigma^2)^2}{\sigma^2\tau^2}\right]\right\}\\
+&=\frac{1}{\sqrt{2\pi(\tau^2+\sigma^2)}}
+\exp\left\{-\frac{1}{2(\tau^2+\sigma^2)}
+\left[\frac{\tau^2\sigma^2y_i^2+\sigma^2\tau^2\mu^2
+-2y_i\mu\tau^2\sigma^2}{\sigma^2\tau^2}\right]\right\}\\
+&=\frac{1}{\sqrt{2\pi(\tau^2+\sigma^2)}}
+\exp\left\{-\frac{1}{2(\tau^2+\sigma^2)}\left[y_i^2+\mu^2-2y_i\mu\right]\right\}\\
+&=\frac{1}{\sqrt{2\pi(\tau^2+\sigma^2)}}
+\exp\left\{-\frac{1}{2(\tau^2+\sigma^2)}\left[y_i-\mu\right]^2\right\}
+\end{align*}
+
+la cual corresponde a la funci\'on de distribuci\'on de una variable aleatoria con densidad $Normal(\mu,\sigma^2+ \tau^2)$
+\end{proof}
+
+Del anterior resultado, y teniendo la independencia de las variables, se tiene que la verosimilitud marginal previa del vector de observaciones $\mathbf{Y}=(Y_1,\ldots,Y_n)'$ condicionado al hiperpar\'ametro $\mu$ es
+\begin{equation*}
+p(\mathbf{Y} \mid \mu)=\left(\frac{1}{2\pi(\tau^2+\sigma^2)}\right)^{n/2}
+\exp\left\{-\frac{1}{2(\tau^2+\sigma^2)}\sum_{i=1}^n\left(y_i-\mu\right)^2\right\}
+\end{equation*}
+
+El objetivo del enfoque emp\'irico bayesiano es encontrar una estad\'istica que maximice la anterior expresi\'on. No es dif\'icil notar que un estimador de m\'axima verosimilitud para $\mu$ est\'a dado por la media muestral $\hat{\mu}=\frac{1}{n}\sum_{i=1}^n Y_i$. Con este estimador para el hiperpar\'ametro se considera que las distribuciones previa y posterior del par\'ametro de inter\'es quedan totalmente definidas y es posible continuar con el an\'alisis bayesiano com\'un.
+
+\textcolor{red}{Y qu\'e pasa con $\sigma^2$, si encontramos el valor de $\sigma^2$ que maximiza a $p(\mathbf{Y}\mid\mu)$, entonces me da que $\tau^2=S^2-\sigma^2$ (lo mismo me da si calculo $Var(Y_i)$), pero eso en la pr\'actica puede dar negativo.}
+
+\begin{Eje}
+Los datos del ejemplo \ref{eje_vidrios} muestran el grosor de 12 l\'aminas de vidrio, donde la media muestral es 3.18cm, la varianza te\'orica es $\sigma^2=0.1cm^2$, mientras que la varianza muestral es de $s^2=0.1068cm^2$. Usando los resultados encontrados en esta secci\'on, la distribuci\'on previa para el grosor promedio de las l\'aminas est\'a dada por $\theta\sim Normal(\mu=3.18cm,\tau^2=0.1068cm^2)$. 
+
+\textcolor{red}{Completar el ejemplo seg\'un los anteriores textos en rojo.}
+\end{Eje}
+
+\section{an\'alisis jer\'arquico}
+En esta parte, consideramos el an\'alisis jer\'arquico donde se asigma distribuciones de probabilidad tambi\'en a los hiperpar\'ametros. Consideramos una muestra aleatoria $\mathbf{Y}=\{Y_1,\ldots,Y_n\}$ parametrizada por $\btheta=(\theta_1,\ldots,\theta_n)'$ cuya funci\'on de verosimilitud est\'a dada por
+\begin{equation}
+p(\mathbf{Y} \mid \btheta)=\prod_{i=1}^n p(Y_i \mid \theta_i)
+\end{equation}
+
+Por otro lado, suponga que la distribuci\'on previa del par\'ametro de inter\'es $\theta_i$ est\'a parametrizada por un vector de hiperpar\'ametros $\bEta=(\eta_1,\ldots,\eta_J)$ tal que la distribuci\'on previa de cada $\theta_i$ queda denotada por $p(\theta_i \mid \bEta)$.
+
+De lo anterior, y suponiendo que existe intercambiabilidad entre cada uno de los par\'ametros de inter\'es, la distribuci\'on previa del vector de par\'ametros $\btheta$, parametrizada por $\bEta$ est\'a dada por
+\begin{equation}
+p(\btheta \mid \bEta)=\prod_{i=1}^n p(\theta_i \mid \bEta)
+\end{equation}
+
+Por tanto, es posible formular una distribuci\'on previa conjunta para $\btheta,\bEta$ que al igual que en cap\'itulos anteriores, teniendo en cuenta el esp\'iritu jer\'arquico y dependiente, vendr\'ia dada por
+\begin{equation}
+p(\btheta,\bEta)=p(\btheta \mid \bEta)p(\bEta)
+\end{equation}
+
+Luego, la distribuci\'on marginal previa del vector de par\'ametros de inter\'es viene dada por
+\begin{align*}
+p(\btheta)&=\int p(\btheta,\bEta) \ d\btheta\\
+&=\int p(\btheta \mid \bEta)p(\bEta) \ d\btheta\\
+&=\int \cdots \int \prod_{i=1}^n p(\theta_j \mid \bEta)p(\bEta) \ d\theta_1\cdots d\theta_n
+\end{align*}
+
+Con esta formulaci\'on, y suponiendo que las observaciones son condicionalmente independientes del vector de hiperpar\'ametros $\bEta$\footnote{Esta suposici\'on tiene como base que las observaciones s\'olo dependen de $\bEta$ a trav\'es del vector de par\'ametros de inter\'es $\btheta$.},la distribuci\'on posterior conjunta para $\btheta,\bEta$ es
+\begin{align}\label{pos_theta_eta}
+p(\btheta, \bEta \mid \mathbf{Y}) &\propto p(\mathbf{Y} \mid \btheta, \bEta)p(\btheta,\bEta)  \notag \\
+&= p(\mathbf{Y} \mid \btheta, \bEta) p(\btheta \mid \bEta) p(\bEta)  \notag \\
+&= p(\mathbf{Y} \mid \btheta) p(\btheta \mid \bEta) p(\bEta)
+\end{align}
+
+n\'otese que tanto para la distribuci\'on previa como para la distribuci\'on posterior de los par\'ametros, se supone conocido la distribuci\'on marginal previa de $\bEta$, $p(\bEta)$, y tambi\'en la distribuci\'on previa de $\btheta$ condicional a $\bEta$, $p(\btheta\mid\bEta)$. La anterior formulaci\'on es acorde con la filosof\'ia jer\'arquica pues supone relaciones de dependencia en distintos niveles. Conociendo el comportamiento estructural de $\bEta$ se puede conocer el comportamiento estructural de $\btheta$. \citeasnoun{Gelman03} afirma que cuando no se tiene certeza acerca del comportamiento de $\bEta$ se debe utilizar una distribuci\'on previa no informativa aunque siempre se debe tener alguna sospecha acerca del espacio param\'etrico al cual sea posible restringirlos.
+
+En t\'erminos de estimaci\'on, los siguientes pasos son esenciales para realizar un an\'alisis bayesiano propiamente dicho \cite{Gelman03}:
+
+\begin{enumerate}
+  \item Escribir la distribuci\'on posterior de $\btheta,\bEta$ de forma no normalizada como en la expresi\'on (\ref{pos_theta_eta}).
+  \item Determinar anal\'iticamente la distribuci\'on posterior de $\btheta$ condicional a $\bEta,\mathbf{Y}$, utilizando la siguiente regla
+      \begin{equation*}
+      p(\btheta \mid \bEta,\mathbf{Y}) \propto p(\btheta,\underbrace{\bEta}_{fijo} \mid \mathbf{Y})
+      \end{equation*}
+      Es decir, los t\'erminos que no dependan de $\btheta$ pueden ser introducidos en la constante de proporcionalidad.
+  \item Determinar la distribuci\'on posterior de $\bEta$, utilizando alguna de las siguientes expresiones (se debe escoger la m\'as conveniente dependiendo del contexto del problema):
+      \begin{align}
+      p(\bEta \mid \mathbf{Y})&\propto p(\mathbf{Y} \mid \bEta)p(\bEta)\label{bEta1}\\
+      p(\bEta \mid \mathbf{Y})&= \int p(\btheta, \bEta \mid \mathbf{Y}) d\btheta\label{bEta2}\\
+      p(\bEta \mid \mathbf{Y})&= \frac{p(\btheta, \bEta \mid \mathbf{Y})}{p(\btheta \mid \bEta,\mathbf{Y})}\label{bEta3}
+      \end{align}
+  \item Por medio de $p(\bEta \mid \mathbf{Y})$ encontrar una estimaci\'on para $\bEta$.
+  \item Recurriendo a  $p(\btheta \mid \bEta,\mathbf{Y})$ encontrar una estimaci\'on para $\btheta$.
+\end{enumerate}
+
+A continuaci\'on, ilustramos la implmentaci\'on del anteior procedimiento en datos de distintas naturalezas. 
+
+\subsection{Modelo Binomial}
+Suponga el mismo modelo binomial de la secci\'on \ref{Binomial-Beta} dado por
+\begin{equation*}
+Y_i \sim Binomial(n_i,\theta_i)\ \ \ \text{con $i=1,\cdots,n$}
+\end{equation*}
+
+en donde la distribuci\'on de los par\'ametros de inter\'es es tal que
+\begin{equation*}
+\theta_i \sim Beta(\alpha, \beta)
+\end{equation*}
+
+Para esta situaci\'on el an\'alisis bayesiano propiamente dicho requiere el planteamiento de un modelo que contemple el comportamiento estructural tanto del vector de par\'ametros $\btheta$ como de los hiperpar\'ametros $\alpha, \beta$. Por lo tanto, suponiendo que existe total ignorancia acerca del comportamiento estructural de los hiperpar\'ametros, la distribuci\'on previa marginal para los hiperpar\'ametros es no informativa \cite{Gelman03}, \'esta est\'a dada por
+\begin{equation*}
+p(\alpha,\beta)\propto(\alpha+\beta)^{-5/2}
+\end{equation*}
+Suponiendo que los par\'ametros de inter\'es $\theta_i$ $(i=1,\ldots,n)$ conforman una muestra aleatoria, entonces su distribuci\'on previa es
+\begin{align*}
+p(\btheta \mid \alpha, \beta)&=\prod_{i=1}^n p(\theta_i \mid \alpha, \beta)\\
+&=\prod_{i=1}^n \frac{\Gamma(\alpha+\beta)}{\Gamma(\alpha)+\Gamma(\beta)}
+\theta_i^{\alpha-1}(1-\theta_i)^{\beta-1}
+\end{align*}
+
+Por \'ultimo, teniendo en cuenta que la distribuci\'on de las observaciones es intercambiable, entonces es posible definir la verosimilitud de la muestra como una productoria tal que
+\begin{align*}
+p(\mathbf{Y} \mid \btheta)&=\prod_{i=1}^n p(Y_i \mid \theta_i)\\
+&\propto \prod_{i=1}^n \theta_i^{y_i}(1-\theta_i)^{n_i-y_i}
+\end{align*}
+
+De esta manera, siguiendo la expresi\'on (\ref{pos_theta_eta}), la distribuci\'on posterior conjunta estar\'ia dada por
+\begin{equation*}
+p(\btheta,\alpha,\beta \mid \mathbf{Y})\propto
+(\alpha+\beta)^{-5/2}\prod_{i=1}^n \frac{\Gamma(\alpha+\beta)}{\Gamma(\alpha)+\Gamma(\beta)}
+\theta_i^{\alpha-1}(1-\theta_i)^{\beta-1}\prod_{i=1}^n \theta_i^{y_i}(1-\theta_i)^{n_i-y_i}
+\end{equation*}
+
+Utilizando la regla del condicionamiento, la distribuci\'on posterior del vector de par\'ametros de inter\'es condicionado a los hiperpar\'ametros y a los datos observados es
+\begin{align*}
+p(\btheta \mid \alpha,\beta,\mathbf{Y})
+&\propto p(\btheta,\underbrace{\alpha,\beta}_{fijos} \mid \mathbf{Y})\\
+&\propto \prod_{i=1}^n \theta_i^{\alpha-1}(1-\theta_i)^{\beta-1}\prod_{i=1}^n \theta_i^{y_i}(1-\theta_i)^{n_i-y_i}\\
+&\propto \prod_{i=1}^n \theta_i^{\alpha+y_i-1}(1-\theta_i)^{\beta+n_i-y_i-1}
+\end{align*}
+
+De donde se concluye que la distribuci\'on posterior para el vector de par\'ametros de inter\'es es
+\begin{equation*}
+\theta_i \mid \alpha,\beta,Y_i \sim Beta(\alpha+Y_i, \beta+n_i-y_i)
+\end{equation*}
+
+Por supuesto, la anterior distribuci\'on no es \'util frente al desconocimiento de los hiperpar\'ametros que deben ser estimados posterior, en este caso particular, utilizando la expresi\'on (\ref{bEta3}) la cual da como resultado
+\begin{align*}
+p(\alpha,\beta \mid \mathbf{Y})
+&=\frac{p(\btheta, \alpha,\beta \mid \mathbf{Y})}{p(\btheta \mid \alpha,\beta,\mathbf{Y})}\\
+&\propto
+\frac{(\alpha+\beta)^{-5/2}\prod_{i=1}^n \dfrac{\Gamma(\alpha+\beta)}{\Gamma(\alpha)\Gamma(\beta)}
+\theta_i^{\alpha-1}(1-\theta_i)^{\beta-1}\prod_{i=1}^n \theta_i^{y_i}(1-\theta_i)^{n_i-y_i}}
+{\prod_{i=1}^n \dfrac{\Gamma(\alpha+y_i+\beta+n_i-y_i)}{\Gamma(\alpha+y_i)\Gamma(\beta+n_i-y_i)}
+\theta_i^{\alpha+y_i-1}(1-\theta_i)^{\beta+n_i-y_i-1}}\\
+&=(\alpha+\beta)^{-5/2}
+\prod_{i=1}^n \frac{\Gamma(\alpha+\beta)}{\Gamma(\alpha)\Gamma(\beta)}
+\frac{\Gamma(\alpha+y_i)\Gamma(\beta+n_i-y_i)}{\Gamma(\alpha+\beta+n_i)}
+\end{align*}
+
+Aunque la anterior distribuci\'on no tiene una forma cerrada o conocida, es posible simular valores provenientes de \'esta utilizando el m\'etodo de la grilla. Una vez que se tienen las observaciones simuladas, entonces se encuentra un estimador para los hiperpar\'ametros y con estos, la distribuci\'on posterior del vector de par\'ametros de inter\'es queda correctamente definida.
+
+En \verb'R', una funci\'on que calcula la probabilidad posterior para los hiperpar\'ametros est\'a dada por
+<<>>=
+post<-function(a,b,n,y){
+   P1<- gamma(a+b)
+   P2<- gamma(a)*gamma(b)
+   P3<- gamma(a+y)*gamma(b+n-y)
+   P4<- gamma(a+b+n)
+   (a+b)^(-5/2)*prod((P1/P2)*(P3/P4))
+ }
+@
+
+
+Para implementar el m\'etodo de la grilla, se debe tener en cuenta que como la distribuci\'on es bivariada entonces la grilla debe estar contenida en $R^2$. En $\verb'R'$, una funci\'on que devuelve una grilla bivariada est\'a dada por el siguiente c\'odigo
+<<>>=
+ grilla<-function(a,b){
+   A<-seq(1:length(a))
+   unoA <-rep(1,length(A))
+   B<-seq(1:length(b))
+   unoB <-rep(1,length(B))
+   P1<-kronecker(A,unoB)
+   P2<-kronecker(unoA,B)
+   grid<-cbind(a[P1],b[P2])
+   return(grid)
+ }
+@
+
+\citeasnoun[p.118]{Gelman03} presentan datos que corresponden a 70 grupos de ratones de laboratorio, cada grupo tiene entre 10 y 52 ratones y se registran el n\'umero de ratones por grupo que desarrolle un tipo espec\'ifico de tumor. El par\'ametro de inter\'es es la probabilidad de desarrollar dicho tumor. En primer lugar se cre\'o una grilla bivariada contenida entre $\{1,1.5\ldots,49.5,50\}^2$ (el super\'indice denota el producto cartesiano) y para cada punto se calcul\'o la respectiva probabilidad dada por la distribuci\'on posterior.
+<<>>=
+n<-c(20,19,18,20,20,20,23,20,18,18,10,13,48,19,20,18,25,49,48,19,22,20,17,24,19,50,
+     19,20,20,20,23,46,20,19,20,20,20,20,27,20,22,20, 20,20,20,17,20,46,52,19,20,20,
+     49,20,49,47,19,19,20,47,20,20,46,19,19,20,20,20,20,24)
+ y<-c(0,0,1,2,3,4,6,0,0,1,1,2,10,5,0,0,2,5,9,4,6,0,0,2,2,10,4,6,0,1,2,5,4,4,6,0,1,2,
+      3,4,5,6,0,1,2,2,4,11,16,0,1,2,7,4,12,15,0,1,2,7,4,5,15,0,1,2,3,4,5,9)
+
+ a.grid<-seq(1,50,by=0.5)
+ b.grid<-seq(1,50,by=0.5)
+ ab.grid<-grilla(a.grid,b.grid)
+ N.grid<-dim(ab.grid)[1]
+
+ p.ab <- rep(NA, N.grid)
+ for(j in 1:N.grid){
+   p.ab[j] <- post(ab.grid[j,1], ab.grid[j,2], n, y)
+ }
+@
+
+Luego, se utiliz\'o la funci\'on \verb'sample' para generar una muestra aleatoria de tama\~no $n=1000$ proveniente de la distribuci\'on posterior normalizada de los hiperpar\'ametros
+<<>>=
+ p.ab<-as.vector(p.ab/sum(p.ab))
+ sum(p.ab)
+
+ r.post<-sample(N.grid,5000,prob=p.ab,replace=T)
+ rab.post<-ab.grid[r.post,]
+ ra.post<-rab.post[,1]
+ rb.post<-rab.post[,2]
+@
+
+El objeto \verb'rab.post' es una matriz de dos columnnas y cinco mil filas. Cada fila contiene una observaci\'on simulada de la distribuci\'on posterior; por tanto, \verb'rab.pos' contiene cinco mil duplas simuladas. A continuaci\'on, es posible obtener estimaciones puntuales posterior para el vector de hiperpar\'ametros; teniendo en cuenta el criterio de m\'inima p\'erdida cuadr\'atica, estas estimaciones son $(\hat{\alpha},\hat{\beta})'=(2.3675, 14.2862)'$. De la misma manera, tambi\'en es posible obtener intervalos de credibilidad al 95\%.
+
+<<>>=
+ mean(ra.post)
+ mean(rb.post)
+
+ quantile(ra.post,c(0.025,0.975))
+ quantile(rb.post,c(0.025,0.975))
+@
+Aunque el objetivo primario del an\'alisis jer\'arquico es obtener una estimaci\'on bayesiana de los hiperpar\'ametros para conectarla directamente a la distribuci\'on posterior de cada uno de los par\'ametros de inter\'es $\theta_i, \ \ i=1, \ldots, n$, es posible preguntarse acerca de la forma estructural de la distribuci\'on posterior de los hiperpar\'ametros. De esta manera, un primer acercamiento gr\'afico se presenta cuando se genera el contorno bivariado para la distribuci\'on, se puede notar que la distribuci\'on posterior conjunta para $(\alpha, \beta)'$ no tiene una forma conocida y tiene varios picos, justo como se ve en la en la figura XXXX. La forma de la distribuci\'on en tercera dimensi\'on, considerada la figura XXXX, comprueba que, en efecto, esta distribuci\'on debe ser tratada en conjunto. Por otra parte, se resalta la potencia del m\'etodo de la grilla que permite simular observaciones bivariadas de una distribuci\'on compleja como la desarrollada ac\'a. El c\'odigo computacional para generar estas gr\'aficas se presenta a continuaci\'on.
+<<fig.height=4>>=
+ a<-a.grid
+ b<-b.grid
+
+ mat<-matrix(NA, nrow=length(a), ncol=length(b))
+ for(i in 1:length(a)){
+ for(j in 1:length(b)){
+   mat[i,j]<-post(a[i],b[j],n,y)
+ }
+ }
+ 
+ mat<-mat/(sum(mat))
+# gr\'afica de contorno
+  mat3d <- melt(mat)
+  names(mat3d) <- c("x", "y", "z")
+  v <- ggplot(mat3d, aes(x, y, z = z))
+  v + stat_contour(aes(colour = ..level..))
+  
+# gr\'afica de perspectiva
+  persp3D(z=mat, x=a, y=b)
+@
+
+%\begin{figure}[!htb]
+%\centering
+%\includegraphics[scale=0.5]{congrilla.eps}
+%\caption{\emph{Contorno de la distribuci\'on posterior de los hiperpar\'ametros $(\alpha, \beta)'$}}
+%\end{figure}
+
+%\begin{figure}[!htb]
+%\centering
+%\includegraphics[scale=0.5]{pergrilla.eps}
+%\caption{\emph{Densidad bivariada de la distribuci\'on posterior de los hiperpar\'ametros $(\alpha, \beta)'$}}
+%\end{figure}
+
+\subsection{Modelo Poisson}
+Ahora, suponga el modelo Poisson para los datos, dado por 
+\begin{align*}
+Y_i \mid \theta_i \sim Poisson(\theta_i)
+\end{align*}
+
+donde los $Y_i$ forman una sucesi\'on de variables aleatorias intercambiables y con cada par\'ametro $\theta_i$ ($i=1,\ldots,n$) distribuido como
+\begin{align*}
+\theta_i \mid (\alpha,\beta) \sim Gamma(\alpha,\beta)
+\end{align*}
+
+donde $\alpha$ y $\beta$ son hiperpar\'ametros desconocidos.Como estos hiperpar\'ametros son positivos ambos, es razonable asignarles la distribuci\'on $Gamma$ tales que
+\begin{align*}
+\alpha &\sim Gamma(a,b)\\
+\beta &\sim Gamma(c,d)
+\end{align*}
+
+Usualmente los par\'ametros $a$, $b$, $c$ y $d$ son conocidos y son tales que las distribuciones de $\alpha$ y $\beta$ sean planas o no-informativas. De esta manera, el enfoque bayesiano jer\'arquico plantea que se debe realizar la inferencia conjunta para el vector de par\'ametros $\btheta=(\theta_1, \ldots, \theta_n)'$ y para $(\alpha, \beta)'$. Con base en lo anterior, la distribuci\'on posterior de los par\'ametros de inter\'es toma la siguiente forma
+\begin{align*}
+p(\btheta,\alpha,\beta \mid \mathbf{Y})&\propto
+\prod_{i=1}^n p(Y\mid \theta_i)p(\theta_i\mid \alpha, \beta)p(\alpha)p(\beta)\\
+&\propto \prod_{i=1}^n \frac{e^{-\theta_i}\theta_i^{y_i}}{y_i!}
+\frac{\beta^\alpha}{\Gamma(\alpha)}\theta_i^{\alpha-1}e^{-\beta\theta_i}
+e^{-\alpha b}\alpha^{a-1}e^{-\beta d}\beta^{c-1}
+\end{align*}
+
+Como es usual, y acudiendo a la anterior distribuci\'on posterior conjunta, se utilizar\'a la t\'ecnica del condicionamiento sucesivo para encontrar las distribuciones posterior marginales de cada uno de los par\'ametros de inter\'es. En este orden de ideas, se tiene que para cada $\theta_i$ con $i=1,\ldots,n$, la distribuci\'on posterior marginal est\'a dada por
+\begin{align*}
+p(\theta_i \mid \alpha,\beta,\theta_1,\ldots,\theta_{i-1},\theta_{i+1},\cdots,\theta_n,\mathbf{Y})
+&\propto
+p(\theta_i, \underbrace{\alpha,\beta,\theta_1,\ldots,\theta_{i-1},\theta_{i+1},\cdots,\theta_n}_{fijos}\mid\mathbf{Y})\\
+&\propto e^{-\theta_i}\theta_i^{y_i}\theta_i^{\alpha-1}e^{-\beta\theta_i}\\
+&= \exp\{-\theta_i(\beta+1)\}\theta^{y_i+\alpha-1}
+\end{align*}
+
+Con base en lo anterior, se tiene que la distribuci\'on posterior para cada par\'ametro $\theta_i$ es
+\begin{equation*}
+\theta_i\mid \alpha,\beta,\theta_1,\ldots,\theta_{i-1},\theta_{i+1},\theta_n,\mathbf{Y}
+\sim Gamma(y_i+\alpha, \beta+1)
+\end{equation*}
+
+Para el hiperpar\'ametro $\alpha$, se tiene que la distribuci\'on posterior marginal est\'a dada por
+\begin{align*}
+p(\alpha\mid \beta, \btheta, \mathbf{Y})
+&\propto p(\alpha, \underbrace{\beta,\btheta}_{fijos}\mid\mathbf{Y})\\
+&\propto \prod_{i=1}^n \frac{\beta^\alpha\theta_i^{\alpha-1}}{\Gamma(\alpha)}\alpha^{a-1}\exp\{-\alpha b\}
+\end{align*}
+
+La anterior distribuci\'on no tiene una forma conocida y es necesario utilizar m\'etodos num\'ericos para simular observaciones de provenientes de \'esta. Para esto es posible utilizar el m\'etodo de la grilla.
+
+Por \'ultimo, la distribuci\'on posterior marginal del hiperpar\'ametro $\beta$ se encuentra, similarmente mediante el condicionamiento sucesivo, de la siguiente forma
+\begin{align*}
+p(\beta \mid \alpha,\btheta,\mathbf{Y})
+&\propto p(\beta, \underbrace{\alpha,\btheta}_{fijos}\mid\mathbf{Y})\\
+&\propto \prod_{i=1}^n \beta^{\alpha}\exp\{-\beta\theta_i\}\beta^{c-1}\exp\{-\beta d\}\\
+&=\beta^{n(\alpha+c-1)}\exp\left\{-\beta\left(nd+\sum_{i=1}^n\theta_i\right)\right\}
+\end{align*}
+
+Por lo tanto, se concluye que la distribuci\'on posterior para el hiperpar\'ametro $\beta$ es
+\begin{equation*}
+\beta\mid \alpha,\btheta,\mathbf{Y}
+\sim Gamma\left(n(\alpha+c-1)+1, nd+\sum_{i=1}^n\theta_i\right)
+\end{equation*}
+
+Para realizar la inferencia bayesiana jer\'arquica para los par\'ametros de inter\'es se deben fijar valores iniciales para cada par\'ametro y mediante simulaci\'on renovarlos hasta obtener convergencia. Por ejemplo, un posible camino para obtener convergencia en la simulaci\'on se describe a continuaci\'on:
+
+\begin{itemize}
+  \item Fijar valores iniciales para $\alpha$ y $\beta$.
+  \item Con los anteriores valores simular una observaci\'on para cada distribuci\'on posterior de los par\'ametros $\theta_i$ $(i=1,\ldots,n)$.
+  \item Con estos valores de $\theta_i$ y el valor inicial de $\beta$, simular una observaci\'on de la distribuci\'on posterior de $\alpha$.
+  \item Con los valores de $\theta_i$ y la anterior observaci\'on de $\alpha$, simular un nuevo valor para $\beta$.
+  \item Repetir el anterior proceso hasta lograr convergencia.
+\end{itemize}
+
+Dado que las distribuciones posterior de los par\'ametros $\theta_i$ $(i=1,\ldots,n)$ y del hiperpar\'ametro $\beta$ est\'an ligadas a la distribuci\'on Gamma, la simulaci\'on para estos par\'ametros es f\'acil. Sin eambrgo, como la distribuci\'on posterior marginal de $\alpha$ no tiene una forma cerrada, es necesario implementar un c\'odigo propio en \verb'R' que permita simular un valor proveniente de esta distribuci\'on. Es posible utilizar el m\'etodo de la grilla que, en este caso, es univariado pues se trata de un s\'olo hiperpar\'ametro. Con base en lo anterior, se tiene la siguiente funci\'on que reproduce esta distribuci\'on no conocida.
+
+<<>>=
+ post <- function(theta, alpha, beta, a, b){
+   P1 <- beta^alpha * (theta^(alpha-1)) / gamma(alpha)
+   P2 <- alpha^(a-1)
+   P3 <-  exp(-alpha*beta)
+   res <- prod(P1)*P2*P3
+   res
+ }
+@
+
+Por ejemplo, suponga que $\btheta=(\theta_1, \theta_2, \theta_3)'$ cuyas observaciones, para una iteraci\'on en particular, fueron $(2, 2, 3)$ y que la observaci\'on para $\beta$ fue 0.9. De esta manera, se crea una grilla de los posibles valores que puede tomar $\alpha$ y mediante el  uso de la funci\'on \verb'sample' se simula un valor proveniente de esta distribuci\'on rara.
+
+<<>>=
+ # creaci\'on de la grilla para alpha
+ alpha.grid <- seq(0.05, 20, by=0.01)
+ be <- 0.9
+ a1 <- 2
+ b2 <- 3
+ t <- c(2,2,3)
+
+ # probabilidad para cada valor en la grilla
+ post.alpha <- c()
+ for(k in 1:length(alpha.grid)){
+  post.alpha[k] <- post(t,alpha.grid[k],be,a1,b1)
+ }
+ N.grid <- length(post.alpha)
+ post.alpha <- post.alpha/sum(post.alpha)
+ sum(post.alpha)
+
+ # simulaci\'on de una sola observaci\'on
+ rpost <- sample(N.grid, 1, prob=post.alpha, replace=TRUE)
+ r.alpha <- alpha.grid[rpost]
+ r.alpha
+@
+
+Por otro lado, en t\'erminos exploratorios, es posible simular varios valores de la distribuci\'on no conocida y determinar qu\'e forma tiene. Para la anterior configuraci\'on, y utilizando el siguiente c\'odigo, se simularon 100 valores de esta distribuci\'on. En general, es posible afirmar que su forma es parecida a la de una distribuci\'on gamma, esto tiene sentido pues est\'a en funci\'on de distribuciones gamma, sesgadas a la derecha y unimodales.
+
+<<fig.height=4>>=
+# corroborar la estructura de la cadena
+N.sim <- 1000
+
+rpost <- sample(N.grid, N.sim, prob=post.alpha, replace=TRUE)
+r.alpha <- alpha.grid[rpost]
+mean(r.alpha)
+plot(r.alpha)
+hist(r.alpha, breaks=20)
+ts.plot(post.alpha)
+@
+Ahora ilustramos el procedimiento de obtener la estimaci\'on de $\alpha$, $\beta$ y los $\theta_i$ usando suponiendo que se quiere estimar el n\'umero de accidentes de tr\'ansito relacionados con motociclistas en las veinte localidades de la ciudad de Bogot\'a, suponga que en un mismo d\'ia determinado los n\'umeros de estos accidentes son: $6, 5, 9, 2, 3, 0, 4, 1, 1, 2, 1, 6, 7, 2, 4, 3, 0, 4, 3, 2$.
+<<>>=
+y <- c(6, 5, 9, 2, 3, 0, 4, 1, 1, 2, 1, 6, 7, 2, 4, 3, 0, 4, 3, 2)
+n <- length(y)
+n.sim <- 1000
+res.theta <- matrix(NA,n.sim,n); res.beta <- c(); res.alpha <- c()
+# Valor inicial para theta
+res.theta[1,] <- 20
+# Valor inicial para beta
+res.beta[1] <- 1
+# Simular un valor para alpha
+ # creaci\'on de la grilla para alpha
+ alpha.grid <- seq(0.05, 20, by=0.01)
+ a <- c <- 2
+ b <- d <- 3
+ # probabilidad para cada valor en la grilla
+ post.alpha <- c()
+ for(k in 1:length(alpha.grid)){
+  post.alpha[k] <- post(res.theta[1,], alpha.grid[k], res.beta[1],a,b)
+ }
+ N.grid <- length(post.alpha)
+ post.alpha <- post.alpha/sum(post.alpha)
+ res.alpha[1] <- alpha.grid[sample(length(alpha.grid), 1, prob=post.alpha, replace=TRUE)]
+ # Aqu?? comienza a simular los valores de los par\'ametros
+ for(i in 2:n.sim){
+ # Simular un valor para theta
+   for(j in 1:n){
+     res.theta[i,j] <- rgamma(1, shape=y[j]+res.alpha[i-1], rate=res.beta[i-1]+1)
+   }
+ # Simular un valor para beta
+   res.beta[i] <- rgamma(1, n*(res.alpha[i-1]+c-1)+1, rate=n*d+sum(res.theta[i,]))
+ # Simular un valor para alpha
+ post.alpha <- c()
+ for(k in 1:length(alpha.grid)){
+  post.alpha[k] <- post(res.theta[i,],alpha.grid[k],res.beta[i],a,b)
+ }
+ post.alpha <- post.alpha/sum(post.alpha)
+ 
+ res.alpha[i] <- alpha.grid[sample(length(post.alpha), 1, prob=post.alpha, replace=TRUE)]
+ }
+ # Verificar la convergencia de algunos par??metros
+ par(mfrow=c(2,2))
+ ts.plot(res.theta[,1]); ts.plot(res.theta[,2])
+ ts.plot(res.alpha); ts.plot(res.beta)
+ # Calcular la estimaci\'on de los par\'ametros tomando la segunda mitad de los valores simulados
+ colMeans(res.theta[-(1:(n.sim/2)),])
+ mean(res.alpha[-(1:(n.sim/2))])
+ mean(res.beta[-(1:(n.sim/2))])
+ @
+
+El anterior desarrollo te\'orico tambi\'en se puede adaptar para el caso cuando se asume la misma media para todas las variables observadas, esto es, $Y_i\mid\theta$ para $i=1,\cdots,n$. En este caso, se tiene que 
+\begin{equation*}
+p(\theta,\alpha,\beta\mid\mathbf{Y})\propto e^{-(n+\beta)\theta}\theta^{\sum y_i+\alpha-1}\beta^{\alpha+c-1}e^{-\alpha b-\beta d}\alpha^{a-1}/\Gamma(\alpha)
+\end{equation*}
+
+de donde se puede concluir que 
+\begin{align}
+\theta\mid\alpha,\beta,\mathbf{Y}&\sim Gamma(\sum y_i+\alpha,n+\beta)\label{Poisson_Gamma1}\\
+\alpha\mid\theta,\beta,\mathbf{Y}&\propto(\theta\beta)^\alpha e^{-\alpha b}\alpha^{a-1}/\Gamma(\alpha)\label{Poisson_Gamma2}\\
+\beta\mid\theta,\alpha,\mathbf{Y}&\sim Gamma(\alpha+c,\theta+d)\label{Poisson_Gamma3}
+\end{align}
+
+\subsection{Modelo Normal}
+Considere una variaci\'on de la estructura jer\'arquica de la secci\'on \ref{Normal_Normal}, en donde las observaciones siguen el siguiente modelo de probabilidad
+\begin{equation*}
+Y_i \mid \theta_i \sim Normal(\theta_i,\sigma^2) \ \ \ \ \ \ \ i=1,\ldots,n
+\end{equation*}
+
+y el par\'ametro $\sigma^2$ se supone conocido. Sin embargo, la distribuci\'on previa para los par\'ametros de inter\'es $\theta_i$ es
+\begin{equation*}
+\theta_i \mid \mu \sim Normal(\mu, \tau^2) \ \ \ \ \ \ \ i=1,\ldots,n
+\end{equation*}
+en donde los par\'ametros $\mu$ y $\tau^2$ son desconocidos. De esta forma, es necesario hallar una forma de estimar los valores de estos dos hiperpar\'ametros, esto se puede llevar a cabo considerando diferente estructuras de dependencia entre $mu$ y $\tau^2$. 
+
+\subsubsection{Hiperpar\'ametros independientes}
+En primer lugar, supongamos que los hiperpar\'ametros son independientes en la distribuci\'on previa, es decir que su funci\'on de densidad conjunta se puede factorizar como el producto de las distribuciones marginales de cada uno de los hiperpar\'ametros. m\'as a\'un, si se supone que las distribuciones previa marginales son no informativas y siguen una estructura probabil\'istica uniforme, entonces se tiene que
+\begin{equation*}
+p(\mu,\tau^2)=p(\mu)p(\tau^2)\propto k
+\end{equation*}
+
+Con esta formulaci\'on se deduce que la distribuci\'on posterior conjunta condicional a una sola observaci\'on est\'a dada por
+\begin{align}
+p(\theta_i,\mu,\tau^2 \mid Y_i) &\propto p(Y_i \mid \theta_i)p(\theta_i \mid \mu,\tau^2)p(\mu,\tau^2) \notag \\
+&\propto p(Y_i \mid \theta_i)p(\theta_i \mid \mu,\tau^2) \notag \\
+&\propto \exp\left\{-\frac{1}{2\sigma^2}(y_i-\theta_i)^2\right\}
+\frac{1}{\tau}\exp\left\{-\frac{1}{2\tau^2}(\theta_i-\mu)^2\right\}
+\end{align}
+
+Y la distribuci\'on distribuci\'on posterior conjunta condicional a todas las observaciones y a todos los par\'ametros de inter\'es es
+\begin{align*}
+p(\btheta,\mu,\tau^2 \mid \mathbf{Y})
+&\propto p(\mathbf{Y} \mid \btheta)p(\btheta \mid \mu,\tau^2)  \\
+&\propto \prod_{i=1}^n p(Y_i \mid \theta_i) \prod_{i=1}^n p(\theta_i \mid \mu,\tau^2)  \\
+&\propto \exp\left\{\frac{1}{2\sigma^2}\sum_{i=1}^n(y_i-\theta_i)^2\right\}
+\frac{1}{\tau^n}\exp\left\{\frac{1}{2\tau^2}\sum_{i=1}^n(\theta_i-\mu)^2\right\}
+\end{align*}
+
+Utilizaremos la t\'ecnica del condicionamiento para encontrar la distribuci\'on condicional del vector de par\'ametros de inter\'es $\btheta$ y de los hiperpar\'ametros. Por lo tanto se tiene que
+\begin{align*}
+p(\btheta \mid \mu,\tau^2,\mathbf{Y})
+&\propto p(\btheta,\underbrace{\mu,\tau^2}_{fijos},\mathbf{Y})\\
+p(\mu \mid \btheta,\tau^2,\mathbf{Y})
+&\propto p(\mu,\underbrace{\btheta,\tau^2}_{fijos},\mathbf{Y}) \\
+p(\tau^2 \mid \btheta,\mu,\mathbf{Y})
+&\propto p(\mu,\underbrace{\btheta,\tau^2}_{fijos},\mathbf{Y})
+\end{align*}
+
+Con la anterior formulaci\'on se tiene la siguiente serie de resultados que dan cuenta de las distribuciones apropiadas para cada uno de los par\'ametros.
+
+\begin{Res}
+La distribuci\'on posterior del par\'ametro de inter\'es $\theta_i$ es
+\begin{equation*}
+\theta_i\sim Normal(\mu_i,\tau_1^2)
+\end{equation*}
+en donde
+\begin{equation*}
+\mu_i=\frac{\frac{1}{\sigma^2}Y_i+\frac{1}{\tau^2}\mu}{\frac{1}{\sigma^2}+\frac{1}{\tau^2}}
+\ \ \ \ \ \ \ \text{y} \ \ \ \ \ \ \
+\tau_1^2=\left(\frac{1}{\sigma^2}+\frac{1}{\tau^2}\right)^{-1}
+\end{equation*}
+\end{Res}
+
+\begin{proof}
+Utilizando la t\'ecnica del condicionamiento posterior se tiene que
+\begin{align*}
+p(\theta_i \mid \mu,\tau^2,Y_i)
+&\propto p(\theta_i,\underbrace{\mu,\tau^2}_{fijos},Y_i)\\
+&\propto \exp\left\{-\frac{1}{2\sigma^2}(y_i-\theta_i)^2-\frac{1}{2\tau^2}(\theta_i-\mu)^2\right\}
+\end{align*}
+y utilizando el mismo razonamiento que en la demostraci\'on del Resultado 2.6.1 se encuentra una expresi\'on id\'entica a la funci\'on de distribuci\'on de una variable aleatoria con distribuci\'on $Normal(\mu_i,\tau_1^2)$.
+\end{proof}
+
+\begin{Res}
+La distribuci\'on posterior del hiper-par\'ametro $\mu$ es
+\begin{equation*}
+\mu\sim Normal(\bar{\theta},\tau^2/n)
+\end{equation*}
+en donde $\bar{\theta}=\dfrac{1}{n}\sum_{i=1}^n\theta_i$.
+\end{Res}
+
+\begin{proof}
+Utilizando la t\'ecnica del condicionamiento posterior y teniendo en cuenta que
+\begin{equation*}
+\sum_{i=1}^n(\theta_i-\mu)^2=\sum_{i=1}^n(\theta_i-\bar{\theta})^2+n(\mu-\bar{\theta})^2
+\end{equation*}
+
+entonces, se tiene que
+\begin{align*}
+p(\mu \mid \btheta,\tau^2,\mathbf{Y})
+&\propto p(\mu,\underbrace{\btheta,\tau^2}_{fijos},\mathbf{Y})\\
+&\propto \exp\left\{-\frac{1}{2\tau^2}\sum_{i=1}^n(\theta_i-\mu)^2\right\}
+ \propto \exp\left\{-\frac{n}{2\tau^2}(\mu-\bar{\theta})^2\right\}
+\end{align*}
+Por lo tanto, factorizando convenientemente, se encuentra una expresi\'on id\'entica a la funci\'on de distribuci\'on de una variable aleatoria con distribuci\'on $Normal(\bar{\theta},\tau^2/n)$.
+\end{proof}
+
+\begin{Res}
+La distribuci\'on posterior del hiper-par\'ametro $\tau^2$ es
+\begin{equation*}
+\tau^2 \sim Inversa-Gamma(n/2-1,nS^2_{\mu}/2)
+\end{equation*}
+en donde $nS^2_{\mu}=\sum_{i=1}^n(\theta_i-\mu)^2$.
+\end{Res}
+
+\begin{proof}
+Utilizando la t\'ecnica del condicionamiento posterior se tiene que
+\begin{align*}
+p(\tau^2 \mid \btheta,\mu,\mathbf{Y})
+&\propto p(\tau^2,\underbrace{\btheta,\mu}_{fijos},\mathbf{Y})\\
+&\propto \frac{1}{\tau^n} \exp\left\{\frac{1}{2\tau^2}\sum_{i=1}^n(\theta_i-\mu)^2\right\}\\
+&\propto \left(\tau^2\right)^{-n/2} \exp\left\{\frac{nS^2_{\mu}}{2\tau^2}\right\}
+\end{align*}
+Por lo tanto, factorizando convenientemente, se encuentra una expresi\'on id\'entica a la funci\'on de distribuci\'on de una variable aleatoria con distribuci\'on $Inversa-Gamma(n/2-1,nS^2_{\mu}/2)$.
+\end{proof}
+
+Utilizando un algoritmo que genere una cadena de Markov, y utilizando los anteriores resultados se realiza un an\'alisis bayesiano propiamente dicho.
+
+Ilustramos la implementaci\'on en \verb'R' a continuaci\'on para datos de $y$ de 5.8, 4.7, 7.0, 8.3, 3.7, 3.7, 5.5, 7.7, 6.7 y 6.7, usando $\sigma^2=1$.
+<<>>=
+library(pscl)
+y <- c(5.8, 4.7, 7.0, 8.3, 3.7, 3.7, 5.5, 7.7, 6.7, 6.7)
+n <- length(y); sigma2 <- 1
+n.sim <- 1000
+# Espacio para guardar los resultados simulados
+res.mu <- rep(0, n.sim); res.tau2 <- rep(1, n.sim); res.theta<- matrix(NA, n.sim, n)
+# Simular el primer valor para theta
+tau2_1 <- (sigma2^-1 + res.tau2[1]^-1)^-1
+mu_i <- (y/sigma2 + res.mu[1]/res.tau2[1])*tau2_1
+for(j in 1:n){
+  res.theta[1,j] <- rnorm(1, mu_i[j], sqrt(tau2_1))
+}
+# Aqu?? comienza a simular valores para todos los par\'ametros
+for(i in 2:n.sim){
+  res.mu[i] <- rnorm(1, mean(res.theta[i-1,]), sqrt(res.tau2[i-1]/n))
+  res.tau2[i] <- rigamma(1, alpha=n/2-1, beta=sum((res.theta[i-1,]-res.mu[i])^2)/2)
+  tau2_1 <- (sigma2^-1 + res.tau2[i]^-1)^-1
+  mu_i <- (y/sigma2 + res.mu[i]/res.tau2[i])*tau2_1
+  for(j in 1:n){
+    res.theta[i,j] <- rnorm(1, mu_i[j], sqrt(tau2_1))  
+  }
+}
+ # Verificar la convergencia de algunos par??metros
+ par(mfrow=c(2,2))
+ ts.plot(res.theta[,1]); ts.plot(res.theta[,2])
+ ts.plot(res.mu); ts.plot(res.tau2)
+ # Calcular la estimaci\'on de los par\'ametros tomando la segunda mitad de los valores simulados
+ colMeans(res.theta[-(1:(n.sim/2)),])
+ mean(res.mu[-(1:(n.sim/2))])
+ mean(res.tau2[-(1:(n.sim/2))])
+@
+
+Ahora consideramos el caso cuando la media de las variables observadas es com\'un, esto es, $Y_i\mid\theta\sim Normal(\theta,\sigma^2)$ y $\theta\mid\mu\sim Normal(\mu,\tau^2)$ para $i=1,\cdots,n$, asumimos la misma distribuci\'on no informativa para $\mu$ y $\tau^2$. En este caso tenemos que
+\begin{equation*}
+p(\theta,\mu,\tau^2\mid\mathbf{Y})\propto\exp\left\{-\frac{1}{2\sigma^2}\sum_i(y_i-\theta)^2\right\}
+\frac{1}{\tau}\exp\left\{-\frac{1}{2\tau^2}(\theta-\mu)^2\right\}
+\end{equation*}
+
+De la expresi\'on se tiene que 
+\begin{align}
+\theta\mid\mu,\tau^2,\mathbf{Y}&\sim Normal(\mu_n,\tau^2_n)\label{Normal_N_1}\\
+\mu\mid\theta,\tau^2,\mathbf{Y}&\sim Normal(\theta,\tau^2)\label{Normal_N_2}\\
+p(\tau^2\mid\theta,\mu,\mathbf{Y})&\propto (\tau^2)^{-1/2}\exp\left\{-\frac{(\theta-\mu)^2}{2\tau^2}\right\}\label{Normal_N_3}
+\end{align}
+
+con $\tau^2_n=(\frac{n}{\sigma^2}+\frac{1}{\tau^2})^{-1}$ y $\mu_n=\tau^2_n(\frac{n\bar{y}}{\sigma^2}+\frac{\mu}{\tau^2})$. La expresi\'on en (\ref{Normal_N_3}) no corresponde a ninguna distribuci\'on con forma conocida, y debe hacer uso de m\'etodos de simulaci\'on para muestrear valores de $\tau^2$
+
+
+\subsubsection{Hiperpar\'ametros dependientes}
+Siguiendo el algoritmo dado al comienzo de esta secci\'on, en donde se dan los lineamentos generales para realizar un an\'alisis jer\'arquico. En primer lugar se debe considerar la distribuci\'on posterior de los par\'ametros, que en este caso depende de la distribuci\'on previa de los hiperpar\'ametros.
+
+Suponga entonces, al igual que en cap\'itulos anteriores, que los hiperpar\'ametros son dependientes a una v\'ia. Es decir, que $\mu$ depende de $\tau^2$ pero que $\tau^2$ no depende de $\mu$. En estos t\'erminos, la distribuci\'on previa de los hiperpar\'ametros est\'a dada por
+\begin{equation*}
+p(\mu,\tau^2)=p(\mu \mid \tau^2)p(\tau^2)
+\end{equation*}
+
+Luego, siguiendo la regla de bayes y suponiendo que los hiperpar\'ametros son condicionalmente independientes de las observaciones dado el vector de par\'ametros de inter\'es, la distribuci\'on posterior del vector de par\'ametros de inter\'es $\btheta=(\theta_1,\ldots,\theta_n)'$ y de los hiperpar\'ametros $\mu, \tau^2$ es
+\begin{align*}
+p(\btheta,\mu,\tau^2 \mid \mathbf{Y})
+&\propto p(\mathbf{Y} \mid \btheta)p(\btheta \mid \mu,\tau^2)p(\mu,\tau^2)  \\
+&\propto p(\mu,\tau^2) \prod_{i=1}^n p(Y_i \mid \theta_i) \prod_{i=1}^n p(\theta_i \mid \mu,\tau^2)  \\
+&\propto p(\mu,\tau^2) \exp\left\{\frac{-1}{2\sigma^2}\sum_{i=1}^n(y_i-\theta_i)^2\right\}
+\frac{1}{\tau^n}\exp\left\{\frac{-1}{2\tau^2}\sum_{i=1}^n(\theta_i-\mu)^2\right\}
+\end{align*}
+
+Con base en lo anterior, se tienen el siguiente resultado para el an\'alisis bayesiano jer\'arquico de un s\'olo componente $\theta_i$ de $\btheta$.
+
+\begin{Res}
+La distribuci\'on posterior del componente $\theta_i$ perteneciente al vector de par\'ametros de inter\'es $\btheta$ es
+\begin{equation*}
+\theta_i\sim Normal(\mu_i,\tau_1^2)
+\end{equation*}
+en donde
+\begin{equation*}
+\mu_i=\frac{\frac{1}{\sigma^2}Y_i+\frac{1}{\tau^2}\mu}{\frac{1}{\sigma^2}+\frac{1}{\tau^2}}
+\ \ \ \ \ \ \ \text{y} \ \ \ \ \ \ \
+\tau_1^2=\left(\frac{1}{\sigma^2}+\frac{1}{\tau^2}\right)^{-1}
+\end{equation*}
+\end{Res}
+
+\begin{proof}
+La prueba del resultado es inmediata al considerar la t\'ecnica del condicionamiento posterior como en la demostraci\'on del Resultado 4.2.1. puesto que
+\begin{align*}
+p(\theta_i \mid \mu,\tau^2,Y_i)&\propto
+p(\theta_i,\underbrace{\mu,\tau^2}_{fijos} \mid Y_i)\\
+&\propto
+p(Y_i \mid \theta_i)p(\theta_i \mid \mu,\tau^2)p(\mu,\tau^2)\\
+&\propto
+(Y_i \mid \theta_i)p(\theta_i \mid \mu,\tau^2)
+\end{align*}
+\end{proof}
+
+siguiendo con el algoritmo del an\'alisis jer\'arquico, el siguiente paso corresponde a la determinaci\'on de la distribuci\'on posterior de los hiperpar\'ametros $\mu, \tau^2$ la cual, suponiendo que la distribuci\'on previa conjunta para ambos hiperpar\'ametros es uniforme y no informativa, est\'a dada por el Resultado 4.1.1.
+\begin{align*}
+p(\mu, \tau^2 \mid \mathbf{Y})&\propto p(\mu,\tau^2)p(\mathbf{Y} \mid \mu,\tau^2)\\
+&\propto \prod_{i=1}^n p(Y_i \mid \mu,\tau^2))\\
+&\propto \prod_{i=1}^n Normal(\mu,\tau^2+\sigma^2)
+\end{align*}
+
+Ahora, por otro lado, el an\'alisis individual de los hiperpar\'ametros est\'a regido por la siguiente expresi\'on
+\begin{align*}
+p(\mu, \tau^2 \mid \mathbf{Y})=p(\mu \mid  \tau^2,\mathbf{Y})p(\tau^2 \mid \mathbf{Y})
+\end{align*}
+
+En este orden de ideas, se tienen los siguientes resultados acerca de la distribuci\'on posterior para $\mu$ dada por $p(\mu \mid  \tau^2,\mathbf{Y})$ y para $\tau^2$ dada por $p(\tau^2 \mid \mathbf{Y})$
+
+\begin{Res}
+La distribuci\'on posterior del hiperpar\'ametro $mu$ condicionada a $\tau^2,\mathbf{Y}$ es
+\begin{equation*}
+\mu \mid \tau^2,\mathbf{Y} \sim Normal \left(\hat{\mu},\hat{\tau}^2\right)
+\end{equation*}
+donde $\hat{\mu}=\bar{Y}$ y $n\hat{\tau}^2=\sigma^2+\tau^2$.
+\end{Res}
+
+\begin{proof}
+Utilizando la t\'ecnica del condicionamiento posterior, n\'otese que la distribuci\'on posterior de $mu$ toma la siguiente forma
+
+\begin{align*}
+p(\mu \mid \tau^2,\mathbf{Y})&\propto p(\mu,\underbrace{\tau^2}_{fijo} \mid \mathbf{Y}) \\
+&\propto \prod_{i=1}^n Normal(\mu,\tau^2+\sigma^2)
+\end{align*}
+
+Partiendo de este hecho, es f\'acil confirmar que
+
+\begin{align*}
+p(\mu \mid \tau^2,\mathbf{Y})&\propto
+&\propto \exp\left\{\frac{1}{2(\sigma^2+\tau^2)}\sum_{i=1}^n(y_i-\mu)^2\right\}\\
+&= \exp\left\{\frac{1}{2(\sigma^2+\tau^2)}\sum_{i=1}^n(y_i^2-2\mu Y_i+\mu^2)\right\}\\
+&\propto \exp\left\{\frac{n}{2(\sigma^2+\tau^2)}(\mu^2-2\mu\bar{Y})\right\}\\
+&\propto \exp\left\{\frac{n}{2(\sigma^2+\tau^2)}(\mu-\bar{Y})^2\right\}
+\end{align*}
+Por lo tanto, factorizando convenientemente, se encuentra una expresi\'on id\'entica a la
+funci\'on de distribuci\'on de una variable aleatoria con distribuci\'on $Normal(\hat{\mu},\hat{\tau}^2)$.
+\end{proof}
+
+\begin{Res}
+La distribuci\'on posterior del hiperpar\'ametro $\tau$ es
+\begin{equation*}
+p(\tau^2 \mid \mathbf{Y})
+\propto \sqrt{\hat{\tau}} \prod_{i=1}^n (\sigma^2+\tau^2)^{-1/2}\exp\left\{-\frac{1}{2(\sigma^2+\tau^2)}(y_i-\hat{\mu})^2\right\}
+\end{equation*}
+\end{Res}
+
+\begin{proof}
+En primer lugar, n\'otese que
+\begin{align*}
+p(\tau \mid \mathbf{Y})&= \frac{p(\mu,\tau^2 \mid \mathbf{Y})}{p(\mu \mid \tau^2,\mathbf{Y})}
+\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \forall \mu \\
+&\propto \frac{\prod_{i=1}^n Normal(\mu,\sigma^2+\tau^2)}{Normal(\hat{\mu},\hat{\tau}^2)}
+\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \forall \mu
+\end{align*}
+
+La anterior igualdad debe mantenerse para cualquier valor de $\mu$; en particular se debe mantener para $\mu=\hat{\mu}$ \cite{Gelman03}. Por tanto,
+\begin{align*}
+p(\tau \mid \mathbf{Y}) &\propto \frac{Normal(\hat{\mu},\sigma^2+\tau^2)}{Normal(\hat{\mu},\hat{\tau}^2)}\\
+&\propto \frac{\prod_{i=1}^n Normal(\hat{\mu},\sigma^2+\tau^2)}{Normal(\hat{\mu},\hat{\tau}^2)}\\
+&\propto \sqrt{\hat{\tau}}\prod_{i=1}^n (\sigma^2+\tau^2)^{-1/2}\exp\left\{-\frac{1}{2(\sigma^2+\tau^2)}(y_i-\hat{\mu})^2\right\} \exp\left\{\frac{1}{2\hat{\tau}^2}(\hat{\mu}-\hat{\mu})^2\right\}\\
+&\propto \sqrt{\hat{\tau}}\prod_{i=1}^n (\sigma^2+\tau^2)^{-1/2}\exp\left\{-\frac{1}{2(\sigma^2+\tau^2)}(y_i-\hat{\mu})^2\right\}
+\end{align*}
+\end{proof}
+
+En t\'erminos de simulaci\'on, los anteriores resultados garantizan una estructura formal que permita simular la distribuci\'on posterior del hiperpar\'ametro $\tau^2$, y mediante esta encontrar una estimaci\'on para reemplazarla en la distribuci\'on posterior del hiperpar\'ametro $\mu$ y repetir el proceso anterior. Con estos valores bien definidos, entonces utilizar el Resultado 4.2.4 para proseguir con el an\'alisis bayesianocl\'asico. 
+<<>>=
+library(pscl)
+y <- c(5.8, 4.7, 7.0, 8.3, 3.7, 3.7, 5.5, 7.7, 6.7, 6.7)
+n <- length(y); sigma2 <- 1
+n.sim <- 1000
+# Espacio para guardar los resultados simulados
+res.mu <- rep(0, n.sim); res.theta <- matrix(NA, n.sim, n)
+# Simular un valor para tau^2 con Grilla
+grid.tau2 <- seq(0.001,5,by=0.001)
+pos.tau2 <- grid.tau2^(1/4)*(sigma2+grid.tau2)^(-n/2)*exp(-(n-1)*var(y)/(2*(sigma2+grid.tau2)))
+pos.tau2 <- pos.tau2/sum(pos.tau2)
+res.tau2 <- sample(grid.tau2, n.sim, prob=pos.tau2, replace=TRUE)
+for(i in 1:n.sim){
+  # Simular el primer valor para mu
+  res.mu[i] <- rnorm(1, mean(y), sqrt((sigma2+res.tau2[i])/n))
+  # Simular el primer valor para theta
+  tau2_1 <- (sigma2^-1 + res.tau2[i]^-1)^-1
+  mu_i <- (y/sigma2 + res.mu[i]/res.tau2[i])*tau2_1
+  for(j in 1:n){
+    res.theta[i,j] <- rnorm(1, mu_i[j], sqrt(tau2_1))
+  }
+}
+ # Calcular la estimaci\'on de los par\'ametros tomando la segunda mitad de los valores simulados
+ colMeans(res.theta[-(1:(n.sim/2)),])
+ mean(res.mu[-(1:(n.sim/2))])
+ mean(res.tau2[-(1:(n.sim/2))])
+@
+
+
+\section{Ejercicios}
+\begin{enumerate}
+\item Para el modelo $Y_i\sim\theta_i Normal(\theta_i,\sigma^2)$ para $i=1,\cdots,n$ del modelo Normal-Normal, desarrollando $E(Y_i)$, encuentra que $\mu$ se peude calcular como $\bar{y}$.
+\item Demustre las ecuaciones \ref{Poisson_Gamma1}, \ref{Poisson_Gamma2} y \ref{Poisson_Gamma3}. Modifique los c\'odigos del caso $Y_i\mid\theta_i\sim Poisson(\theta_i)$ para estimar $\alpha$, $\beta$ y $\theta$, y apl\'iquelos a los datos del ejemplo \ref{Datos_Poisson} asumiendo (i) $\alpha=\beta=0.1$ y (ii) $\alpha=\beta=10$. C\'omo afectan los valores de $\alpha$ y $\beta$ sobre la estimaci\'on final de $\theta$?
+\item Para los datos del ejemplo \ref{eje_vidrios}, implementa las ecuaciones (\ref{Normal_N_1}), (\ref{Normal_N_2}) y (\ref{Normal_N_3}) para estimar los valores de $\theta$, $\mu$ y $\tau^2$. Utilice $\sigma=0.1cm$.
+\item Encuentre la forma de estimar los par\'ametros $\mu$ y $\tau^2$ en una muestra aleatoria $Y_i\sim Normal(\theta,\sigma^2)$ con $\sigma^2$ conocido, para $i=1,\cdots,n$, asumiendo (i) independencia entre $\mu$ y $\tau^2$, (2) $\mu$ depende de $\tau^2$, pero $\tau^2$ no depende de $\mu$.
+\end{enumerate}

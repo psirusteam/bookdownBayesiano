@@ -11,6 +11,7 @@ rmd_files: [
   "2Inferencia.Rmd",
   "3Uniparametricos.Rmd",
   "4Multiparametricos.Rmd",
+  "5Jerarquicos.Rmd",
   
   "A1Distribuciones.Rmd",
   "A2Inferencia.Rmd",

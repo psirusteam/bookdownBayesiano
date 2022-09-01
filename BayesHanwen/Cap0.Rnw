@@ -1,0 +1,936 @@
+<<echo=FALSE, message=FALSE>>=
+library(rjags)
+ library(R2jags)
+ library(coda)
+ library(lattice)
+ library(R2WinBUGS)
+ library(superdiag)
+ library(mcmcplots)
+ library(xtable)
+ library(ggplot2)
+ library(gridExtra)
+library(VGAM)
+library(pscl)
+library(survival)
+options(scipen = 100, digits = 2)
+set.seed(12345)
+library(knitr)
+knit_theme$set("acid")
+@
+  %--------------------
+  
+\chapter{Simulaci\'on estad\'istica}
+  <<echo=FALSE>>=
+  options(scipen = 100, digits = 4)
+  @
+  
+\section{Simulac\'on de distribuciones continuas a partir de $U(0,1)$}
+Cuando se quiere simular valores de una distribuci\'on continua con funci\'on de distribuci\'on $F(x)$ cuya inversa se pueda encontrar, el procedimiento es basntance sencillo, pues se recurre al resultado que afirma que si $U\sim Unif(0,1)$, entonces al aplicarle la inversa de una funci\'on de distribuci\'on, la variable resultante $F^{-1}(U)$ tiene funci\'on de distribuci\'on igual a $F(x)$. Teniendo en cuenta lo anterior, el procedimiento para simular $n$ valores de una determinada funci\'on de distribuci\'on $F(x)$ es como sigue:
+\begin{enumerate}
+\item Simular $n$ valores de la distribuci\'on $U(0,1)$, los cuales se denotan por $u_1,u_2,\cdots,u_n$.
+\item Aplicar la funci\'on inversa de $F(x)$ a los valores $u_i$, obteniendo $x_i=F^{-1}(u_i)$ para $i=1,\cdots,n$.
+\end{enumerate}
+Los valores $x_1,x_2,\cdots,x_n$ obtenidos as\'i provienen de la distribuci\'on $F(x)$. A continuaci\'on se ilustra la implementaci\'on de este procedimiento en el caso de la distribuci\'on exponencial.
+
+\begin{example}
+Suponga que queremos simular 100 valores de la distribuci\'on exponencial con media $\lambda$. La funci\'on de densidad y la funci\'on de distribuci\'on est\'an dadas por 
+\begin{align*}
+f(x)&=\frac{1}{\lambda}e^{-x/\lambda}I_{\{x>0\}}\\
+F(x)&=1-e^{-x/\lambda}
+\end{align*}
+
+Se puede ver que la inversa de la funci\'on de distribuci\'on est\'a dada por
+\begin{equation*}
+F^{-1}(x)=-\lambda\ln(1-x)
+\end{equation*}
+para $0<x<1$. De esta forma, si queremos simular 100 valores desde una distribuci\'on exponencial con media 5, simplemente podemos apliar los siguientes comandos en \verb'R'
+<<>>=
+set.seed(123)
+n<-500;lambda<-5
+u<-runif(n)
+x<--lambda*log(1-u)
+head(x)
+@
+Para asegurar que los datos provienen de la distribuci\'on deseada, podemos exmaniar momentos muestrales de los valores obtenidos, as\'i como realizar la comparaci\'on entre el histograma y la distribuci\'on, la gr\'afica cuantil cuantil y las pruebas estad\'isticas de bondad de ajuste tambi\'en dan indicios importantes en caso de falta de ajuste.
+<<>>=
+mean(x)
+var(x)
+hist(x,freq=F)
+curve(dexp(x,rate=1/lambda),add=T)
+@
+
+Podemos observar que la media y la varianza de los valores simulados son cercanas a los valores te\'oricos de 5 y 25. El histograma de los valores simulados tambi\'en muestran un ajuste bueno a la funci\'on de densidad de la distribuci\'on exponencia. En cuanto a la gr\'afica cuantil cuantil para una distribuci\'on exponencial, la idea consiste en graficar los puntos $(-log(1-\frac{j-0.5}{n}),\ x_{(j)})$ para $j=1,\cdots,n$, donde $x_{(j)}$ denota el $j$-\'esimo valor de los datos ordenados de menor a mayor, y si la distribuci\'on exponencial con media $\theta$ es apropiada para los datos, entonces los puntos deben formar una l\'inea recta que pasa por el origen con pendiente igual a $\theta$ (para mayor detalle, consultar \citeasnoun{Zhang}). Si se desconoce el valor de $\theta$ y simplemente se quiere ver si los datos se ajustan bien a una distribuci\'on exponencial, entonces se espera que los puntos formen una l\'inea recta que pase por el origen. La gr\'afica correspondiente se puede implementar con las siguientes funciones, donde se puede que una distribuci\'on exponencial s\'i se ajusta bien a los datos.
+<<>>=
+qq.exp<-function(y){
+y<-sort(y)
+n<-length(y)
+j<-c(1:n)
+percen<--log(1-(j-0.5)/n)
+plot(percen,y,xlab="",ylab="",main="QQ plot exponencial")
+}
+
+qq.exp.line<-function(y){
+y<-sort(y)
+n<-length(y)
+j<-c(1:n)
+percen<--log(1-(j-0.5)/n)
+abline(0,1/lm(percen ~ y-1)$coef)
+}
+qq.exp(x)
+qq.exp.line(x)
+@
+
+Finalmente se puede aplicar la prueba de bondad de ajuste de Kolmogorov Smirnov como sigue
+<<>>=
+ks.test(x,"pexp",1/lambda)
+@
+Los anteriores resultados indican que es apropiador asumir que los valores simulados $x_i$ provienen de una distribuci\'on exponencial con media 5. 
+\end{example}
+
+\section{Simulaci\'on de distribuciones discretas usando el m\'etodo de la transformaci\'on inversa}
+
+Cuando una variabl $X$ tiene distribuci\'on discreta, la funci\'on de distribuci\'on $F(x)$ no tiene inversa, puesto es de forma escalona, y por lo tanto el resultado de la secci\'on anterior no se puede aplicar directamente, sino que se recurre al concepto de la inversa generalizada de $F(x)$. Esta se define como
+\begin{equation*}
+F^-(u)=\inf\{x:\ F(x)\geq u\}
+\end{equation*}
+
+Para ilustrar el anterior concepto, tomamos como ejemplo una variable discreta con la siguiente funci\'on de densidad
+\begin{equation*}
+f(x)=
+\begin{cases}
+0.5&\text{si $x=0$}\\
+0.3&\text{si $x=1$}\\
+0.2&\text{si $x=2$}\\
+0&\text{si no}
+\end{cases}
+\end{equation*}
+
+La funci\'on de distribuci\'on de $X$ est\'a dada por
+\begin{equation*}
+F(x)=
+\begin{cases}
+0&\text{si $x<0$}\\
+0.5&\text{si $0\leq x<1$}\\
+0.8&\text{si $1\leq x<2$}\\
+1&\text{si $2\leq x$}
+\end{cases}
+\end{equation*}
+
+Podemos evaluar la funci\'on inversa generalizada en 0.6 como $F^-(0.6)=\inf\{x:\ F(x)\geq 0.6\}=\inf[1,\infty)=1$; m\'as a\'un, podemos ver que $F^-(u)=1$ cuando $F(1^-)<u\leq F(1)$, estos es, cuando $0.5<u\leq 0.8$, $F^-(u)=0$ cuando $0<u\leq0.5$.
+
+Generalizando lo observado anteriormente, podemos ver que si $X$ es una variable discreta que toma valores $x_1,\cdots,x_k$ con probabilidades $p_1,\cdots,p_k$, respectivamente, entonces 
+\begin{equation*}
+F(x)=
+\begin{cases}
+0&\text{si $x<x_1$}\\
+p_1&\text{si $x_1\leq x<x_2$}\\
+p_1+p_2&\text{si $x_2\leq x<x_3$}\\
+\vdots&\vdots\\
+p_1+p_2+\cdots+p_{k-1}&\text{si $x_{k-1}\leq x< x_{k}$}\\
+1&\text{si $x_k\leq x$}
+\end{cases}
+\end{equation*}
+
+Y $F^-(u)=x_i$ cuando $F(x_i^-)<u\leq F(x_i)$, estos es, cuando $p_1+\cdots+p_{i-1}<x\leq p_1+\cdots+p_{i-1}+p_i$. De esta forma, podemos ver que al aplicar el m\'etodo de la transformaci\'on inversa para generar valores de una variable aleatoria discreta usando $F^-$, la probabilidad de obtener el valor $x_i$ es $p_i$, y es precisamente el mecanismo probabil\'istico descrito por la funci\'on de densidad de la variable $X$. 
+
+A continuaci\'on ilustramos la implementaci\'on del m\'etodo cuando $X$ toma valores finitos e infinitos.
+
+\subsection{Cuando $X$ toma valores finitos}
+Suponga que una variable discreta $X$ toma valores $x_1,\cdots,x_k$ con probabilidades $p_1,\cdots,p_k$, para simular un valor de la variable $X$, se procede de la siguiente forma:
+\begin{enumerate}
+\item Simular un valor $u$ de una distribuci\'on $U(0,1)$
+\item Calcular las probabilidades acumuladas de $X$, definiendo $F_1=p_1$, $F_2=F_1+p_2$, $F_3=F_2+p_3$, .... (en \verb'R' puede usar \verb'cumsum' para calcular estas sumas acumuladas).
+\item Para el valor $u$ del paso 1, encontrar el \'indice $i$ tal que $F_{i-1}<u\leq F_i$, y el valor simulado de $X$ corresponde a $x_i$. 
+\end{enumerate}
+
+Ilustramos la implementaci\'on con el siguiente ejemplo:
+
+\begin{example}
+Para la distribuci\'on con la siguiente funci\'on de densidad
+\begin{equation*}
+f(x)=
+\begin{cases}
+0.5&\text{si $x=0$}\\
+0.3&\text{si $x=1$}\\
+0.2&\text{si $x=2$}\\
+0&\text{si no}
+\end{cases}
+\end{equation*}
+
+Para simular un valor de la anterior distribuci\'on, necesitamos un valor $u$ de $U(0,1)$, si $u<0.5$, entonces el valor simulado de $X$ ser\'aa $x=0$, si $0.5<u<0.8$, entonces $x=1$, y si $u>0.8$, entonces $x=2$. 
+
+Podemos usar el siguiente c\'odigo para simular un valor de la anterior distribuci\'on.
+<<>>=
+p<-c(0.5,0.3,0.2) # Vector de probabilidades
+s<-cumsum(p)      # Probabilidades acumuladas
+s
+x<-c(0,1,2)       # Los posibles valores de la variable
+u<-runif(1)
+u
+which(u<s)
+x[which(u<s)[1]]  # El valor simulado de la variable
+@
+El anterior c\'odigo tambi\'en puede ser reemplazo por un comando que haga uso del \verb'if'. Para simular muchos valores de la distribuci\'on objetiva, simplemente se repite el anterior c\'odigo muchas veces, usando un \verb'for'.
+<<>>=
+p<-c(0.5,0.3,0.2)
+s<-cumsum(p)
+x<-c(0,1,2)
+n<-500
+val<-c()
+for(i in 1:n){
+u<-runif(1)
+val[i]<-x[which(u<s)[1]]
+}
+head(val)
+@
+En distribuciones discretas, para verificar que los valores simulados est\'an acordes con la distribuci\'on objetiva, lo m\'as sencillo es ver que las proporciones de los valores simulados de $X$ sean similares a las probabilidades te\'oricas, adem\'as de los momentos muestrales como la media y la varianza.
+<<>>=
+hist(val)
+table(val)/n
+@
+tambi\'en podemos comparar la media y la varianza muestral de los datos simulados con los valores te\'oricos dados por 0.7 y 0.61, respectivamente.
+<<>>=
+mean(val)
+var(val)
+@
+
+\textbf{Observaci\'on:} para simular valores de una distribuci\'on discreta que toma valores finitos, tambi\'en se puede usar el muestreo aleatorio simple con reemplazo. En el ejemplo anterior, tambi\'en se puede utilizar el siguiente c\'odigo
+<<>>=
+val2<-sample(x,500,replace=T,prob=p)
+table(val2)/500
+@
+\end{example}
+
+\subsection{Cuando $X$ toma valores infinitos}
+Cuando $X$ toma valores infinitos $x_1,x_2,\cdots$ con probabilidad $p_1,p_2,\cdots$, no es posible utilizar lo visto en la secci\'on anterior. Una posible soluci\'on es enfocarnos en un conjunto finito de valores de $X$ que acumule una probabilidad cercana a uno, usualmente este conjunto es la media te\'orica m\'as y menos 3 veces la desviaci\'on est\'andar. 
+
+A continuaci\'on, ilustramos el proceso con la distribuci\'on Poisson. Suponga que queremos simular valores de una distribuci\'on $Pois(10)$, la cual toma valores $0,1,\cdots$, entonces primero definimos el conjunto de valores que tenga probabilidad casi 1.
+<<>>=
+lambda<-10; sigma<-sqrt(lambda)     # Valores de la media y desviaci??n est??ndar te??rica
+x<-c(round(max(0,lambda-3*sigma)):round(lambda+3*sigma))     # Alguna consideraciones t??cnicas
+x
+@
+Ahora verifique que la suma de las probabilidades de las anteriores valores de $x$ sea muy cercana a 1.
+<<>>=
+sum(dpois(x,lambda))
+@
+De esta forma, podemos restringuir los valores de la variable $X$ s\'olo en el conjunto anterior y aplicar lo visto en la secci\'on anterior. 
+
+\section{M\'etodo de la transformaci\'on general}
+Existen relaciones en la teor\'ia de probabildiad que asocian una distribuci\'on con otras, y podemos utilizar estas relaciones para simular valores de distribuciones m\'as complejas bas\'andonos en distribuciones m\'as simples. Por ejemplo, la distribuci\'on Beta y Gamma con algunos par\'ametros pueden ser expresadas en t\'erminos de la distribuci\'on exponencial, tal como se muestra en el siguiente resultado:
+\begin{quote}
+Si $X_1, X_2\cdots,$ con variables independientes e id\'enticamente distribuidas con distribuci\'on $Exp(1)$, entonces 
+\begin{enumerate}
+\item $\beta\sum_{i=1}^\alpha X_i$ tiene distribuci\'on $Gamma(\alpha, \beta)$ (con media $\alpha\beta$ y varianza $\alpha\beta^2$ ).
+\item $2\sum_{i=1}^{\alpha}X_i$ tiene distribuci\'on $\chi^2$ con grado de libertad $2\alpha$
+\item $\dfrac{\sum_{i=1}^\alpha X_i}{\sum_{i=1}^{\alpha+\beta}X_i}$ tiene distribuci\'on $Beta(\alpha,\beta)$.
+\end{enumerate}
+\end{quote}
+
+Como un ejemplo del anterior resultado, se puede ver que: para simular un n\'umero aleatorio de la distribuci\'on $Gamma(5,3)$, se debe simular primero 5 n\'umeros aleatorios de la distribuci\'on $Exp(1)$, sumarlos y a la suma multiplicar por 3; y si se necesita simular $n$ valores de esta distribuci\'on, se debe repetir el anterior proceso $n$ veces. Como en \verb'R' se busca evitar los ciclos, podemos usar \verb'apply' en vez del \verb'for'. En el siguiente comando se ilustra c\'omo simular 100 valores de la distribuci\'on $Gamma(5,3)$, tambi??n se muestran los momentos muestrales as?? como el contraste entre el histograma de los valores simulados y la funci??n de densidad objetiva. 
+<<>>=
+set.seed(1234)
+X<-matrix(rexp(100*5,1),nrow=100)
+y<-3*apply(X,1,sum)
+mean(y)
+var(y)
+hist(y,freq=F)
+curve(dgamma(x,shape=5,scale=3),add=T,col=2)
+@
+
+El comando existente en \verb'R' para simular valores de una distribuci\'on Gamma es \verb'rgamma', y para simular 100 valores de $Gamma(5,3)$ es \verb'rgamma(100,shape=5,scale=3)'. Tenga presente que no se debe omitir la palabra \verb'scale' en la anterior instrucci\'on, pues \verb'rgamma(100,shape=5,3)' simula valores de una distribuci\'on Gamma con esperanza $5/3$ y varianza $5/3^2$. La palabra \verb'shape' s\'i puede ser omitido y no afecta a los resultados obtenidos. Los lectores pueden comparar los valores obtenidos con el m\'etodo de la transformaci\'on general con lo obtenido con \verb'rgamma' y ver que no hay diferencia grande entre los dos.
+
+\subsection{Simulaci\'on distribuciones normales}
+\subsubsection{Distribuci\'on normal est\'andar}
+Existen varias formas de simular valores de una distribuci\'on normal est\'andar, la m\'as popular se basa en el siguiente resultado, simulando valores de la distribuci\'on normal utilizando la distribuci\'on uniforme.
+
+\begin{quote} Si $U_1$ y $U_2$ son variables aleatorias independientes con distribuci\'on $U(0,1)$, entonces las variables $X_1$ y $X_2$ definidos como
+\begin{align*}
+X_1&=\sqrt{-2\log U_1}\cos(2\pi U_2)\\
+X_2&=\sqrt{-2\log U_1}\sin(2\pi U_2)
+\end{align*}
+son variables independientes, y cada una tiene una distribuci\'on $N(0,1)$.
+\end{quote}
+
+La aplicaci\'on del anterior resultado es bastante sencilla. A continuaci\'on se ilustra la geraci\'on de 1000 valores de la variable $X_1$ y $X_2$, se verifica que son los valores obtenidos son coherentes con la distribuci??n normal est??ndar, as?? como la correlaci??n entre los valores de $X_1$ y $X_2$ son cercanos a cero. Cuando solo se necesita valores de una variable con distribuci\'on normal est\'andar, basta tomar los valores de $X_1$. 
+
+<<>>=
+n.sim <- 1000
+U1 <- runif(n.sim); U2 <- runif(n.sim)
+X1 <- sqrt(-2*log(U1))*cos(2*pi*U2)
+X2 <- sqrt(-2*log(U1))*sin(2*pi*U2)
+plot(X1, X2)
+cor(X1, X2)
+par(mfrow=c(1,2))
+hist(X1, freq=F); curve(dnorm(x), add=T, col=2)
+hist(X2, freq=F); curve(dnorm(x), add=T, col=2)
+@
+
+\subsubsection{Distribuciones normales no est\'andares}
+Una vez que tengamos valores de una distribuci\'on normal est\'andar, podemos obtener valores de cualquier distribuci\'on normal teniendo en cuenta que si $Z$ denota una variable con distribuci\'on normal est\'andar, $mu$ y $\sigma$ son constantes cualesquiras, entonces $\sigma Z+\mu\sim N(\mu,\sigma^2)$. 
+
+N\'otese que el comando directo de \verb'R' para simular valores de umna distribuci??n normal es \verb'rnorm(n,mu,sigma)'.
+
+\subsubsection{Distibuciones relacionadas con la normal}
+
+Una vez estudiada la simulaci\'on de la distribuci\'on normal, se puede simulares valores de otras distribuciones relacionadas, tales como la $\chi^2$, $t$-student, $F$, entre otras.
+
+Por ejemplo, si $Z_1,\cdots,Z_k$ son variables aleatorias independientes, cada una con distribuci\'on normal est\'andar, entonces $\sum_{i=1}^kZ_i^2$ tiene distribuci\'on $\chi^2_k$. De esta forma, el siguiente c\'odigo permite crear, por ejemplo, 100 valores de una distribuci\'on $\chi^2_8$, eval\'ua los momentos de los valores simulados (para esta distribuci\'on la esperanza te\'orica es 8 y la varianza te\'orica es 16) y compara el hisograma de los datos con la distribuci\'on objetiva. Adicionalmente, efect\'ua la prueba de Kolmogotov Smirnov donde se evidencia que la distribuci\'on $\chi^2_8$ es apropiada para los valores simulados.
+<<>>=
+set.seed(12345)
+X <- matrix(rnorm(100*8), nrow=100)
+X2 <- X^2
+y <- apply(X2, 1, sum)
+mean(y)
+var(y)
+hist(y, freq=F)
+curve(dchisq(x, 8), add=T, col=2)
+ks.test(y, "pchisq", 8)
+@
+
+En \verb'R', la simulaci\'on de valores de una distribuci\'on $\chi^2$ se logra con \verb'rchisq', por ejemplo
+<<>>=
+rchisq(20,8)
+@
+
+Valores de una distribuci\'on $t$-student o $F$ se puede obtener usando su relaci\'on con la distribuci\'on normal est\'andar y la distribuci\'on $\chi^2$.
+
+\section{M\'etodo de aceptaci\'on y rechazo}
+Los m\'etodos vistos en las secciones anteriores permiten simular valores de ciertas distribuciones, pero tienen ciertas limitaciones, por ejemplo, no permiten simular valores de una distribuci\'on $Beta$ donde los par\'ametros no sean enteros, y tampoco de una distribuci\'on $\chi^2$ donde el grado de libertad no sea entero. Para estas distrbuciones u otras m\'as complejas, se necesitan m\'etodos m\'as sofisticados, entre ellos, el m\'etodo re aceptaci\'on y rechazo.
+
+El m\'etodo de aceptaci\'on y rechazo es un m\'etodo de muestreo indirecto, es decir, no se muestrea de la distribuci\'on de inter\'es $f(x)$, sino de una distribuci\'on candidata $g(x)$ (la cual debe ser m\'as f\'acil de simular que $f(x)$), y se aceptan los valores obtenidos como valores de $f(x)$ bajo cierta condici\'on. En t\'erminos generales, este m\'etodo se puede usar cuando se cumplen las dos siguientes condiciones
+\begin{enumerate}
+\item Las funciones $f(x)$ y $g(x)$ tienen el mismo soporte\footnote{Intuitivamente, si el sorporte de $g(x)$ es m\'as grande que el de $f(x)$, entonces el m\'etodo podr\'ia arrojar valores que no est\'a en el soporte de la funci\'on de inter\'es $f$ (aunque m\'as adelante, se observar\'a que estos valores nunca ser\'an aceptados como valores de $f$); por otro lado, si el soporte de $f(x)$ es mayor que el de $g(x)$, entonces al muestrear valores de $g(x)$, hace que ciertos valores del soporte de $f(x)$ }
+\item Existe una constante $M>0$ tal que $f(x)\leq Mg(x)$ para todo $x$
+\end{enumerate}
+
+Cuando se cumplen las dos anteriores condiciones, el m\'etodo de aceptaci\'on y rechazo funciona de la siguiente forma:
+\begin{enumerate}
+\item Simular un valor $x$ de $g(x)$
+\item Simular un valor $u$ de $U(0,1)$
+\item Aceptar el valor $x$ del paso 1 como valor de $f(x)$ si $u\leq\dfrac{f(x)}{Mg(x)}$, de lo contrario, volver al paso 1.
+\end{enumerate}
+
+
+\begin{example}
+\textbf{Simular valores de una distribuci\'on $Beta(2.5,3.7)$}, la cual no se puede obtener de distribuciones exponencial porque los par\'ametros no son enteros. 
+
+Primero necesitamos encontrar una distribuci\'on candidata, la cual debe tener el mismo soporte que la distribuci\'on Beta. Como el soporte de la Beta es el intervalo $(0,1)$, podemos considerar la distribuci\'on $U(0,1)$ como la distribuci\'on candidata, es decir $g(x)=1$ para $x\in(0,1)$. 
+
+En segundo lugar, debemos encontrar el valor de $M$ que garantice $f(x)\leq Mg(x)$, es decir, $f(x)\leq M$. El valor natural de $M$ ser\'aa el m\'aximo de la funci\'on $f(x)$, el cual se puede hallar usando la funci\'on \verb'optimize' de la siguiente forma
+<<>>=
+f<-function(x){dbeta(x,2.5,3.7)}
+M<-optimize(f,interval=c(0,1),maximum=T)$objective
+M
+@
+<<>>=
+a<-2.5;b<-3.7
+Nsim<-100
+u<-runif(Nsim)
+x1<-runif(Nsim)
+x1<-x1[u<=dbeta(x1,a,b)/M]
+length(x1)
+1/M
+# No gust??
+y<-NULL
+for(i in 1:Nsim){
+  x<-runif(1) # candidato
+  u<-runif(1) 
+  if(u<=(dbeta(x,a,b)/M)){y<-c(y,x)}
+}
+@
+En el anterior c\'odigo, se simul\'o 100 valores candidato de $U(0,1)$, pero s\'olo 46 de estos 100 valores fueron aceptados como valores de $Beta(2.5,3.7)$, es decir, no se obtuvieron los 100 valores $Beta$, sino s\'olo 46. Para corregir este inconveniente, podemos usar el siguiente c\'odigo, que hace uso de \verb'while'
+<<>>=
+set.seed(12345)
+res<-NULL
+while(length(res)<Nsim){
+  u<-runif(1)
+  x<-runif(1)
+  if(u<=dbeta(x,a,b)/M){res<-c(res,x)}
+}
+length(res)
+c(mean(res),a/(a+b))
+c(var(res),a*b/((a+b)^2*(a+b+1)))
+head(res)
+hist(res,freq=F,xlim=c(0,1))
+curve(dbeta(x,a,b),0,1,add=T,col=2)
+@
+\end{example}
+
+\textbf{Observaci\'on:} la constante $M$ en el ejercicio anterior no es \'unico, puesto que al observar la funci\'on de densidad $f(x)$ en l\'inea roja, vemos que $M$ puede ser cualquier valor mayor a 2. Sin embargo, se puede ver que la probabilidad de aceptaci\'on del m\'etodo es de $1/M$, en el anterior ejemplo
+<<>>=
+length(x1)/Nsim
+1/M
+@
+
+Por lo tanto, necesitamos el menor valor de $M$ que cumple con la condici\'on $f(x)\leq Mg(x)$ para tener mayor probabilidad de aceptaci\'on, y obtener mayor eficiencia del algoritmo.
+
+\begin{example}
+\textbf{Simular valores de una distribuci\'on $Z\sim N(0,1)$}
+
+Es complicado aplicar el m\'etodo de aceptaci\'on y rechazo directamente a $Z$ porque no encontrams otra distribuci\'on que sea f\'acil de simular con soporte $(-\infty,\infty)$, entonces vamos a considerar que nuestra distribuci\'on objetiva es $|Z|$ cuyo soporte es $(0,\infty)$. Al tener valores de $|Z|$, usando la propiedad de simetr\'ia de $N(0,1)$, podemos obtener valores de $Z$ as\'i: con probabilidad 0.5, aceptar $Z=|Z|$ y con probabildiad 0.5, aceptar $Z=-|Z|$.
+
+Entonces la distribuci\'on objetiva es $|Z|$ con funci\'on de densidad dada por
+\begin{equation}
+f(x)=\frac{2}{\sqrt{2\pi}}e^{-x^2/2}I_{(x>0)}
+\end{equation}
+cuyo soporte son todos los valores positivos. De esta formal, podemos pensar que una distribuci\'on candidata para $|Z|$ sea $Exp(1)$ que tiene el mismo soporte y es f\'acil de simular, es decir, $g(x)=e^{-x}$ para todo $x>0$.
+
+El paso a seguir es encontrar el valor de $M$ que garantice $f(x)\leq Mg(x)$, para eso, tenemos que
+\begin{align*}
+M&\geq\frac{f(x)}{g(x)}\\
+&=\sqrt{\frac{2}{\pi}}e^{x-x^2/2}\\
+&=h(x)
+\end{align*}
+Es decir, una escogencia $M$ puede ser el m\'aximo de la funci\'on $h(x)$. N\'otese que el maximizador $x$ de $h(x)$ es aquel que maximice $x-x^2/2$, esto es, cuando $x=1$. Entonces el valor m\'aximo de $h(x)$ ser\'aa $h(1)=1.315489$, as\'i que podemos escoger $M=1.32$. Ahora podemos implementar el m\'etodo de aceptaci\'on y rechazo.
+<<>>=
+set.seed(12345)
+M<-1.32;Nsim<-200
+x<-NULL
+f<-function(x){sqrt(2/pi)*exp(-x^2/2)}
+g<-function(x){exp(-x)}
+while(length(x)<Nsim){
+  u<-runif(1)
+  cand<--log(1-runif(1))
+  if(u<f(cand)/(M*g(cand))){x<-c(x,cand)}
+}
+# los x contiene valores de |Z|, no de Z
+z<-x
+u<-runif(Nsim)
+z[u<0.5]<--z[u<0.5]
+mean(z)
+var(z)
+hist(z,freq=F)
+curve(dnorm(x),add=T,col=2)
+1/M
+@
+\end{example}
+
+\subsection{Cuando s\'olo se usa el kernel de $f(x)$}
+En algunas situaciones, no se tiene la funci\'on completa de $f(x)$, sino solo la forma funcional, conocido tambi\'en como el kernel. Por ejemplo, la funci\'on de densidad de una distribuci\'on $Gamma(k,\theta)$ est\'a dada por
+\begin{equation*}
+f(x)=\frac{1}{\Gamma(k)\theta^k}x^{k-1}e^{-x/\theta}
+\end{equation*}
+con kernel
+\begin{equation*}
+\tilde{f}(x)=x^{k-1}e^{-x/\theta}
+\end{equation*}
+
+La funci\'on de densidad de la distribuci\'on $Beta(a,b)$ est\'a dada por
+\begin{equation*}
+f(x)=\frac{\Gamma(a+b)}{\Gamma(a)\Gamma(b)}x^{a-1}(1-x)^{b-1}
+\end{equation*}
+con kernel
+\begin{equation*}
+\tilde{f}(x)=x^{a-1}(1-x)^{b-1}
+\end{equation*}
+
+El m\'etodo de aceptaci\'on y rechazo siendo siendo \'util cuando solo conocemos $\tilde{f}(x)$ y no $f(x)$, en este caso, necesitaremos una distribuci\'on constante la cual puede ser conocida s\'olo el kernel $\tilde{g}(x)$ y una constante $\tilde{M}$ tal que$\tilde{f}(x)\leq \tilde{M}\tilde{g}(x)$. Ilustramos con el siguiente ejemplo
+\begin{example}
+El kernel de la distribuci\'on Kumaraswamy est\'a dado por 
+\begin{equation*}
+\tilde{f}(x)=x^{a-1}(1-x^a)^{b-1},
+\end{equation*}
+o equivalentemente
+\begin{equation*}
+f(x)\propto x^{a-1}(1-x^a)^{b-1},
+\end{equation*}
+para $x\in(0,1)$. Una distribuci\'on candidata puede ser la $U(0,1)$, esto es, $g(x)=1$ para $x\in(0,1)$. Entonces la constante $\tilde{M}$ viene siendo $\max x^{a-1}(1-x^a)^{b-1}$ para $x\in(0,1)$, el siguiente c\'odigo nos arroja el valor de $\tilde{M}$ para $a=2.5$,$b=5$.
+<<>>=
+a<-2.5;b<-5;
+f.tilde<-function(x){x^(a-1)*(1-x^a)^(b-1)}
+M.tilde<-optimize(f.tilde,interval=c(0,1),maximum=T)$objective
+M.tilde
+@
+<<>>=
+set.seed(12345)
+Nsim<-200
+x<-NULL
+i<-0
+while(length(x)<Nsim){
+  u<-runif(1)
+  cand<-runif(1)
+  if(u<f.tilde(cand)/M.tilde){x<-c(x,cand)}
+  i<-i+1
+}
+i
+@
+En el anterior c\'odigo, se puede ver que la probabilidad de aceptaci\'on est\'a alrededor del $200/428=46.7\%$, mientras que $1/\tilde{M}=5.93$ que por ser mayor a 1, no ese la probabilidad de aceptaci\'on. Sucede que \textbf{solo podemos calcular la probabilidad de aceptaci\'on como $1/M$ cuando se ha utilizado $f(x)$ sin omitir ninguna constante}.
+
+Se puede ver que la constante de normalizaci\'on para $f(x)$ es aproximadamente igual $1/(\tilde{M}Pr(Aceptacion))$. En el caso de este ejemplo, ser\'aa aproximadamente $1/(0.1684*0.467)=12.7$. Esta constante nos permite graficar conjuntamente el histograma de los valores simulados con la funci\'on objetiva $f(x)$.
+
+\begin{align*}
+P(U<\frac{f(x)}{Mg(x)})&=P(U<\frac{K\tilde{f}(x)}{Mg(x)})\\
+&=P(U<\frac{\tilde{f}(x)}{\tilde{M}\tilde{g}(x)})\\
+\end{align*}
+as\'i, $$\frac{K\tilde{f}(x)}{Mg(x)}=\frac{\tilde{f}(x)}{\tilde{M}\tilde{g}(x)}$$, de donde se concluye que $$K=\frac{1}{\frac{1}{M}\tilde{M}}=\frac{1}{\tilde{M}P(Aceptacion)}.$$
+<<>>=
+hist(x,freq=F)
+f<-function(x){12.7*x^(a-1)*(1-x^a)^(b-1)}
+curve(f,0,1,add=T)
+@
+\end{example}
+
+\subsection{Ejercicios}
+Simule 500 valores para cada una de las siguientes distribuciones
+\begin{enumerate}
+\item Distribuci\'on Gamma con media 5 y varianza 4 (usar la exponencial como la candidata).
+\item Distribuci\'on Logit-normal con $\mu=1$ y $\sigma=2$
+\item Distribuci\'on chi con grado de libertad 3. (Ojo, no es la distribuci\'on chi cuadrado)
+\item Distribuci\'on log\'istica con $\mu=-1$ y $s=0.5$
+\item 
+\begin{equation*}
+f(x)\propto\dfrac{e^{-2/(x-1)}}{(x-1)^{3/2}}, \ \ \ \text{para $x>1$}
+\end{equation*}
+\item 
+\begin{equation*}
+f(x)\propto\dfrac{e^{0.5x}}{(1+e^{0.5x})}, \ \ \ \text{para $x>0$}
+\end{equation*}
+\item 
+\begin{equation*}
+f(x)\propto 1+\cos\left(\frac{x-2}{5}\pi\right), \ \ \ \text{para $-3<x<7$}
+\end{equation*}
+\item 
+\begin{equation*}
+f(x)\propto e^{-(|x-3|/2)^{0.4}}, \ \ \ \text{para $-\infty<x<\infty$}
+\end{equation*}
+\end{enumerate}
+Para tener en cuenta:
+\begin{itemize}
+\item Para las distribuciones de 1 al 4, consultar wiki para conocer la funci\'on de densidad objetiva $f(x)$. Despu\'es de simular los 500 valores debe:
+\begin{itemize}
+\item Calcular la probabilidad de aceptaci\'on te\'orica y muestral
+\item Comparar el histograma y $f(x)$ en una misma gr\'afica
+\item Comparar los momentos te\'oricos con los muestrales (los momentos te\'oricos pueden ser encontrados en wiki)
+\end{itemize}
+\item Para las distribuciones de 5 al 8, debe
+\begin{itemize}
+\item Calcular la constante de normalizaci\'on y obtener $f(x)$
+\item Calcular la probabilidad de aceptaci\'on muestral
+\item Comparar el histograma y $f(x)$ en una misma gr\'afica
+\item Comparar los momentos te\'oricos con los muestrales (los momentos te\'oricos deben ser calculados con las integrales que pueden ser llevados a cabo usando la funci\'on \verb'integrate' de \verb'R').
+\end{itemize}
+\end{itemize}
+
+\section{Clase 19. Integraci\'on Monte Carlo}
+Dada una variable aleatoria $X$ con funci\'on de densidad $f(x)$, muchos veces necesitamos evaluar expresiones como
+$$E(h(X))=\int_{\chi} h(x)f(x)dx.$$
+donde $\chi$ es el conjunto de todos los posibles valores de $X$.
+
+La integraci\'on Monte Carlo consiste en aproximar la anterior expresi\'on generando una muestra $x_1,\cdots,x_n$ de la densidad $f(x)$ y aproximar $E(h(x))$ con $\bar{h}_n=\dfrac{1}{n}\sum_{i=1}^nh(x_i)$, es decir el promedio de los valores $h(x_1),\cdots,h(x_n)$. 
+
+Usando el ley fuerte de los grandes n\'umeros se puede ver que $\bar{h}_n$ converge casi seguro a $E(h(X))$.
+
+m\'as a\'un, por el teorema central del l\'imite
+$$\dfrac{\bar{h}_n-E(h(X))}{\sqrt{v_n}}\sim N(0,1)$$
+donde 
+$$v_n=\frac{1}{n^2}\sum_{i=1}^n(h(x_i)-\bar{h}_n)^2$$
+
+De esta forma $\bar{h}_n\pm z_{1-\alpha/2}\sqrt{v_n}$ constituye un intervalo de confianza para $E(h(X))$ para $n$ grande.
+
+\subsection{Uso para calcular integrales sobre $(a,b)$}
+Suponga que queremos integrar una funci\'on $h(x)$ en un intervalo $(a,b)$, es decir, calcular
+$$w=\int_a^bh(x)dx.$$
+Entonces podemos considerar la variable con distribuci\'on $X\sim U(a,b)$, cuya funci\'on de densidad est\'a dada por $f(x)=1/(b-a)$. Tenemos
+\begin{align*}
+w&=\int_a^bh(x)dx\\
+&=(b-a)\int_a^bh(x)f(x)dx\\
+\end{align*}
+
+as\'i, para evaluar la integral en la \'ultima ecuaci\'on, basta con generar $n$ valores $x_1,\cdots,x_n$ de $U(a,b)$, y promediar los valores $h(x_1),\cdots,h(x_n)$ y finalmente multiplicar por $(b-a)$.
+
+\begin{example}
+Suponga que queremos integrar la funci\'on 
+$h(x)=(\cos(10x)+0.3\sin(4x))^4$ 
+en el intervalo $(-1,2)$.
+<<>>=
+a<--1;b<-2
+h<-function(x){(cos(10*x)+0.3*sin(4*x))^4}
+curve(h,a,b)
+n<-1000
+u<-runif(n,a,b)
+mean(h(u))*(b-a)
+integrate(h,a,b)
+@
+En el siguiente c\'odigo, visualizamos c\'omo evoluciona la integraci\'on de Monte Carlo a medida que aumenta $n$, junto con los intervalos de confianza.
+<<>>=
+n.max<-10^4
+x<-(b-a)*h(runif(n.max))
+h.bar<-cumsum(x)/(1:n.max)
+se<-sqrt(cumsum((x-h.bar)^2))/(1:n.max)
+plot(h.bar,type="l")
+lines(h.bar+1.96*se,col="grey")
+lines(h.bar-1.96*se,col="grey")
+@
+Observando la gr\'afica, podemos calcular la aproximaci\'on de la integral objetiva usando $n>1000$.
+\end{example}
+
+\subsection{Uso para calcular integrales sobre $(-\infty,\infty)$}
+Suponga que se quiere evaluar
+$$\int_{-\infty}^{\infty}h(x)dx$$
+
+Entonces podemos considerar la variable con distribuci\'on $X\sim N(0,1)$, cuya funci\'on de densidad est\'a dada por $f(x)=\frac{1}{\sqrt{2\pi}}e^{-\frac{1}{2}x^2}$. Tenemos
+\begin{align*}
+w&=\int_{-\infty}^{\infty}h(x)dx\\
+&=\sqrt{2\pi}\int_{-\infty}^{\infty}h(x)e^{\frac{1}{2}x^2}f(x)dx\\
+&=\sqrt{2\pi}\int_{-\infty}^{\infty}h^*(x)f(x)dx
+\end{align*}
+
+as\'i, podemos simular $n$ valores $x_1,\cdots,x_n$ de $N(0,1)$, aplicar la funci\'on $h^*$, promediarlos y finalmente multiplicar por $\sqrt{2\pi}$.
+
+\begin{example}
+Suponga que queremos calcular 
+$$\int_{-\infty}^{\infty}\sin^3(2x+2)dx$$
+<<>>=
+h<-function(x){(sin(2*x+2))^3}
+h.aste<-function(x){h(x)*exp(0.5*x^2)}
+curve(h,-20,20)
+n<-6000
+u<-rnorm(n)
+mean(h.aste(u))*sqrt(2*pi)
+integrate(h,lower=-Inf,upper=Inf)
+@
+Veamos las gr\'aficas de convergencia
+<<>>=
+set.seed(1234)
+n.max<-10^4
+x<-sqrt(2*pi)*h.aste(rnorm(n.max))
+h.bar<-cumsum(x)/(1:n.max)
+se<-sqrt(cumsum((x-h.bar)^2))/(1:n.max)
+plot(h.bar,type="l")
+lines(h.bar+1.96*se,col="grey")
+lines(h.bar-1.96*se,col="grey")
+@
+\end{example}
+
+\subsection{Uso para calcular integrales sobre $(a,\infty)$}
+Lo mismo, pero usando una distribuci\'on que tenga soporte $(a,\infty)$. Por ejemplo, la distribuci\'on de la variable $X+a$ con $X\sim Exp(1)$.
+
+\subsection{Ejercicios}
+\begin{enumerate}
+\item\begin{itemize}
+\item Encuentra la funci\'on de densidad de $X+a$ con $X\sim Exp(1)$.
+\item Describa c\'omo ser\'aa el proceso para calcular 
+$$\int_a^{\infty}h(x)dx$$
+\item Aplicar el procedimiento para evaluar (con gr\'afica de convergencia)
+$$\int_{2}^{\infty}\frac{1}{\sqrt{e^x}}dx$$
+\end{itemize}
+\item $$\int_{2}^\infty \frac{1}{x(\ln x)^8}dx$$
+\item $$\int_{-\infty}^\infty e^{-5|x|}dx$$
+\item $$\int_{-\infty}^\infty\frac{1}{e^x+e^{-x}}dx$$
+\item $$\int_2^4e^{-x}\sin xdx$$
+\item $$\int_0^1\frac{1}{x^2+4}dx$$
+\item Con el fin de evaluar 
+$$\int_{-\infty}^ah(x)dx$$\begin{itemize}
+\item Encuentra la funci\'on de densidad de $-X+a$ con $X\sim Exp(1)$.
+\item Describa c\'omo ser\'aa el proceso para calcular la integral objetivo.
+\item Aplicar el procedimiento para evaluar (con gr\'afica de convergencia)
+$$\int_{-\infty}^{1}\frac{x^2-x+2}{x^4+10x^2+9}dx$$
+\end{itemize}
+\end{enumerate}
+
+\section{Clase 20. m\'as usos de simulaci\'on Monte Carlo}
+Utiizando los valores simulados $x_1,\cdots,x_n$ de una cierta funci\'on de densidad $f(x)$, podemos utilizarlos para aproximar caracter\'isticas te\'oricas como: momentos, probabilidades, percentiles y funci\'on de distribuci\'on.
+
+\subsection{Aproximar momentos}
+Haciendo uso de poder utilizar $\bar{h}_n$ para aproximar $E(h(X))$ con $X\sim f(x)$, podemos tener las siguientes aproximaciones:
+\begin{align*}
+E(X)&\approx \bar{x}_n\\
+Var(X)&\approx \frac{1}{n}(x_i-\bar{x})^2
+\end{align*}
+
+\subsection{Aproximar probabilidades}
+El objetivo es aproximar $P(X\in A)$. Para eso escribimos la probabilidad como
+\begin{equation*}
+P(X\in A)=E(I_{\{X\in A\}})
+\end{equation*}
+
+
+\begin{equation*}
+P(X\in A)\approx\frac{1}{n}\sum_{i=1}^nI_{\{x_i\in A\}}
+\end{equation*}
+Esto es, la probabilidad de que la variable $X$ toma valores en un determinado conjunto $A$ se puede aproximar como el porcentaje de datos muestrales que est\'an en $A$.
+
+\subsection{Aproximar funci\'on de distribuci\'on}
+Utilizando el principio de la secci\'on anterior, y teniendo en cuenta que la funci\'on de distribuci\'on de $X$ se define como
+\begin{equation*}
+F_X(x)=P(X\leq x)
+\end{equation*}
+
+\'Este se puede aproximar como
+\begin{equation*}
+F_X(x)\approx\frac{1}{n}\sum_{i=1}^nI_{\{x_i\leq x\}}
+\end{equation*}
+
+\subsection{Aproximar percentiles}
+Los percentiles te\'oricos se pueden aproximar con los percentiles muesrales de $x_1,\cdots,x_n$, puesto que el percentil $p$ de una $X$ es $F^{-1}(p)$.
+
+\begin{example}
+La distribuci\'on Weibull tiene la funci\'on de densidad con par\'ametro de forma $k>0$ y par\'ametro de escala $\lambda>0$ est\'a dada por
+\begin{equation*}
+f(x)=\frac{kx^{k-1}}{\lambda^k}e^{-(x/\lambda)^k}I_{\{x>0\}}
+\end{equation*}
+
+con funci\'on de distribuci\'on 
+\begin{equation*}
+F(x)=1-e^{-(x/\lambda)^k}I_{\{x>0\}}
+\end{equation*}
+y 
+\begin{equation*}
+F^{-1}(x)=\lambda[-\ln(1-x)]^{1/k}
+\end{equation*}
+
+<<>>=
+set.seed(123)
+lambda<-2;k<-1
+n<-100
+F.inv<-function(x){lambda*(-log(1-x))^{1/k}}
+x<-F.inv(runif(n))
+# Comparar los momentos
+mean(x)
+lambda*(gamma(1+1/k))
+var(x)
+lambda^2*(gamma(1+2/k)-gamma(1+1/k)^2)
+# Comparar probabilidades P(X<1)
+sum(x<1)/n
+F<-function(x){1-exp(-(x/lambda)^k)}
+F(1)
+# Comparar probabilidades P(2<X<4)
+sum(x<4&x>2)/n
+F(4)-F(2)
+# Comparar el percentil 0.5
+median(x)
+F.inv(0.5)
+# Comparar el percentil 0.9
+quantile(x,0.9)
+F.inv(0.9)
+@
+\end{example}
+
+\subsection{Ejercicios}
+\begin{enumerate}
+\item Completa la siguiente tabla para ver la eficiencia de las aproximaciones al aumentar el tama\~no muestral en el ejemplo 9. Comente sobre los resultados obtenidos.
+\begin{table}[!h]
+\begin{tabular}{|c|c|c|c|c|c|c|}\hline
+tama\~no&Esperanza&Varianza&$P(X<1)$&$P(2<X<4)$&Perc. 0.5&Perc. 0.9\\\hline
+Val. te\'or.&&&&&&\\\hline
+n=10&&&&&&\\\hline
+n=50&&&&&&\\\hline
+n=100&&&&&&\\\hline
+n=200&&&&&&\\\hline
+n=500&&&&&&\\\hline
+n=1000&&&&&&\\\hline
+n=5000&&&&&&\\\hline
+n=10000&&&&&&\\\hline
+n=50000&&&&&&\\\hline
+\end{tabular}
+\caption{\emph{Evaluci\'on de la eficiencia de las aproximaciones en una distribuci\'on Weibull con $k=1$ y $\lambda=2$.}}
+\end{table}
+\item Para la funci\'on de densidad del punto 3 de la secci\'on 4.2, usando el m\'etodo de aceptaci\'on y rechazo:
+\begin{itemize}
+\item Encuentre una aproximaci\'on de la esperanza te\'orica, varianza te\'orica, mediana y $P(X<1)$ con 150 valores simulados. 
+\item Por medio de una gr\'afica, eval\'ue cu\'al es el tama\~no $n$ m\'inimo para tener una buena aproximaci\'on en la esperanza. (Consulte la esperanza te\'orica en wiki).
+\item Repita el punto anterior con la varianza.
+\item Repita el punto anterior con la mediana.
+\item Repita el punto anterior con $P(X<1)$.
+\end{itemize}
+\item Para la funci\'on de densidad del punto 7 de la secci\'on 4.2, usando el m\'etodo de aceptaci\'on y rechazo:
+\begin{itemize}
+\item Encuentre una aproximaci\'on de la esperanza te\'orica, la varianza te\'orica, la mediana y $P(-1<X<3)$ con 100 valores simulados.  
+\item Por medio de una gr\'afica, eval\'ue cu\'al es el tama\~no $n$ m\'inimo para tener una buena aproximaci\'on.
+\item Repita el punto anterior con la varianza.
+\item Repita el punto anterior con la mediana.
+\item Repita el punto anterior con $P(-1<X<3)$.
+\end{itemize}
+\end{enumerate}
+
+\section{Clase 20. Muestreo de importancia}
+\textbf{Motivaci\'on} Suponga que queremos calcular $P(Z>4.1)$ (por ejemplo para calcular el valor $p$ en el sistema de hip\'otesis $H_0:\ \mu=\mu_0$ vs. $H_a:\ \mu>\mu_0$). Usando el comando $pnorm$ sabemos que esta probabilidad es igual a $2.065751e-05$. Pero qu\'e pasa si usamos la aproximaci\'on de Monte Carlo
+<<>>=
+set.seed(1234)
+n<-10^2
+sum(rnorm(n)>4.1)/n
+n<-10^3
+sum(rnorm(n)>4.1)/n
+n<-10^4
+sum(rnorm(n)>4.1)/n
+n<-10^5
+sum(rnorm(n)>4.1)/n
+n<-10^6
+sum(rnorm(n)>4.1)/n
+n<-10^7
+sum(rnorm(n)>4.1)/n
+#plot(cumsum(rnorm(10^7)>4.1)/(1:(10^7)),type="l")
+#abline(h=2.065751e-05)
+@
+Vemos que simulando directamente valores de $Z$ no es una buena alternativa para aproximar probabilidades muy peque\~nas. Adicionalmente no hay forma de calcular la varianza asint\'otica de la aproximaci\'on puesto que la indicadora siempre vale 0, y la varianza por consiguiente, es cero.
+
+El met\'odo de muestreo de importancia (\emph{importance sampling}) se basa en las siguientes expresiones
+\begin{equation*}
+E_f(h(X))=\int_\chi h(x)f(x)dx=\int_\chi\frac{h(x)f(x)}{g(x)}g(x)dx=E_g\left(\frac{h(X)f(X)}{g(X)}\right)
+\end{equation*}
+
+Entonces aplicando el principio de la integraci\'on Monte Carlo a la \'ultima \'ultima esperanza, podemos aproximar $E_f(h(X))$ no simulando de $f(x)$, sino de $g(x)$. Es decir, simulamos $x_1,\cdots,x_n$ de $g(x)$, y aproximar $E_f(h(X))$ con
+\begin{equation*}
+E_f(h(X))\approx \frac{1}{n}\sum_{i=1}^n\frac{h(x_i)f(x_i)}{g(x_i)}
+\end{equation*}
+La \'unica exigencia para la funci\'on $g(x)$ es que el soporte de $g$ sea por lo menos igual al soporte de $h\times f$.
+\begin{example}
+Volvemos a hacer el ejercicio de aproximar $P(Z>4.1)$. En este ejercicio, la funci\'on de densidad objetiva es $f(x)=\frac{1}{\sqrt{2\pi}}e^{-x^2/2}$ con soporte $(-\infty,\infty)$. Por otro lado 
+\begin{equation*}
+P(Z>4.1)=E(I_{\{Z>4.1\}})
+\end{equation*}
+es decir, $h(Z)=I_{\{Z>4.1\}}$ con soporte $(4.1,\infty)$. De esta forma, el soporte de $h\times f$ es $(4.1,\infty)$, y el soporte de $g$ debe ser por lo menos $(4.1,\infty)$. As\'i que podemos pensar en la distribuci\'on $Exp(1)+4.1$, es decir, distribuci\'on $Exp(1)$ truncado en el 4.1, con funci\'on de densidad $g(x)=e^{-(x-4.1)}$.
+
+Con las funciones $f$, $h$ y $g$ definidos, procedemos a simular valores de $g(x)$, $x_1,\cdots,x_n$ y aplicar la funci\'on $\frac{h(x)f(x)}{g(x)}$ a los valores obtenidos. Ahora, como los $x_i$ vienen de una distribuci\'on $Exp(1)$ truncado en 4.1, entonces $x_i>4.1$, y as\'i $h(x_i)=1$ para todo $i$, y basta con aplicar la funci\'on $\frac{f(x)}{g(x)}$ a los valores simulados y promediarlos. 
+<<>>=
+set.seed(123)
+n<-100
+x<-rexp(n,1)+4.1
+mean(dnorm(x)*(exp(x-4.1)))
+n<-1000
+x<-rexp(n,1)+4.1
+mean(dnorm(x)*(exp(x-4.1)))
+n<-10000
+x<-rexp(n,1)+4.1
+mean(dnorm(x)*(exp(x-4.1)))
+@
+Ahora examinemos la varianza de la aproximaci\'on, 
+<<>>=
+var(dnorm(x)*(exp(x-4.1)))*(n-1)/(n^2)
+sqrt(var(dnorm(x)*(exp(x-4.1)))*(n-1)/(n^2))
+@
+\end{example}
+
+\subsection{Ejercicios.}
+\begin{enumerate}
+\item Recuerdan la tabla de la distribuci\'on normal est\'andar? Haga tu propia tabla! (Utilice el muestreo de importancia.)
+\item Repita el muestreo de importancia del ejemplo 10 para valores de $n$ desde 1 hasta 10000, produciendo una gr\'afica que muestre la aproximaciones, las bandas de confianza y una l\'inea horizontal que indique el valor de la probabilidad objetiva.
+\item Suponga que $X\sim\chi^2_5$, y queremos calcular $P(X>31)$
+\begin{itemize}
+\item Calcula esta probabilidad con el comando \verb'pchisq'
+\item Simule valores de la distribuci\'on $\chi^2_5$ usanro \verb'rchisq', y verifique que aproximar directamente la probabilidad objetiva no da buenos resultados a\'un para valores grandes de $n$.
+\item Utiliza el muestreo de importancia para aproximar la probabilidad de inter\'es similar como el ejemplo 10. 
+\item En una gr\'afica, eval\'ue qu\'e tan buenas son las aproximaciones en relaci\'on con $n$ (incluya las bandas de confianza).
+\end{itemize}
+\item Repita el punto anterior con $P(21<X<31)$ (Tenga en cuenta que la escogencia de la funci\'on $g$ depende de la condici\'on que debe cumplir el dominio de $g$). Los subpuntos del punto anterior tambi\'en!
+\end{enumerate}
+
+\section{Clase 21, Muestreo de importancia}
+
+El muestreo de importancia no s\'olo sirve para aproximar integrales (esperanzas) sino tambi\'en para simular valores de una distribuci\'on compleja. Se puede ver que remuestrando valores con reemplazo con probabilidad $\frac{f(x_i)}{ng(x_i)}$, los valores remuestreados provienen de la distribuci\'on $f(x)$. Sin embargo, las cantidades $\frac{f(x_i)}{ng(x_i)}$ no necesariamente son menores a 1, adem\'as la suma de $\frac{f(x_i)}{ng(x_i)}$ no necesariamente es 1. Por esta raz\'on se normaliza estos pesos definiendo
+\begin{equation*}
+w_i=\dfrac{\frac{f(x_i)}{ng(x_i)}}{\sum_{i=1}^n\frac{f(x_i)}{ng(x_i)}}=\dfrac{\frac{f(x_i)}{g(x_i)}}{\sum_{i=1}^n\frac{f(x_i)}{g(x_i)}}
+\end{equation*}
+
+El m\'etodo de remuestreo del muestreo de importancia queda resumido como
+\begin{enumerate}
+\item Del m\'etodo del muestreo de importancia, generar valores $x_1,\cdots,x_n$ de $g(x)$ 
+\item Remuestrar valores $x_i^*$ con probabilidad $w_i$, es decir
+\begin{equation*}
+Pr(X_i^*=x_i)=w_i 
+\end{equation*}
+\end{enumerate}
+
+\section{Clase 22. M\'etodo de la grilla}
+El m\'etodo de la grilla es un m\'etodo para simular valores de una distribuci\'on $f(x)$ (puede ser que s\'olo se conocer la forma funcional). El m\'etodo es f\'acil de implementar y no requiere ning\'un tipo de supuestos, pero a veces puede ser no eficiente y requerir mucho tiempo.
+
+Suponga que la variable $X$ toma valores en el intervalo $(a,b)$ ($a$ y $b$ pueden ser valores no finitos), el m\'etodo consiste en los siguientes pasos
+\begin{enumerate}
+\item Construir valores $x_1,\cdots,x_m$ con suficientes decimales que cubre todo el intervalo $(a,b)$. Por ejemplo, si $(a,b)=(0,1)$, entonces los valores de $x_i$ puede ser $0.01, 0.02, \cdots, 0.99$.
+\item Evaluar la funci\'on $f$ en cada $x_i$, y calcular los pesos $w_i=f(x_i)/\sum_if(x_i)$.
+\item Seleccionar una muestra aleatoria simple de tama\~no $n$ de los valores $x_1,\cdots,x_m$ CON reemplazo donde en cada selecci\'on, la probabilidad de seleccionar $x_i$ es $w_i$. 
+\end{enumerate}
+
+Miremos qu\'e tan \'util es el m\'etodo de la grilla para el punto 8 de la secci\'on 4.2 donde $f(x)\propto e^{(-(|x-3|/2)^0.4)}$ para $-\infty<x<\infty$
+<<>>=
+set.seed(1234)
+f<-function(x){exp(-(abs(x-3)/2)^0.4)}
+curve(f,-20,20)
+gri<-seq(-40,55,0.1)
+v<-f(gri)
+w<-v/sum(v)
+x<-sample(gri,500,prob=w,replace=TRUE)
+hist(x,freq=FALSE)
+@
+Para comparar el histograma de los valores obtenidos con la funci\'on de densidad objetiva, necesitamos hallar la constante de normalizaci\'on. En la secci\'on del m\'etodo de aceptaci\'on y rechazo, hemos visto una forma de calcular esta constante; pero en general, esta constante est\'a dada por 
+\begin{equation*}
+K=\dfrac{1}{\int_\chi\tilde{f}(x)dx}
+\end{equation*}
+donde $\tilde{f}(x)$ denota el kernel de la funci\'on de densidad objetiva $f(x)$. De esta forma
+<<>>=
+K<-1/integrate(f,-100,100)$val
+K
+f<-function(x){exp(-(abs(x-3)/2)^0.4)*K}
+hist(x,freq=FALSE)
+curve(f,add=T,col=2)
+@
+Una comprobado que los valores simulados provienen de la distribuci\'on objetiva, los podemos utilizar para aproximar momentos, probabilidades y percentiles de la distribuci\'on te\'orica.
+
+\subsection{Ejercicios}
+Para cada uno de los ejercicios de la secci\'on 4.2 
+\begin{enumerate}
+\item implemente el m\'etodo de la grilla para generar una muestra de tama\~no 500.
+\item usando la muestra de 500, aproxime la media, desviaci\'on est\'andar y la mediana de las distribuciones
+\item obtenga gr\'afica de convergencia con las bandas de confianzas para cada una de las anteriores aproximaciones.
+\end{enumerate}
+
+\section{Ejercicios}
+\begin{enumerate}
+\item La funci\'on de densidad de una distribuci\'on log\'istica est\'a dada por
+\begin{equation*}
+f(x)=\dfrac{1}{\beta}\dfrac{e^{-(x-\mu)/\beta}}{(1+e^{-(x-\mu)/\beta})^2}
+\end{equation*}
+para todo $x$. Verifique la funci\'on de distribuci\'on est\'a dada por
+\begin{equation*}
+F(x)=\dfrac{1}{1+e^{-(x-\mu)/\beta}}
+\end{equation*}
+Encuentra la funci\'on inversa de $F(x)$ y posteriormente simule 150 valores de una distribuci\'on log\'istica con $\mu=5$ y $\beta=2$. Compare los valores obtenidos con lo reultados al utilizar \verb'rlogis' en \verb'R'.
+
+\item La funci\'on de densidad de una distribuci\'on Cauchy est\'a dada por
+\begin{equation*}
+f(x)=\dfrac{1}{\pi\sigma}\dfrac{1}{1+\left(\frac{x-\mu}{\sigma}\right)^2}
+\end{equation*}
+para todo $x$. La funci\'on de distribuci\'on est\'a dada por
+\begin{equation*}
+F(x)=0.5+\frac{1}{\pi}
+arctan((x-\mu)/\sigma)
+\end{equation*}
+Encuentra la funci\'on inversa de $F(x)$ y simule 200 valores de una distribuci\'on Cauchy con $\mu=5$ y $\sigma=2$. Compare con lo obtenido al utilizar \verb'rcauchy' en \verb'R'.
+
+\item La funci\'on de densidad de una distribuci\'on Pareto con par\'ametro de escala $m$ y par\'ametro de forma $\alpha$ est\'a dada por
+\begin{equation*}
+f(x)=\dfrac{\alpha m^\alpha}{x^{\alpha+1}}
+\end{equation*}
+para todo $x>m$. Encuentra la funci\'on de distribuci\'on $F(x)$ y su inversa. Simule 200 valores de una distribuci\'on Pareto con $m=3$ y $\alpha=4$. Compare con lo obtenido al utilizar \verb'rpareto' del paquete \verb'VGAM' en \verb'R'.
+
+\item La funci\'on de densidad de una distribuci\'on Weibull con par\'ametro de escala $\lambda$ y par\'ametro de forma $k$ est\'a dada por
+\begin{equation*}
+f(x)=\dfrac{k}{\lambda}\left(\dfrac{x}{\lambda}\right)^{k-1}e^{-(x/\lambda)^k}
+\end{equation*}
+para todo $x>0$. Encuentra la funci\'on de distribuci\'on $F(x)$ y la funci\'on inversa de $F(x)$. Simule 200 valores de una distribuci\'on Weibull con $\lambda=3$ y $k=4$. Compare con lo obtenido al utilizar \verb'rweibull' en \verb'R'.
+
+\item Simule 200 valores de la siguiente funci\'on de densidad
+\begin{equation*}
+f(x)=
+\begin{cases}
+0.1&\text{x=-1}\\
+0.2&\text{x=1}\\
+0.3&\text{x=2}\\
+0.4&\text{x=4}\\
+0&\text{si no}
+\end{cases}
+\end{equation*}
+Grafique un diagrama de barras y compara con la funci\'on $f(x)$. Calcula los momentos muestrales y comparalos con los momentos te\'oricos.
+\item Simule 100 valores de una distribuci\'on $Bin(10,0.3)$, compare los resultados obtenidos con \verb'rbinom'.
+\item Suponga que $X$ es una variables aleatoria con funci\'on de densidad
+\begin{equation*}
+f(x)=\dfrac{\exp\{-\mu x\}(\mu x)^{x-1}}{x!}\ \ \text{para $x=1,2,3,\cdots$}
+\end{equation*}
+Simule 500 valores de la anterior distribuci\'on tomando $\mu=0.3$, $\mu=0.5$, $\mu=0.2$. Usando los valores simulados para aproximar la esperanza te\'orica de la variable. En general, cu\'al ser\'ia la esperanza te\'orica de la distribuci\'on?
+
+\item Utilizando el comando \verb'rexp', simule 200 valores de una distribuci\'on $Beta(3,7)$, compare los resultados con lo obtenido en \verb'rbeta'.
+\item Utilizando el comando \verb'rexp', simule 200 valores de una distribuci\'on $\chi^2$ con grado de libertad 6. Repite lo anterior con \verb'rnorm'. Compare los resultados obtenidos con \verb'rchisq'. 
+\item Utilizando el comando \verb'rnorm' y \verb'rchisq', simule 200 valores de la distribuci\'on $t_{8}$, compare los resultados con lo obtenido por \verb'rt'.
+\item Utilizando el comando \verb'rchisq', simule 1000 valores de la distribuci\'on $F^5_{10}$, compare los resultados con lo obtenido por \verb'rf'.
+\end{enumerate}

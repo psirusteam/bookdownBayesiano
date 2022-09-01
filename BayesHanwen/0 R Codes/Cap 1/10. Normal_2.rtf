@@ -1,0 +1,29 @@
+{\rtf1\ansi\ansicpg1252\cocoartf1561\cocoasubrtf100
+{\fonttbl\f0\fswiss\fcharset0 Helvetica;}
+{\colortbl;\red255\green255\blue255;}
+{\*\expandedcolortbl;;}
+\margl1440\margr1440\vieww10800\viewh8400\viewkind0
+\pard\tx566\tx1133\tx1700\tx2267\tx2834\tx3401\tx3968\tx4535\tx5102\tx5669\tx6236\tx6803\pardirnatural\partightenfactor0
+
+\f0\fs24 \cf0 IG.model <- function()\{\
+    for(i in 1 : n)\
+    \{\
+    y[i] ~ dnorm(3, tau)	\
+    \}\
+    sigma <- 1/sqrt(tau)\
+    tau ~ dgamma(0.001, 0.001)\
+    \}\
+    \
+    n <- 12\
+    y <- c(3.56, 3.36, 2.99, 2.71, 3.31, 3.68, 2.78, 2.95, 2.82, 3.45, 3.42, 3.15)\
+    \
+    IG.data <- list("y","n")\
+    IG.param <- c("sigma")\
+    IG.inits <- function()\{\
+    list("tau"=c(1))\
+    \}\
+    \
+    IG.fit <- jags(data=IG.data, inits=IG.inits, IG.param, n.iter=10000, \
+    n.burnin=1000, model.file=IG.model)\
+    \
+    print(IG.fit)}

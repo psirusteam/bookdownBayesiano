@@ -1,0 +1,113 @@
+\documentclass[10pt,openright]{book}
+\usepackage{hyperref}
+\usepackage[utf8]{inputenc}
+\usepackage[spanish,activeacute,english]{babel}
+\usepackage{amsmath,amsfonts,amssymb,amsthm,amscd,enumerate, mathtools}
+\usepackage{makeidx}
+\usepackage[full]{harvard}
+\usepackage{booktabs}
+\usepackage{multirow}
+\usepackage{bigstrut}
+\usepackage[framemethod=default]{mdframed}
+\makeindex
+\decimalpoint
+%----------------------Margenes y tamano del libro--------------------------------
+\usepackage[right=3cm,left=3cm,top=3cm,bottom=3cm]{geometry}
+\setlength{\parindent}{0pt}
+\setlength\parskip{1.5mm}
+%
+\usepackage{fancyhdr}
+\pagestyle{fancy}
+\renewcommand{\chaptermark}[1]{\markboth{\thechapter.\ #1}{}}
+  \renewcommand{\sectionmark}[1]{\markright{\thesection.\ #1}}
+    \fancyhf{}
+    \fancyhead[LE,RO]{\bfseries\sffamily\thepage}
+    \fancyhead[LO]{\sffamily\rightmark}
+    \fancyhead[RE]{\sffamily\leftmark}
+    \renewcommand{\headrulewidth}{0.5pt}
+    %--------------------------------------------------------------------------------
+      %----------------------Hacer que quepan mas tablas por pagina--------------------
+    \renewcommand{\topfraction}{0.95}
+    \renewcommand{\bottomfraction}{0.95}
+    \renewcommand{\textfraction}{0.05}
+    \renewcommand{\floatpagefraction}{0.35}
+    \setcounter{topnumber}{3}
+    \setcounter{bottomnumber}{3}
+    \setcounter{totalnumber}{6}
+    %--------------------------------------------------------------------------------
+      %--------------------------------------------------------------------------------
+      
+      \begin{document}
+%\SweaveOpts{concordance=TRUE}
+%\SweaveOpts{concordance=TRUE}
+
+    \selectlanguage{spanish}
+    \bibliographystyle{agsm}
+    
+    % --------------------------------------------------------------------------------
+    \numberwithin{equation}{section}
+    \def\bPi{\mbox{\boldmath$\Pi$}}
+    \def\bGamma{\mbox{\boldmath$\Gamma$}}
+    \def\bgamma{\mbox{\boldmath$\gamma$}}
+    \def\beps{\mbox{\boldmath$\varepsilon$}}
+    \def\bbeta{\mbox{\boldmath$\beta$}}
+    \def\bLambda{\mbox{\boldmath$\Lambda$}}
+    \def\blambda{\mbox{\boldmath$\lambda$}}
+    \def\bBeta{\mbox{\boldmath$\Beta$}}
+    \def\bEta{\mbox{\boldmath$\eta$}}
+    \def\balpha{\mbox{\boldmath$\alpha$}}
+    \def\btheta{\mbox{\boldmath$\theta$}}
+    \def\bmu{\mbox{\boldmath$\mu$}}
+    \def\bSigma{\mbox{\boldmath$\Sigma$}}
+    \def\bphi{\mbox{\boldmath$\phi$}}
+    \def\bpi{\mbox{\boldmath$\pi$}}
+    \def\bxi{\mbox{\boldmath$\xi$}}
+    
+    \theoremstyle{definition}
+    \newtheorem{Eje}{Ejemplo}
+    \numberwithin{Eje}{section}
+    
+    \newtheoremstyle{mydef}{}{}{\slshape}{}{\bfseries}{.}{ }{}
+    \theoremstyle{mydef}
+    \newtheorem{Res}{Resultado}
+    \numberwithin{Res}{section}
+    \newtheorem{Defi}{Definici\'on}
+    \numberwithin{Defi}{section}
+    % --------------------------------------------------------------------------------
+    \renewcommand{\tablename}{Tabla}
+    \renewcommand{\listtablename}{\'Indice de Tablas}
+    \renewcommand{\contentsname}{Contenido}
+    \renewcommand{\proofname}{\bfseries \slshape Prueba}
+    \renewcommand{\qedsymbol}{$\blacksquare$}
+    % --------------------------------------------------------------------------------
+      
+      % --------------------------------------------------------------------------------
+      \pagestyle{empty}
+  %  \Sexpr{knit_child('portada.Rnw')}
+    \frontmatter
+    \tableofcontents
+    % --------------------------------------------------------------------------------
+      \mainmatter
+   \pagestyle{fancy}
+\Sexpr{knit_child('Intro.Rnw')}
+\Sexpr{knit_child('Cap1.Rnw')}
+\Sexpr{knit_child('Cap2.Rnw')}
+\Sexpr{knit_child('Cap3.Rnw')}
+%\Sexpr{knit_child('Cap4.Rnw')}
+% \Sexpr{knit_child('Cap5.Rnw')}
+% \Sexpr{knit_child('Cap6.Rnw')}
+%  \Sexpr{knit_child('Cap7.Rnw')}
+%   \Sexpr{knit_child('Cap8.Rnw')}
+%  \Sexpr{knit_child('cap9.Rnw')}
+%   \Sexpr{knit_child('cap10.Rnw')}
+%   \Sexpr{knit_child('cap0.Rnw')}
+% --------------------------------------------------------------------------------
+    \bibliography{LibroBayesBib}
+% --------------------------------------------------------------------------------
+% --------------------------------------------------------------------------------
+    \listoffigures
+    \listoftables
+    \printindex
+% --------------------------------------------------------------------------------
+% --------------------------------------------------------------------------------
+  \end{document}

@@ -1,0 +1,69 @@
+{\rtf1\ansi\ansicpg1252\cocoartf1561\cocoasubrtf100
+{\fonttbl\f0\fswiss\fcharset0 Helvetica;}
+{\colortbl;\red255\green255\blue255;}
+{\*\expandedcolortbl;;}
+\margl1440\margr1440\vieww10800\viewh8400\viewkind0
+\pard\tx566\tx1133\tx1700\tx2267\tx2834\tx3401\tx3968\tx4535\tx5102\tx5669\tx6236\tx6803\pardirnatural\partightenfactor0
+
+\f0\fs24 \cf0 #\'97\'97\'97\'97\'97\'97\'97\'97\'97\'97\'97\'97\'97\'97\'97\'97\'97\'97\'97\'97\'97\'97\'97\'97\'97\'97\'97\
+# C\'f3digos en R para el ejemplo 3.1.2. Primera forma\
+#\'97\'97\'97\'97\'97\'97\'97\'97\'97\'97\'97\'97\'97\'97\'97\'97\'97\'97\'97\'97\'97\'97\'97\'97\'97\'97\'97\
+library(pscl)\
+# Datos de la informacion previa\
+x <- c(-1.3619, -1.1116, -0.4744, -0.5663, 2.2056, 0.9491, 0.2298, -0.7933, 1.0198,\
+          -0.9850, 3.5679, -1.9504)\
+\
+# Datos de la informacion actual\
+y <- c(1.69045085, -1.41076082, -0.27909483, -0.91387987, 3.21868429, -1.47282460, \
+          -0.96524353, -2.45084934, 1.03838153, 1.79928679, 0.97826621, 0.67463830,\
+          -1.08665864, -0.00509027, 0.43708128)\
+\
+# Paramatros de la distribucion previa\
+n0 <- c0 <- 12\
+mu <- mean(x); sigma2_0 <- var(x)\
+\
+# Informacion\
+n <- length(y)\
+bar.y <- mean(y); S2 <- var(y)\
+\
+# Algunos paramatros de la distribucion posterior\
+mu.n <- (n*bar.y + c0*mu)/(n+n0)\
+sigma2_n <- (n0*sigma2_0+(n-1)*S2+c0*n*(mu-bar.y)^2/(c0+n))/(n+n0)\
+\
+# Estimacion puntual\
+theta.hat <- mu.n; sigma2.hat <- (n+n0)*sigma2_n/(n+n0-2)\
+theta.hat\
+sigma2.hat\
+\
+# Intervalo de credibilidad de 95% para theta\
+mu.n + qt(c(0.025,0.975), df=n+n0)*sqrt(sigma2_n/(n+n0))\
+\
+# Intervalo de credibilidad de 95% para sigma2\
+qigamma(c(0.025,0.975), alpha=(n+n0)/2, beta=(n+n0)*sigma2_n/2)\
+\
+\
+#\'97\'97\'97\'97\'97\'97\'97\'97\'97\'97\'97\'97\'97\'97\'97\'97\'97\'97\'97\'97\'97\'97\'97\'97\'97\'97\'97\
+# C\'f3digos en R para el ejemplo 3.1.2. Segunda forma\
+#\'97\'97\'97\'97\'97\'97\'97\'97\'97\'97\'97\'97\'97\'97\'97\'97\'97\'97\'97\'97\'97\'97\'97\'97\'97\'97\'97\
+\
+n.sim <- 20000\
+sigma2.res <- rinvgamma(n.sim, (n+n0)/2, (n+n0)*sigma2_n/2)\
+theta.res <- c()\
+for(i in 1:n.sim)\{\
+  theta.res[i] <- rnorm(1,mu.n, sqrt(sigma2.res[i]/(n+c0)))\
+\}\
+\
+# Visualiza los valores simulados\
+par(mfrow=c(1,2))\
+ts.plot(theta.res)\
+ts.plot(sigma2.res)\
+acf(theta.res)\
+acf(sigma2.res)\
+\
+# Estimaciones puntuales\
+mean(theta.res)\
+mean(sigma2.res)\
+\
+# Intervalos de credibilidad del 95%\
+quantile(theta.res, c(0.025,0.975))\
+quantile(sigma2.res, c(0.025,0.975))}

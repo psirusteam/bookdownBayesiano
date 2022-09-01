@@ -14,24 +14,19 @@ Como lo afirma @Gelman03 la simulación numérica es parte central del análisis
 
 Al momento de la simulación estocástica de observaciones provenientes de alguna distribución de interés, la distribución uniforme es quizás la más usada y la más importante. El siguiente resultado adaptado de @Casella así lo confirma.
 
-\BeginKnitrBlock{proposition}
-<span class="proposition" id="prp:unnamed-chunk-2"><strong>(\#prp:unnamed-chunk-2) </strong></span>Si $U$ es una variable aleatoria con distribución uniforme en el intervalo $(0,1)$, entonces la la variable aleatoria $F^{-1}(U)$ tiene distribución F.
-\EndKnitrBlock{proposition}
+\BeginKnitrBlock{proposition}<div class="proposition"><span class="proposition" id="prp:unnamed-chunk-2"><strong>(\#prp:unnamed-chunk-2) </strong></span>Si $U$ es una variable aleatoria con distribución uniforme en el intervalo $(0,1)$, entonces la la variable aleatoria $F^{-1}(U)$ tiene distribución F.</div>\EndKnitrBlock{proposition}
 <br>
 
 Aunque la función $F$ no necesariamente es una función uno a uno (por lo menos no lo es en el caso discreto) sí se puede verificar que $F^{-1}(U)$ es única con probabilidad uno. Una definición general, que encaja en el caso continuo o discreto, de la función $F$ inversa es la siguiente
 
-\BeginKnitrBlock{definition}
-<span class="definition" id="def:unnamed-chunk-3"><strong>(\#def:unnamed-chunk-3) </strong></span>Para cualquier función $F$ definida sobre $\mathbb{R}$, se define la función inversa generalizada de $F$ como
+\BeginKnitrBlock{definition}<div class="definition"><span class="definition" id="def:unnamed-chunk-3"><strong>(\#def:unnamed-chunk-3) </strong></span>Para cualquier función $F$ definida sobre $\mathbb{R}$, se define la función inversa generalizada de $F$ como
 
 \begin{equation}
 F^{-1}(u)=\inf \{x \mid F(x)\geq u\}
-\end{equation}
-\EndKnitrBlock{definition}
+\end{equation}</div>\EndKnitrBlock{definition}
 
 
-\BeginKnitrBlock{example}
-<span class="example" id="exm:unnamed-chunk-4"><strong>(\#exm:unnamed-chunk-4) </strong></span>Suponga que $X$ es una variable aleatoria con distribución exponencial. De esta forma, su función de densidad acumulativa viene dada por
+\BeginKnitrBlock{example}<div class="example"><span class="example" id="exm:unnamed-chunk-4"><strong>(\#exm:unnamed-chunk-4) </strong></span>Suponga que $X$ es una variable aleatoria con distribución exponencial. De esta forma, su función de densidad acumulativa viene dada por
 
 \begin{equation*}
 F(x)=1-\exp\{ -\theta x\}
@@ -43,8 +38,7 @@ Del anterior resultado se tiene que si $u$ es una realización de una variable $
 F^{-1}(u)=-\frac{\ln(1-u)}{\theta}
 \end{equation*}
 
-entrega una forma diáfana para la simulación de una observación con distribución exponencial. Para simular una muestra de $n$ observaciones, simplemente se repite el anterior procedimiento $n$ veces. En `R`, el código necesario para la simulación de una muestra de tamaño 1000 proveniente de una distribución exponencial con parámetro $\theta=5$ es
-\EndKnitrBlock{example}
+entrega una forma diáfana para la simulación de una observación con distribución exponencial. Para simular una muestra de $n$ observaciones, simplemente se repite el anterior procedimiento $n$ veces. En `R`, el código necesario para la simulación de una muestra de tamaño 1000 proveniente de una distribución exponencial con parámetro $\theta=5$ es</div>\EndKnitrBlock{example}
 
 
 ```r
@@ -55,7 +49,7 @@ rexpo <- log(1 - u)/(-theta)
 ```
 
 ```
-## [1] 5.071472
+## [1] 4.934724
 ```
 
 ```r
@@ -63,7 +57,10 @@ hist(rexpo, freq = FALSE)
 lines(density(rexpo), col = 2)
 ```
 
-![(\#fig:unnamed-chunk-5)Histograma de observaciones con distribución exponencial](A3Simulacion_files/figure-latex/unnamed-chunk-5-1.pdf) 
+<div class="figure">
+<img src="A3Simulacion_files/figure-html/unnamed-chunk-5-1.svg" alt="Histograma de observaciones con distribución exponencial" width="672" />
+<p class="caption">(\#fig:unnamed-chunk-5)Histograma de observaciones con distribución exponencial</p>
+</div>
 
 ### Método de la grilla
 
@@ -99,9 +96,7 @@ P(F(x_k)< U \leq F(x_{k+1}))&=F(x_{k+1})-F(x_{k})\\
 
 Si se quiere extraer una muestra aleatoria de $N$ observaciones provenientes de la distribución de interés, entonces basta con repetir el anterior proceso $N$ veces. Por supuesto, como se trata de una muestra aleatoria cada selección se debe realizar con repetición; de esta manera no importa si $N>n$. Suponiendo que el conjunto $x_1,\ldots,x_n$ conforma una grilla de puntos lo suficientemente cercanos y que no sucede nada importante entre cada uno de ellos, entonces esta técnica debe tener un buen funcionamiento.
 
-\BeginKnitrBlock{example}
-<span class="example" id="exm:unnamed-chunk-6"><strong>(\#exm:unnamed-chunk-6) </strong></span>El siguiente código computacional permite utilizar el método de la grilla para simular mil valores provenientes de una distribución exponencial con parámetro $\theta = 5$.
-\EndKnitrBlock{example}
+\BeginKnitrBlock{example}<div class="example"><span class="example" id="exm:unnamed-chunk-6"><strong>(\#exm:unnamed-chunk-6) </strong></span>El siguiente código computacional permite utilizar el método de la grilla para simular mil valores provenientes de una distribución exponencial con parámetro $\theta = 5$.</div>\EndKnitrBlock{example}
 
 
 ```r
@@ -113,7 +108,7 @@ r.exp <- sample(x.grid, 1000, prob = p.exp, replace = T)
 ```
 
 ```
-## [1] 5.248242
+## [1] 5.086211
 ```
 
 ```r
@@ -121,10 +116,11 @@ hist(r.exp, freq = FALSE)
 lines(density(rexpo), col = 2)
 ```
 
-![(\#fig:unnamed-chunk-7)Histograma de observaciones con distribución exponencial](A3Simulacion_files/figure-latex/unnamed-chunk-7-1.pdf) 
-\BeginKnitrBlock{example}
-<span class="example" id="exm:unnamed-chunk-8"><strong>(\#exm:unnamed-chunk-8) </strong></span>De la misma manera, el método de la grilla permite simular valores de un distribución discreta. El siguiente código computacional permite utilizar el método de la grilla para simular mil valores provenientes de una distribución Poisson con parámetro $\theta = 2$.
-\EndKnitrBlock{example}
+<div class="figure">
+<img src="A3Simulacion_files/figure-html/unnamed-chunk-7-1.svg" alt="Histograma de observaciones con distribución exponencial" width="672" />
+<p class="caption">(\#fig:unnamed-chunk-7)Histograma de observaciones con distribución exponencial</p>
+</div>
+\BeginKnitrBlock{example}<div class="example"><span class="example" id="exm:unnamed-chunk-8"><strong>(\#exm:unnamed-chunk-8) </strong></span>De la misma manera, el método de la grilla permite simular valores de un distribución discreta. El siguiente código computacional permite utilizar el método de la grilla para simular mil valores provenientes de una distribución Poisson con parámetro $\theta = 2$.</div>\EndKnitrBlock{example}
 
 
 ```r
@@ -156,7 +152,7 @@ mean(rpois)
 ```
 
 ```
-## [1] 2.022
+## [1] 2.005
 ```
 
 ```r
@@ -164,18 +160,19 @@ var(rpois)
 ```
 
 ```
-## [1] 1.921437
+## [1] 1.910886
 ```
 
 ```r
 hist(rpois, freq = FALSE)
 ```
 
-![(\#fig:unnamed-chunk-9)Histograma de observaciones con distribución Poisson](A3Simulacion_files/figure-latex/unnamed-chunk-9-1.pdf) 
+<div class="figure">
+<img src="A3Simulacion_files/figure-html/unnamed-chunk-9-1.svg" alt="Histograma de observaciones con distribución Poisson" width="672" />
+<p class="caption">(\#fig:unnamed-chunk-9)Histograma de observaciones con distribución Poisson</p>
+</div>
 
-\BeginKnitrBlock{example}
-<span class="example" id="exm:unnamed-chunk-10"><strong>(\#exm:unnamed-chunk-10) </strong></span>El método de la grilla también puede utilizarse para simular observaciones de una distribución biparamétrica, univariada y continua. El siguiente código computacional permite utilizar el método de la grilla para simular mil valores provenientes de una distribución Gamma con parámetros $\theta = 4$, $\beta = 2$.
-\EndKnitrBlock{example}
+\BeginKnitrBlock{example}<div class="example"><span class="example" id="exm:unnamed-chunk-10"><strong>(\#exm:unnamed-chunk-10) </strong></span>El método de la grilla también puede utilizarse para simular observaciones de una distribución biparamétrica, univariada y continua. El siguiente código computacional permite utilizar el método de la grilla para simular mil valores provenientes de una distribución Gamma con parámetros $\theta = 4$, $\beta = 2$.</div>\EndKnitrBlock{example}
 
 
 ```r
@@ -202,7 +199,7 @@ mean(rgamma)
 ```
 
 ```
-## [1] 2.0219
+## [1] 1.9978
 ```
 
 ```r
@@ -210,7 +207,7 @@ var(rgamma)
 ```
 
 ```
-## [1] 0.9676981
+## [1] 1.014189
 ```
 
 ```r
@@ -218,16 +215,17 @@ hist(rgamma, freq = F)
 lines(density(rgamma), col = 2)
 ```
 
-![(\#fig:unnamed-chunk-11)Histograma de observaciones con distribución Gamma.](A3Simulacion_files/figure-latex/unnamed-chunk-11-1.pdf) 
+<div class="figure">
+<img src="A3Simulacion_files/figure-html/unnamed-chunk-11-1.svg" alt="Histograma de observaciones con distribución Gamma." width="672" />
+<p class="caption">(\#fig:unnamed-chunk-11)Histograma de observaciones con distribución Gamma.</p>
+</div>
 
-\BeginKnitrBlock{example}
-<span class="example" id="exm:unnamed-chunk-12"><strong>(\#exm:unnamed-chunk-12) </strong></span>Para comprobar el poder de este método de simulación, se presenta el siguiente código que permite simular valores de una distribución multiparamétrica, bivariada y continua. En particular, se simulan valores de la distribución Normal multivariante con vector de medias $\bmu = (2, 4)'$ y matriz de varianzas covarianzas 
+\BeginKnitrBlock{example}<div class="example"><span class="example" id="exm:unnamed-chunk-12"><strong>(\#exm:unnamed-chunk-12) </strong></span>Para comprobar el poder de este método de simulación, se presenta el siguiente código que permite simular valores de una distribución multiparamétrica, bivariada y continua. En particular, se simulan valores de la distribución Normal multivariante con vector de medias $\bmu = (2, 4)'$ y matriz de varianzas covarianzas 
 $\bSigma = 
 \begin{bmatrix} 
 25 & 30 \\
 30 & 16 
-\end{bmatrix}$ 
-\EndKnitrBlock{example}
+\end{bmatrix}$ </div>\EndKnitrBlock{example}
 
 
 ```r
@@ -288,7 +286,7 @@ colMeans(rxy.normal2)
 ```
 
 ```
-## [1] 1.9255 4.1045
+## [1] 1.6905 4.1370
 ```
 
 ```r
@@ -297,28 +295,30 @@ var(rxy.normal2)
 
 
 
-
-\begin{tabular}{r|r}
-\hline
-23.329529 & 8.589124\\
-\hline
-8.589124 & 14.194524\\
-\hline
-\end{tabular}
+|          |          |
+|---------:|---------:|
+| 24.383343|  9.634286|
+|  9.634286| 15.503735|
 
 ```r
 hist(rx.normal, freq = F)
 lines(density(rx.normal), col = 2)
 ```
 
-![(\#fig:unnamed-chunk-13-1)Histogramas de observaciones con distribución Normal bivariada.](A3Simulacion_files/figure-latex/unnamed-chunk-13-1.pdf) 
+<div class="figure">
+<img src="A3Simulacion_files/figure-html/unnamed-chunk-13-1.svg" alt="Histogramas de observaciones con distribución Normal bivariada." width="672" />
+<p class="caption">(\#fig:unnamed-chunk-13-1)Histogramas de observaciones con distribución Normal bivariada.</p>
+</div>
 
 ```r
 hist(ry.normal, freq = F)
 lines(density(ry.normal), col = 2)
 ```
 
-![(\#fig:unnamed-chunk-13-2)Histogramas de observaciones con distribución Normal bivariada.](A3Simulacion_files/figure-latex/unnamed-chunk-13-2.pdf) 
+<div class="figure">
+<img src="A3Simulacion_files/figure-html/unnamed-chunk-13-2.svg" alt="Histogramas de observaciones con distribución Normal bivariada." width="672" />
+<p class="caption">(\#fig:unnamed-chunk-13-2)Histogramas de observaciones con distribución Normal bivariada.</p>
+</div>
 
 ## Métodos de Monte Carlo vía cadenas de Markov
 
@@ -334,8 +334,7 @@ conjunta cuando es fácil muestrear de las distribuciones condicionadas. El algo
 
 La idea de este esquema es renovar cada componente por medio de la simulación de la correspondiente distribución condicional. Una vez que la cadena converge, se tiene que los valores de $\btheta$ corresponden a observaciones de la distribución requerida, $p(\btheta \mid x)$. Sin embargo, en general, no se garantiza una muestra variables aleatorias *totalmente* independientes provenientes de la distribución $p(\theta \mid x)$, dado que el esquema del muestreador de Gibbs usa el valor actual para construir el siguiente valor; por ende, la secuencia de valores que se obtiene estará correlacionada.
 
-\BeginKnitrBlock{example}
-<span class="example" id="exm:unnamed-chunk-14"><strong>(\#exm:unnamed-chunk-14) </strong></span>Se puede implementar el muestreador de Gibbs para generar una secuencia de observaciones con densidad
+\BeginKnitrBlock{example}<div class="example"><span class="example" id="exm:unnamed-chunk-14"><strong>(\#exm:unnamed-chunk-14) </strong></span>Se puede implementar el muestreador de Gibbs para generar una secuencia de observaciones con densidad
 conjunta  
 
 \begin{equation*}
@@ -353,8 +352,7 @@ varianza uno, entonces la covarianza entre ambas variables será $\rho$ [@Robert
 \begin{align*}
 x_{t+1}\mid y_t     & \sim N(\rho y_t, 1-\rho^2)\\
 y_{t+1}\mid x_{t+1} & \sim N(\rho x_{t+1}, 1-\rho^2)
-\end{align*}
-\EndKnitrBlock{example}
+\end{align*}</div>\EndKnitrBlock{example}
 
 
 ```r
@@ -375,8 +373,8 @@ colMeans(biv)
 ```
 
 ```
-##           V1           V2 
-## -0.062475391 -0.001996723
+##          V1          V2 
+## -0.02273293 -0.01762626
 ```
 
 ```r
@@ -385,16 +383,10 @@ var(biv)
 
 
 
-
-\begin{tabular}{l|r|r}
-\hline
-  & V1 & V2\\
-\hline
-V1 & 1.0126581 & 0.5045562\\
-\hline
-V2 & 0.5045562 & 0.9795653\\
-\hline
-\end{tabular}
+|   |        V1|        V2|
+|:--|---------:|---------:|
+|V1 | 0.9702333| 0.4709515|
+|V2 | 0.4709515| 0.9728540|
 
 ```r
 cor(biv)
@@ -402,29 +394,24 @@ cor(biv)
 
 
 
-
-\begin{tabular}{l|r|r}
-\hline
-  & V1 & V2\\
-\hline
-V1 & 1.0000000 & 0.5065956\\
-\hline
-V2 & 0.5065956 & 1.0000000\\
-\hline
-\end{tabular}
+|   |       V1|       V2|
+|:--|--------:|--------:|
+|V1 | 1.000000| 0.484746|
+|V2 | 0.484746| 1.000000|
 
 ```r
 plot(biv)
 ```
 
-![(\#fig:unnamed-chunk-15)Generación de valores para una distribución normal bivariada.](A3Simulacion_files/figure-latex/unnamed-chunk-15-1.pdf) 
+<div class="figure">
+<img src="A3Simulacion_files/figure-html/unnamed-chunk-15-1.svg" alt="Generación de valores para una distribución normal bivariada." width="672" />
+<p class="caption">(\#fig:unnamed-chunk-15)Generación de valores para una distribución normal bivariada.</p>
+</div>
 
-\BeginKnitrBlock{example}
-<span class="example" id="exm:unnamed-chunk-16"><strong>(\#exm:unnamed-chunk-16) </strong></span>Un problema común es el de descartar los primeros valores, puesto que el algoritmo puede demorar en obtener convergencia;
+\BeginKnitrBlock{example}<div class="example"><span class="example" id="exm:unnamed-chunk-16"><strong>(\#exm:unnamed-chunk-16) </strong></span>Un problema común es el de descartar los primeros valores, puesto que el algoritmo puede demorar en obtener convergencia;
 esto se puede resolver en forma empírica utilizando las medias y varianzas acumuladas y graficándolas se puede tomar una decisión acerca del valor óptimo en el que la cadena converge.
 
-Con el siguiente código computacional, es posible corroborar que un punto de corte óptimo desde el cual se consideraría que las cadenas simuladas anteriormente es a partir de la iteración **600**. 
-\EndKnitrBlock{example}
+Con el siguiente código computacional, es posible corroborar que un punto de corte óptimo desde el cual se consideraría que las cadenas simuladas anteriormente es a partir de la iteración **600**. </div>\EndKnitrBlock{example}
 
 
 ```r
@@ -451,12 +438,14 @@ lines(m2[2, ], lty = 2, col = 2)
 title("Diagnóstico - Varianza acumulada")
 ```
 
-![(\#fig:unnamed-chunk-17)Convergencia de la media y varianza usando el muestreador de Gibbs.](A3Simulacion_files/figure-latex/unnamed-chunk-17-1.pdf) 
+<div class="figure">
+<img src="A3Simulacion_files/figure-html/unnamed-chunk-17-1.svg" alt="Convergencia de la media y varianza usando el muestreador de Gibbs." width="672" />
+<p class="caption">(\#fig:unnamed-chunk-17)Convergencia de la media y varianza usando el muestreador de Gibbs.</p>
+</div>
 
 El muestrador de Gibbs también funciona en una "segunda fase", cuando queremos seleccionar una muestra de $f(\theta\mid x)$, es decir, la distribución de los parámetros dada la información observada $x$. 
 
-\BeginKnitrBlock{example}
-<span class="example" id="exm:GibbsN2"><strong>(\#exm:GibbsN2) </strong></span>Suponga que $y$ tiene distribución $N(\mu,\sigma^2=1/\phi)$ y queremos obtener una muestra de la distribución posterior del vector aleatorio $\btheta=(\mu,1/\phi)$. Para este caso supongamos que conocemos las distribuciones previas; para la media $\mu$ se asume una distribución uniforme y para la varianza $\phi$ una distribución Gamma con parámetros $a$ y $b$. La distribución posterior de $(\mu, \phi)$ satisface:
+\BeginKnitrBlock{example}<div class="example"><span class="example" id="exm:GibbsN2"><strong>(\#exm:GibbsN2) </strong></span>Suponga que $y$ tiene distribución $N(\mu,\sigma^2=1/\phi)$ y queremos obtener una muestra de la distribución posterior del vector aleatorio $\btheta=(\mu,1/\phi)$. Para este caso supongamos que conocemos las distribuciones previas; para la media $\mu$ se asume una distribución uniforme y para la varianza $\phi$ una distribución Gamma con parámetros $a$ y $b$. La distribución posterior de $(\mu, \phi)$ satisface:
 
 \begin{equation}  
 p(\mu, \phi \mid y) \propto (\phi)^{n/2}
@@ -496,8 +485,7 @@ distribución previa, y luego
 $m$ iteraciones, descartar los $m$ primeros valores.
 
 Entonces $(\mu_{m+1}, \sigma^2_{m+1}), (\mu_{m+2}, \sigma^2_{m+2}),\cdots,$ es
-una muestra (correlacionada) de $p(\mu, \sigma^2\mid x)$.
-\EndKnitrBlock{example}
+una muestra (correlacionada) de $p(\mu, \sigma^2\mid x)$.</div>\EndKnitrBlock{example}
 
 La siguiente función en `R` implementa el muestreador de Gibbs para el anterior ejemplo. 
 
@@ -535,7 +523,7 @@ colMeans(mc1.vals)
 ```
 
 ```
-## [1] 4.552863 4.990870
+## [1] 5.257333 4.107664
 ```
 
 
@@ -545,7 +533,10 @@ plot(mc1.vals[, 1], type = 'l', ylab = 'mu')
 plot(mc1.vals[, 2], type = 'l', ylab = 'sigma^2')
 ```
 
-![(\#fig:unnamed-chunk-19)Cadenas generadas desde el muestreador de Gibbs.](A3Simulacion_files/figure-latex/unnamed-chunk-19-1.pdf) 
+<div class="figure">
+<img src="A3Simulacion_files/figure-html/unnamed-chunk-19-1.svg" alt="Cadenas generadas desde el muestreador de Gibbs." width="672" />
+<p class="caption">(\#fig:unnamed-chunk-19)Cadenas generadas desde el muestreador de Gibbs.</p>
+</div>
 
 
 ```r
@@ -556,7 +547,10 @@ hist(mc1.vals[, 2], prob = T, xlab='sigma^2', main = "")
 lines(density(mc1.vals[, 2], kernel='gaussian'))
 ```
 
-![(\#fig:unnamed-chunk-20)Densidades posteriores generadas con el muestreador de Gibbs.](A3Simulacion_files/figure-latex/unnamed-chunk-20-1.pdf) 
+<div class="figure">
+<img src="A3Simulacion_files/figure-html/unnamed-chunk-20-1.svg" alt="Densidades posteriores generadas con el muestreador de Gibbs." width="672" />
+<p class="caption">(\#fig:unnamed-chunk-20)Densidades posteriores generadas con el muestreador de Gibbs.</p>
+</div>
 
 ### El algoritmo de Metrópolis-Hastings
 
@@ -583,10 +577,8 @@ donde $\theta_0$ denota un valor arbitrario de arranque.
 
 Siguiendo el anterior algoritmo, entonces se tiene que  $\theta_{m+1}, \theta_{m+2}, \ldots$ es una secuencia (correlacionada) de la distribución requerida. En principio, puede ser usada cualquier densidad $q$, pero si ésta es escogida ingenuamente, la eficiencia de la cadena puede ser muy pobre. La relación más importante entre el muestreados de Gibbs y el algorítmo de Metropolis-Hastings, está dada como un teorema en el libro de @Robert[pág. 296]. 
 
-\BeginKnitrBlock{proposition}
-<span class="proposition" id="prp:unnamed-chunk-21"><strong>(\#prp:unnamed-chunk-21) </strong></span>El muestreador de Gibbs es equivalente al algoritmo de Metropolis-Hastings, con la
-probabilidad de aceptación igual a uno para todos los puntos propuestos.
-\EndKnitrBlock{proposition}
+\BeginKnitrBlock{proposition}<div class="proposition"><span class="proposition" id="prp:unnamed-chunk-21"><strong>(\#prp:unnamed-chunk-21) </strong></span>El muestreador de Gibbs es equivalente al algoritmo de Metropolis-Hastings, con la
+probabilidad de aceptación igual a uno para todos los puntos propuestos.</div>\EndKnitrBlock{proposition}
 <br>
 
 Lo anterior implica que la convergencia para ambos métodos no es la misma. Para cerrar la sección de cadenas de Markov vía Monte Carlo, es importante hacernos la siguiente pregunta: ¿Son independientes las muestras simuladas? En principio no se puede hablar de independencia, pues es claro que la observación $\{i+1\}$ depende de la observación $\{i\}$. Dado que las observaciones resultantes
@@ -642,7 +634,7 @@ colMeans(mc2)
 ```
 
 ```
-## [1] 4.617579 3.292443
+## [1] 5.061780 4.744852
 ```
 
 ```r
@@ -653,7 +645,10 @@ acf(mc2[, 1], 100)
 acf(mc2[, 2], 100)
 ```
 
-![(\#fig:unnamed-chunk-23)Autocorrelación y autocorrelación parcial para las cadenas simuladas del algoritmo MH.](A3Simulacion_files/figure-latex/unnamed-chunk-23-1.pdf) 
+<div class="figure">
+<img src="A3Simulacion_files/figure-html/unnamed-chunk-23-1.svg" alt="Autocorrelación y autocorrelación parcial para las cadenas simuladas del algoritmo MH." width="672" />
+<p class="caption">(\#fig:unnamed-chunk-23)Autocorrelación y autocorrelación parcial para las cadenas simuladas del algoritmo MH.</p>
+</div>
 
 ### Buenas prácticas en la aplicación de métodos MCMC
 

@@ -1,0 +1,1145 @@
+<<echo=FALSE, message=FALSE>>=
+library(R2jags)
+library(coda)
+library(lattice)
+library(R2WinBUGS)
+library(rjags)
+library(superdiag)
+library(mcmcplots)
+library(xtable)
+library(ggplot2)
+library(plot3D)
+library(reshape2)
+library(gridExtra)
+options(scipen = 100, digits = 2)
+set.seed(12345)
+library(knitr)
+knit_theme$set("acid")
+setwd("/Users/hanwenzhang/Dropbox/Bayes")
+@
+  %--------------------
+  
+  \chapter{Modelos lineales mixtos y multinivel}
+
+En los \'ultimos a\~nos\index{Modelos jer\'arquicos}, los modelos de regresi\'on con estructura probabil\'istica jer\'arquica han venido en auge. La ventaja de los avances computacionales interviniendo en la pr\'actica estad\'istica ha permitido que el investigador utilice armas te\'oricas m\'as complejas y novedosas para modelar las observaciones y replicar el estado de la naturaleza. \citeasnoun{GelmanHill} definen este tipo de enfoques como un conjunto de m\'ultiples modelos de regresi\'on en los cuales los par\'ametros - los coeficientes de regresi\'on -  tienen una estructura probabil\'istica enmarcada en etapas superiores.
+
+El ejemplo t\'ipico para este tipo de modelos es el siguiente. En muchas escuelas se lleva a cabo un estudio observacional que tiene como objetivo predecir las notas de los estudiantes, en una prueba estatal, utilizando notas anteriores en una prueba anterior. Es posible ajustar un modelo de regresi\'on dentro de cada una de las escuelas y a su vez, los par\'ametros de cada escuela pueden ser modelados de acuerdo a variables sociales, econ\'omicas y demogr\'aficas. Como el objetivo principal est\'a enfocado en las notas individuales de cada estudiante, entonces tambi\'en se pueden ajustar modelos de regresi\'on a cada estudiante. En general, la estructura jer\'arquica es notoria puesto que se ajustan distintos modelos en distintos niveles (escuelas y estudiantes). Este tipo de modelos recibe el nombre de \emph{modelos de regresi\'on jer\'arquicos} o \emph{modelos multinivel}.
+
+Aunque es posible proponer modelos que contemplen demasiadas etapas, no es realista ajustar modelos con m\'as de tres niveles. Una formulaci\'on general para un modelo con dos niveles es la siguiente
+\begin{align*}
+\mathbf{Y} \mid \mathbf{X}_1,\bbeta_1,\bSigma_{\mathbf{Y}}
+&\sim Normal_n(\mathbf{X}_1\bbeta_1,\bSigma_{\mathbf{Y}} )\\
+\bbeta_1 \mid \mathbf{X}_2,\bbeta_2,\bSigma_{\bbeta_1}
+&\sim Normal_q(\mathbf{X}_2\bbeta_2,\bSigma_{\bbeta_1})\\
+\bbeta_2 \mid \mathbf{b},\mathbf{B}&\sim Normal_r(\mathbf{b},\mathbf{B})
+\end{align*}
+
+donde $\mathbf{b},\mathbf{B}$ son hiperpar\'ametros conocidos. N\'otese que el orden de la verosimilitud de las observaciones es $n$, el tama\~no de la muestra, mientras que el orden de la distribuci\'on previa para el par\'ametro $\bbeta_1$ es $q$, el n\'umero de variables de informaci\'on auxiliar para el primer nivel, y por \'ultimo el orden de la distribuci\'on previa para el hiperpar\'ametro $\bbeta_2$ es $r$, el n\'umero de variables de informaci\'on auxiliar para el segundo nivel.
+
+\section{Modelo lineal jer\'arquico}
+
+\subsection{ANOVA jer\'arquica}
+
+Uno de los modelos de regresi\'on m\'as utilizados y a la vez m\'as simples es el an\'alisis de varianza ANOVA a una v\'ia, el cual es un caso particular del modelo lineal general. Este enfoque considera la partici\'on de las observaciones en bloques, estratos o subgrupos que el investigador conoce de antemano, antes de la realizaci\'on del experimento. Uno de los motivos de la realizaci\'on de la partici\'on es porque se conoce que la estructura probabil\'istica (de localizaci\'on, de escala, o ambas) cambia significativamente en las observaciones con respecto al grupo de pertenencia. De esta manera, este modelo est\'a dado por la ecuaci\'on general $\mathbf{Y}=\mathbf{X}\bbeta+\beps$ toma la siguiente forma
+    \begin{equation}
+    \begin{pmatrix}
+    \mathbf{Y}_1 \\
+    \mathbf{Y}_2 \\
+    \vdots \\
+    \mathbf{Y}_J \\
+    \end{pmatrix}
+    =
+      \begin{pmatrix}
+    \mathbf{1}_{n_1} &       \mathbf{0} & \cdots & \mathbf{0} \\
+    \mathbf{0} & \mathbf{1}_{n_2} & \cdots & \mathbf{0} \\
+    \vdots &           \vdots & \ddots & \vdots \\
+    \mathbf{0} &       \mathbf{0} & \cdots & \mathbf{1}_{n_2} \\
+    \end{pmatrix}
+    \begin{pmatrix}
+    \bbeta_1 \\
+    \bbeta_2 \\
+    \vdots \\
+    \bbeta_J \\
+    \end{pmatrix}
+    +
+      \begin{pmatrix}
+    \beps_1 \\
+    \beps_2 \\
+    \vdots \\
+    \beps_J \\
+    \end{pmatrix}
+    \end{equation}
+    
+    en donde $\mathbf{Y}_j=[Y]_{ij}$ con $j=1,\ldots,J$ e $i=1,\ldots,n_j$ denota el vector de observaciones en el subgrupo $j$, $\mathbf{1}_{n_j}$ es un vector de unos de tama\~no $n_j$ y $\beps_j=[\varepsilon]_{ij}$ es el vector de errores en el subgrupo $j$. El an\'alisis bayesiano de este tipo de modelos est\'a supeditado a los resultados encontrados en cap\'itulos anteriores al reemplazar la matriz de dise\~no $\mathbf{X}$ por una matriz cuyas columnas sean de unos y de ceros.
+    
+    Sin embargo si la estructura probabil\'istica del vector de par\'ametros de inter\'es es desconocida, entonces este modelo se considera jer\'arquico y debe ser tratado como tal. Suponiendo las anteriores condiciones, una formulaci\'on del modelo, asumiendo que los hiperpar\'ametros son no informativos, es la siguiente
+    
+    \begin{align*}
+    Y_{ij} \mid \bbeta_j &\sim Normal(\bbeta_j,\sigma^2)\\
+    \bbeta_j \mid \mu,\tau^2 &\sim Normal(\mu,\tau^2)
+    \end{align*}
+    
+    con $\sigma^2$ conocido, pero $\mu$ y $\tau^2$ hiperpar\'ametros desconocidos. Fij\'andonos en la verosimilitud de todo el vector de observaciones, notamos que
+    \begin{align}
+    p(\mathbf{Y} \mid \bbeta)&=\prod_{j=1}^Jp(\mathbf{Y}_j \mid \beta_j)
+    \end{align}
+    
+    Y a su vez, N\'otese que
+    \begin{align*}
+    p(\mathbf{Y}_j \mid \beta_j)=\prod_{i=1}^{n_j}p(Y_{ij} \mid \beta_j)&\propto
+    \exp\left\{-\frac{1}{2\sigma^2}\sum_{i=1}^{n_j}(Y_{ij}-\beta_j)^2 \right\}\\
+    &\propto
+    \exp\left\{-\frac{n_j}{2\sigma^2}(\bar{Y}_{j}-\beta_j)^2 \right\}
+    \end{align*}
+    
+    Por lo tanto la expresi\'on 6.1.4 queda completamente definida como
+    
+    \begin{align}
+    p(\mathbf{Y} \mid \bbeta)\propto
+    \prod_{j=1}^{J}\exp\left\{-\frac{1}{2\sigma^2_j}(\bar{Y}_{j}-\beta_j)^2 \right\}
+    \end{align}
+    
+    donde $\sigma^2_j=\sigma^2/n_j$. Por otro lado, suponga que los hiperpar\'ametros son dependientes aunque su distribuci\'on previa conjunta es no informativa. Es decir, la distribuci\'on previa de los hiperpar\'ametros est\'a dada por
+    \begin{equation*}
+    p(\mu,\tau^2)=p(\mu \mid \tau^2)p(\tau)\propto 1
+    \end{equation*}
+    
+    Luego, siguiendo la regla de bayes y suponiendo que los hiperpar\'ametros son condicionalmente independientes de las observaciones dado el vector de par\'ametros de inter\'es, la distribuci\'on posterior del vector de par\'ametros de inter\'es $\bbeta=(\beta_1,\ldots,\beta_J)'$ y de los hiperpar\'ametros $\mu, \tau^2$ es
+    \begin{align*}
+    p(\btheta,\mu,\tau^2 \mid \mathbf{Y})
+    &\propto p(\mathbf{Y} \mid \bbeta)p(\bbeta \mid \mu,\tau^2)p(\mu,\tau^2)  \\
+    &\propto \prod_{j=1}^J p(\mathbf{Y}_j \mid \beta_j) \prod_{j=1}^J p(\beta_j \mid \mu,\tau^2)  \\
+    &\propto \exp\left\{\sum_{j=1}^J\frac{-1}{2\sigma^2_j}(\bar{y}_j-\beta_j)^2\right\}
+    \frac{1}{\tau^J}\exp\left\{\frac{-1}{2\tau^2}\sum_{j=1}^J(\theta_j-\mu)^2\right\}
+    \end{align*}
+    
+    Bajo este marco de referencia se tienen los siguientes resultados
+    
+    \begin{Res}
+    La distribuci\'on posterior del componente $\beta_j$ perteneciente al vector de par\'ametros de inter\'es $\bbeta$ es
+    \begin{equation*}
+    \beta_j\sim Normal(\mu_j,\tau_j^2)
+    \end{equation*}
+    en donde
+    \begin{equation*}
+    \mu_j=\frac{\frac{1}{\sigma^2}\bar{Y}_j+\frac{1}{\tau^2}\mu}{\frac{1}{\sigma^2_j}+\frac{1}{\tau^2}}
+    \ \ \ \ \ \ \ \text{y} \ \ \ \ \ \ \
+    \tau_j^2=\left(\frac{1}{\sigma^2_j}+\frac{1}{\tau^2}\right)^{-1}
+    \end{equation*}
+    \end{Res}
+    
+    \begin{proof}
+    La prueba del resultado es inmediata al considerar la t\'ecnica del condicionamiento posterior como en la demostraci\'on del Resultado 4.2.1. puesto que
+    \begin{align*}
+    p(\beta_j \mid \mu,\tau^2,\mathbf{Y}_j)&\propto
+    p(\beta_j,\underbrace{\mu,\tau^2}_{fijos} \mid \mathbf{Y}_j)\\
+    &\propto
+    p(\mathbf{Y}_j \mid \beta_j)p(\beta_j \mid \mu,\tau^2)p(\mu,\tau^2)\\
+    &\propto
+    p(\mathbf{Y}_j \mid \beta_j)p(\beta_j \mid \mu,\tau^2)
+    \end{align*}
+    \end{proof}
+    
+    El siguiente paso corresponde a la determinaci\'on de la distribuci\'on posterior de los hiperpar\'ametros $\mu, \tau^2$ la cual, suponiendo que la distribuci\'on previa conjunta para ambos hiperpar\'ametros es uniforme y no informativa, est\'a dada por
+    \begin{align*}
+    p(\mu, \tau^2 \mid \mathbf{Y})&\propto p(\mu,\tau^2)p(\mathbf{Y} \mid \mu,\tau^2)\\
+    &\propto \prod_{j=1}^J p(\mathbf{Y}_j \mid \mu,\tau^2)\\
+    &\propto \prod_{j=1}^J Normal(\mu,\tau^2+\sigma^2_j)
+    \end{align*}
+    
+    Lo anterior se puede deducir directamente del Resultado 4.1.1. haciendo unos peque\~nos cambios en el \'algebra. Por otro lado, el an\'alisis individual de los hiperpar\'ametros est\'a regido por la siguiente expresi\'on
+    \begin{align*}
+    p(\mu, \tau^2 \mid \mathbf{Y})=p(\mu \mid  \tau^2,\mathbf{Y})p(\tau^2 \mid \mathbf{Y})
+    \end{align*}
+    
+    En este orden de ideas, se tienen los siguientes resultados acerca de la distribuci\'on posterior para $\mu$ dada por $p(\mu \mid  \tau^2,\mathbf{Y})$ y para $\tau^2$ dada por $p(\tau^2 \mid \mathbf{Y})$
+    
+    \begin{Res}
+    La distribuci\'on posterior del hiperpar\'ametro $mu$ condicionada a $\tau^2,\mathbf{Y}$ es
+    \begin{equation*}
+    \mu \mid \tau^2,\mathbf{Y} \sim Normal \left(\hat{\mu},\hat{\tau}^2\right)
+    \end{equation*}
+    En donde
+    \begin{equation}
+    \hat{\mu}=\frac{\sum_{j=1}^J\frac{1}{\sigma^2+\tau^2}\bar{Y}_j}
+    {\sum_{j=1}^J\frac{1}{\sigma^2+\tau^2}}
+    \ \ \ \ \ \ \ \text{y} \ \ \ \ \ \ \
+    \hat{\tau}^2=\left(\sum_{j=1}^J\frac{1}{\sigma^2+\tau^2}\right)^{-1}
+    \end{equation}
+    \end{Res}
+    
+    \begin{proof}
+    Utilizando la t\'ecnica del condicionamiento posterior, N\'otese que la distribuci\'on posterior de $mu$ toma la siguiente forma
+    \begin{align*}
+    p(\mu \mid \tau^2,\mathbf{Y})&\propto p(\mu,\underbrace{\tau^2}_{fijo} \mid \mathbf{Y}) \\
+    &\propto \prod_{j=1}^J Normal(\mu,\tau^2+\sigma^2_j)
+    \end{align*}
+    
+    
+    Partiendo de este hecho, es f\'acil confirmar que
+    \begin{align*}
+    p(\mu \mid \tau^2,\mathbf{Y})
+    &\propto \exp\left\{\frac{-1}{2}\sum_{j=1}^J\frac{1}{\tau^2+\sigma^2_j}(\bar{y}_j-\mu)^2\right\}\\
+    &= \exp\left\{\frac{-1}{2}
+    \left[\sum_{j=1}^J\frac{\bar{y}_j^2}{\tau^2+\sigma^2_j}-
+    2\mu\sum_{j=1}^J\frac{y_j}{\tau^2+\sigma^2_j}+
+    \mu^2\sum_{j=1}^J\frac{1}{\tau^2+\sigma^2_j}
+    \right]\right\}\\
+    &\propto \exp\left\{\frac{-1}{2}
+    \left[\frac{\mu^2}{\hat{\tau}^2}-2\frac{\mu\hat{\mu}}{\hat{\tau}^2}\right]\right\}\\
+    &\propto \exp\left\{\frac{-1}{2}
+    \left[\frac{\mu^2}{\hat{\tau}^2}-2\frac{\mu\hat{\mu}}{\hat{\tau}^2}
+    +\frac{\hat{\mu}^2}{\hat{\tau}^2}\right]\right\}\\
+    &= \exp\left\{\frac{-1}{2\hat{\tau}^2}(\mu-\hat{\mu})^2\right\}
+    \end{align*}
+    
+    Por lo tanto, factorizando convenientemente, se encuentra una expresi\'on id\'entica a la
+    funci\'on de distribuci\'on de una variable aleatoria con distribuci\'on $Normal(\hat{\mu},\hat{\tau}^2)$.
+    \end{proof}
+    
+    \begin{Res}
+    La distribuci\'on posterior del hiperpar\'ametro $\tau$ es
+    \begin{equation*}
+    p(\tau^2 \mid \mathbf{Y})
+    \propto \sqrt{\hat{\tau}} \prod_{j=1}^J (\sigma^2_j+\tau^2)^{-1/2}\exp\left\{-\frac{1}{2(\sigma^2_j+\tau^2)}(\bar{y}_j-\hat{\mu})^2\right\}
+    \end{equation*}
+    \end{Res}
+    
+    \begin{proof}
+    En primer lugar, N\'otese que
+    \begin{align*}
+    p(\tau \mid \mathbf{Y})&= \frac{p(\mu,\tau^2 \mid \mathbf{Y})}{p(\mu \mid \tau^2,\mathbf{Y})}
+    \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \forall \mu \\
+    &\propto \frac{\prod_{j=1}^J Normal(\mu,\sigma^2+\tau^2)}{Normal(\hat{\mu},\hat{\tau}^2)}
+    \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \forall \mu
+    \end{align*}
+    
+    La anterior igualdad debe mantenerse para cualquier valor de $\mu$; en particular se debe mantener para $\mu=\hat{\mu}$. Por tanto,
+    
+    \begin{align*}
+    p(\tau \mid \mathbf{Y}) &\propto \frac{Normal(\hat{\mu},\sigma^2+\tau^2)}{Normal(\hat{\mu},\hat{\tau}^2)}\\
+    &\propto \frac{\prod_{i=1}^n Normal(\hat{\mu},\sigma^2+\tau^2)}{Normal(\hat{\mu},\hat{\tau}^2)}\\
+    &\propto \sqrt{\hat{\tau}}\prod_{j=1}^J (\sigma^2_j+\tau^2)^{-1/2}\exp\left\{-\frac{1}{2(\sigma^2_j+\tau^2)}(\bar{y}_j-\hat{\mu})^2\right\} \exp\left\{\frac{1}{2\hat{\tau}^2}(\hat{\mu}-\hat{\mu})^2\right\}\\
+    &\propto \sqrt{\hat{\tau}}\prod_{j=1}^J (\sigma^2_j+\tau^2)^{-1/2}\exp\left\{-\frac{1}{2(\sigma^2_j+\tau^2)}(\bar{y}_j-\hat{\mu})^2\right\}
+    \end{align*}
+    \end{proof}
+    
+    Como ya se debe tener en claro, en t\'erminos de simulaci\'on, los anteriores resultados garantizan una estructura formal que permita simular la distribuci\'on posterior del hiperpar\'ametro $\tau^2$, y mediante esta encontrar una estimaci\'on para reemplazarla en la distribuci\'on posterior del hiperpar\'ametro $\mu$ y repetir el proceso anterior y mediante la definici\'on de estos valores, entonces proseguir con el an\'alisis bayesiano cl\'asico.
+    
+
+\section{Modelos lineal mixto y mixto jer\'arquico}
+
+\subsection{Modelo lineal mixto}
+\begin{equation}
+\mathbf{y}=\mathbf{X}\bbeta+\mathbf{Z}\bgamma+\boldsymbol{\varepsilon}
+\end{equation}
+
+
+\subsection{Modelo lineal mixto jer\'arquico}
+
+\section{Modelo multinivel}
+
+\textcolor{red}{Gelman cap 12, 13 , 16}
+ 
+En los \'ultimos a\~nos\index{Modelos jer\'arquicos}, los modelos de regresi\'on con estructura probabil\'istica jer\'arquica han venido en auge. La ventaja de los avances computacionales interviniendo en la pr\'actica estad\'istica ha permitido que el investigador utilice armas te\'oricas m\'as complejas y novedosas para modelar las observaciones y replicar el estado de la naturaleza. \citeasnoun{GelmanHill} definen este tipo de enfoques como un conjunto de m\'ultiples modelos de regresi\'on en los cuales los par\'ametros - los coeficientes de regresi\'on -  tienen una estructura probabil\'istica enmarcada en etapas superiores.
+
+El ejemplo t\'ipico para este tipo de modelos es el siguiente. En muchas escuelas se lleva a cabo un estudio observacional que tiene como objetivo predecir las notas de los estudiantes, en una prueba estatal, utilizando notas anteriores en una prueba anterior. Es posible ajustar un modelo de regresi\'on dentro de cada una de las escuelas y a su vez, los par\'ametros de cada escuela pueden ser modelados de acuerdo a variables sociales, econ\'omicas y demogr\'aficas. Como el objetivo principal est\'a enfocado en las notas individuales de cada estudiante, entonces tambi\'en se pueden ajustar modelos de regresi\'on a cada estudiante. En general, la estructura jer\'arquica es notoria puesto que se ajustan distintos modelos en distintos niveles (escuelas y estudiantes). Este tipo de modelos recibe el nombre de \emph{modelos de regresi\'on jer\'arquicos} o \emph{modelos multinivel}.
+
+Aunque es posible proponer modelos que contemplen demasiadas etapas, no es realista ajustar modelos con m\'as de tres niveles. Una formulaci\'on general para un modelo con dos niveles es la siguiente
+\begin{align*}
+\mathbf{Y} \mid \mathbf{X}_1,\bbeta_1,\bSigma_{\mathbf{Y}}
+&\sim Normal_n(\mathbf{X}_1\bbeta_1,\bSigma_{\mathbf{Y}} )\\
+\bbeta_1 \mid \mathbf{X}_2,\bbeta_2,\bSigma_{\bbeta_1}
+&\sim Normal_q(\mathbf{X}_2\bbeta_2,\bSigma_{\bbeta_1})\\
+\bbeta_2 \mid \mathbf{b},\mathbf{B}&\sim Normal_r(\mathbf{b},\mathbf{B})
+\end{align*}
+
+donde $\mathbf{b},\mathbf{B}$ son hiperpar\'ametros conocidos. N\'otese que el orden de la verosimilitud de las observaciones es $n$, el tama\~no de la muestra, mientras que el orden de la distribuci\'on previa para el par\'ametro $\bbeta_1$ es $q$, el n\'umero de variables de informaci\'on auxiliar para el primer nivel, y por \'ultimo el orden de la distribuci\'on previa para el hiperpar\'ametro $\bbeta_2$ es $r$, el n\'umero de variables de informaci\'on auxiliar para el segundo nivel.
+
+Ilustramos el anterior planteamiento suponiendo que se quiere modelar el desempe\~no de los estudiantes del grado 11 de la educaci\'on media de Colombia en matem\'aticas, dicho desempe\~no se mide con el puntaje obtenido en matem\'aticas en el examen de Estado, Saber 11. Por otro lado, suponga que este puntaje est\'a relacionado con el estrato socio econ\'omico de la famila (estrato alto, medio o bajo), si toma clases extrainstitucionales de matem\'aticas y si el a\~no anterior hab\'ia reprobado matem\'aticas. Con esta informaci\'on, se pueden pensar inicialmente en una regresi\'on m\'ultiple de la forma $y_i=\beta_0+\beta_{1}I_{Alto,i}+\beta_{2}I_{Medio,i}+\beta_3I_{Clase,i} + \beta_4I_{Repro,i}+\epsilon_i$, para $i=1,\cdots,n$ donde $n$ denota el n\'umero de estudiantes.  
+             
+Adicionalmente, suponga que se tiene informaci\'on sobre los colegios en cuanto a la naturaleza (colegio p\'ublico o privado) y tambi\'en se conoce si cada colegio es mixto o es de un solo sexo (colegio masculino o colegio femenino). Y suponga que el tratamiento de los estudiantes repitentes de los colegios privados es muy distinto a los p\'ublicos, y suponga, adem\'as, que las brechas entre estudiantes de diferentes estratos socio econ\'omicos son menos notorias en colegios mixtos. Lo anterior se puede resumir en las siguientes ecuaciones:
+\begin{align*}
+\text{Nivel 1: estudiantes}&\ \ \ \ \ y_{ij}=\beta_0+\beta_{1j}I_{Alto,i}+\beta_{2j}I_{Medio,i}+\beta_3I_{Clase,i} + \beta_{4j}I_{Repro,i}+\epsilon_{ij},\\
+\text{Nivel 2: colegios}&\ \ \ \ \ \beta_{1j}=\gamma_0^{(1)}+I_{Mixto,j}\gamma_1^{(1)}+e_{1,j},\ \ \ e_{1,j}\sim N(0,\sigma^2_{\beta_{1j}})\\
+&\ \ \ \ \ \beta_{2j}=\gamma_0^{(2)}+I_{Mixto,j}\gamma_1^{(2)}+e_{2,j},\ \ \ e_{1,j}\sim N(0,\sigma^2_{\beta_{2j}})\\
+&\ \ \ \ \ \beta_{4j}=\gamma_0^{(4)}+I_{Privado,j}\gamma_1^{(4)}+e_{2,j},\ \ \ e_{4,j}\sim N(0,\sigma^2_{\beta_{4j}})
+\end{align*}
+             
+donde $j$ denota el colegio del estudiante $i$. $I_{Privado,j}=1$ si el $j$-\'esimo colegio es privado, y vale $0$ si el $j$-\'esimo colegio es p\'ublico; mientras que $I_{Mixto,j}=1$ si el $j$-\'esimo colegio es mixto, y vale $0$ si el $j$-\'esimo colegio es de un solo sexo.
+
+En el anterior ejemplo, el modelo para $y_{ij}$ tiene un intercepto y 4 variables regresoras, esto es, un total de 5 coeficientes de regresi\'on, donde 3 de ellos son aleatorios. En general cualesquiera par\'ametros de los coeficientes de regresi\'on pueden ser aleatorios que dependan de variables en un nivel superior. A continuaci\'on se exponen algunos casos particulares.
+
+\subsection{Intercepto aleatorio}
+Suponga que tenemos una poblaci\'on con estructura multinivel en el intercepto dado por la siguiente expresi\'on:
+\begin{align}
+y_{ij} &= \alpha_j + \beta X_{ij} + \epsilon_{ij} \label{InterAlea1}\\
+\alpha_j &= \gamma_0 + \gamma_1 U_{j}+e_{j}\label{InterAlea2}
+\end{align}
+
+donde $Var(\epsilon_{ij})=\sigma^2_y$ y $Var(e_{j})=\sigma^2_{\alpha}$ para $i=1,\ldots,n_j$ y $j=1,\ldots,J$, $X_{ij}$ es una caracter\'istica de informaci\'on auxiliar a nivel del individuo y $U_j$ es una caracter\'istica de informaci\'on auxiliar an nivel de bloque o estructura conteniendo al individuo. Tal como ilustr\'o el ejemplo de la secci\'on anterior, en estudios de calidad educativa, $y_{ij}$ puede denotar las calificaciones del alumno $i$-\'esimo perteneciente a la escuela $j$-\'esima, $X_{ij}$ puede ser cualquier caracter\'istica conocida del alumno, por ejemplo, nivel socioecon\'omico, rendimiento acad\'emico anterior al estudio, etc. $U_{j}$, denotar\'a un caracter\'istica concerniente a la escuela $j$-\'esima; por ejemplo, el puesto que ocupa en el ranking de escuelas, el presupuesto que la escuela destina a perfeccionamiento docente, la cantidad de profesores que tiene, etc. Por facilidad, aqu\'i se asume una sola variable auxiliar en ambos niveles, m\'as variables auxiliares pueden ser incluidas de forma f\'acil en el modelo. 
+
+El anterior planteamiento tambi\'en se puede escribir como: 
+\begin{align*}
+y_{ij} &\sim Normal (\alpha_j + \beta X_{ij}, \sigma^2_y )\\
+\alpha_j &\sim Normal (\gamma_0 + \gamma_1 U_{j}, \sigma^2_{\alpha})
+\end{align*}
+    
+Para hallar la forma estimar los coeficientes $\beta$, $\gamma_0$ y $\gamma_1$, N\'otese que las ecuaciones (\ref{InterAlea1}) y (\ref{InterAlea2}) son equivalentes a $y_{ij} = \gamma_0 + \gamma_1 U_{j} + \beta X_{ij} + \epsilon_{ij}+e_{j}$, que a la vez es equivalente a 
+\begin{align}
+y^{(1)}_{ij} &=\beta X_{ij} + v_{ij}\label{InterAlea3}\\
+y^{(2)}_{ij} &= \gamma_0 + \gamma_1 U_{j} + v_{ij}\label{InterAlea4}
+\end{align}
+
+donde $y^{(1)}_{ij}=y_{ij} - \gamma_0 - \gamma_1 U_{j}$, $y^{(2)}_{ij}=y_{ij}-\beta X_{ij}$ y $v_{ij}=\epsilon_{ij}+e_{j}$. La ecuaci\'on (\ref{InterAlea3}) tiene la forma de un modelo de regresi\'on sin intercepto, por lo cual, asumiendo $\gamma_0$ y $\gamma_1$ conocidos, el par\'ametro $\beta$ se puede estimar siguiendo la metodolog\'ia existente para un modelo de regresi\'on. An\'alogamente, en la ecuaci\'on (\ref{InterAlea4}) se puede estimar $\gamma_0$ y $\gamma_1$ asumiendo $\beta$ conocido. Ahora denotamos las distribuciones previas de $\beta$ y $\bgamma=(\gamma_0,\gamma_1)'$ por $\beta\sim Normal(\mu,\tau^2)$ y $\bgamma\sim Normal(\bgamma_0,\bGamma_0)$, se tiene las siguientes distribuciones condicionales de $\beta$ y $\bgamma$
+\begin{align*}
+\beta\mid \bgamma, \mathbf{y},\mathbf{X},\mathbf{U}&\sim Normal(\mu_n,\tau^2_n)\\
+\bgamma\mid \beta,\mathbf{y},\mathbf{X},\mathbf{U}&\sim Normal(\bgamma_n,\bGamma_n)
+\end{align*}
+
+con $\tau^2_n=(1/\tau^2+\sum_{i}x_i^2/(\sigma^2_y+\sigma^2_\alpha))^{-1}$, $\mu_n=\tau^2_n(\mu/\tau^2+\sum x_{ij}y_{ij}^{(1)}/(\sigma^2_y+\sigma^2_\alpha))$, $\bGamma_n=(\bGamma_0^{-1}+\mathbf{U}'\bSigma_v^{-1}\mathbf{U})^{-1}$ y $\bgamma_n=\bGamma_n(\bGamma_0^{-1}\bgamma_0+\mathbf{U}'\bSigma_v^{-1}\mathbf{y}^{(2)})$. $\mathbf{U}$ es la matriz de dimensi\'on $n\times 2$ que contiene la columna de unos y los datos de $U_j$, $\mathbf{y}^{(2)}$ es el vector que contiene los datos de $y_{ij}^{(2)}$ y $\bSigma_v=(\sigma^2_y+\sigma^2_\alpha)\mathbf{I}_n$.
+
+A continuaci\'on, se ilustraci\'on la simulaci\'on del modelo que permite a los lectores tener una mejor concepci\'on sobre el modelo. En primer lugar, suponemos que existen tres bloques o estructuras jer\'arquicas (en el caso del anterior ejemplo, existir\'an tres escuelas). En la primera escuela se realiz\'o una muestra aleatoria simple de 10 estudiante, en la seguda se observaron a 30 estudiantes, al igual que en la \'ultima. Luego, se especifican los par\'ametros del modelo; en este caso, $\beta$, $\gamma_0$, $\gamma_1$, $\sigma^2_y$ y $\sigma^2_{\alpha}$ .
+    
+<<>>=
+    library(mvtnorm)
+    
+    ## Simulating the population
+    b <- -0.5
+    g0 <- 5
+    g1 <- 2
+    sig.y <- 0.8
+    sig.a <- 0.2
+@
+    
+    La siguiente instrucci\'on permite simular la variable de informaci\'on auxiliar para las escuelas y tambi\'en los interceptos aleatorios del modelo.
+    
+<<>>=
+    J=3
+    u <- runif(J, 100, 250)
+    a <- rnorm(J, g0 + g1*u, sig.a)
+    a
+@
+    
+    El siguiente paso es concerniente a la simulaci\'on de los valores de los individuos
+<<>>=
+    n.j <- c(10,30,30)
+    n <- sum(n.j)
+    escuela <- rep(c(1,2,3),n.j)
+    u.e <- cbind(1,rep(u, n.j))
+    x <- runif(n, 10, 40)
+    y <- rnorm(n, a[escuela] + b*x, sig.y)
+    y
+@
+    
+Como se observ\'o en la teor\'ia expuesta anteriormente, para obtener inferencias posterior de los par\'ametros de inter\'es $\beta$, $\gamma_0$ y $\gamma_1$, es necesario utilizar la t\'ecnica del condicionamiento sucesivo junto con el m\'etodo de Gibbs. Para esto se especifican los valores de la distribuci\'on previa de los par\'ametros.
+    
+<<>>=
+    ## Verosimilitud
+    Sigma.y <- diag(rep(sig.y^2+sig.a^2, n))
+    
+    ## previas
+    b.pri <- 0
+    B.pri <- 1000
+    g.pri <- c(0,0)
+    G.pri <- diag(c(100, 100))
+@
+    
+    Luego, se crean dos funciones que permiten la simulaci\'on de valores provenientes de las distribuci\'on posterior condicional de $\beta$ y de $(\gamma_0, \gamma_1)'$. Estas funciones, siguiendo el esp\'iritu de la t\'ecnica del condicionamiento sucesivo, depende valores iniciales de los par\'ametros.
+<<>>=
+    ## posterior beta
+    pos.beta<- function(g0.ini, g1.ini){
+      a.now <- g0.ini + g1.ini*u
+      y.beta <- y - a.now[escuela]
+      B.pos <- solve((1/B.pri)+t(x)%*%solve(Sigma.y)%*%x)
+      b.pos <- B.pos*((b.pri/B.pri)+t(x)%*%solve(Sigma.y)%*%y.beta)
+      rnorm(1, b.pos, sqrt(B.pos))
+    }
+    
+    ## posterior gama
+    pos.gama<- function(b.ini){
+      y.gama <- y - x*b.ini
+      G.pos <- solve(solve(G.pri)+t(u.e)%*%solve(Sigma.y)%*%u.e)
+      g.pos <- G.pos%*%(solve(G.pri)%*%g.pri+t(u.e)%*%solve(Sigma.y)%*%y.gama)
+      rmvnorm(1,g.pos,G.pos)
+    }
+@
+    
+    Por \'ultimo, se fijan los valores iniciales y se programa el sencillo m\'etodo de Gibbs cuya convergencia es bastante r\'apida. El n\'umero de simulaciones es de 1000 y el periodo de calentamiento es la mitad de las cadenas. Es decir, se supone que las cadenas convergen despu\'es de la iteraci\'on 500.
+    
+<<fig.height=4>>=
+    # Gibbs sampler
+    nsim=1000
+    b.ini <- -50
+    g.ini <- c(50, 20)
+    b.mcmc <- matrix(NA, nrow=nsim, 1)
+    g.mcmc <- matrix(NA, nrow=nsim, 2)
+    
+    for(k in 1:nsim){
+      b.mcmc[k,] <- b.ini
+      g.mcmc[k,] <- g.ini
+      b.ini <- pos.beta(g.ini[1], g.ini[2])
+      g.ini <- pos.gama(b.ini)
+    }
+    
+    mean(b.mcmc[-(1:(nsim/2))])
+    
+    gamma.est <- colMeans(g.mcmc[-(1:(nsim/2)),])
+    gamma.est
+    par(mfrow=c(1,3))
+    ts.plot(b.mcmc)
+    ts.plot(g.mcmc[,1])
+    ts.plot(g.mcmc[,2])
+@
+    
+Las estimaciones bayesianas est\'an dadas por $\hat{\beta}=-0.49$, $\hat{\gamma}_0=4.5$ y $\hat{\gamma}_1=2.0$. En la gr\'afica observamos comportamiento de las cadenas y su r\'apida convergencia, a\'un cuando los valores iniciales est\'an bastante alejados de los valores reales. tambi\'en podemos calcular una estimaci\'on para los 3 interceptos aleatorios como sigue a continuaci\'on.
+<<>>=
+    gamma.est[1] + gamma.est[2] * u
+    @
+    
+Los anteriores c\'odigos tienen como objetivo profundizar en los lectores la estructura de datos de un modelo con intercepto aleatorio, as\'i como el proceso de estimaci\'on de estos modelos. A continuaci\'on se ilustra la programaci\'on de la estimaci\'on del modelo en \verb'JAGS'. 
+
+\colorbox{black}{\textcolor{white}{\textbf{c\'odigo JAGS}}}
+<<>>=
+    u.ind <- rep(c(1:J), n.j)
+    InterRandom.model <- function(){
+  #### Modelo del nivel 1
+  for(i in 1:n){
+    y[i] ~ dnorm(mu[i], tau.y)
+    mu[i] <- alpha[u.ind[i]] + beta*x[i]
+  }
+      tau.y <- 1/(sig.y^2)
+  #### Modelo del nivel 2
+  for(j in 1:J){
+    alpha[j] ~ dnorm(mu.a[j], tau.a)
+    mu.a[j] <- gam.0 + gam.1 * u[j]  
+  }
+    tau.a <- 1/(sig.a^2)
+
+  # Distribuciones previas
+    beta ~ dnorm(0, 0.0001)    
+    gam.0 ~ dnorm(0, 0.0001)
+    gam.1 ~ dnorm(0, 0.0001)
+}
+
+####### fin del modelo en JAGS ########
+
+InterRandom.data <- list("y", "J","x","n","u.ind","u","sig.a", "sig.y")
+InterRandom.param <- c("beta", "gam.0", "gam.1", "alpha")
+InterRandom.inits <- function() {
+  list("beta"=c(0), "gam.0"=c(0), "gam.1"=c(0))
+}
+
+Model.fit <- jags(data=InterRandom.data, inits=InterRandom.inits, InterRandom.param, n.iter=10000, 
+               n.burnin=1000, model.file=InterRandom.model)
+
+print(Model.fit)
+    @
+Observamos que la estimaci\'on de los interceptos aleatorios $\alpha_1$, $\alpha_2$ y $\alpha_3$ son similares los obtenidos previamente, al igual que la estimaci\'on de los par\'ametros $\beta$, $\gamma_0$ y $\gamma_1$. 
+
+En \verb'R', este modelo se puede estimar en el enfoque cl\'asico con el paquete \verb'lme4' tal como se ilustra a continuaci\'on:
+
+\colorbox{black}{\textcolor{white}{\textbf{c\'odigo R}}}
+<<>>=
+   library(lme4)
+    u.factor <- rep(u, n.j)
+    M <- lmer(y ~ (1|u.factor) + x)
+    coef(M)
+@
+
+\subsection{Modelo general para regresi\'on en dos niveles}
+             
+Esta secci\'on empieza con la advertencia que da \citeasnoun{Gamer06} acerca de que en muy pocos casos es posible encontrar una soluci\'on anal\'itica\footnote{Referente a la utilizaci\'on de t\'ecnicas de integraci\'on.} a este tipo de enfoques jer\'arquicos. Sin embargo, lo anterior no significa que un an\'alisis bayesiano propiamente dicho no sea posible de realizar. Como se concluir\'a m\'as adelante, la t\'ecnica del condicionamiento posterior ser\'a un baluarte importante en la inferencia bayesiana de los modelos lineales jer\'arquicos.
+             
+Consideramos un modelo de regresi\'on que describa la relaci\'on entre una variable de inter\'es $\mathbf{Y}$ y variables auxiliares $X_1,\cdots,X_q$ (la variable $X_1$ puede ser la costante 1 para incluir el intercepto en el modelo). Asumimos que el efecto de las primeras $q_1$ ($q_1\leq q$) variables auxiliares sobre $\mathbf{Y}$ depende de informaciones de un nivel superior que tiene $J$ agrupaciones (en el caso de datos recolectados en estudiantes, si estos pertenecene a 4 escuelas diferentes, entonces $J=4$). En este caso, cada una de estas $q_1$ variables auxiliares tendr\'a $J$ coeficientes de regresi\'on, dependiendo en cu\'al de las agrupaciones se encuetra cada individuo. Para ilustrar c\'omo es la presentaci\'on matricial de este modelo, consideramos el modelo $y_{i}=\beta_0+\beta_{1[j]}x_i=\epsilon_i$ para $j=1,2$. Estos es un modelo de regresi\'on con pendiente aleatorio, y el nivel dos tiene 2 agrupaciones. Supongamos que de los $n$ individuos, $n_1$ se encuentran en la primera agrupaci\'on, y $n_2$ en la segunda, entonces, entonces este modelo se puede escribir como
+\begin{equation*}
+\mathbf{y}=
+\begin{pmatrix}
+y_1\\ \vdots\\ y_{n_1}\\ y_{n_1+1}\\ \vdots\\ y_{n}
+\end{pmatrix}=
+\begin{pmatrix}
+1&x_1&0\\
+\vdots&\vdots&\vdots\\
+1&x_{n_1}&0\\
+1&0&x_{n_1+1}\\
+\vdots&\vdots&\vdots\\
+1&0&x_{n}\\
+\end{pmatrix}
+\begin{pmatrix}
+\beta_0\\ \beta_{1[1]}\\ \beta_{1[2]}
+\end{pmatrix}=
+\beta_0
+\begin{pmatrix}
+1\\ \vdots\\1
+\end{pmatrix}
++ 
+\begin{pmatrix}
+x_1&0\\
+\vdots&\vdots\\
+x_{n_1}&0\\
+0&x_{n_1+1}\\
+\vdots&\vdots\\
+0&x_{n}\\
+\end{pmatrix}
+\begin{pmatrix}
+\beta_{1[1]}\\ \beta_{1[2]}
+\end{pmatrix}
+\end{equation*}
+
+Teniendo en cuenta la anterior ilustraci\'on, retomamos el caso general de $q$ variables auxiliares, notamos que si los efectos de $q_1$ variables auxiliares dependen de un nivel superior de $J$ agrupaciones, entonces el vector de estos coeficientes es de tama\~no $(q_1J)\times 1$, mientras que el vector de los dem\'as coeficientes de regresi\'on es de $q_2\times 1$ (con $q_1+q_2=q$). El modelo general viene dado por
+\begin{equation}\label{Nivel1_Reg2}
+\mathbf{Y}=\mathbf{X}_1\bbeta^{(1)}+\mathbf{X}_2\bbeta^{(2)}+\boldsymbol{\epsilon}
+\end{equation}
+
+donde $\mathbf{X}_1$ y $\mathbf{X}_2$ son las matrices de variables auxiliares de dimensi\'on $n\times(q_1J)$ y $n\times q_2$, $\bbeta^{(1)}$ y $\bbeta^{(2)}$ son los vectores de coeficientes de regresi\'on de dimensi\'on $(q_1J)\times 1$ y $q_2\times 1$, respectivamente. De esta forma, $\bbeta^{(1)}$ contiene los coeficientes de regresi\'on que depende de informaci\'on de un nivel superior, y $\bbeta^{(2)}$ depende de los coeficientes de regresi\'on constantes. $\boldsymbol{\epsilon}\sim Normal(\mathbf{0},\sigma^2\mathbf{I}_n)$.
+
+Ahora, resumimos la informaci\'on auxiliar del nivel dos en la matriz $\mathbf{U}$ de tama\~no $(q_1J)\times(q_1r)$, es decir, asumimos $r$ variables auxliares del nivel dos, (una de ellas puede ser la constante 1 para as\'i incluir el intercepto en el modelo) y cada una de ellas tiene un efecto diferente en las diferentes agrupaciones, y el modelo viene dado por 
+\begin{equation}\label{Nivel2_Reg}
+\bbeta^{(1)}=\mathbf{U}\bgamma+\mathbf{e}
+\end{equation}
+
+donde $\bgamma$ es el vector de coeficientes de tama\~no $(q_1r)\times 1$ y $\mathbf{e}\sim Normal(\mathbf{0},\bSigma_{\bbeta^{(1)}})$.
+
+Los par\'ametros de inter\'es son $\bbeta^{(2)}$, $\bgamma$, $\sigma^2$ y $\bSigma_{\bbeta^{(1)}}$ y a continuaci\'on discutimos el tratamiento bayesiano de ellos. La estimaci\'on del vector de par\'ametros $\bbeta^{(1)}$ se logra con base en la expresi\'on (\ref{Nivel2_Reg}) usando las estimaciones de $\bgamma$.
+
+\subsubsection{$\bbeta^{(1)}$ con matriz de varianzas y covarianzas conocida}
+             
+Suponiendo que la matriz de varianzas $\bSigma_{\bbeta^{(1)}}$ para el vector de par\'ametros $\bbeta^{(1)}$ tiene una estructura conocida, tenemos las siguientes distribuciones previas para los par\'ametros de inter\'es:
+\begin{align*}
+\bbeta^{(2)}&\sim Normal(\mathbf{b},\mathbf{B})\\
+\bgamma&\sim Normal(\bgamma_0,\bGamma_0)\\
+\sigma^2&\sim Inversa-Gamma\left( \frac{n_0}{2}, \frac{n_0\sigma^2_0}{2}\right)
+\end{align*}
+
+N\'otese que al reemplazar el modelo de regresi\'on para $\bbeta^{(1)}$ en el modelo (\ref{Nivel1_Reg2}), se tiene que 
+\begin{align*}
+\mathbf{Y}&=\mathbf{X}_1(\mathbf{U}\bgamma+\mathbf{e})+\mathbf{X}_2\bbeta^{(2)}+\boldsymbol{\epsilon}\\
+&=\mathbf{X}_1\mathbf{U}\bgamma + \mathbf{X}_2\bbeta^{(2)} + \mathbf{X}_1\mathbf{e}+\boldsymbol{\epsilon}
+\end{align*}
+
+A su vez, este modelo se puede escribir como 
+\begin{equation}\label{Reg_Multinivel}
+\mathbf{Y}=\tilde{\mathbf{X}}_1\bgamma + \mathbf{X}_2\bbeta^{(2)} + \mathbf{v}
+\end{equation}
+
+con $\tilde{\mathbf{X}}_1=\mathbf{X}_1\mathbf{U}$ y $\mathbf{v}= \mathbf{X}_1\mathbf{e}+\boldsymbol{\epsilon}$. Asumiendo independencia entre $\mathbf{e}$ y $\boldsymbol{\epsilon}$, tenemos que la distribuci\'on de $\mathbf{v}$ est\'a dada por $\mathbf{v}\sim Normal(\mathbf{0}, \mathbf{X}_1\bSigma_{\bbeta^{(1)}}\mathbf{X}_1'+\sigma^2\mathbf{I}_n)$. Ahora, la ecuaci\'on (\ref{Reg_Multinivel}) se puede escribir como
+\begin{align*}
+\mathbf{Y}_1&  = \mathbf{Y}-\tilde{\mathbf{X}}_1\bgamma = \mathbf{X}_2\bbeta^{(2)} + \mathbf{v}\\
+\mathbf{Y}_2 &= \mathbf{Y}-\mathbf{X}_2\bbeta^{(2)} = \tilde{\mathbf{X}}_1\bgamma  + \mathbf{v}
+\end{align*}
+
+La primera de las dos anteriores expresiones corresponde a un modelo de regresi\'on entre $\mathbf{Y}_1$ y $\mathbf{X}_2$ y la segunda, entre $\mathbf{Y}_2$ y $\tilde{\mathbf{X}}_1$. Recurriendo a los resultados ya desarrollados en la secci\'on \ref{Mod_Lin_general}, tenemos las siguientes distribuciones condicionales para $\bbeta^{(2)}$ y $\bgamma$:
+\begin{align*}
+\beta^{(2)}&\mid \bgamma, \sigma^2,\mathbf{Y}, \mathbf{X}_1, \mathbf{X}_2, \mathbf{U} \sim Normal(\mathbf{b}^*,\mathbf{B}^*)\\
+\bgamma&\mid \bbeta^{(2)}, \sigma^2,\mathbf{Y}, \mathbf{X}_1, \mathbf{X}_2, \mathbf{U} \sim Normal(\bgamma^*,\bGamma^*)
+\end{align*}
+
+con 
+\begin{align*}
+\mathbf{b}^*&=\mathbf{B}^*\left[\mathbf{B}^{-1}\mathbf{b}+\mathbf{X}_2'(\mathbf{X}_1\bSigma_{\bbeta^{(1)}}\mathbf{X}_1'+\sigma^2\mathbf{I}_n)^{-1}\mathbf{Y}_1\right]\\
+\mathbf{B}^*&=\left[\mathbf{B}^{-1}+\mathbf{X}_2'(\mathbf{X}_1\bSigma_{\bbeta^{(1)}}\mathbf{X}_1'+\sigma^2\mathbf{I}_n)^{-1}\mathbf{X}_2\right]^{-1}\\
+\bgamma^*&=\bGamma^*\left[\bGamma_0^{-1}\bgamma_0+\tilde{\mathbf{X}}_1'(\mathbf{X}_1\bSigma_{\bbeta^{(1)}}\mathbf{X}_1'+\sigma^2\mathbf{I}_n)^{-1}\mathbf{Y}_2\right]\\
+\bGamma^*&=\left[\bGamma_0+\tilde{\mathbf{X}}'_1(\mathbf{X}_1\bSigma_{\bbeta^{(1)}}\mathbf{X}_1'+\sigma^2\mathbf{I}_n)^{-1}\tilde{\mathbf{X}}_1\right]^{-1}
+\end{align*}
+
+En cuanto a la estimaci\'on del par\'ametro $\sigma^2$, una alternativa trivial puede ser siguiendo la teor\'ia desarrollada en la secci\'on \ref{ML_Beta_Sigma2_Indepen}. Esto es, la distribuci\'on posterior condicional de $\sigma^2$ est\'a dada por
+\begin{equation*}
+\sigma^2\mid\bbeta^{(1)},\bbeta^{(2)},\mathbf{Y},\mathbf{X}_1,\mathbf{X}_2\sim Inversa _ Gamma\left(\frac{n_1}{2},\frac{n_1\sigma^2_{\bbeta}}{2}\right)
+\end{equation*}
+
+con $n_1=n+n_0$, $n_1\sigma^2_{\bbeta}=(\mathbf{Y}-\mathbf{X}_1\bbeta^{(1)}-\mathbf{X}_2\bbeta^{(2)})'(\mathbf{Y}-\mathbf{X}_1\bbeta^{(1)}-\mathbf{X}_2\bbeta^{(2)})+n_0\sigma^2_0$. N\'otese en la anterior expresi\'on, $\bbeta^{(1)}$ se debe reemplazar por $\mathbf{U}\bgamma$. Otra forma de estimar la varianza $\sigma^2$ es usar el modelo (\ref{Reg_Multinivel}) para encontrar la distribuci\'on posterior de $\sigma^2$ condicionado a $\bgamma$ y $\bbeta^{(2)}$, esta distribuci\'on viene dada por
+\begin{equation*}
+p(\sigma^2|\bgamma^{(2)},\bgamma,mathbf{Y},\mathbf{X}_1,\mathbf{X}_2,\mathbf{U})\propto |\mathbf{X}_1\bSigma_{\bbeta^{(1)}}\mathbf{X}_1'+\sigma^2\mathbf{I}_n|^{-1/2}\exp\left\{-\frac{1}{2}(\mathbf{Y}-\tilde{\mathbf{X}}_1\bgamma-\mathbf{X}_2\bbeta^{(2)})'(\mathbf{X}_1\bSigma_{\bbeta^{(1)}}\mathbf{X}_1'+\sigma^2\mathbf{I}_n)^{-1}(\mathbf{Y}-\tilde{\mathbf{X}}_1\bgamma-\mathbf{X}_2\bbeta^{(2)})\right\}\frac{1}{\sigma^2}
+\end{equation*}, la dificultad radica en que esta distribuci\'on posterior no corresponder\'ia a una distribuci\'on conocida, y se debe usar m\'etodos de simulaci\'on como el Metropolis-Hastings o el m\'etodo de la grilla para generar los valores de $\sigma^2$.
+
+\begin{Eje}\label{Eje_Reg_2_nivel} Para ilustar el anterior procedmiento de estimaci\'on, simulamos datos del siguiente modelo de regresi\'on con dos niveles
+\begin{align*}
+y_i&=\beta_0 + \beta_{1[j]}x_{i1} + \beta_{2[j]}x_{i2} + \beta_3x_{i3} + \epsilon_i\\
+\beta_{1[j]}&=\gamma_0^{(1)}+\gamma_1^{(1)}u_j+e_{1,j}\\
+\beta_{2[j]}&=\gamma_0^{(2)}+\gamma_1^{(2)}u_j+e_{2,j}
+\end{align*}
+
+para $j=1,2,3$. En el anterior modelo, $q_1=q_2=r=2$, $J=3$. Tomamos $\beta_0=1$, $\beta_3=-5$, $\gamma_0^{(1)}=5$, $\gamma_1^{(1)}=2$, $\gamma_0^{(2)}=0$ y $\gamma_1^{(2)}=-2$, $V(\epsilon_i)=0.8$, $V(e_{1,j})=0.2$ y $V(e_{2,j})=0.4$, tambi\'en asumimos independencia entre $e_{1,j}$ y $e_{2,j}$, esto es, la matriz de varianzas del vector $\bbeta^{(1)}$ est\'a dada por $\bSigma_{\beta^{(1)}}=\begin{pmatrix}0.2\mathbf{I}_3&\mathbf{0}\\ \mathbf{0}&0.4\mathbf{I}_3\end{pmatrix}$. tambi\'en hacemos notar que el modelo de regresi\'on de nivel dos se puede escribir de forma matricial como
+\begin{equation*}
+\begin{pmatrix}
+\beta_{1[1]}\\\beta_{1[2]}\\\beta_{1[3]}\\\beta_{2[1]}\\\beta_{2[2]}\\\beta_{2[3]}
+\end{pmatrix}=
+\begin{pmatrix}
+1&u_1&0&0\\
+1&u_2&0&0\\
+1&u_3&0&0\\
+0&0&1&u_1\\
+0&0&1&u_2\\
+0&0&1&u_3\end{pmatrix}
+\begin{pmatrix}
+\gamma_{0}^{(1)}\\\gamma_{1}^{(1)}\\\gamma_{0}^{(2)}\\\gamma_{1}^{(2)}
+\end{pmatrix}+
+\begin{pmatrix}
+e_{1,1}\\e_{1,2}\\e_{1,3}\\e_{2,1}\\e_{2,2}\\e_{2,3}
+\end{pmatrix}
+\end{equation*}
+
+En primer lugar, simulamos la informaci\'on auxiliar del segundo nivel
+<<>>=
+set.seed(12345)
+J=3
+sig.b1 <- 0.2; sig.b2 <- 0.4
+u <- rnorm(J, 3, 2)
+g0.b1 <- 5; g1.b1 <- 2
+g0.b2 <- 0; g1.b2 <- -2
+b1 <- rnorm(J, g0.b1 + g1.b1 * u, sig.b1)
+b2 <- rnorm(J, g0.b2 + g1.b2 * u, sig.b2)
+b1
+b2
+@
+Ahora simulamos los datos del primer nivel
+<<>>=
+n.j <- c(20, 30, 30)
+n <- sum(n.j)
+sig.y <- 0.8
+beta0 <- 1; beta3 <- -5
+beta1 <- rep(b1, n.j)
+beta2 <- rep(b2, n.j)
+x1 <- runif(n, 1, 4)
+x2 <- rexp(n, 1)
+x3 <- runif(n, 2, 7)
+q1 <- q2 <- r <-2
+y <- rnorm(n, beta0+ beta1*x1 + beta2*x2 + beta3*x3, sig.y)
+@
+La distribuci\'on previa utilizado para los coeficientes de regresi\'on corresponde a $N(0,1000)$ y para la varianza $\sigma^2$ se utiliza la previa no informativa $p(\sigma^2)\propto 1/\sigma^2$. A continuaci\'on se muestran las funciones para muestrear valores de $\bbeta^{(2)}$, $\bgamma$ y $\sigma^2$ (se utiliza el m\'etodo de la grilla para muestrear valores de $\sigma^2$).
+<<>>=
+# Distribuciones previas
+b.pri <- rep(0, 2); B.pri <- diag(1000, 2)
+g.pri <- rep(0, 4); G.pri <- diag(1000,4)
+# Matrices necesarias
+Aux <- matrix(c(rep(1,n.j[1]),rep(0,n),rep(1,n.j[2]),rep(0,n), rep(1,n.j[3])),ncol=J)
+X1 <- cbind(Aux*matrix(rep(x1,J),ncol=J),Aux*matrix(rep(x2,J),ncol=J))
+X2 <- cbind(1, x3)
+U <- kronecker(diag(c(1,1)), cbind(1, u))
+X1.tilde <- X1%*%U
+Sigma.beta <- diag(rep(c(sig.b1,sig.b2),c(J,J)))
+
+library(mvtnorm)
+library(MCMCpack)
+# Funcion para muestrar valor de beta
+pos.beta2<- function(gamma, sigma2){
+  Sigma.tilde <- solve(X1%*%Sigma.beta%*%t(X1) + sigma2*diag(1,n))
+  Y1 <- y - X1.tilde%*%gamma
+  B.pos <- solve(solve(B.pri) + t(X2)%*%Sigma.tilde%*%X2)
+  b.pos <- B.pos%*%(B.pri%*%b.pri + t(X2)%*%Sigma.tilde%*%Y1)
+  rmvnorm(1, b.pos, B.pos)
+}
+
+# Funcion para muestrar valor de gamma
+pos.gamma <- function(beta, sigma2){
+  Sigma.tilde <- solve(X1%*%Sigma.beta%*%t(X1) + sigma2*diag(1,n))
+  Y2 <- y - X2%*%beta
+  G.pos <- solve(solve(G.pri) + t(X1.tilde)%*%Sigma.tilde%*%X1.tilde)
+  g.pos <- G.pos%*%(G.pri%*%g.pri + t(X1.tilde)%*%Sigma.tilde%*%Y2)
+  rmvnorm(1, g.pos, G.pos)
+}
+# Funci\'on para muestrear valor de matriz de varianzas 
+f.sigma2 <- function(sigma2, beta, gamma){
+  Var.e <- X1%*%Sigma.beta%*%t(X1) + sigma2*diag(1,n)
+  e <- as.matrix(y - X1.tilde%*%gamma - X2%*%beta)
+  (det(Var.e))^(-0.5) * exp(-0.5*t(e)%*%solve(Var.e)%*%e) / sigma2
+}
+pos.sigma2 <- function(beta, gamma){
+  sigma2.est <- (summary(lm(y~X1.tilde+X2))$sigma)^2
+  sigma2.gri <- seq(sigma2.est*0.1, sigma2.est*10, length.out = 50)
+  densidad <- c()
+for(k in 1:length(sigma2.gri)){
+densidad[k] <- f.sigma2(sigma2.gri[k], beta, gamma) 
+}
+  densidad <- densidad/sum(densidad)
+  sample(sigma2.gri, 1, prob = densidad)
+}
+# aqu\'i inicia el muestreador de Gibbs
+n.sim <- 1000
+res_sigma2 <- rep(10, n.sim)
+res_beta2 <- matrix(0, n.sim, q2)
+res_gamma <- matrix(0, n.sim, q1*r)
+for(i in 2:n.sim){
+  res_beta2[i,] <- pos.beta2(res_gamma[i-1,], res_sigma2[i-1])
+  res_gamma[i,] <- pos.gamma(res_beta2[i,], res_sigma2[i-1])
+  res_sigma2[i] <- pos.sigma2(res_beta2[i,], res_gamma[i,])
+}
+@
+A continuaci\'on se revisa la convergencia de la cadena as\'i coom el grado de correlaci\'on entre los valores muestreados
+<<fig.height=8>>=
+par(mfrow=c(3,4))
+ts.plot(res_gamma[,1]); ts.plot(res_gamma[,2])
+ts.plot(res_gamma[,3]); ts.plot(res_gamma[,4])
+ts.plot(res_beta2[,1]); ts.plot(res_beta2[,2])
+ts.plot(res_sigma2)
+par(mfrow=c(3,4))
+acf(res_gamma[,1]); acf(res_gamma[,2])
+acf(res_gamma[,3]); acf(res_gamma[,4])
+acf(res_beta2[,1]); acf(res_beta2[,2])
+acf(res_sigma2)
+@
+Habiendo asegurado la convergencia y notado la correlaci\'on de hasta 3 rezagos en algunos par\'ametros se procede a conservar la segunda mitad de los valores muestreados y tambi\'en a descartar valores consecutivos para eliminar estas correlaciones. El c\'alculo de las estimaciones finales de los par\'ametros es:
+<<>>=
+beta2.final <- colMeans(res_beta2[-(1:(n.sim/2)),][seq(1,n.sim/2,by=4),])
+gamma.final <- colMeans(res_gamma[-(1:(n.sim/2)),][seq(1,n.sim/2,by=4),])
+beta1.final <- U%*%gamma.final
+sigma2.final <- mean(res_sigma2[-(1:(n.sim/2))][seq(1,n.sim/2,by=4)])
+t(beta1.final)
+beta2.final
+gamma.final
+sigma2.final
+@
+En la siguiente tabla se muestra un comparativo entre los valores verdaderos de los par\'ametros y los valores estimados. Podemos ver que en general las estimaciones son similares a los par\'ametros verdaderos, a pesar de que el tama\~nos muestral en total es relativamente peque\~no.
+\begin{table}[!htb]\label{Result_Reg_2_nivel}
+\centering
+\begin{tabular}{|c|c|c|}\hline
+par\'ametro&Valor real&Estimaci\'on\\\hline
+$\beta_0$&1&0.83\\\hline
+$\beta_{1[1]}$&13.3&13.3\\
+$\beta_{1[2]}$&14.0&13.9\\
+$\beta_{1[3]}$&10.2&10.0\\\hline
+$\beta_{2[1]}$&-8.1&-8.3\\
+$\beta_{2[2]}$&-8.9&-8.8\\
+$\beta_{2[3]}$&-5.7&-5.4\\\hline
+$\beta_3$&-5&-4.97\\
+$\gamma_0^{(1)}$&5&3.39\\
+$\gamma_1^{(1)}$&2&2.39\\
+$\gamma_0^{(2)}$&0&0.19\\
+$\gamma_1^{(2)}$&-2&-2.03\\\hline
+$\sigma^2$&0.64&0.67\\\hline
+\end{tabular}
+\end{table}
+
+La elaboraci\'on de los c\'odigos en \verb'JAGS' se deja como ejercicio a los lectores.
+\end{Eje}
+
+\subsubsection{$\bbeta_1$ con matriz de varianzas y covarianzas desconocida}
+Por otro lado, en algunas ocasiones es m\'as realista asumir que no se conoce la matriz $\bSigma_{\bbeta^{(1)}}$ aunque si se puede tener alguna idea del comportamiento probabil\'istico de esta matriz que refleja estructura de variaci\'on del vector de par\'ametros de inter\'es. De esta forma, es necesario incluir a $\bSigma_{\bbeta^{(1)}}$ en la estimaci\'on de los par\'ametros de la secci\'on anterior por medio del muestreador de Gibbs, por lo cual es necesario hallar la distribuci\'on posterior de $\bSigma_{\bbeta^{(1)}}$ condicionado en los dem\'as par\'ametros. Para eso, notamos que:
+\begin{equation*}
+p(\mathbf{Y},\bbeta^{(1)},\bbeta^{(2)},\bgamma, \sigma^2,\bSigma_{\bbeta_1})
+=p(\mathbf{Y} \mid \bbeta^{(1)},\bbeta^{(2)}, \sigma^2)p(\bbeta^{(1)} \mid \bgamma,\bSigma_{\bbeta_1})p(\bbeta^{(2)})p(\sigma^2)p(\bSigma_{\bbeta^{(1)}})
+\end{equation*}
+    
+Suponiendo que la distribuci\'on previa de $\bSigma_{\bbeta^{(1)}}$ est\'a dada por
+\begin{align*}
+\bSigma_{\bbeta^{(1)}}&\sim Inversa-Wishart_{v}\left(\bLambda \right)
+\end{align*}
+    
+entonces se tiene que, utilizando el condicionamiento posterior, las distribuciones condicionales de los par\'ametros de inter\'es $\bbeta^{(2)}$, $\bgamma$, y $\sigma^2$ se mantienen id\'enticas a las de la secci\'on anterior debido a la independencia de estos con respecto a $\bSigma_{\bbeta^{(1)}}$.
+    
+\begin{Res}
+La distribuci\'on posterior de la matriz de varianzas $\bSigma_{\bbeta^{(1)}}$ condicionada a los datos y los par\'ametros $\bbeta^{(2)}, \bgamma, \sigma^2$ es
+\begin{equation*}
+\bSigma_{\bbeta^{(1)}} \mid \mathbf{Y},\mathbf{X}_1,\mathbf{X}_2,\mathbf{U},\bbeta^{(2)},\bgamma,\sigma^2
+\sim Inversa-Wishart_{v^*}\left(\mathbf{S}_{\bbeta^{(1)}}\right)
+\end{equation*}
+
+en donde $v^*=v+1$ y $\mathbf{S}_{\bbeta^{(1)}}=(\bbeta^{(1)}-\mathbf{U}\bgamma)(\bbeta^{(1)}-\mathbf{U}\bgamma)'+\bLambda$
+\end{Res}
+    
+\begin{proof}
+Del condicionamiento posterior se tiene que
+\begin{align*}
+p(\bSigma_{\bbeta^{(1)}} \mid \mathbf{Y},\mathbf{X}_1,\mathbf{X}_2,\mathbf{U},\bbeta^{(1)},\bbeta^{(2)},\bgamma,\sigma^2)&\propto
+p(\bSigma_{\bbeta^{(1)}},\underbrace{\mathbf{Y},\mathbf{X}_1,\mathbf{X}_2,\mathbf{U}, \bbeta^{(1)}, \bbeta^{(1)},\bgamma,\sigma^2}_{fijos})\\
+&\propto p(\bbeta^{(1)} \mid \bgamma, \bSigma_{\bbeta^{(1)}},\mathbf{U})p(\bSigma_{\bbeta^{(1)}})
+\end{align*}
+    
+donde
+\begin{align*}
+p(\bbeta^{(1)} \mid \bgamma, \bSigma_{\bbeta^{(1)}},\mathbf{U})&\propto
+\mid \bSigma_{\bbeta^{(1)}} \mid ^{-1/2}
+\exp\left\{-\frac{1}{2}(\bbeta^{(1)}-\mathbf{U}\bgamma)'\bSigma_{\bbeta^{(1)}}^{-1}
+(\bbeta^{(1)}-\mathbf{U}\bgamma)\right\}\\
+&= \mid \bSigma_{\bbeta^{(1)}} \mid ^{-1/2}
+\exp\left\{-\frac{1}{2}traza\left[(\bbeta^{(1)}-\mathbf{U}\bgamma)
+(\bbeta^{(1)}-\mathbf{U}\bgamma)'\bSigma_{\bbeta^{(1)}}^{-1}\right]\right\}
+\end{align*}
+    
+Por tanto la distribuci\'on posterior de $\bSigma_{\bbeta^{(1)}}$ toma la siguiente forma
+\begin{align*}
+p(\bSigma_{\bbeta^{(1)}} \mid \bbeta^{(1)}, \bgamma,\mathbf{U} )&\propto
+\mid \bSigma_{\bbeta^{(1)}} \mid ^{-1/2}
+\exp\left\{-\frac{1}{2}traza\left[(\bbeta^{(1)}-\mathbf{U}\bgamma)(\bbeta^{(1)}-\mathbf{U}\bgamma)'\bSigma_{\bbeta^{(1)}}^{-1}\right]\right\}\\
+&\hspace{1cm}\times
+\mid \bSigma_{\bbeta^{(1)}} \mid ^{-\frac{v+q_1J+1}{2}}
+\exp\left\{-\frac{1}{2}traza\left[\bLambda\bSigma_{\bbeta^{(1)}}^{-1}\right]\right\}\\
+&=\mid \bSigma_{\bbeta^{(1)}} \mid ^{-\frac{(v+1)+q_1J+1}{2}}\\
+&\hspace{0cm}\times\exp\left\{-\frac{1}{2}traza\left[(\bbeta^{(1)}-\mathbf{U}\bgamma)
+(\bbeta^{(1)}-\mathbf{U}\bgamma)'\bSigma_{\bbeta^{(1)}}^{-1}
++\bLambda\bSigma_{\bbeta^{(1)}}^{-1}\right]\right\}\\
+&=
+\mid \bSigma_{\bbeta^{(1)}} \mid ^{-\frac{v^*+q_1J+1}{2}}
+\exp\left\{-\frac{1}{2}traza\left[\mathbf{S}_{\bbeta^{(1)}}\bSigma_{\bbeta^{(1)}}^{-1}\right]\right\}
+\end{align*}
+
+Por lo tanto, factorizando convenientemente, se encuentra una expresi\'on id\'entica a la funci\'on de distribuci\'on de una matriz aleatoria con distribuci\'on $Inversa-Wishart_{v^*}\left(\mathbf{S}_{\bbeta^{(1)}}\right)$.
+\end{proof}
+
+N\'otese que en la anterior distribuci\'on posterior condicional de $\bSigma_{\bbeta^{(1)}}$ depende del vector de par\'ametros $\bbeta^{(1)}$, entonces en cada iteraci\'on del muestreador de Gibbs, se puede optar por calcular $\bbeta^{(1)}$ como el vector de coeficientes de regresi\'on entre $\mathbf{Y}-\mathbf{X}_2\bbeta^{(2)}$ y $\mathbf{X}_1$ y as\'i poder generar valor para $\bSigma_{\bbeta^{(1)}}$.
+
+Ahora, la matriz $\bSigma_{\bbeta^{1}}$ es una matriz de tama\~no $q_1J\times q_1J$, el cual tiene un n\'umero grande de elementos a estimar, y esto puede implicar problemas a la hora de la estimaci\'on si no imponemos alguna condici\'on para simplificar la estructura de varianza de $\bbeta^{(1)}$. Teniendo en cuenta la forma del modelo de regresi\'on de segundo nivel, la forma trivial es asumir que 
+\begin{equation*}
+\bSigma_{\bbeta^{1}}=\begin{pmatrix}
+\sigma^2_1\mathbf{I}_J&\mathbf{0}&\cdots&\mathbf{0}\\
+\mathbf{0}&\sigma^2_1\mathbf{I}_J&\cdots&\mathbf{0}\\
+\vdots&\vdots&\cdots&\vdots\\
+\mathbf{0}&\mathbf{0}&\cdots&\sigma^2_{q_1}\mathbf{I}_J\\
+\end{pmatrix}
+\end{equation*}
+
+De esta forma, los par\'ametros de $\bSigma_{\bbeta^{1}}$ se reduce en $\sigma^2_1,\cdots,\sigma^2_{q_1}$. Asumiendo una distribuci\'on previa no informativa de la forma $p(\sigma^2_1,\cdots,\sigma^2_{q_1})\propto \sigma^{-2}_1\cdots\sigma^{-2}_{q_1}$, tenemos que la distribuci\'on posterior condicional de cada $\sigma^2_s$ est\'a dada por
+\begin{equation*}
+\sigma^2_s\mid \bbeta^{(1)},\bgamma,\mathbf{U},\sigma^2_k,k\neq s\sim Inversa - Gamma\left(\frac{J}{2},\frac{\sum_{r=1}^J e_{s[r]}}{2}\right)
+\end{equation*}
+
+donde $e_{s[1]},\cdots,e_{s[j]}$ son las diferencias entre el subvector de $\bbeta^{(1)}$: $(\beta_{s[1]},\cdots,\beta_{s[J]})$ y el correspondiente vector de $\mathbf{U}\bgamma$, con $s=1,\cdots,q_1$. A continuaci\'on ilustramos la estimaci\'on del modelo para los datos generados en el ejemplo \ref{Eje_Reg_2_nivel}. 
+<<>>=
+library(mvtnorm)
+library(MCMCpack)
+# Funcion para muestrar valor de beta
+pos.beta2<- function(gamma, sigma2, Sigma.beta){
+  Sigma.tilde <- solve(X1%*%Sigma.beta%*%t(X1) + sigma2*diag(1,n))
+  Y1 <- y - X1.tilde%*%gamma
+  B.pos <- solve(solve(B.pri) + t(X2)%*%Sigma.tilde%*%X2)
+  b.pos <- B.pos%*%(B.pri%*%b.pri + t(X2)%*%Sigma.tilde%*%Y1)
+  rmvnorm(1, b.pos, B.pos)
+}
+
+# Funci\'on para muestrar valor de gamma
+pos.gamma <- function(beta, sigma2, Sigma.beta){
+  Sigma.tilde <- solve(X1%*%Sigma.beta%*%t(X1) + sigma2*diag(1,n))
+  Y2 <- y - X2%*%beta
+  G.pos <- solve(solve(G.pri) + t(X1.tilde)%*%Sigma.tilde%*%X1.tilde)
+  g.pos <- G.pos%*%(G.pri%*%g.pri + t(X1.tilde)%*%Sigma.tilde%*%Y2)
+  rmvnorm(1, g.pos, G.pos)
+}
+# Funci\'on que calcula la densidad posterior condicional de sigma2
+f.sigma2 <- function(sigma2, beta, gamma, Sigma.beta){
+  Var.e <- X1%*%Sigma.beta%*%t(X1) + sigma2*diag(1,n)
+  e <- as.matrix(y - X1.tilde%*%gamma - X2%*%beta)
+  (det(Var.e))^(-0.5) * exp(-0.5*t(e)%*%solve(Var.e)%*%e) / sigma2
+}
+# Funci\'on para muestrear valor de sigma2
+pos.sigma2 <- function(beta, gamma, Sigma.beta){
+  sigma2.est <- (summary(lm(y~X1.tilde+X2))$sigma)^2
+  sigma2.gri <- seq(sigma2.est*0.1, sigma2.est*10, length.out = 50)
+  densidad <- c()
+for(k in 1:length(sigma2.gri)){
+densidad[k] <- f.sigma2(sigma2.gri[k], beta, gamma, Sigma.beta) 
+}
+  densidad <- densidad/sum(densidad)
+  sample(sigma2.gri, 1, prob = densidad)
+}
+# Funcion para muestrar valor para la matriz de varianzas de beta1
+pos.sigma2.s <- function(beta, gamma, s){
+  beta1 <- as.matrix(lm((y-X2%*%beta) ~ X1-1)$coef)[((s-1)*J+1):(s*J),]
+  b <- beta1-U[((s-1)*J+1):(s*J),]%*%gamma
+  rinvgamma(1, J/2, sum(b)^2/2)
+}
+
+# aqu\'i inicia el muestreador de Gibbs
+n.sim <- 1000
+res_sigma2 <- rep(10, n.sim)
+res_Sigma <- matrix(1, n.sim,q1)
+res_beta2 <- matrix(0, n.sim, q2)
+res_gamma <- matrix(0, n.sim, q1*r)
+for(i in 2:n.sim){
+  res_beta2[i,] <- pos.beta2(res_gamma[i-1,], res_sigma2[i-1], diag(rep(res_Sigma[i-1,],J)))
+  res_gamma[i,] <- pos.gamma(res_beta2[i,], res_sigma2[i-1], diag(rep(res_Sigma[i-1,],J)))
+  for(s in 1:q1){
+    res_Sigma[i,s] <- pos.sigma2.s(res_beta2[i,],res_gamma[i,],s)
+  }
+res_sigma2[i] <- pos.sigma2(res_beta2[i,], res_gamma[i,], diag(rep(res_Sigma[i-1,],J)))
+}
+@
+A continuaci\'on revisamos el comportamiento de los valores muestreados en t\'erminos de la evoluci\'on y la auto correlaci\'on.
+<<fig.height=9>>=
+par(mfrow=c(4,4))
+ts.plot(res_gamma[,1]); ts.plot(res_gamma[,2])
+ts.plot(res_gamma[,3]); ts.plot(res_gamma[,4])
+ts.plot(res_beta2[,1]); ts.plot(res_beta2[,2])
+ts.plot(res_Sigma[,1]);ts.plot(res_Sigma[,2])
+ts.plot(res_sigma2)
+par(mfrow=c(3,4))
+acf(res_gamma[,1]); acf(res_gamma[,2])
+acf(res_gamma[,3]); acf(res_gamma[,4])
+acf(res_beta2[,1]); acf(res_beta2[,2])
+acf(res_Sigma[,1]);acf(res_Sigma[,2])
+acf(res_sigma2)
+@
+Observamos que los valores muestreados de los elementos diagonales de $\bSigma_{\bbeta^{(1)}}$ y de los coeficientes de $\bgamma$ no son tan buenos como los dem\'as par\'ametros pues se presentan algunos valores extremos incluso despu\'es de un n\'umero grande de iteraciones; mientras que para los par\'ametros $\bbeta^{(2)}$ y $\sigma^2$, la generaci\'on de valores parece que s\'i llega a la convergencia. En cuanto a la correlaci\'on de los valores muestreados, se puede ver que hay correlaciones hasta de rezago 2 (ignorando rezagos muy grandes), por lo cual se calcula la estimaci\'on final como la mediana de la segunda mitad de los valores obtenidos, reteniendo uno de cada tres valores muestreados. 
+
+<<>>=
+beta2.final <- apply(res_beta2[-(1:(n.sim/2)),][seq(1,n.sim/2,by=3),], 2, median)
+gamma.final <- apply(res_gamma[-(1:(n.sim/2)),][seq(1,n.sim/2,by=3),], 2, median)
+beta1.final <- U%*%gamma.final
+sigma2.final <- median(res_sigma2[-(1:(n.sim/2))][seq(1,n.sim/2,by=3)])
+sigma.beta.final <- apply(res_Sigma[-(1:(n.sim/2)),][seq(1,n.sim/2,by=3),], 2, median)
+t(beta1.final)
+beta2.final
+gamma.final
+sigma2.final
+sigma.beta.final
+@
+
+\colorbox{black}{\textcolor{white}{\textbf{c\'odigo JAGS}}}
+<<>>=
+    u.ind <- rep(c(1:J), n.j)
+    Reg2Nivel.model <- function(){
+  #### Modelo del nivel 1
+  for(i in 1:n){
+    y[i] ~ dnorm(mu[i], tau.y)
+    mu[i] <- alpha + beta1[u.ind[i]]*x1[i] + beta2[u.ind[i]]*x2[i] + beta3*x3[i]
+  }
+    sig.y <- 1/sqrt(tau.y)
+    tau.y ~ dgamma(0.001, 0.001)
+  #### Modelo del nivel 2
+  for(j in 1:J){
+    beta1[j] ~ dnorm(mu.1[j], tau.1)
+    mu.1[j] <- gam.01 + gam.11 * u[j] 
+    beta2[j] ~ dnorm(mu.2[j], tau.2)
+    mu.2[j] <- gam.02 + gam.12 * u[j] 
+  }
+    sig.1 <- 1/sqrt(tau.1)
+    tau.1 ~ dgamma(0.001, 0.001)
+    sig.2 <- 1/sqrt(tau.2)
+    tau.2 ~ dgamma(0.001, 0.001)
+    
+  # Distribuciones previas
+    alpha ~ dnorm(0, 0.0001)    
+    beta3 ~ dnorm(0, 0.0001)    
+    gam.01 ~ dnorm(0, 0.0001)
+    gam.11 ~ dnorm(0, 0.0001)
+    gam.02 ~ dnorm(0, 0.0001)
+    gam.12 ~ dnorm(0, 0.0001)
+    
+  # c\'alculo del vector beta1
+    beta.11 <- gam.01 + gam.11 * u[1]
+    beta.12 <- gam.01 + gam.11 * u[2]
+    beta.13 <- gam.01 + gam.11 * u[3]
+    beta.21 <- gam.02 + gam.12 * u[1]
+    beta.22 <- gam.02 + gam.12 * u[2]
+    beta.23 <- gam.02 + gam.12 * u[3]
+}
+
+####### fin del modelo en JAGS ########
+
+Reg2Nivel.data <- list("y", "J","x1","x2","x3","n","u.ind","u")
+Reg2Nivel.param <- c("alpha", "beta3", "gam.01", "gam.11", "gam.02", "gam.12","beta.11","beta.12","beta.13","beta.21","beta.22","beta.23", "sig.y", "sig.1", "sig.2")
+Reg2Nivel.inits <- function() {
+  list("alpha"=c(0), "beta3"=c(0), "gam.01"=c(0), "gam.11"=c(0), "gam.02"=c(0), "gam.12"=c(0),"tau.y"=c(1),"tau.1"=c(1),"tau.2"=c(1))
+}
+
+Model.fit <- jags(data=Reg2Nivel.data, inits=Reg2Nivel.inits, Reg2Nivel.param, n.iter=10000, 
+               n.burnin=1000, model.file=Reg2Nivel.model)
+
+print(Model.fit)
+    @
+
+En la siguiente tabla se muestra un comparativo entre los valores verdaderos de los par\'ametros y los valores estimados usando \verb'R' y \verb'JAGS'. Podemos ver que en general las estimaciones del $\bbeta^{(1)}$ son similares en \verb'R'y \verb'JAGS' y son cercanas a los valores verdaderos; en cuanto a la estimaci\'on de $\bgamma$ y $\bgamma^{(2)}$, claramente la estimaci\'on en \verb'JAGS' es superior; finalmente, para la estimaci\'on de los elementos diagonales de la matriz de varianza y covarianzas $\bSigma_{\bbeta^{(1)}}$, observamos que ambas estimaciones son deficientes, aunque las obtenidas con \verb'JAGS' es razonable para $V(e_{2,j})$.
+\begin{table}[!htb]\label{Result_Reg_2_nivel} 
+\centering
+\begin{tabular}{|c|c|c|c|}\hline
+par\'ametro&Valor real&Estimaci\'on en \verb'R'& Estimaci\'on en \verb'JAGS'\\\hline
+$\beta_0$&1&0.70&0.84\\\hline
+$\beta_{1[1]}$&13.3&13.37&13.30\\
+$\beta_{1[2]}$&14.0&13.94&13.87\\
+$\beta_{1[3]}$&10.2&10.12&10.11\\\hline
+$\beta_{2[1]}$&-8.1&-8.33&-8.26\\
+$\beta_{2[2]}$&-8.9&-8.82&-8.75\\
+$\beta_{2[3]}$&-5.7&-5.63&-5.52\\\hline
+$\beta_3$&-5&-4.95&-4.96\\\hline
+$\gamma_0^{(1)}$&5&3.63&3.58\\
+$\gamma_1^{(1)}$&2&2.33&2.34\\
+$\gamma_0^{(2)}$&0&-0.21&-0.03\\
+$\gamma_1^{(2)}$&-2&-1.95&-1.97\\\hline
+$\sigma^2$&0.64&0.58&0.72\\\hline
+$\sigma_{1}$&0.04&0.02&0.16\\
+$\sigma_{2}$&0.16&0.05&0.18\\\hline
+\end{tabular}
+\end{table}
+
+Finalmente presentamos un ejemplo de la estimaci\'on de regresi\'on multinivel usando datos realesuando los  utilizamos los datos 
+\begin{Eje}
+Se utilizan los datos \verb'grouseticks' del paquete \verb'lme4'. Estos contienen 403 datos sobre: n\'umero de garrapatas en la cabeza de cierto tipo de pollos, nivel del mar, a\~no, locaci\'on geogr\'afica, entre otros. aqu\'i se toma el nivel del mar como una variable regresora para explicar el comportamiento del n\'umero de garrapatas. Por otro lado, teniendo en cuenta que los datos se encuentran agrupados por el a\~no: 117 datos son del a\~no 1995, 155 del a\~no 1996 y 131 del a\~no 1997, entonces se decide incluir al factor a\~no como un nivel adicional, y de esta forma ajustar un modelo de regresi\'on de dos niveles.
+
+En primer lugar, se visualiza la relaci\'on de la variable el n\'umero de garrapatas y el nivel del mar, agrupando por a\~nos:
+    <<fig.height=4>>=
+    library(lme4)
+    data(grouseticks)
+    attach(grouseticks)
+    plot(HEIGHT, TICKS, col=YEAR)
+    @
+Se puede ver que el efecto del nivel del mar sobre el n\'umero de garrapatas es diferente en los tres a\~nos. Por otro lado, se observa el comportamiento general del n\'umero de garrapatas en los tres a\~nos en la siguiente gr\'afica donde se evidencia diferencias grandes entre los datos de los diferentes a\~nos. 
+<<fig.height=3.5>>=
+boxplot(TICKS ~ YEAR)
+@
+De las anteriores conclusiones se deduce que el vector $\bbeta$ tiene dos componentes: el intercepto y el efecto del nivel sobre mar, y ambos componentes a la vez depende de la variable a\~no que en este caso es un factor con 3 niveles (es decir, el vector $\bgamma$ tiene ). Una forma alterna de escribir este modelo es:
+    \begin{align*}
+    y_i&=\beta_{0,j}+\beta_{1,j}x_i+\epsilon_i,\ \ \ \epsilon_i\sim N(0,\sigma^2)\\
+    \beta_{0,j}&=\gamma_0^{(0)}+\gamma_1^{(0)}I_{1995,j}+\gamma_2^{(0)}I_{1996,j}+e_{0,j},\ \ \ e_{0,j}\sim N(0,\sigma^2_{\beta_0})\\
+    \beta_{1,j}&=\gamma_0^{(1)}+\gamma_1^{(1)}I_{1995,j}+\gamma_2^{(1)}I_{1996,j}+e_{1,j},\ \ \ e_{1,j}\sim N(0,\sigma^2_{\beta_1})
+    \end{align*}
+    para $i=1,\cdots,403$ y $j=1,2,3$ los cuales representan los a\~nos 1995, 1996 y 1997. La variable $I_{1995}$ es la variable dummy para el a\~no 1995, esto es, $I_{1995,j}=1$ si $j$ corresponde al a\~no 1995, y vale 0 si $j$ corresponde a un a\~no diferente al 1995. De forma similar se define la variables $I_{1996}$. Los valores $\sigma^2_{\beta_0}$ y $\sigma^2_{\beta_1}$ son los elementos diagonales de la matriz $\bSigma_{\bbeta}$.
+
+\colorbox{black}{\textcolor{white}{\textbf{c\'odigo JAGS}}}
+<<>>=
+    n.j <- table(grouseticks$YEAR)
+    J <- length(n.j)
+    n <- sum(n.j)
+    u.ind <- rep(c(1:J), n.j)
+    y <- grouseticks$TICKS
+    x <- grouseticks$HEIGHT
+    grouseticks.model <- function(){
+  #### Modelo del nivel 1
+  for(i in 1:n){
+    y[i] ~ dnorm(mu[i], tau.y)
+    mu[i] <- beta0[u.ind[i]] + beta1[u.ind[i]] * x[i]
+  }
+    sig.y <- 1/sqrt(tau.y)
+    tau.y ~ dgamma(0.001, 0.001)
+  #### Modelo del nivel 2
+  for(j in 1:J){
+    beta0[j] ~ dnorm(mu.1[j], tau.1)
+    beta1[j] ~ dnorm(mu.2[j], tau.2)
+  }
+    sig.1 <- 1/sqrt(tau.1)
+    tau.1 ~ dgamma(0.001, 0.001)
+    sig.2 <- 1/sqrt(tau.2)
+    tau.2 ~ dgamma(0.001, 0.001)
+    
+  # Distribuciones previas
+    for(j in 1:J){
+      mu.1[j] ~ dnorm(0, 0.0001)    
+      mu.2[j] ~ dnorm(0, 0.0001)    
+    }
+}
+
+####### fin del modelo en JAGS ########
+
+grouseticks.data <- list("y", "J", "x", "n", "u.ind")
+grouseticks.param <- c("mu.1", "mu.2", "sig.y", "sig.1", "sig.2")
+grouseticks.inits <- function() {
+  list("mu.1"=rep(0,3), "mu.2"=rep(0,3), "tau.y"=c(1),"tau.1"=c(1),"tau.2"=c(1))
+}
+
+Model.fit <- jags(data=grouseticks.data, inits=grouseticks.inits, grouseticks.param, n.iter=10000, 
+               n.burnin=1000, model.file=grouseticks.model)
+print(Model.fit)
+    @
+De los anteriores resultados se puede ver, en primer lugar, que la influencia del nivel del mar sobre el n\'umero de garrapatas es mayor en el a\~no 1995 (el coeficiente estimado es -0.48), y es menor en el 1997 (el coeficiente estimado es -0.012); por otro lado, tambi\'en se puede ver los interceptos estimados para los tres a\~nos tambi\'en son muy diferentes, siendo el a\~no 1997 el a\~nos que representa menor n\'umero de garrapatas cuando el nivel del mar es 0.
+\end{Eje}
+  
+\section{lo que ya estaba}
+La distribuci\'on conjunta de las observaciones y todos los par\'ametros de inter\'es\footnote{Suponiendo que el vector de par\'ametros $\bbeta_2$ es condicionalmente independiente de las observaciones y es independiente de $\sigma^2$.} estar\'ia dada por
+\begin{align}
+p(\mathbf{Y},\bbeta,\bbeta_2, \sigma^2)&=p(\mathbf{Y} \mid \bbeta,\bbeta_2, \sigma^2)p(\bbeta \mid \bbeta_2, \sigma^2)p(\bbeta_2, \sigma^2)\notag\\
+&=p(\mathbf{Y} \mid \bbeta, \sigma^2)p(\bbeta^{(1)} \mid \bbeta_2)p(\bbeta_2)p(\sigma^2)
+\end{align}
+             
+suponiendo que $\bSigma_{\bbeta^{(1)}}$ es conocida y basados en la anterior expresi\'on se tiene el siguiente conjunto de resultados.
+
+\begin{Res}
+La distribuci\'on a posterior del vector de par\'ametros de inter\'es $\bbeta$ condicionado a $\mathbf{Y},\bbeta_2, \sigma^2$ es
+\begin{equation*}
+\bbeta \mid \mathbf{Y},\mathbf{X},\bbeta_2, \sigma^2 \sim Normal(\mathbf{b}_q,\mathbf{B}_q)
+\end{equation*}
+
+donde
+\begin{align*}
+\mathbf{B}_q&= \left(\bSigma_{\bbeta_1}^{-1}+\frac{1}{\sigma^2}\mathbf{X}_1'\mathbf{X}_1\right)^{-1}\\
+\mathbf{b}_q &=\mathbf{B}_q
+\left(\bSigma_{\bbeta_1}^{-1}\mathbf{X}_2\bbeta_2+\frac{1}{\sigma^2}\mathbf{X}_1'\mathbf{Y}\right)
+\end{align*}
+\end{Res}
+       
+       \begin{proof}
+       Del condicionamiento posterior se tiene que
+       \begin{align*}
+       p(\bbeta_1 \mid \mathbf{Y},\bbeta_2, \sigma^2)&\propto
+       p(\bbeta_1,\underbrace{\mathbf{Y}, \bbeta_2, \sigma^2}_{fijos})\\
+       &\propto p(\mathbf{Y} \mid \bbeta_1,\sigma^2)p(\bbeta_1 \mid \bbeta_2)
+       \end{align*}
+Operaciones algebr\'aicas est\'andares conducen a la distribuci\'on deseada       \end{proof}
+       
+       \begin{Res}
+       La distribuci\'on a posterior del vector de par\'ametros de inter\'es $\bbeta_2$ condicionado a $\mathbf{Y},\bbeta_1, \sigma^2$ es
+       \begin{equation*}
+       \bbeta_2 \mid \mathbf{Y},\mathbf{X},\bbeta_1,\sigma^2 \sim Normal_r(\bgamma_r,\bGamma_r)
+       \end{equation*}
+       donde
+       \begin{align*}
+       \bGamma_r
+       &= \left(\mathbf{X}_2'\bSigma_{\bbeta_1}^{-1}\mathbf{X}_2+\bGamma^{-1}\right)^{-1}\\
+\bgamma_r &=\bGamma_r\left(\mathbf{X}_2'\bSigma_{\bbeta_1}^{-1}\bbeta_1+\bGamma^{-1}\bgamma_0\right)
+                            \end{align*}
+                            \end{Res}
+                            
+                            \begin{proof}
+                            Del condicionamiento posterior se tiene que
+                            \begin{align*}
+                            p(\bbeta_2 \mid \mathbf{Y},\bbeta_1, \sigma^2)&\propto
+                            p(\bbeta_2,\underbrace{\mathbf{Y}, \bbeta_1, \sigma^2}_{fijos})\\
+                            &\propto p(\bbeta_1 \mid \bbeta_2)p(\bbeta_2)
+                            \end{align*}
+                            
+                            Por tanto el desarrollo algebraico conduce a que
+                            \begin{align*}
+                            p(\bbeta_2 \mid \mathbf{Y},\bbeta_1, \sigma^2)&\propto
+                            \exp\left\{-\frac{1}{2}\left[(\bbeta_1-\mathbf{X}_2\bbeta_2)'
+                            \bSigma_{\bbeta_1}^{-1}(\bbeta_1-\mathbf{X}_2\bbeta_2)
+                            +(\bbeta_2-\bgamma_0)'\bGamma^{-1}(\bbeta_2-\bgamma_0)\right]\right\}\\
+                            &\propto
+                            \exp\left\{-\frac{1}{2}\left[\bbeta_2'(\mathbf{X}_2'\bSigma_{\bbeta_1}^{-1}\mathbf{X}_2+\bGamma^{-1})
+                                                                   \bbeta_2- 2\bgamma'(\mathbf{X}_2'\bSigma_{\bbeta_1}^{-1}\bbeta_1+\bGamma^{-1}\bgamma_0)\right]\right\}\\
+                                  &=\exp\left\{-\frac{1}{2}\bbeta_2'\bGamma^{-1}_r\bbeta_2                                                + \bbeta_2'\bGamma^{-1}_r\bgamma_r\right\}\\
+                                  &\propto\exp\left\{-\frac{1}{2}\bbeta_2'\bGamma^{-1}_r\bbeta_2                                            + \bbeta_2'\bGamma^{-1}_r\bgamma_r                                            -\frac{1}{2}\bgamma_r'\bGamma^{-1}_r\bgamma_r\right\}\\
+&=\exp\left\{-\frac{1}{2}(\bbeta_2-\bgamma_r)'\bGamma^{-1}_r(\bbeta_2-\bgamma_r)\right\}
+  \end{align*}
+  Por lo tanto, factorizando convenientemente, se encuentra una expresi\'on id\'entica a la
+  funci\'on de distribuci\'on de una vector aleatorio con distribuci\'on $Normal_r(\bgamma_r,\bGamma_r)$.
+  \end{proof}
+  
+  \citeasnoun{Gamer06} afirma que es sorprendente que la distribuci\'on posterior de $\bgamma$ no dependa de las observaciones. Este hecho se debe al car\'acter jer\'arquico del modelo que pasa, a trav\'es de $\bbeta$, toda la informaci\'on contenida en $\mathbf{y}$ a $\bgamma$.
+  
+  \begin{Res}
+  La distribuci\'on a posterior del par\'ametro de inter\'es $\sigma^2$ condicionado a $\mathbf{Y},\bbeta,\bbeta$ es
+  \begin{equation*}
+  \sigma^2 \mid \mathbf{Y},\mathbf{X},\bbeta,\bgamma
+  \sim Inversa-Gamma\left(\frac{n_1}{2},\frac{n_1 S^2_{\bbeta}}{2}\right)
+  \end{equation*}
+  
+  donde $n_1=n_0+n$ y $n_1 S^2_{\bbeta}=n_0\sigma^2_0+(\mathbf{Y}-\mathbf{X}\bbeta)'(\mathbf{Y}-\mathbf{X}\bbeta)$.
+  \end{Res}
+  
+  \begin{proof}
+  Del condicionamiento posterior se tiene que
+  \begin{align*}
+  p(\sigma^2 \mid \mathbf{Y},\bbeta,\bgamma)&\propto
+  p(\sigma^2,\underbrace{\mathbf{Y}, \bbeta, \bgamma}_{fijos})\\
+  &\propto p(Y \mid \bbeta, \sigma^2)p(\sigma^2)
+  \end{align*}
+  
+  Y desarrollando el anterior producto, se concluye que
+  \begin{align*}
+  p(\sigma^2 \mid \mathbf{Y},\bbeta,\bgamma)&\propto
+  (\sigma^2)^{-n/2}
+  \exp\left\{-\frac{1}{2\sigma^2}(\mathbf{y}-\mathbf{X}\bbeta)'(\mathbf{y}-\mathbf{X}\bbeta)\right\}\\
+    &\hspace{2cm} \times
+    (\sigma^2)^{-n_0/2-1}\exp\left\{-\frac{n_0\sigma^2_0}{2\sigma^2}\right\}\\
+    &\propto
+    (\sigma^2)^{-\frac{n_1}{2}-1}
+    \exp\left\{-\frac{n_1S^2_1}{2\sigma^2}\right\}
+    \end{align*}
+    Por lo tanto, factorizando convenientemente, se encuentra una expresi\'on id\'entica a la
+    funci\'on de distribuci\'on de una variable aleatoria con distribuci\'on $Inversa-Gamma(n_1/2,n_1S^2_{\bbeta}/2)$.
+    \end{proof}
+    
+    Con los anteriores resultados, se tiene la distribuci\'on posterior condicional de todos y cada uno de los par\'ametros de inter\'es y con esto se llega a una an\'alisis bayesiano propiamente dicho, por medio del uso de un muestreador de Gibbs.
+    
+\section{Ejercicios}
+\begin{enumerate}
+\item Elabore los c\'odigos en \verb'JAGS' para los datos del ejemplo \ref{Eje_Reg_2_nivel} ajustando el mismo modelo, compara los resultados obtenidos con los valores de la tabla \ref{Result_Reg_2_nivel}.
+\item Comprueba la distribuci\'on \ref{pos_Sigma_noinformativa}.
+\end{enumerate} 

@@ -1,0 +1,53 @@
+\select@language {english}
+\select@language {spanish}
+\contentsline {chapter}{\numberline {1}T\IeC {\'o}picos b\IeC {\'a}sicos}{1}{chapter.1}
+\contentsline {section}{\numberline {1.1}Teor\IeC {\'\i }a de la decisi\IeC {\'o}n}{1}{section.1.1}
+\contentsline {section}{\numberline {1.2}Algunos resultados de probabilidad}{3}{section.1.2}
+\contentsline {section}{\numberline {1.3}Teorema de Bayes}{4}{section.1.3}
+\contentsline {section}{\numberline {1.4}Inferencia bayesiana}{9}{section.1.4}
+\contentsline {subsection}{\numberline {1.4.1}Inferencia \emph {previa}}{10}{subsection.1.4.1}
+\contentsline {subsection}{\numberline {1.4.2}Inferencia \emph {posterior}}{10}{subsection.1.4.2}
+\contentsline {subsection}{\numberline {1.4.3}Inferencia predictiva}{10}{subsection.1.4.3}
+\contentsline {section}{\numberline {1.5}Informaci\IeC {\'o}n \emph {previa}}{11}{section.1.5}
+\contentsline {subsection}{\numberline {1.5.1}Distribuciones conjugadas}{11}{subsection.1.5.1}
+\contentsline {subsection}{\numberline {1.5.2}Distribuciones \emph {previa} no informativas}{16}{subsection.1.5.2}
+\contentsline {section}{\numberline {1.6}Pruebas de hip\IeC {\'o}tesis}{20}{section.1.6}
+\contentsline {subsection}{\numberline {1.6.1}Factor de Bayes}{20}{subsection.1.6.1}
+\contentsline {subsection}{\numberline {1.6.2}Valor $p$ Bayesiano}{21}{subsection.1.6.2}
+\contentsline {section}{\numberline {1.7}Criterios de informaci\IeC {\'o}n}{21}{section.1.7}
+\contentsline {section}{\numberline {1.8}Acerca de la notaci\IeC {\'o}n}{23}{section.1.8}
+\contentsline {chapter}{\numberline {2}Modelos uniparam\'etricos}{25}{chapter.2}
+\contentsline {section}{\numberline {2.1}Modelo Bernoulli}{25}{section.2.1}
+\contentsline {section}{\numberline {2.2}Modelo Binomial}{30}{section.2.2}
+\contentsline {section}{\numberline {2.3}Modelo Binomial negativa}{40}{section.2.3}
+\contentsline {section}{\numberline {2.4}Modelo Poisson}{45}{section.2.4}
+\contentsline {section}{\numberline {2.5}Modelo exponencial}{51}{section.2.5}
+\contentsline {section}{\numberline {2.6}Modelo normal con media desconocida y varianza conocida}{56}{section.2.6}
+\contentsline {section}{\numberline {2.7}Modelo normal con varianza desconocida y media conocida}{64}{section.2.7}
+\contentsline {section}{\numberline {2.8}Ejercicios}{70}{section.2.8}
+\contentsline {chapter}{\numberline {3}Modelos multiparam\'etricos}{73}{chapter.3}
+\contentsline {section}{\numberline {3.1}Normal univariada con media y varianza desconocida}{73}{section.3.1}
+\contentsline {subsection}{\numberline {3.1.1}Par\'ametros independientes}{74}{subsection.3.1.1}
+\contentsline {subsection}{\numberline {3.1.2}Par\'ametros dependientes}{80}{subsection.3.1.2}
+\contentsline {subsection}{\numberline {3.1.3}Par\'ametros no informativos}{86}{subsection.3.1.3}
+\contentsline {section}{\numberline {3.2}Normal multivariante con media desconocida y varianza conocida}{91}{section.3.2}
+\contentsline {section}{\numberline {3.3}Normal multivariante con media y varianza desconocida}{98}{section.3.3}
+\contentsline {subsection}{\numberline {3.3.1}Par\'ametros independientes con distribuciones previas informativas}{98}{subsection.3.3.1}
+\contentsline {subsection}{\numberline {3.3.2}Par\'ametros dependientes}{102}{subsection.3.3.2}
+\contentsline {subsection}{\numberline {3.3.3}par\'ametros no informativos}{110}{subsection.3.3.3}
+\contentsline {section}{\numberline {3.4}Multinomial}{114}{section.3.4}
+\contentsline {section}{\numberline {3.5}Ejercicios}{118}{section.3.5}
+\contentsline {chapter}{\numberline {4}Modelos emp\'iricos y jer\'arquicos}{121}{chapter.4}
+\contentsline {section}{\numberline {4.1}an\'alisis emp\'irico}{122}{section.4.1}
+\contentsline {subsection}{\numberline {4.1.1}Modelo Binomial-Beta}{123}{subsection.4.1.1}
+\contentsline {subsubsection}{an\'alisis preliminar}{123}{section*.5}
+\contentsline {subsubsection}{an\'alisis leg\'itimo}{124}{section*.6}
+\contentsline {subsection}{\numberline {4.1.2}Modelo Poisson-Gamma}{127}{subsection.4.1.2}
+\contentsline {subsection}{\numberline {4.1.3}Modelo Normal-Normal}{129}{subsection.4.1.3}
+\contentsline {section}{\numberline {4.2}an\'alisis jer\'arquico}{131}{section.4.2}
+\contentsline {subsection}{\numberline {4.2.1}Modelo Binomial}{132}{subsection.4.2.1}
+\contentsline {subsection}{\numberline {4.2.2}Modelo Poisson}{137}{subsection.4.2.2}
+\contentsline {subsection}{\numberline {4.2.3}Modelo Normal}{144}{subsection.4.2.3}
+\contentsline {subsubsection}{Hiperpar\'ametros independientes}{144}{section*.7}
+\contentsline {subsubsection}{Hiperpar\'ametros dependientes}{148}{section*.8}
+\contentsline {section}{\numberline {4.3}Ejercicios}{151}{section.4.3}
